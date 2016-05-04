@@ -1,0 +1,128 @@
+########################################################################
+#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions 
+#  are met:
+#    * Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in
+#      the documentation and/or other materials provided with the
+#      distribution.
+#    * Neither the name of Intel Corporation nor the names of its
+#      contributors may be used to endorse or promote products derived
+#      from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+#  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+#  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+#  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+#  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+#  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+#  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+########################################################################
+
+objs = bin\md5_ctx_avx.obj bin\md5_ctx_avx2.obj bin\md5_ctx_avx512.obj bin\md5_ctx_sse.obj bin\md5_mb_mgr_flush_avx.obj bin\md5_mb_mgr_flush_avx2.obj bin\md5_mb_mgr_flush_avx512.obj bin\md5_mb_mgr_flush_sse.obj bin\md5_mb_mgr_init_avx2.obj bin\md5_mb_mgr_init_avx512.obj bin\md5_mb_mgr_init_sse.obj bin\md5_mb_mgr_submit_avx.obj bin\md5_mb_mgr_submit_avx2.obj bin\md5_mb_mgr_submit_avx512.obj bin\md5_mb_mgr_submit_sse.obj bin\md5_mb_x16x2_avx512.obj bin\md5_mb_x4x2_avx.obj bin\md5_mb_x4x2_sse.obj bin\md5_mb_x8x2_avx2.obj bin\md5_multibinary.obj bin\sha1_ctx_avx.obj bin\sha1_ctx_avx2.obj bin\sha1_ctx_avx512.obj bin\sha1_ctx_sse.obj bin\sha1_mb_mgr_flush_avx.obj bin\sha1_mb_mgr_flush_avx2.obj bin\sha1_mb_mgr_flush_avx512.obj bin\sha1_mb_mgr_flush_sse.obj bin\sha1_mb_mgr_init_avx2.obj bin\sha1_mb_mgr_init_avx512.obj bin\sha1_mb_mgr_init_sse.obj bin\sha1_mb_mgr_submit_avx.obj bin\sha1_mb_mgr_submit_avx2.obj bin\sha1_mb_mgr_submit_avx512.obj bin\sha1_mb_mgr_submit_sse.obj bin\sha1_mb_x16_avx512.obj bin\sha1_mb_x4_avx.obj bin\sha1_mb_x4_sse.obj bin\sha1_mb_x8_avx2.obj bin\sha1_multibinary.obj bin\sha256_ctx_avx.obj bin\sha256_ctx_avx2.obj bin\sha256_ctx_avx512.obj bin\sha256_ctx_sse.obj bin\sha256_mb_mgr_flush_avx.obj bin\sha256_mb_mgr_flush_avx2.obj bin\sha256_mb_mgr_flush_avx512.obj bin\sha256_mb_mgr_flush_sse.obj bin\sha256_mb_mgr_init_avx2.obj bin\sha256_mb_mgr_init_avx512.obj bin\sha256_mb_mgr_init_sse.obj bin\sha256_mb_mgr_submit_avx.obj bin\sha256_mb_mgr_submit_avx2.obj bin\sha256_mb_mgr_submit_avx512.obj bin\sha256_mb_mgr_submit_sse.obj bin\sha256_mb_x16_avx512.obj bin\sha256_mb_x4_avx.obj bin\sha256_mb_x4_sse.obj bin\sha256_mb_x8_avx2.obj bin\sha256_multibinary.obj bin\sha512_ctx_avx.obj bin\sha512_ctx_avx2.obj bin\sha512_ctx_avx512.obj bin\sha512_ctx_sb_sse4.obj bin\sha512_ctx_sse.obj bin\sha512_mb_mgr_flush_avx.obj bin\sha512_mb_mgr_flush_avx2.obj bin\sha512_mb_mgr_flush_avx512.obj bin\sha512_mb_mgr_flush_sse.obj bin\sha512_mb_mgr_init_avx2.obj bin\sha512_mb_mgr_init_avx512.obj bin\sha512_mb_mgr_init_sse.obj bin\sha512_mb_mgr_submit_avx.obj bin\sha512_mb_mgr_submit_avx2.obj bin\sha512_mb_mgr_submit_avx512.obj bin\sha512_mb_mgr_submit_sse.obj bin\sha512_mb_x2_avx.obj bin\sha512_mb_x2_sse.obj bin\sha512_mb_x4_avx2.obj bin\sha512_mb_x8_avx512.obj bin\sha512_multibinary.obj bin\sha512_sb_mgr_flush_sse4.obj bin\sha512_sb_mgr_init_sse4.obj bin\sha512_sb_mgr_submit_sse4.obj bin\sha512_sse4.obj
+
+INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Iinclude/
+LINKFLAGS = /nologo
+INCLUDES  = $(INCLUDES) -Ic:\openssl\include
+LINKFLAGS = $(LINKFLAGS) /libpath:c:\openssl\lib
+CFLAGS   = -O2 -D NDEBUG /nologo -D_USE_MATH_DEFINES -Qstd=c99 $(INCLUDES) $(D)
+AFLAGS   = -f win64 $(INCLUDES) $(D)
+CC       = icl
+AS       = yasm
+
+lib: bin static dll
+static: bin isa-l_crypto_static.lib
+dll: bin isa-l_crypto.dll
+
+bin: ; -mkdir $@
+
+isa-l_crypto_static.lib: $(objs)
+	lib -out:$@ $?
+
+isa-l_crypto.dll: $(objs)
+	link -out:$@ -dll -def:isa-l_crypto.def $?
+
+{sha1_mb}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{sha1_mb}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{sha256_mb}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{sha256_mb}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{sha512_mb}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{sha512_mb}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{md5_mb}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{md5_mb}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+
+# Examples
+ex = sha1_multi_buffer_example.exe
+ex: lib $(ex)
+
+$(ex): $(@B).obj
+
+.obj.exe:
+	link /out:$@ $(LINKFLAGS) isa-l_crypto.lib $?
+
+# Check tests
+checks = md5_mb_rand_test.exe md5_mb_rand_update_test.exe md5_mb_test.exe sha1_mb_rand_test.exe sha1_mb_rand_update_test.exe sha1_mb_test.exe sha256_mb_rand_test.exe sha256_mb_rand_update_test.exe sha256_mb_test.exe sha512_mb_rand_test.exe sha512_mb_rand_update_test.exe sha512_mb_test.exe
+
+checks: lib $(checks)
+$(checks): $(@B).obj
+check: $(checks)
+	!$?
+
+# Unit tests
+tests = md5_mb_rand_ssl_test.exe sha1_mb_rand_ssl_test.exe sha256_mb_rand_ssl_test.exe sha512_mb_rand_ssl_test.exe
+
+tests: lib $(tests)
+$(tests): $(@B).obj
+
+# Performance tests
+perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe
+
+perfs: lib $(perfs)
+$(perfs): $(@B).obj
+
+clean:
+	-if exist *.obj del *.obj
+	-if exist bin\*.obj del bin\*.obj
+	-if exist isa-l_crypto_static.lib del isa-l_crypto_static.lib
+	-if exist *.exe del *.exe
+	-if exist isa-l_crypto.lib del isa-l_crypto.lib
+	-if exist isa-l_crypto.dll del isa-l_crypto.dll
+
+libeay32.lib:
+sha1_mb_rand_test.exe: sha1_ref.obj 
+sha1_mb_rand_update_test.exe: sha1_ref.obj 
+sha1_mb_rand_ssl_test.exe:  libeay32.lib 
+sha1_mb_vs_ossl_perf.exe:  libeay32.lib 
+sha256_mb_rand_ssl_test.exe: sha256_ref.obj 
+sha256_mb_rand_test.exe: sha256_ref.obj 
+sha256_mb_rand_update_test.exe: sha256_ref.obj 
+sha256_mb_rand_ssl_test.exe:  libeay32.lib 
+sha256_mb_vs_ossl_perf.exe:  libeay32.lib 
+sha512_mb_rand_test.exe: sha512_ref.obj 
+sha512_mb_rand_update_test.exe: sha512_ref.obj 
+sha512_mb_rand_ssl_test.exe:  libeay32.lib 
+sha512_mb_vs_ossl_perf.exe:  libeay32.lib 
+md5_mb_rand_test.exe: md5_ref.obj 
+md5_mb_rand_update_test.exe: md5_ref.obj 
+md5_mb_rand_ssl_test.exe:  libeay32.lib 
+md5_mb_vs_ossl_perf.exe:  libeay32.lib 

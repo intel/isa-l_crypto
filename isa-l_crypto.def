@@ -1,0 +1,15 @@
+LIBRARY  isa-l_crypto
+EXPORTS
+
+sha1_ctx_mgr_init                      @1
+sha1_ctx_mgr_submit                    @2
+sha1_ctx_mgr_flush                     @3
+sha256_ctx_mgr_init                    @4
+sha256_ctx_mgr_submit                  @5
+sha256_ctx_mgr_flush                   @6
+sha512_ctx_mgr_init                    @7
+sha512_ctx_mgr_submit                  @8
+sha512_ctx_mgr_flush                   @9
+md5_ctx_mgr_init                       @10
+md5_ctx_mgr_submit                     @11
+md5_ctx_mgr_flush                      @12
