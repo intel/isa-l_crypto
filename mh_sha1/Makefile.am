@@ -27,15 +27,41 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-units     = sha1_mb sha256_mb sha512_mb md5_mb mh_sha1
+lsrc_sha1     =	mh_sha1/sha1_for_mh_sha1.c
 
-default: lib
+lsrc_mh_sha1  =	mh_sha1/mh_sha1.c \
+		mh_sha1/mh_sha1_block_sse.asm \
+		mh_sha1/mh_sha1_block_avx.asm \
+		mh_sha1/mh_sha1_block_avx2.asm \
+		mh_sha1/mh_sha1_multibinary.asm \
+		mh_sha1/mh_sha1_finalize_base.c \
+		mh_sha1/mh_sha1_update_base.c \
+		mh_sha1/mh_sha1_block_base.c
 
-include $(foreach unit,$(units), $(unit)/Makefile.am)
+lsrc_mh_sha1 += mh_sha1/mh_sha1_block_avx512.asm \
+		mh_sha1/mh_sha1_avx512.c
 
-# Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l_crypto.a
+lsrc        += 	$(lsrc_sha1) \
+		$(lsrc_mh_sha1)
 
-include make.inc
+other_src   += 	mh_sha1/mh_sha1_ref.c \
+		include/reg_sizes.asm \
+		include/multibinary.asm \
+		include/test.h \
+		mh_sha1/mh_sha1_internal.h
 
-VPATH = . $(units) include
+extern_hdrs +=	include/mh_sha1.h
+
+check_tests += 	mh_sha1/mh_sha1_test
+unit_tests  += 	mh_sha1/mh_sha1_update_test
+
+perf_tests  += 	mh_sha1/mh_sha1_perf
+
+
+mh_sha1_test: mh_sha1_ref.o
+mh_sha1_mh_sha1_test_LDADD = mh_sha1/mh_sha1_ref.lo libisal_crypto.la
+
+mh_sha1_update_test: mh_sha1_ref.o
+mh_sha1_mh_sha1_update_test_LDADD = mh_sha1/mh_sha1_ref.lo libisal_crypto.la
+
+mh_sha1_mh_sha1_perf_LDADD = libisal_crypto.la

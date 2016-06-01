@@ -27,6 +27,7 @@ include md5_mb/Makefile.am
 include sha1_mb/Makefile.am
 include sha256_mb/Makefile.am
 include sha512_mb/Makefile.am
+include mh_sha1/Makefile.am
 
 # LIB version info not necessarily the same as package version
 LIBISAL_CURRENT=2
