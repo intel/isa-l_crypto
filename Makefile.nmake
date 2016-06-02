@@ -27,9 +27,159 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-objs = bin\md5_ctx_avx.obj bin\md5_ctx_avx2.obj bin\md5_ctx_avx512.obj bin\md5_ctx_sse.obj bin\md5_mb_mgr_flush_avx.obj bin\md5_mb_mgr_flush_avx2.obj bin\md5_mb_mgr_flush_avx512.obj bin\md5_mb_mgr_flush_sse.obj bin\md5_mb_mgr_init_avx2.obj bin\md5_mb_mgr_init_avx512.obj bin\md5_mb_mgr_init_sse.obj bin\md5_mb_mgr_submit_avx.obj bin\md5_mb_mgr_submit_avx2.obj bin\md5_mb_mgr_submit_avx512.obj bin\md5_mb_mgr_submit_sse.obj bin\md5_mb_x16x2_avx512.obj bin\md5_mb_x4x2_avx.obj bin\md5_mb_x4x2_sse.obj bin\md5_mb_x8x2_avx2.obj bin\md5_multibinary.obj bin\sha1_ctx_avx.obj bin\sha1_ctx_avx2.obj bin\sha1_ctx_avx512.obj bin\sha1_ctx_sse.obj bin\sha1_mb_mgr_flush_avx.obj bin\sha1_mb_mgr_flush_avx2.obj bin\sha1_mb_mgr_flush_avx512.obj bin\sha1_mb_mgr_flush_sse.obj bin\sha1_mb_mgr_init_avx2.obj bin\sha1_mb_mgr_init_avx512.obj bin\sha1_mb_mgr_init_sse.obj bin\sha1_mb_mgr_submit_avx.obj bin\sha1_mb_mgr_submit_avx2.obj bin\sha1_mb_mgr_submit_avx512.obj bin\sha1_mb_mgr_submit_sse.obj bin\sha1_mb_x16_avx512.obj bin\sha1_mb_x4_avx.obj bin\sha1_mb_x4_sse.obj bin\sha1_mb_x8_avx2.obj bin\sha1_multibinary.obj bin\sha256_ctx_avx.obj bin\sha256_ctx_avx2.obj bin\sha256_ctx_avx512.obj bin\sha256_ctx_sse.obj bin\sha256_mb_mgr_flush_avx.obj bin\sha256_mb_mgr_flush_avx2.obj bin\sha256_mb_mgr_flush_avx512.obj bin\sha256_mb_mgr_flush_sse.obj bin\sha256_mb_mgr_init_avx2.obj bin\sha256_mb_mgr_init_avx512.obj bin\sha256_mb_mgr_init_sse.obj bin\sha256_mb_mgr_submit_avx.obj bin\sha256_mb_mgr_submit_avx2.obj bin\sha256_mb_mgr_submit_avx512.obj bin\sha256_mb_mgr_submit_sse.obj bin\sha256_mb_x16_avx512.obj bin\sha256_mb_x4_avx.obj bin\sha256_mb_x4_sse.obj bin\sha256_mb_x8_avx2.obj bin\sha256_multibinary.obj bin\sha512_ctx_avx.obj bin\sha512_ctx_avx2.obj bin\sha512_ctx_avx512.obj bin\sha512_ctx_sb_sse4.obj bin\sha512_ctx_sse.obj bin\sha512_mb_mgr_flush_avx.obj bin\sha512_mb_mgr_flush_avx2.obj bin\sha512_mb_mgr_flush_avx512.obj bin\sha512_mb_mgr_flush_sse.obj bin\sha512_mb_mgr_init_avx2.obj bin\sha512_mb_mgr_init_avx512.obj bin\sha512_mb_mgr_init_sse.obj bin\sha512_mb_mgr_submit_avx.obj bin\sha512_mb_mgr_submit_avx2.obj bin\sha512_mb_mgr_submit_avx512.obj bin\sha512_mb_mgr_submit_sse.obj bin\sha512_mb_x2_avx.obj bin\sha512_mb_x2_sse.obj bin\sha512_mb_x4_avx2.obj bin\sha512_mb_x8_avx512.obj bin\sha512_multibinary.obj bin\sha512_sb_mgr_flush_sse4.obj bin\sha512_sb_mgr_init_sse4.obj bin\sha512_sb_mgr_submit_sse4.obj bin\sha512_sse4.obj
+objs = \
+	bin\md5_ctx_avx.obj \
+	bin\md5_ctx_avx2.obj \
+	bin\md5_ctx_avx512.obj \
+	bin\md5_ctx_sse.obj \
+	bin\md5_mb_mgr_flush_avx.obj \
+	bin\md5_mb_mgr_flush_avx2.obj \
+	bin\md5_mb_mgr_flush_avx512.obj \
+	bin\md5_mb_mgr_flush_sse.obj \
+	bin\md5_mb_mgr_init_avx2.obj \
+	bin\md5_mb_mgr_init_avx512.obj \
+	bin\md5_mb_mgr_init_sse.obj \
+	bin\md5_mb_mgr_submit_avx.obj \
+	bin\md5_mb_mgr_submit_avx2.obj \
+	bin\md5_mb_mgr_submit_avx512.obj \
+	bin\md5_mb_mgr_submit_sse.obj \
+	bin\md5_mb_x16x2_avx512.obj \
+	bin\md5_mb_x4x2_avx.obj \
+	bin\md5_mb_x4x2_sse.obj \
+	bin\md5_mb_x8x2_avx2.obj \
+	bin\md5_multibinary.obj \
+	bin\sha1_ctx_avx.obj \
+	bin\sha1_ctx_avx2.obj \
+	bin\sha1_ctx_avx512.obj \
+	bin\sha1_ctx_sse.obj \
+	bin\sha1_mb_mgr_flush_avx.obj \
+	bin\sha1_mb_mgr_flush_avx2.obj \
+	bin\sha1_mb_mgr_flush_avx512.obj \
+	bin\sha1_mb_mgr_flush_sse.obj \
+	bin\sha1_mb_mgr_init_avx2.obj \
+	bin\sha1_mb_mgr_init_avx512.obj \
+	bin\sha1_mb_mgr_init_sse.obj \
+	bin\sha1_mb_mgr_submit_avx.obj \
+	bin\sha1_mb_mgr_submit_avx2.obj \
+	bin\sha1_mb_mgr_submit_avx512.obj \
+	bin\sha1_mb_mgr_submit_sse.obj \
+	bin\sha1_mb_x16_avx512.obj \
+	bin\sha1_mb_x4_avx.obj \
+	bin\sha1_mb_x4_sse.obj \
+	bin\sha1_mb_x8_avx2.obj \
+	bin\sha1_multibinary.obj \
+	bin\sha256_ctx_avx.obj \
+	bin\sha256_ctx_avx2.obj \
+	bin\sha256_ctx_avx512.obj \
+	bin\sha256_ctx_sse.obj \
+	bin\sha256_mb_mgr_flush_avx.obj \
+	bin\sha256_mb_mgr_flush_avx2.obj \
+	bin\sha256_mb_mgr_flush_avx512.obj \
+	bin\sha256_mb_mgr_flush_sse.obj \
+	bin\sha256_mb_mgr_init_avx2.obj \
+	bin\sha256_mb_mgr_init_avx512.obj \
+	bin\sha256_mb_mgr_init_sse.obj \
+	bin\sha256_mb_mgr_submit_avx.obj \
+	bin\sha256_mb_mgr_submit_avx2.obj \
+	bin\sha256_mb_mgr_submit_avx512.obj \
+	bin\sha256_mb_mgr_submit_sse.obj \
+	bin\sha256_mb_x16_avx512.obj \
+	bin\sha256_mb_x4_avx.obj \
+	bin\sha256_mb_x4_sse.obj \
+	bin\sha256_mb_x8_avx2.obj \
+	bin\sha256_multibinary.obj \
+	bin\sha512_ctx_avx.obj \
+	bin\sha512_ctx_avx2.obj \
+	bin\sha512_ctx_avx512.obj \
+	bin\sha512_ctx_sb_sse4.obj \
+	bin\sha512_ctx_sse.obj \
+	bin\sha512_mb_mgr_flush_avx.obj \
+	bin\sha512_mb_mgr_flush_avx2.obj \
+	bin\sha512_mb_mgr_flush_avx512.obj \
+	bin\sha512_mb_mgr_flush_sse.obj \
+	bin\sha512_mb_mgr_init_avx2.obj \
+	bin\sha512_mb_mgr_init_avx512.obj \
+	bin\sha512_mb_mgr_init_sse.obj \
+	bin\sha512_mb_mgr_submit_avx.obj \
+	bin\sha512_mb_mgr_submit_avx2.obj \
+	bin\sha512_mb_mgr_submit_avx512.obj \
+	bin\sha512_mb_mgr_submit_sse.obj \
+	bin\sha512_mb_x2_avx.obj \
+	bin\sha512_mb_x2_sse.obj \
+	bin\sha512_mb_x4_avx2.obj \
+	bin\sha512_mb_x8_avx512.obj \
+	bin\sha512_multibinary.obj \
+	bin\sha512_sb_mgr_flush_sse4.obj \
+	bin\sha512_sb_mgr_init_sse4.obj \
+	bin\sha512_sb_mgr_submit_sse4.obj \
+	bin\sha512_sse4.obj \
+	bin\XTS_AES_128_dec_avx.obj \
+	bin\XTS_AES_128_dec_expanded_key_avx.obj \
+	bin\XTS_AES_128_dec_expanded_key_sse.obj \
+	bin\XTS_AES_128_dec_sse.obj \
+	bin\XTS_AES_128_enc_avx.obj \
+	bin\XTS_AES_128_enc_expanded_key_avx.obj \
+	bin\XTS_AES_128_enc_expanded_key_sse.obj \
+	bin\XTS_AES_128_enc_sse.obj \
+	bin\XTS_AES_256_dec_avx.obj \
+	bin\XTS_AES_256_dec_expanded_key_avx.obj \
+	bin\XTS_AES_256_dec_expanded_key_sse.obj \
+	bin\XTS_AES_256_dec_sse.obj \
+	bin\XTS_AES_256_enc_avx.obj \
+	bin\XTS_AES_256_enc_expanded_key_avx.obj \
+	bin\XTS_AES_256_enc_expanded_key_sse.obj \
+	bin\XTS_AES_256_enc_sse.obj \
+	bin\cbc_dec_128_x4_sse.obj \
+	bin\cbc_dec_128_x8_avx.obj \
+	bin\cbc_dec_192_x4_sse.obj \
+	bin\cbc_dec_192_x8_avx.obj \
+	bin\cbc_dec_256_x4_sse.obj \
+	bin\cbc_dec_256_x8_avx.obj \
+	bin\cbc_enc_128_x4_sb.obj \
+	bin\cbc_enc_128_x8_sb.obj \
+	bin\cbc_enc_192_x4_sb.obj \
+	bin\cbc_enc_192_x8_sb.obj \
+	bin\cbc_enc_256_x4_sb.obj \
+	bin\cbc_enc_256_x8_sb.obj \
+	bin\cbc_multibinary.obj \
+	bin\cbc_pre.obj \
+	bin\gcm128_avx_gen2.obj \
+	bin\gcm128_avx_gen4.obj \
+	bin\gcm128_sse.obj \
+	bin\gcm256_avx_gen2.obj \
+	bin\gcm256_avx_gen4.obj \
+	bin\gcm256_sse.obj \
+	bin\gcm_multibinary.obj \
+	bin\gcm_pre.obj \
+	bin\keyexp_128.obj \
+	bin\keyexp_192.obj \
+	bin\keyexp_256.obj \
+	bin\keyexp_multibinary.obj \
+	bin\mh_sha1.obj \
+	bin\sha1_for_mh_sha1.obj \
+	bin\mh_sha1_avx512.obj \
+	bin\mh_sha1_block_avx.obj \
+	bin\mh_sha1_block_avx2.obj \
+	bin\mh_sha1_block_avx512.obj \
+	bin\mh_sha1_block_base.obj \
+	bin\mh_sha1_block_sse.obj \
+	bin\mh_sha1_finalize_base.obj \
+	bin\mh_sha1_multibinary.obj \
+	bin\mh_sha1_murmur3_x64_128.obj \
+	bin\mh_sha1_murmur3_x64_128_avx512.obj \
+	bin\mh_sha1_murmur3_x64_128_block_avx.obj \
+	bin\mh_sha1_murmur3_x64_128_block_avx2.obj \
+	bin\mh_sha1_murmur3_x64_128_block_avx512.obj \
+	bin\mh_sha1_murmur3_x64_128_block_sse.obj \
+	bin\mh_sha1_murmur3_x64_128_finalize_base.obj \
+	bin\mh_sha1_murmur3_x64_128_multibinary.obj \
+	bin\mh_sha1_murmur3_x64_128_update_base.obj \
+	bin\mh_sha1_update_base.obj \
+	bin\murmur3_x64_128_internal.obj \
+	bin\xts_aes_128_multibinary.obj \
+	bin\xts_aes_256_multibinary.obj
 
-INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Iinclude/
+INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Iaes/ -Iinclude/
 LINKFLAGS = /nologo
 INCLUDES  = $(INCLUDES) -Ic:\openssl\include
 LINKFLAGS = $(LINKFLAGS) /libpath:c:\openssl\lib
@@ -70,6 +220,21 @@ isa-l_crypto.dll: $(objs)
 {md5_mb}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
 
+{mh_sha1}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{mh_sha1}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{mh_sha1_murmur3_x64_128}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{mh_sha1_murmur3_x64_128}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{aes}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{aes}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
 
 # Examples
 ex = sha1_multi_buffer_example.exe
@@ -81,7 +246,27 @@ $(ex): $(@B).obj
 	link /out:$@ $(LINKFLAGS) isa-l_crypto.lib $?
 
 # Check tests
-checks = md5_mb_rand_test.exe md5_mb_rand_update_test.exe md5_mb_test.exe sha1_mb_rand_test.exe sha1_mb_rand_update_test.exe sha1_mb_test.exe sha256_mb_rand_test.exe sha256_mb_rand_update_test.exe sha256_mb_test.exe sha512_mb_rand_test.exe sha512_mb_rand_update_test.exe sha512_mb_test.exe
+checks = \
+	md5_mb_rand_test.exe \
+	md5_mb_rand_update_test.exe \
+	md5_mb_test.exe \
+	sha1_mb_rand_test.exe \
+	sha1_mb_rand_update_test.exe \
+	sha1_mb_test.exe \
+	sha256_mb_rand_test.exe \
+	sha256_mb_rand_update_test.exe \
+	sha256_mb_test.exe \
+	sha512_mb_rand_test.exe \
+	sha512_mb_rand_update_test.exe \
+	sha512_mb_test.exe \
+	mh_sha1_test.exe \
+	cbc_std_vectors_test.exe \
+	gcm_std_vectors_test.exe \
+	xts_128_expanded_key_test.exe \
+	xts_128_test.exe \
+	xts_256_expanded_key_test.exe \
+	xts_256_test.exe
+
 
 checks: lib $(checks)
 $(checks): $(@B).obj
@@ -89,13 +274,26 @@ check: $(checks)
 	!$?
 
 # Unit tests
-tests = md5_mb_rand_ssl_test.exe sha1_mb_rand_ssl_test.exe sha256_mb_rand_ssl_test.exe sha512_mb_rand_ssl_test.exe
+tests = \
+	md5_mb_rand_ssl_test.exe \
+	sha1_mb_rand_ssl_test.exe \
+	sha256_mb_rand_ssl_test.exe \
+	sha512_mb_rand_ssl_test.exe \
+	cbc_std_vectors_random_test.exe \
+	gcm_std_vectors_random_test.exe \
+	xts_128_rand.exe \
+	xts_128_rand_ossl_test.exe \
+	xts_256_rand.exe \
+	xts_256_rand_ossl_test.exe \
+	mh_sha1_update_test.exe \
+	mh_sha1_murmur3_x64_128_test.exe \
+	mh_sha1_murmur3_x64_128_update_test.exe
 
 tests: lib $(tests)
 $(tests): $(@B).obj
 
 # Performance tests
-perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe
+perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe
 
 perfs: lib $(perfs)
 $(perfs): $(@B).obj
@@ -109,20 +307,35 @@ clean:
 	-if exist isa-l_crypto.dll del isa-l_crypto.dll
 
 libeay32.lib:
-sha1_mb_rand_test.exe: sha1_ref.obj 
-sha1_mb_rand_update_test.exe: sha1_ref.obj 
-sha1_mb_rand_ssl_test.exe:  libeay32.lib 
-sha1_mb_vs_ossl_perf.exe:  libeay32.lib 
-sha256_mb_rand_ssl_test.exe: sha256_ref.obj 
-sha256_mb_rand_test.exe: sha256_ref.obj 
-sha256_mb_rand_update_test.exe: sha256_ref.obj 
-sha256_mb_rand_ssl_test.exe:  libeay32.lib 
-sha256_mb_vs_ossl_perf.exe:  libeay32.lib 
-sha512_mb_rand_test.exe: sha512_ref.obj 
-sha512_mb_rand_update_test.exe: sha512_ref.obj 
-sha512_mb_rand_ssl_test.exe:  libeay32.lib 
-sha512_mb_vs_ossl_perf.exe:  libeay32.lib 
-md5_mb_rand_test.exe: md5_ref.obj 
-md5_mb_rand_update_test.exe: md5_ref.obj 
-md5_mb_rand_ssl_test.exe:  libeay32.lib 
-md5_mb_vs_ossl_perf.exe:  libeay32.lib 
+sha1_mb_rand_test.exe: sha1_ref.obj
+sha1_mb_rand_update_test.exe: sha1_ref.obj
+sha1_mb_rand_ssl_test.exe:  libeay32.lib
+sha1_mb_vs_ossl_perf.exe:  libeay32.lib
+sha256_mb_rand_ssl_test.exe: sha256_ref.obj
+sha256_mb_rand_test.exe: sha256_ref.obj
+sha256_mb_rand_update_test.exe: sha256_ref.obj
+sha256_mb_rand_ssl_test.exe:  libeay32.lib
+sha256_mb_vs_ossl_perf.exe:  libeay32.lib
+sha512_mb_rand_test.exe: sha512_ref.obj
+sha512_mb_rand_update_test.exe: sha512_ref.obj
+sha512_mb_rand_ssl_test.exe:  libeay32.lib
+sha512_mb_vs_ossl_perf.exe:  libeay32.lib
+md5_mb_rand_test.exe: md5_ref.obj
+md5_mb_rand_update_test.exe: md5_ref.obj
+md5_mb_rand_ssl_test.exe:  libeay32.lib
+md5_mb_vs_ossl_perf.exe:  libeay32.lib
+mh_sha1_test.exe: mh_sha1_ref.obj
+mh_sha1_update_test.exe: mh_sha1_ref.obj
+mh_sha1_murmur3_x64_128_test.exe: mh_sha1_ref.obj murmur3_x64_128.obj
+mh_sha1_murmur3_x64_128_update_test.exe: mh_sha1_ref.obj murmur3_x64_128.obj
+mh_sha1_murmur3_x64_128_perf.exe: mh_sha1_ref.obj murmur3_x64_128.obj
+cbc_ossl_perf.exe:  libeay32.lib
+cbc_std_vectors_random_test.exe:  libeay32.lib
+gcm_ossl_perf.exe:  libeay32.lib
+gcm_std_vectors_random_test.exe:  libeay32.lib
+xts_128_enc_ossl_perf.exe:  libeay32.lib
+xts_128_dec_ossl_perf.exe:  libeay32.lib
+xts_128_rand_ossl_test.exe:  libeay32.lib
+xts_256_enc_ossl_perf.exe:  libeay32.lib
+xts_256_dec_ossl_perf.exe:  libeay32.lib
+xts_256_rand_ossl_test.exe:  libeay32.lib
