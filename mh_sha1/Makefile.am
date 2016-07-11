@@ -50,6 +50,8 @@ other_src   += 	mh_sha1/mh_sha1_ref.c \
 		include/test.h \
 		mh_sha1/mh_sha1_internal.h
 
+src_include += -I $(srcdir)/mh_sha1
+
 extern_hdrs +=	include/mh_sha1.h
 
 check_tests += 	mh_sha1/mh_sha1_test

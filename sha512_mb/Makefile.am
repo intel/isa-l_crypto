@@ -57,6 +57,8 @@ lsrc += sha512_mb/sha512_ctx_avx512.c \
 	sha512_mb/sha512_mb_mgr_flush_avx512.asm \
 	sha512_mb/sha512_mb_x8_avx512.asm
 
+src_include += -I $(srcdir)/sha512_mb
+
 extern_hdrs +=  include/sha512_mb.h \
 		include/multi_buffer.h
 

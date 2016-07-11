@@ -51,6 +51,7 @@ lsrc += md5_mb/md5_mb_mgr_submit_avx512.asm \
 	md5_mb/md5_mb_x16x2_avx512.asm \
 	md5_mb/md5_ctx_avx512.c
 
+src_include +=  -I $(srcdir)/md5_mb
 extern_hdrs +=  include/md5_mb.h \
 		include/multi_buffer.h
 

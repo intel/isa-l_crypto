@@ -51,6 +51,8 @@ lsrc += sha1_mb/sha1_ctx_avx512.c \
 	sha1_mb/sha1_mb_mgr_flush_avx512.asm \
 	sha1_mb/sha1_mb_x16_avx512.asm
 
+src_include += -I $(srcdir)/sha1_mb
+
 extern_hdrs +=  include/sha1_mb.h \
 		include/multi_buffer.h
 

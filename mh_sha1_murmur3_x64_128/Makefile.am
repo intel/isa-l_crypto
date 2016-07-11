@@ -27,9 +27,6 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-#Requires unit mh_sha1
-AM_CFLAGS += -I mh_sha1
-
 lsrc_murmur   =	mh_sha1_murmur3_x64_128/murmur3_x64_128_internal.c
 
 lsrc_stitch   = mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128.c \
@@ -52,6 +49,8 @@ other_src += 	include/reg_sizes.asm \
 		mh_sha1/mh_sha1_internal.h \
 		mh_sha1_murmur3_x64_128/murmur3_x64_128.c \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_internal.h
+
+src_include += -I $(srcdir)/mh_sha1_murmur3_x64_128
 
 extern_hdrs +=	include/mh_sha1_murmur3_x64_128.h
 

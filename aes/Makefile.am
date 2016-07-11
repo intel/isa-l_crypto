@@ -27,6 +27,9 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+# Assembling AES requires including cbc_common.asm, gcm_defines.asm
+src_include += -I $(srcdir)/aes
+
 extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h
 
 lsrc     += aes/gcm_multibinary.asm aes/gcm_pre.c
