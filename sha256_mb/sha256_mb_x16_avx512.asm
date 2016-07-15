@@ -27,10 +27,10 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 %include "sha256_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+
+%ifdef HAVE_AS_KNOWS_AVX512
 
 default rel
 

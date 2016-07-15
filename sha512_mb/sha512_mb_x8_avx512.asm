@@ -27,10 +27,10 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 %include "sha512_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+
+%ifdef HAVE_AS_KNOWS_AVX512
 default rel
 ;; code to compute quad SHA512 using AVX512
 ;; use ZMMs to tackle the larger digest size

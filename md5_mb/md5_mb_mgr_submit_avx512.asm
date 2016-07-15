@@ -27,13 +27,11 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 %include "md5_job.asm"
 %include "md5_mb_mgr_datastruct.asm"
-
 %include "reg_sizes.asm"
 
+%ifdef HAVE_AS_KNOWS_AVX512
 extern md5_mb_x16x2_avx512
 default rel
 

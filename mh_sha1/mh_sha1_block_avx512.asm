@@ -27,12 +27,12 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 ;; code to compute 16 SHA1 using AVX-512
 ;;
 
 %include "reg_sizes.asm"
+
+%ifdef HAVE_AS_KNOWS_AVX512
 default rel
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
