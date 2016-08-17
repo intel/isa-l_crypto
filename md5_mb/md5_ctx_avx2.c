@@ -210,7 +210,7 @@ static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX *
 	return NULL;
 }
 
-inline void hash_init_digest(MD5_WORD_T * digest)
+static inline void hash_init_digest(MD5_WORD_T * digest)
 {
 	static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] =
 	    { MD5_INITIAL_DIGEST };
@@ -218,7 +218,7 @@ inline void hash_init_digest(MD5_WORD_T * digest)
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint32_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint32_t total_len)
 {
 	uint32_t i = total_len & (MD5_BLOCK_SIZE - 1);
 

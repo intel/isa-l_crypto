@@ -212,14 +212,14 @@ static SHA512_HASH_CTX *sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR * mgr,
 	return NULL;
 }
 
-inline void hash_init_digest(SHA512_WORD_T * digest)
+static inline void hash_init_digest(SHA512_WORD_T * digest)
 {
 	static const SHA512_WORD_T hash_initial_digest[SHA512_DIGEST_NWORDS] =
 	    { SHA512_INITIAL_DIGEST };
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-inline uint32_t hash_pad(uint8_t padblock[SHA512_BLOCK_SIZE * 2], uint32_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SHA512_BLOCK_SIZE * 2], uint32_t total_len)
 {
 	uint32_t i = total_len & (SHA512_BLOCK_SIZE - 1);
 
