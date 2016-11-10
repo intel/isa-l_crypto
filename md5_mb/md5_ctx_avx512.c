@@ -231,7 +231,7 @@ static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint32_t t
 	i += ((MD5_BLOCK_SIZE - 1) & (0 - (total_len + MD5_PADLENGTHFIELD_SIZE + 1))) + 1 +
 	    MD5_PADLENGTHFIELD_SIZE;
 
-	*((uint64_t *) & padblock[i - 8]) = (total_len << 3);
+	*((uint64_t *) & padblock[i - 8]) = ((uint64_t) total_len << 3);
 
 	return i >> MD5_LOG2_BLOCK_SIZE;	// Number of extra blocks to hash
 }
