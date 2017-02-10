@@ -1,8 +1,8 @@
 ########################################################################
-#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#  Copyright(c) 2011-2017 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
-#  modification, are permitted provided that the following conditions 
+#  modification, are permitted provided that the following conditions
 #  are met:
 #    * Redistributions of source code must retain the above copyright
 #      notice, this list of conditions and the following disclaimer.
@@ -27,15 +27,43 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-units     = sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 mh_sha256 aes
+lsrc_sha256     =	mh_sha256/sha256_for_mh_sha256.c
 
-default: lib
+lsrc_mh_sha256  =	mh_sha256/mh_sha256.c \
+		mh_sha256/mh_sha256_block_sse.asm \
+		mh_sha256/mh_sha256_block_avx.asm \
+		mh_sha256/mh_sha256_block_avx2.asm \
+		mh_sha256/mh_sha256_multibinary.asm \
+		mh_sha256/mh_sha256_finalize_base.c \
+		mh_sha256/mh_sha256_update_base.c \
+		mh_sha256/mh_sha256_block_base.c
 
-include $(foreach unit,$(units), $(unit)/Makefile.am)
+lsrc_mh_sha256 += mh_sha256/mh_sha256_block_avx512.asm \
+		mh_sha256/mh_sha256_avx512.c
 
-# Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l_crypto.a
+lsrc        += 	$(lsrc_sha256) \
+		$(lsrc_mh_sha256)
 
-include make.inc
+other_src   += 	mh_sha256/mh_sha256_ref.c \
+		include/reg_sizes.asm \
+		include/multibinary.asm \
+		include/test.h \
+		mh_sha256/mh_sha256_internal.h
 
-VPATH = . $(units) include
+src_include += -I $(srcdir)/mh_sha256
+
+extern_hdrs +=	include/mh_sha256.h
+
+check_tests += 	mh_sha256/mh_sha256_test
+unit_tests  += 	mh_sha256/mh_sha256_update_test
+
+perf_tests  += 	mh_sha256/mh_sha256_perf
+
+
+mh_sha256_test: mh_sha256_ref.o
+mh_sha256_mh_sha256_test_LDADD = mh_sha256/mh_sha256_ref.lo libisal_crypto.la
+
+mh_sha256_update_test: mh_sha256_ref.o
+mh_sha256_mh_sha256_update_test_LDADD = mh_sha256/mh_sha256_ref.lo libisal_crypto.la
+
+mh_sha256_mh_sha256_perf_LDADD = libisal_crypto.la
