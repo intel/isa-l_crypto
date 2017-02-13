@@ -326,7 +326,7 @@ default rel
 ; h0 | h0 | h0 | ...| h0 |    | Aa| Ab | Ac |...| Ap |
 ; h1 | h1 | h1 | ...| h1 |    | Ba| Bb | Bc |...| Bp |
 ; ....
-; h5 | h5 | h5 | ...| h5 |    | Ea| Eb | Ec |...| Ep |
+; h4 | h4 | h4 | ...| h4 |    | Ea| Eb | Ec |...| Ep |
 
 align 32
 

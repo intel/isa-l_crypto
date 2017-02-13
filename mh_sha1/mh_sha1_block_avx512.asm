@@ -234,7 +234,7 @@ default rel
 ; h0 | h0 | h0 | ...| h0 |    | Aa| Ab | Ac |...| Ap |
 ; h1 | h1 | h1 | ...| h1 |    | Ba| Bb | Bc |...| Bp |
 ; ....
-; h5 | h5 | h5 | ...| h5 |    | Ea| Eb | Ec |...| Ep |
+; h4 | h4 | h4 | ...| h4 |    | Ea| Eb | Ec |...| Ep |
 
 [bits 64]
 section .text
@@ -311,9 +311,8 @@ func(mh_sha1_block_avx512)
 		vmovdqa32	KT, [K60_79]
 		%assign I 0x96
 	%endif
-	%if N % 20 = 19
-		PREFETCH_X [mh_in_p + 1024+128*(N / 20)]
-		PREFETCH_X [mh_in_p + 1024+128*(N / 20 +1)]
+	%if N % 10 = 9
+		PREFETCH_X [mh_in_p + 1024+128*(N / 10)]
 	%endif
 %assign J ((J+1)% 16)
 %assign K ((K+1)% 16)

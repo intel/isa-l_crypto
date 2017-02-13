@@ -96,8 +96,8 @@ struct mh_sha1_ctx {
  *  @brief CTX error flags
  */
 enum mh_sha1_ctx_error{
-	MH_SHA1_CTX_ERROR_NONE			=  0, //!< MH_SHA1_MURMUR3_CTX_ERROR_NONE
-	MH_SHA1_CTX_ERROR_NULL			= -1, //!< MH_SHA1_MURMUR3_CTX_ERROR_NULL
+	MH_SHA1_CTX_ERROR_NONE			=  0, //!< MH_SHA1_CTX_ERROR_NONE
+	MH_SHA1_CTX_ERROR_NULL			= -1, //!< MH_SHA1_CTX_ERROR_NULL
 };
 
 

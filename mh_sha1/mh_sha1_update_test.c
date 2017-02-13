@@ -80,22 +80,22 @@ void dump(char *buf, int len)
 		printf("\n");
 }
 
-int compare_digests(uint32_t hash_base[SHA1_DIGEST_WORDS],
+int compare_digests(uint32_t hash_ref[SHA1_DIGEST_WORDS],
 		    uint32_t hash_test[SHA1_DIGEST_WORDS])
 {
 	int i;
 	int mh_sha1_fail = 0;
 
 	for (i = 0; i < SHA1_DIGEST_WORDS; i++) {
-		if (hash_test[i] != hash_base[i])
+		if (hash_test[i] != hash_ref[i])
 			mh_sha1_fail++;
 	}
 
 	if (mh_sha1_fail) {
 		printf("mh_sha1 fail test\n");
-		printf("base: ");
-		dump((char *)hash_base, 20);
 		printf("ref: ");
+		dump((char *)hash_ref, 20);
+		printf("test: ");
 		dump((char *)hash_test, 20);
 	}
 
