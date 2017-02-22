@@ -164,7 +164,7 @@ void sha256_for_mh_sha256_ref(const uint8_t * input_data, uint32_t * digest,
 
 	i = len;
 	while (i >= SHA256_BLOCK_SIZE) {
-		sha256_single_for_mh_sha256(input_data, digest);
+		sha256_single_for_mh_sha256_ref(input_data, digest);
 		input_data += SHA256_BLOCK_SIZE;
 		i -= SHA256_BLOCK_SIZE;
 	}
