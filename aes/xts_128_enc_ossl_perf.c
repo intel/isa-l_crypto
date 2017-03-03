@@ -90,8 +90,8 @@ int main(void)
 	unsigned char keyssl[32];	/* SSL takes both keys together */
 
 	/* Initialise our cipher context, which can use same input vectors */
-	EVP_CIPHER_CTX ctx;
-	EVP_CIPHER_CTX_init(&ctx);
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
 	printf("aes_xts_128_enc_perf:\n");
 
@@ -114,7 +114,7 @@ int main(void)
 
 	/* Encrypt and compare output */
 	XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
-	openssl_aes_128_xts_enc(&ctx, keyssl, tinit, TEST_LEN, pt, refct);
+	openssl_aes_128_xts_enc(ctx, keyssl, tinit, TEST_LEN, pt, refct);
 	if (memcmp(ct, refct, TEST_LEN)) {
 		printf("ISA-L and OpenSSL results don't match\n");
 		return -1;
@@ -132,11 +132,13 @@ int main(void)
 	/* Time OpenSSL encryption */
 	perf_start(&start);
 	for (i = 0; i < TEST_LOOPS; i++)
-		openssl_aes_128_xts_enc(&ctx, keyssl, tinit, TEST_LEN, pt, refct);
+		openssl_aes_128_xts_enc(ctx, keyssl, tinit, TEST_LEN, pt, refct);
 	perf_stop(&stop);
 
 	printf("aes_xts_128_openssl_enc" TEST_TYPE_STR ": ");
 	perf_print(stop, start, (long long)TEST_LEN * i);
+
+	EVP_CIPHER_CTX_free(ctx);
 
 	return 0;
 }

@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -41,19 +41,20 @@ static inline
 				int len, uint8_t * cyphertext, uint8_t * plaintext)
 {
 	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX ctx;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(&ctx);
-	if (!EVP_DecryptInit_ex(&ctx, EVP_aes_128_cbc(), NULL, key, iv))
+	if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(&ctx, 0))
+	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
 		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_DecryptUpdate(&ctx, plaintext, &outlen, (uint8_t const *)cyphertext, len))
+	if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (uint8_t const *)cyphertext, len))
 		printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_DecryptFinal_ex(&ctx, &plaintext[outlen], &tmplen))
+	if (!EVP_DecryptFinal_ex(ctx, &plaintext[outlen], &tmplen))
 		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_128_cbc %x, %x, %x\n", len,
 		       outlen, tmplen);
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 
@@ -62,19 +63,20 @@ static inline
 				int len, uint8_t * plaintext, uint8_t * cyphertext)
 {
 	int outlen, tmplen;
-	EVP_CIPHER_CTX ctx;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(&ctx);
-	if (!EVP_EncryptInit_ex(&ctx, EVP_aes_128_cbc(), NULL, key, iv))
+	if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(&ctx, 0))
+	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
 		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
 	if (!EVP_EncryptUpdate
-	    (&ctx, cyphertext, &outlen, (const unsigned char *)plaintext, len))
+	    (ctx, cyphertext, &outlen, (const unsigned char *)plaintext, len))
 		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_EncryptFinal_ex(&ctx, cyphertext + outlen, &tmplen))
+	if (!EVP_EncryptFinal_ex(ctx, cyphertext + outlen, &tmplen))
 		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 
@@ -83,10 +85,9 @@ static inline
 				int len, uint8_t * cyphertext, uint8_t * plaintext)
 {
 	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_DecryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_192_cbc\n");
 	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
@@ -97,6 +98,7 @@ static inline
 	if (!EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen))
 		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_192_cbc \n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return 0;
 }
 
@@ -105,10 +107,9 @@ static inline
 				int len, uint8_t * plaintext, uint8_t * cyphertext)
 {
 	int outlen, tmplen;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_EncryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_192_cbc\n");
 	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
@@ -119,6 +120,7 @@ static inline
 	if (!EVP_EncryptFinal_ex(ctx, cyphertext + outlen, &tmplen))
 		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_192_cbc\n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return 0;
 }
 
@@ -127,10 +129,9 @@ static inline
 				int len, uint8_t * cyphertext, uint8_t * plaintext)
 {
 	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_256_cbc\n");
 	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
@@ -142,6 +143,7 @@ static inline
 		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_256_cbc %x,%x\n", outlen,
 		       tmplen);
 
+	EVP_CIPHER_CTX_free(ctx);
 	return 0;
 }
 
@@ -150,10 +152,9 @@ static inline
 				int len, uint8_t * plaintext, uint8_t * cyphertext)
 {
 	int outlen, tmplen;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
 		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_256_cbc\n");
 	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
@@ -164,6 +165,7 @@ static inline
 	if (!EVP_EncryptFinal_ex(ctx, cyphertext + outlen, &tmplen))
 		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_256_cbc\n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return 0;
 }
 
@@ -173,10 +175,9 @@ static inline
 			    int len, uint8_t * plaintext)
 {
 	int outlen = 0, tmplen = len, ret;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *const ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
 		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
@@ -201,6 +202,7 @@ static inline
 		tmplen = -1;
 	}
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 
@@ -210,11 +212,10 @@ static inline
 			    int len, uint8_t * cyphertext)
 {
 	int outlen, tmplen;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *const ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
 	//printf("ivl:%x addl:%x tagl:%x ptl:%x\n", iv_len, aad_len, tag_len, len);
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
 		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
@@ -230,6 +231,7 @@ static inline
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
 		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 
@@ -239,10 +241,9 @@ static inline
 				int len, uint8_t * plaintext)
 {
 	int outlen = 0, tmplen = len, ret;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *const ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
 		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
@@ -266,6 +267,7 @@ static inline
 		tmplen = -1;
 	}
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 
@@ -275,10 +277,9 @@ static inline
 				int len, uint8_t * cyphertext)
 {
 	int outlen, tmplen;
-	EVP_CIPHER_CTX CTX;
-	EVP_CIPHER_CTX *const ctx = &CTX;
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
-	EVP_CIPHER_CTX_init(ctx);
 	if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
 		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
@@ -294,6 +295,7 @@ static inline
 	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
 		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
 
+	EVP_CIPHER_CTX_free(ctx);
 	return tmplen;
 }
 

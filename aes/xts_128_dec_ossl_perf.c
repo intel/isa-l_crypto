@@ -90,8 +90,8 @@ int main(void)
 	struct perf start, stop;
 
 	/* Initialise our cipher context, which can use same input vectors */
-	EVP_CIPHER_CTX ctx;
-	EVP_CIPHER_CTX_init(&ctx);
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
 
 	printf("aes_xts_128_dec_perf:\n");
 
@@ -115,7 +115,7 @@ int main(void)
 	/* Encrypt and compare decrypted output */
 	XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
 	XTS_AES_128_dec(key2, key1, tinit, TEST_LEN, ct, dt);
-	openssl_aes_128_xts_dec(&ctx, keyssl, tinit, ct, refdt);
+	openssl_aes_128_xts_dec(ctx, keyssl, tinit, ct, refdt);
 	if (memcmp(dt, refdt, TEST_LEN)) {
 		printf("ISA-L and OpenSSL results don't match\n");
 		return -1;
@@ -132,10 +132,12 @@ int main(void)
 	/* Time OpenSSL decryption */
 	perf_start(&start);
 	for (i = 0; i < TEST_LOOPS; i++)
-		openssl_aes_128_xts_dec(&ctx, keyssl, tinit, ct, refdt);
+		openssl_aes_128_xts_dec(ctx, keyssl, tinit, ct, refdt);
 	perf_stop(&stop);
 	printf("aes_xts_128_openssl_dec" TEST_TYPE_STR ": ");
 	perf_print(stop, start, (long long)TEST_LEN * i);
+
+	EVP_CIPHER_CTX_free(ctx);
 
 	return 0;
 }
