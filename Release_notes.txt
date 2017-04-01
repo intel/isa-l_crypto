@@ -1,5 +1,5 @@
 ================================================================================
-v2.16 Intel Intelligent Storage Acceleration Library Crypto Release Notes
+v2.18 Intel Intelligent Storage Acceleration Library Crypto Release Notes
 ================================================================================
 
 ================================================================================
@@ -20,6 +20,11 @@ RELEASE NOTE CONTENTS
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
+
+v2.18
+
+* Fix for multi-buffer hash when total length is above 512MB.
+
 v2.14
 
 * Building in unit directories is no longer supported removing the issue of
@@ -38,10 +43,14 @@ v2.7
 ================================================================================
 3. CHANGE LOG & FEATURES ADDED 
 ================================================================================
+
+v2.18
+
+* New multi-hash SHA256-based version.
+
 v2.16
 
 * Split lib from non-crypto functions.
-
 
 v2.15
 

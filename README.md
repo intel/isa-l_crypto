@@ -1,4 +1,3 @@
-================================================================
 Intel(R) Intelligent Storage Acceleration Library Crypto Version
 ================================================================
 
@@ -20,34 +19,37 @@ applications.  ISA-L_crypto includes:
 See [ISA-L_crypto for updates.](https://github.com/01org/isa-l_crypto)
 For non-crypto ISA-L see [isa-l on github.](https://github.com/01org/isa-l)
 
-Build Prerequisites
-===================
-
-ISA-L requires yasm version 1.2.0 or later or nasm v2.11.01 or later.  Building
-with autotools requires autoconf/automake packages.
-
 Building ISA-L
-==============
+--------------
 
-Autotools
----------
+### Prerequisites
 
-To build and install the library with autotools it is usually sufficient to run
-the following:
+* yasm version 1.2.0 or later or nasm v2.11.01 or later.
+* gcc, clang, icc or VC compiler.
+* GNU 'make' or 'nmake' (Windows).
+* Building with autotools requires autoconf/automake packages.
+
+### Autotools
+To build and install the library with autotools it is usually sufficient to run:
 
     ./autogen.sh
     ./configure
     make
     sudo make install
 
-Other targets include: make check, make tests, make perfs, make ex (examples)
-and make other.
+### Makefile
+To use a standard makefile run:
 
-Windows
--------
+    make -f Makefile.unx
 
+### Windows
 On Windows use nmake to build dll and static lib:
 
     nmake -f Makefile.nmake
 
-Other targets include: nmake check.
+### Other make targets
+Other targets include:
+* `make check` : create and run tests
+* `make tests` : create additional unit tests
+* `make perfs` : create included performance tests
+* `make ex`    : build examples
