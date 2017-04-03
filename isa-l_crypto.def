@@ -57,3 +57,8 @@ XTS_AES_256_enc                        @53
 XTS_AES_256_enc_expanded_key           @54
 XTS_AES_256_dec                        @55
 XTS_AES_256_dec_expanded_key           @56
+mh_sha256_init                         @57
+mh_sha256_update                       @58
+mh_sha256_finalize                     @59
+mh_sha256_finalize_base                @60
+mh_sha256_update_base                  @61

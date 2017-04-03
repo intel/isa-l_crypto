@@ -1,5 +1,5 @@
 ########################################################################
-#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#  Copyright(c) 2011-2017 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions 
@@ -175,11 +175,22 @@ objs = \
 	bin\mh_sha1_murmur3_x64_128_multibinary.obj \
 	bin\mh_sha1_murmur3_x64_128_update_base.obj \
 	bin\mh_sha1_update_base.obj \
+	bin\mh_sha256.obj \
+	bin\mh_sha256_avx512.obj \
+	bin\mh_sha256_block_avx.obj \
+	bin\mh_sha256_block_avx2.obj \
+	bin\mh_sha256_block_avx512.obj \
+	bin\mh_sha256_block_base.obj \
+	bin\mh_sha256_block_sse.obj \
+	bin\mh_sha256_finalize_base.obj \
+	bin\mh_sha256_multibinary.obj \
+	bin\mh_sha256_update_base.obj \
+	bin\sha256_for_mh_sha256.obj \
 	bin\murmur3_x64_128_internal.obj \
 	bin\xts_aes_128_multibinary.obj \
 	bin\xts_aes_256_multibinary.obj
 
-INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Iaes/ -Iinclude/
+INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Imh_sha256/ -Iaes/ -Iinclude/
 LINKFLAGS = /nologo
 INCLUDES  = $(INCLUDES) -Ic:\openssl\include
 LINKFLAGS = $(LINKFLAGS) /libpath:c:\openssl\lib
@@ -230,6 +241,11 @@ isa-l_crypto.dll: $(objs)
 {mh_sha1_murmur3_x64_128}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
 
+{mh_sha256}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{mh_sha256}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
 {aes}.c.obj:
 	$(CC) $(CFLAGS) /c -Fo$@ $?
 {aes}.asm.obj:
@@ -260,6 +276,7 @@ checks = \
 	sha512_mb_rand_update_test.exe \
 	sha512_mb_test.exe \
 	mh_sha1_test.exe \
+	mh_sha256_test.exe \
 	cbc_std_vectors_test.exe \
 	gcm_std_vectors_test.exe \
 	xts_128_expanded_key_test.exe \
@@ -286,6 +303,7 @@ tests = \
 	xts_256_rand.exe \
 	xts_256_rand_ossl_test.exe \
 	mh_sha1_update_test.exe \
+	mh_sha256_update_test.exe \
 	mh_sha1_murmur3_x64_128_test.exe \
 	mh_sha1_murmur3_x64_128_update_test.exe
 
@@ -293,7 +311,7 @@ tests: lib $(tests)
 $(tests): $(@B).obj
 
 # Performance tests
-perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe
+perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe mh_sha256_perf.exe
 
 perfs: lib $(perfs)
 $(perfs): $(@B).obj
@@ -329,6 +347,8 @@ mh_sha1_update_test.exe: mh_sha1_ref.obj
 mh_sha1_murmur3_x64_128_test.exe: mh_sha1_ref.obj murmur3_x64_128.obj
 mh_sha1_murmur3_x64_128_update_test.exe: mh_sha1_ref.obj murmur3_x64_128.obj
 mh_sha1_murmur3_x64_128_perf.exe: mh_sha1_ref.obj murmur3_x64_128.obj
+mh_sha256_test.exe: mh_sha256_ref.obj
+mh_sha256_update_test.exe: mh_sha256_ref.obj
 cbc_ossl_perf.exe:  libeay32.lib
 cbc_std_vectors_random_test.exe:  libeay32.lib
 gcm_ossl_perf.exe:  libeay32.lib
