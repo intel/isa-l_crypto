@@ -287,7 +287,6 @@ static inline void memcpy_gte16_sse_varlen(void *dst, const void *src, size_t nb
 	if (i + 16 <= nbytes) {
 		memcpy_gte16_sse_fixedlen((void *)((char *)dst + i),
 					  (const void *)((const char *)src + i), 16);
-		i += 16;
 	}
 
 	i = nbytes - 16;
@@ -316,7 +315,6 @@ static inline void memclr_gte16_sse_varlen(void *dst, size_t nbytes)
 	}
 	if (i + 16 <= nbytes) {
 		memclr_gte16_sse_fixedlen((void *)((char *)dst + i), 16);
-		i += 16;
 	}
 
 	i = nbytes - 16;
