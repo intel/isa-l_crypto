@@ -51,6 +51,8 @@ lsrc += sha1_mb/sha1_ctx_avx512.c \
 	sha1_mb/sha1_mb_mgr_flush_avx512.asm \
 	sha1_mb/sha1_mb_x16_avx512.asm
 
+lsrc += sha1_mb/sha1_opt_x1.asm
+
 src_include += -I $(srcdir)/sha1_mb
 
 extern_hdrs +=  include/sha1_mb.h \
@@ -72,7 +74,8 @@ check_tests  += sha1_mb/sha1_mb_test \
 
 unit_tests   += sha1_mb/sha1_mb_rand_ssl_test
 
-perf_tests   += sha1_mb/sha1_mb_vs_ossl_perf
+perf_tests   += sha1_mb/sha1_mb_vs_ossl_perf \
+		sha1_mb/sha1_mb_vs_ossl_shortage_perf
 
 examples    +=  sha1_mb/sha1_multi_buffer_example
 
@@ -88,3 +91,6 @@ sha1_mb_sha1_mb_rand_ssl_test_LDFLAGS = -lcrypto
 
 sha1_mb_vs_ossl_perf: LDLIBS += -lcrypto
 sha1_mb_sha1_mb_vs_ossl_perf_LDFLAGS = -lcrypto
+
+sha1_mb_vs_ossl_shortage_perf: LDLIBS += -lcrypto
+sha1_mb_sha1_mb_vs_ossl_shortage_perf_LDFLAGS = -lcrypto

@@ -33,6 +33,7 @@ void sha1_mb_mgr_init_avx2(SHA1_MB_JOB_MGR * state)
 {
 	unsigned int j;
 	state->unused_lanes = 0xF76543210;
+	state->num_lanes_inuse = 0;
 	for (j = 0; j < SHA1_X8_LANES; j++) {
 		state->lens[j] = 0;
 		state->ldata[j].job_in_lane = 0;

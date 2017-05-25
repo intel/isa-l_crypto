@@ -38,6 +38,15 @@
 %define STS_COMPLETED           2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Threshold constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; if number of lanes in use <= threshold, using sb func
+%define SHA1_SB_THRESHOLD_SSE		1
+%define SHA1_SB_THRESHOLD_AVX		1
+%define SHA1_SB_THRESHOLD_AVX2		1
+%define SHA1_SB_THRESHOLD_AVX512	1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Define SHA1_JOB structure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
