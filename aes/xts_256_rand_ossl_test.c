@@ -95,8 +95,9 @@ int main(void)
 	int i, j, k;
 
 	/* Initialise our cipher context, which can use same input vectors */
-	EVP_CIPHER_CTX ctx;
-	EVP_CIPHER_CTX_init(&ctx);
+	EVP_CIPHER_CTX *ctx;
+	ctx = EVP_CIPHER_CTX_new();
+	EVP_CIPHER_CTX_init(ctx);
 
 	/* Allocate space for input and output buffers */
 	pt = malloc(TEST_LEN);
@@ -126,7 +127,7 @@ int main(void)
 
 		/* Encrypt using each method */
 		XTS_AES_256_enc(key2, key1, tinit, TEST_LEN, pt, ct);
-		openssl_aes_256_xts_enc(&ctx, keyssl, tinit, TEST_LEN, pt, refct);
+		openssl_aes_256_xts_enc(ctx, keyssl, tinit, TEST_LEN, pt, refct);
 
 		// Carry out comparison of the calculated ciphertext with 
 		// the reference
@@ -140,7 +141,7 @@ int main(void)
 
 		/* Decrypt using each method */
 		XTS_AES_256_dec(key2, key1, tinit, TEST_LEN, ct, dt);
-		openssl_aes_256_xts_dec(&ctx, keyssl, tinit, TEST_LEN, refct, refdt);
+		openssl_aes_256_xts_dec(ctx, keyssl, tinit, TEST_LEN, refct, refdt);
 
 		for (j = 0; j < TEST_LEN; j++) {
 
@@ -174,7 +175,7 @@ int main(void)
 
 		/* Encrypt using each method */
 		XTS_AES_256_enc(key2, key1, tinit, rand_len, pt, ct);
-		openssl_aes_256_xts_enc(&ctx, keyssl, tinit, rand_len, pt, refct);
+		openssl_aes_256_xts_enc(ctx, keyssl, tinit, rand_len, pt, refct);
 
 		/* Carry out comparison of the calculated ciphertext with 
 		 * the reference
@@ -189,7 +190,7 @@ int main(void)
 
 		/* Decrypt using each method */
 		XTS_AES_256_dec(key2, key1, tinit, rand_len, ct, dt);
-		openssl_aes_256_xts_dec(&ctx, keyssl, tinit, rand_len, refct, refdt);
+		openssl_aes_256_xts_dec(ctx, keyssl, tinit, rand_len, refct, refdt);
 
 		for (j = 0; j < rand_len; j++) {
 
@@ -201,6 +202,9 @@ int main(void)
 		printf(".");
 		fflush(0);
 	}
+
+	EVP_CIPHER_CTX_free(ctx);
+
 	printf("Pass\n");
 
 	printf("aes_xts_256_rand_ossl: All tests passed\n");
