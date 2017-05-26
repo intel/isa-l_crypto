@@ -53,6 +53,13 @@ lsrc += sha1_mb/sha1_ctx_avx512.c \
 
 lsrc += sha1_mb/sha1_opt_x1.asm
 
+lsrc += sha1_mb/sha1_ni_x1.asm \
+	sha1_mb/sha1_ctx_sse_ni.c \
+	sha1_mb/sha1_ctx_avx512_ni.c \
+	sha1_mb/sha1_mb_mgr_submit_sse_ni.asm \
+	sha1_mb/sha1_mb_mgr_flush_sse_ni.asm \
+	sha1_mb/sha1_mb_mgr_flush_avx512_ni.asm
+
 src_include += -I $(srcdir)/sha1_mb
 
 extern_hdrs +=  include/sha1_mb.h \
@@ -70,7 +77,8 @@ other_src += 	include/datastruct.asm \
 
 check_tests  += sha1_mb/sha1_mb_test \
 		sha1_mb/sha1_mb_rand_test \
-		sha1_mb/sha1_mb_rand_update_test
+		sha1_mb/sha1_mb_rand_update_test \
+		sha1_mb/sha1_mb_flush_test
 
 unit_tests   += sha1_mb/sha1_mb_rand_ssl_test
 
@@ -85,6 +93,9 @@ sha1_mb_sha1_mb_rand_test_LDADD = sha1_mb/sha1_ref.lo libisal_crypto.la
 
 sha1_mb_rand_update_test: sha1_ref.o
 sha1_mb_sha1_mb_rand_update_test_LDADD = sha1_mb/sha1_ref.lo libisal_crypto.la
+
+sha1_mb_flush_test: sha1_ref.o
+sha1_mb_sha1_mb_flush_test_LDADD = sha1_mb/sha1_ref.lo libisal_crypto.la
 
 sha1_mb_rand_ssl_test: LDLIBS += -lcrypto
 sha1_mb_sha1_mb_rand_ssl_test_LDFLAGS = -lcrypto

@@ -45,6 +45,9 @@
 %define SHA1_SB_THRESHOLD_AVX		1
 %define SHA1_SB_THRESHOLD_AVX2		1
 %define SHA1_SB_THRESHOLD_AVX512	1
+%define SHA1_NI_SB_THRESHOLD_SSE	4 ; shani is faster than sse sha1_mb
+%define SHA1_NI_SB_THRESHOLD_AVX512	6
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Define SHA1_JOB structure

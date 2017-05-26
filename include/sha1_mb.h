@@ -183,6 +183,41 @@ typedef struct {
 	void*          user_data;	//!< pointer for user to keep any job-related data
 } SHA1_HASH_CTX;
 
+/******************** multibinary function prototypes **********************/
+
+/**
+ * @brief Initialize the SHA1 multi-buffer manager structure.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr Structure holding context level state info
+ * @returns void
+ */
+void      sha1_ctx_mgr_init (SHA1_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief  Submit a new SHA1 job to the multi-buffer manager.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX* sha1_ctx_mgr_submit (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX* ctx,
+				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA1 jobs and return when complete.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX* sha1_ctx_mgr_flush (SHA1_HASH_CTX_MGR* mgr);
+
+
 /*******************************************************************
  * Context level API function prototypes
  ******************************************************************/
@@ -218,6 +253,38 @@ SHA1_HASH_CTX* sha1_ctx_mgr_submit_sse (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX* c
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
 SHA1_HASH_CTX* sha1_ctx_mgr_flush_sse (SHA1_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief Initialize the context level SHA1 multi-buffer manager structure.
+ * @requires SSE4.1 and SHANI
+ *
+ * @param mgr Structure holding context level state info
+ * @returns void
+ */
+void      sha1_ctx_mgr_init_sse_ni (SHA1_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief  Submit a new SHA1 job to the context level multi-buffer manager.
+ * @requires SSE4.1 and SHANI
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX* sha1_ctx_mgr_submit_sse_ni (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX* ctx,
+				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA1 jobs and return when complete.
+ * @requires SSE4.1 and SHANI
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX* sha1_ctx_mgr_flush_sse_ni (SHA1_HASH_CTX_MGR* mgr);
 
 /**
  * @brief Initialize the SHA1 multi-buffer manager structure.
@@ -315,20 +382,18 @@ SHA1_HASH_CTX* sha1_ctx_mgr_submit_avx512 (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX
  */
 SHA1_HASH_CTX* sha1_ctx_mgr_flush_avx512 (SHA1_HASH_CTX_MGR* mgr);
 
-/******************** multibinary function prototypes **********************/
-
 /**
  * @brief Initialize the SHA1 multi-buffer manager structure.
- * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @requires AVX512 and SHANI
  *
- * @param mgr Structure holding context level state info
+ * @param mgr	Structure holding context level state info
  * @returns void
  */
-void      sha1_ctx_mgr_init (SHA1_HASH_CTX_MGR* mgr);
+void      sha1_ctx_mgr_init_avx512_ni (SHA1_HASH_CTX_MGR* mgr);
 
 /**
  * @brief  Submit a new SHA1 job to the multi-buffer manager.
- * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @requires AVX512 and SHANI
  *
  * @param  mgr Structure holding context level state info
  * @param  ctx Structure holding ctx job info
@@ -337,17 +402,17 @@ void      sha1_ctx_mgr_init (SHA1_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA1_HASH_CTX* sha1_ctx_mgr_submit (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX* ctx,
+SHA1_HASH_CTX* sha1_ctx_mgr_submit_avx512_ni (SHA1_HASH_CTX_MGR* mgr, SHA1_HASH_CTX* ctx,
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
- * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @requires AVX512 and SHANI
  *
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA1_HASH_CTX* sha1_ctx_mgr_flush (SHA1_HASH_CTX_MGR* mgr);
+SHA1_HASH_CTX* sha1_ctx_mgr_flush_avx512_ni (SHA1_HASH_CTX_MGR* mgr);
 
 
 /*******************************************************************
@@ -369,6 +434,14 @@ SHA1_JOB* sha1_mb_mgr_flush_avx2  (SHA1_MB_JOB_MGR *state);
 void      sha1_mb_mgr_init_avx512   (SHA1_MB_JOB_MGR *state);
 SHA1_JOB* sha1_mb_mgr_submit_avx512 (SHA1_MB_JOB_MGR *state, SHA1_JOB* job);
 SHA1_JOB* sha1_mb_mgr_flush_avx512  (SHA1_MB_JOB_MGR *state);
+
+void      sha1_mb_mgr_init_sse_ni    (SHA1_MB_JOB_MGR *state);
+SHA1_JOB* sha1_mb_mgr_submit_sse_ni  (SHA1_MB_JOB_MGR *state, SHA1_JOB* job);
+SHA1_JOB* sha1_mb_mgr_flush_sse_ni   (SHA1_MB_JOB_MGR *state);
+
+void      sha1_mb_mgr_init_avx512_ni    (SHA1_MB_JOB_MGR *state);
+SHA1_JOB* sha1_mb_mgr_submit_avx512_ni  (SHA1_MB_JOB_MGR *state, SHA1_JOB* job);
+SHA1_JOB* sha1_mb_mgr_flush_avx512_ni   (SHA1_MB_JOB_MGR *state);
 
 #ifdef __cplusplus
 }

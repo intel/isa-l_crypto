@@ -268,4 +268,158 @@
 		ret
 %endmacro
 
+;;;;;
+; mbin_dispatch_sse_to_avx2_shani parameters
+; derived from mbin_dispatch_init
+; Use this function when SSE/00/01 is a minimum requirement
+; 1-> function name
+; 2-> SSE/00/01 optimized function used as base
+; 3-> AVX or AVX/02 opt func
+; 4-> AVX2 or AVX/04 opt func
+; 5-> SHANI opt for GLM
+;;;;;
+%macro mbin_dispatch_sse_to_avx2_shani 5
+	section .text
+	%1_dispatch_init:
+		push	mbin_rsi
+		push	mbin_rax
+		push	mbin_rbx
+		push	mbin_rcx
+		push	mbin_rdx
+		lea	mbin_rsi, [%2 WRT_OPT] ; Default to SSE 00/01
+
+		mov	eax, 1
+		cpuid
+		and	ecx, (FLAG_CPUID1_ECX_AVX | FLAG_CPUID1_ECX_OSXSAVE)
+		cmp	ecx, (FLAG_CPUID1_ECX_AVX | FLAG_CPUID1_ECX_OSXSAVE)
+		lea	mbin_rbx, [%3 WRT_OPT] ; AVX (gen2) opt func
+		jne	_%1_shani_check ; AVX is not available so check shani
+		mov	mbin_rsi, mbin_rbx
+
+		;; Try for AVX2
+		xor	ecx, ecx
+		mov	eax, 7
+		cpuid
+		test	ebx, FLAG_CPUID7_EBX_AVX2
+		lea	mbin_rbx, [%4 WRT_OPT] ; AVX (gen4) opt func
+		cmovne	mbin_rsi, mbin_rbx
+
+		;; Does it have xmm and ymm support
+		xor	ecx, ecx
+		xgetbv
+		and	eax, FLAG_XGETBV_EAX_XMM_YMM
+		cmp	eax, FLAG_XGETBV_EAX_XMM_YMM
+		je	_%1_init_done
+		lea	mbin_rsi, [%2 WRT_OPT]
+
+	_%1_init_done:
+		pop	mbin_rdx
+		pop	mbin_rcx
+		pop	mbin_rbx
+		pop	mbin_rax
+		mov	[%1_dispatched], mbin_rsi
+		pop	mbin_rsi
+		ret
+
+	_%1_shani_check:
+		xor	ecx, ecx
+		mov	eax, 7
+		cpuid
+		test	ebx, FLAG_CPUID7_EBX_SHA
+		lea	mbin_rbx, [%5 WRT_OPT] ; SHANI opt func
+		cmovne	mbin_rsi, mbin_rbx
+		jmp	_%1_init_done ; end
+%endmacro
+
+;;;;;
+; mbin_dispatch_base_to_avx512_shani parameters
+; derived from mbin_dispatch_init6
+; 1-> function name
+; 2-> base function
+; 3-> SSE4_2 or 00/01 optimized function
+; 4-> AVX/02 opt func
+; 5-> AVX2/04 opt func
+; 6-> AVX512/06 opt func
+; 7-> SHANI opt for GLM
+; 8-> SHANI opt for CNL
+;;;;;
+%macro mbin_dispatch_base_to_avx512_shani 8
+	section .text
+	%1_dispatch_init:
+		push	mbin_rsi
+		push	mbin_rax
+		push	mbin_rbx
+		push	mbin_rcx
+		push	mbin_rdx
+		push	mbin_rdi
+		lea	mbin_rsi, [%2 WRT_OPT] ; Default - use base function
+
+		mov	eax, 1
+		cpuid
+		mov	ebx, ecx ; save cpuid1.ecx
+		test	ecx, FLAG_CPUID1_ECX_SSE4_2
+		je	_%1_init_done	  ; Use base function if no SSE4_2
+		lea	mbin_rsi, [%3 WRT_OPT] ; SSE possible so use 00/01 opt
+
+		;; Test for XMM_YMM support/AVX
+		test	ecx, FLAG_CPUID1_ECX_OSXSAVE
+		je	_%1_shani_check
+		xor	ecx, ecx
+		xgetbv	; xcr -> edx:eax
+		mov	edi, eax	  ; save xgetvb.eax
+
+		and	eax, FLAG_XGETBV_EAX_XMM_YMM
+		cmp	eax, FLAG_XGETBV_EAX_XMM_YMM
+		jne	_%1_shani_check
+		test	ebx, FLAG_CPUID1_ECX_AVX
+		je	_%1_shani_check
+		lea	mbin_rsi, [%4 WRT_OPT] ; AVX/02 opt
+
+		;; Test for AVX2
+		xor	ecx, ecx
+		mov	eax, 7
+		cpuid
+		test	ebx, FLAG_CPUID7_EBX_AVX2
+		je	_%1_init_done		; No AVX2 possible
+		lea	mbin_rsi, [%5 WRT_OPT] 	; AVX2/04 opt func
+
+		;; Test for AVX512
+		and	edi, FLAG_XGETBV_EAX_ZMM_OPM
+		cmp	edi, FLAG_XGETBV_EAX_ZMM_OPM
+		jne	_%1_init_done	  ; No AVX512 possible
+		and	ebx, FLAGS_CPUID7_ECX_AVX512_G1
+		cmp	ebx, FLAGS_CPUID7_ECX_AVX512_G1
+		lea	mbin_rbx, [%6 WRT_OPT] ; AVX512/06 opt
+		cmove	mbin_rsi, mbin_rbx
+
+		;; Test for SHANI
+		xor	ecx, ecx
+		mov	eax, 7
+		cpuid
+		test	ebx, FLAG_CPUID7_EBX_SHA
+		lea	mbin_rbx, [%8 WRT_OPT] ; SHANI opt sse func
+		cmovne	mbin_rsi, mbin_rbx
+
+	_%1_init_done:
+		pop	mbin_rdi
+		pop	mbin_rdx
+		pop	mbin_rcx
+		pop	mbin_rbx
+		pop	mbin_rax
+		mov	[%1_dispatched], mbin_rsi
+		pop	mbin_rsi
+		ret
+
+	_%1_shani_check:
+		xor	ecx, ecx
+		mov	eax, 7
+		cpuid
+		test	ebx, FLAG_CPUID7_EBX_SHA
+		lea	mbin_rbx, [%7 WRT_OPT] ; SHANI opt sse func
+		cmovne	mbin_rsi, mbin_rbx
+		jmp	_%1_init_done ; end
+%endmacro
+
+
+
 %endif ; ifndef _MULTIBINARY_ASM_

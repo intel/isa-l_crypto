@@ -57,6 +57,7 @@
 %define FLAG_CPUID7_EBX_AVX512PF       (1<<26)
 %define FLAG_CPUID7_EBX_AVX512ER       (1<<27)
 %define FLAG_CPUID7_EBX_AVX512CD       (1<<28)
+%define FLAG_CPUID7_EBX_SHA            (1<<29)
 %define FLAG_CPUID7_EBX_AVX512BW       (1<<30)
 %define FLAG_CPUID7_EBX_AVX512VL       (1<<31)
 %define FLAG_CPUID7_ECX_AVX512VBMI     (1<<1)
