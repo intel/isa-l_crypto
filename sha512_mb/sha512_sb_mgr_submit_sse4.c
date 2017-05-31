@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -32,15 +32,15 @@
 #include <assert.h>
 #include "sha512_mb.h"
 
-/* 
+/*
  * Function: sha512_sb_mgr_submit_sse4
  *
  * Description: Wrapper API for update routine of single buffer sha512,
  *              to comply with multi-buffer API.
  *
- *              This function will pick up message/digest and length 
- *              information from  the argument "job", then call into 
- *              sha512_sse4(). Argument "state" is passed in, but not 
+ *              This function will pick up message/digest and length
+ *              information from  the argument "job", then call into
+ *              sha512_sse4(). Argument "state" is passed in, but not
  *              really used here.
  *
  *              Note: message init and padding is done outside. This function

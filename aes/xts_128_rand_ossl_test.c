@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -128,7 +128,7 @@ int main(void)
 		XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
 		openssl_aes_128_xts_enc(ctx, keyssl, tinit, TEST_LEN, pt, refct);
 
-		/* Carry out comparison of the calculated ciphertext with 
+		/* Carry out comparison of the calculated ciphertext with
 		 * the reference
 		 */
 		for (j = 0; j < TEST_LEN; j++) {
@@ -175,7 +175,7 @@ int main(void)
 		XTS_AES_128_enc(key2, key1, tinit, rand_len, pt, ct);
 		openssl_aes_128_xts_enc(ctx, keyssl, tinit, rand_len, pt, refct);
 
-		/* Carry out comparison of the calculated ciphertext with 
+		/* Carry out comparison of the calculated ciphertext with
 		 * the reference
 		 */
 		for (j = 0; j < rand_len; j++) {

@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -32,15 +32,15 @@
  *  @brief AES CBC encryption/decryption function prototypes.
  *
 ; References:
- */ 
+ */
 #ifndef _AES_CBC_h
 #define _AES_CBC_h
-    
+
 #include <stdint.h>
-    
+
 #ifdef __cplusplus
 extern "C" {
-	
+
 #endif
 
 typedef enum cbc_key_size { CBC_128_BITS = 16, CBC_192_BITS = 24, CBC_256_BITS = 32} cbc_key_size;
@@ -82,7 +82,7 @@ int aes_cbc_precomp(
  * arg 3: keys: pointer to keys, Must be on a 16 byte boundary and length of key size * key rounds
  * arg 4: OUT:  pointer to output (plain text ... in-place allowed)
  * arg 5: len_bytes:  length in bytes (multiple of 16)
- */ 
+ */
 void aes_cbc_dec_128(
 	void     *in,
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
@@ -156,6 +156,6 @@ int aes_cbc_enc_256(
 	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
 
 #ifdef __cplusplus
-} 
+}
 #endif				//__cplusplus
 #endif				//ifndef _AES_CBC_h

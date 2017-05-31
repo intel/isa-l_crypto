@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -42,14 +42,14 @@ default rel
 %define arg2    rdx
 
 %define lane            rsi
-                        
+
 %else
 ; UN*X register definitions
 %define arg1    rdi
 %define arg2    rsi
 
 %define lane            rdx
-                        
+
 %endif
 
 ; Common definitions
@@ -63,10 +63,10 @@ default rel
 %define p               r11
 
 %define unused_lanes    rbx
-                        
+
 %define job_rax         rax
 %define len             rax
-                        
+
 %define num_lanes_inuse r9
 
 %define lane_data       r10
@@ -132,16 +132,16 @@ md5_mb_mgr_submit_avx2:
         mov     [state + _args_data_ptr + 8*lane], p
 
 	mov	DWORD(num_lanes_inuse), [state + _num_lanes_inuse]
-        add     num_lanes_inuse, 1  
+        add     num_lanes_inuse, 1
 	mov	[state + _num_lanes_inuse], DWORD(num_lanes_inuse)
-        cmp     num_lanes_inuse, 16  
+        cmp     num_lanes_inuse, 16
         jne     return_null
 
 start_loop:
         ; Find min length
 	vmovdqu ymm0, [state + _lens + 0*32]
         vmovdqu ymm1, [state + _lens + 1*32]
-        
+
         vpminud ymm2, ymm0, ymm1        ; ymm2 has {D,C,B,A}
         vpalignr ymm3, ymm3, ymm2, 8    ; ymm3 has {x,x,D,C}
         vpminud ymm2, ymm2, ymm3        ; ymm2 has {x,x,E,F}
@@ -149,13 +149,13 @@ start_loop:
         vpminud ymm2, ymm2, ymm3        ; ymm2 has min value in low dword
 	vperm2i128 ymm3, ymm2, ymm2, 1	; ymm3 has halves of ymm2 reversed
         vpminud ymm2, ymm2, ymm3        ; ymm2 has min value in low dword
-        
+
         vmovd   DWORD(idx), xmm2
         mov	len2, idx
         and	idx, 0xF
         shr	len2, 4
         jz	len_is_0
-       
+
         vpand   ymm2, ymm2, [rel clear_low_nibble]
         vpshufd ymm2, ymm2, 0
 
@@ -174,7 +174,7 @@ len_is_0:
         ; process completed job "idx"
         imul    lane_data, idx, _LANE_DATA_size
         lea     lane_data, [state + _ldata + lane_data]
-        
+
         mov     job_rax, [lane_data + _job_in_lane]
         mov     unused_lanes, [state + _unused_lanes]
         mov     qword [lane_data + _job_in_lane], 0
@@ -184,7 +184,7 @@ len_is_0:
         mov     [state + _unused_lanes], unused_lanes
 
         mov     DWORD(num_lanes_inuse), [state + _num_lanes_inuse]
-        sub     num_lanes_inuse, 1  
+        sub     num_lanes_inuse, 1
         mov     [state + _num_lanes_inuse], DWORD(num_lanes_inuse)
 
 	mov	dword [state + _lens + 4*idx], 0xFFFFFFFF

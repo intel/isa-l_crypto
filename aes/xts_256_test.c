@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -55,7 +55,7 @@ int main(void)
 		XTS_AES_256_enc(vlist[i].key2, vlist[i].key1, vlist[i].TW,
 				vlist[i].ptlen, vlist[i].PTX, ct_test);
 
-		// Carry out comparison of the calculated ciphertext with 
+		// Carry out comparison of the calculated ciphertext with
 		// the reference
 		for (j = 0; j < vlist[i].ptlen; j++) {
 
@@ -85,7 +85,7 @@ int main(void)
 		XTS_AES_256_dec(vlist[i].key2, vlist[i].key1, vlist[i].TW,
 				vlist[i].ptlen, vlist[i].CTX, pt_test);
 
-		// Carry out comparison of the calculated ciphertext with 
+		// Carry out comparison of the calculated ciphertext with
 		// the reference
 		for (j = 0; j < vlist[i].ptlen; j++) {
 

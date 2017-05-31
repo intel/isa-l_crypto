@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -42,7 +42,7 @@ struct xts_vector {
 };
 
 /* Define our test vectors statically here. Test vectors are from the standard:
- * "IEEE Standard for Cryptographic Protection of Data on Block-Oriented 
+ * "IEEE Standard for Cryptographic Protection of Data on Block-Oriented
  * Storage Devices"
  * http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4493450
  *
@@ -276,7 +276,7 @@ static uint8_t v10_CTX[512] = {
  * CTX 6e0d7345c69ed50cdc2a8b332b1f8824108ac937eb050585608ee734097fc090
  * CTX 54fbff89eeaeea791f4a7ab1f9868294a4f9e27b42af8100cb9d59cef9645803
  * Plaintext length (bytes): 512
- * 
+ *
 */
 static uint8_t v11_key1[32] = {
 	0x27, 0x18, 0x28, 0x18, 0x28, 0x45, 0x90, 0x45,
@@ -1017,13 +1017,13 @@ struct xts_vector vlist[NVEC] = {
 
 	// pointers to the statically defined vectors here
 
-	// Vector 10 
+	// Vector 10
 	{sizeof(v10_CTX), v10_key1, v10_key2, v10_TW, v10_PTX, v10_CTX}
 	,
 	// Vector 11
 	{sizeof(v11_CTX), v11_key1, v11_key2, v11_TW, v11_PTX, v11_CTX}
 	,
-	// Vector 12 
+	// Vector 12
 	{sizeof(v12_CTX), v12_key1, v12_key2, v12_TW, v12_PTX, v12_CTX}
 	,
 	// Vector 13

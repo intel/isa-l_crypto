@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -48,7 +48,7 @@ default rel
 ; r1 = {d1 c1 b1 a1}
 ; r0 = {d2 c2 b2 a2}
 ; r3 = {d3 c3 b3 a3}
-; 
+;
 %macro TRANSPOSE 6
 %define %%r0 %1
 %define %%r1 %2
@@ -72,7 +72,7 @@ default rel
 
 	shufps	%%r0, %%r2, 0x88	; r0 = {d2 c2 b2 a2}
 	shufps	%%t0, %%t1, 0x88	; t0 = {d0 c0 b0 a0}
-%endmacro	
+%endmacro
 
 
 %define TABLE	K256_4_MB
@@ -211,7 +211,7 @@ default rel
 ; ALIGNMENT makes FRAMESZ + pushes an odd multiple of 8
 %define FRAMESZ (DATA + DIGEST_SIZE + ALIGNMENT)
 %define _DIGEST (DATA)
-	
+
 %define MOVPS	movups
 
 %define inp0 r8
@@ -219,7 +219,7 @@ default rel
 %define inp2 r10
 %define inp3 r11
 
-%ifidn __OUTPUT_FORMAT__, elf64 
+%ifidn __OUTPUT_FORMAT__, elf64
  ; Linux definitions
  %define arg1 	rdi
  %define arg2	rsi
@@ -234,7 +234,7 @@ default rel
 %define ROUND	rbx
 %define TBL	r12
 
-;; void sha256_mb_x4_sse(SHA256_MB_ARGS_X8 *args, uint64_t len); 
+;; void sha256_mb_x4_sse(SHA256_MB_ARGS_X8 *args, uint64_t len);
 ;; arg 1 :  pointer args (only 4 of the 8 lanes used)
 ;; arg 2 :  size of data in blocks (assumed >= 1)
 ;;
@@ -257,7 +257,7 @@ sha256_mb_x4_sse:
 	movdqa	h,[arg1+7*SZ4]
 
 	lea	TBL,[TABLE]
-	
+
 	;; transpose input onto stack
 	mov	inp0,[arg1 + _data_ptr + 0*8]
 	mov	inp1,[arg1 + _data_ptr + 1*8]
@@ -290,15 +290,15 @@ lloop:
 	pshufb	TT1, TMP
 	pshufb	TT2, TMP
 	pshufb	TT3, TMP
-	ROUND_00_15	TT0,(i*4+0) 
-	ROUND_00_15	TT1,(i*4+1) 
-	ROUND_00_15	TT2,(i*4+2) 
-	ROUND_00_15	TT3,(i*4+3) 
+	ROUND_00_15	TT0,(i*4+0)
+	ROUND_00_15	TT1,(i*4+1)
+	ROUND_00_15	TT2,(i*4+2)
+	ROUND_00_15	TT3,(i*4+3)
 %assign i (i+1)
 %endrep
 	add	IDX, 4*4*4
 
-	
+
 %assign i (i*4)
 
 	jmp	Lrounds_16_xx
@@ -335,7 +335,7 @@ Lrounds_16_xx:
 	movdqa	[arg1+5*SZ4],f
 	movdqa	[arg1+6*SZ4],g
 	movdqa	[arg1+7*SZ4],h
-	
+
 	; update input pointers
 	add	inp0, IDX
 	mov	[arg1 + _data_ptr + 0*8], inp0
@@ -348,7 +348,7 @@ Lrounds_16_xx:
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
-	
+
 	add	rsp, FRAMESZ
 	ret
 

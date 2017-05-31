@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -65,10 +65,10 @@ default rel
 %define unused_lanes    r9
 
 %define lane_data       r10
-                        
+
 %define job_rax         rax
 %define tmp             rax
-                        
+
 %endif ;; if 1
 
 ; STACK_SPACE needs to be an odd multiple of 8
@@ -147,20 +147,20 @@ APPEND(skip_,I):
 	; Find min length
 	movdqa	xmm0, [state + _lens + 0*16]
         movdqa	xmm1, [state + _lens + 1*16]
-	
+
 	movdqa	xmm2, xmm0
         pminud 	xmm2, xmm1        ; xmm2 has {D,C,B,A}
         palignr xmm3, xmm2, 8     ; xmm3 has {x,x,D,C}
         pminud	xmm2, xmm3        ; xmm2 has {x,x,E,F}
         palignr xmm3, xmm2, 4     ; xmm3 has {x,x,x,E}
         pminud	xmm2, xmm3        ; xmm2 has min value in low dword
-        
+
 	movd   	DWORD(idx), xmm2
  	mov	len2, idx
 	and	idx, 0xF
 	shr	len2, 4
 	jz	len_is_0
-       
+
 	pand   xmm2, [rel clear_low_nibble]
         pshufd xmm2, xmm2, 0
 
@@ -211,15 +211,15 @@ return:
         movdqa  xmm13, [rsp + _XMM_SAVE + 16*7]
         movdqa  xmm14, [rsp + _XMM_SAVE + 16*8]
         movdqa  xmm15, [rsp + _XMM_SAVE + 16*9]
-        mov     rsi, [rsp + _GPR_SAVE + 8*1] 
-        mov     rdi, [rsp + _GPR_SAVE + 8*2] 
+        mov     rsi, [rsp + _GPR_SAVE + 8*1]
+        mov     rdi, [rsp + _GPR_SAVE + 8*2]
 %endif
-        mov     rbx, [rsp + _GPR_SAVE + 8*0] 
-        mov     rbp, [rsp + _GPR_SAVE + 8*3] 
-        mov     r12, [rsp + _GPR_SAVE + 8*4] 
-        mov     r13, [rsp + _GPR_SAVE + 8*5] 
-        mov     r14, [rsp + _GPR_SAVE + 8*6] 
-        mov     r15, [rsp + _GPR_SAVE + 8*7] 
+        mov     rbx, [rsp + _GPR_SAVE + 8*0]
+        mov     rbp, [rsp + _GPR_SAVE + 8*3]
+        mov     r12, [rsp + _GPR_SAVE + 8*4]
+        mov     r13, [rsp + _GPR_SAVE + 8*5]
+        mov     r14, [rsp + _GPR_SAVE + 8*6]
+        mov     r15, [rsp + _GPR_SAVE + 8*7]
         add     rsp, STACK_SPACE
 
         ret
@@ -227,7 +227,7 @@ return:
 return_null:
 	xor	job_rax, job_rax
 	jmp	return
-        
+
 
 section .data align=16
 

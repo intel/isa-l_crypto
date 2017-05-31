@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -59,15 +59,15 @@ default rel
 %define unused_lanes    rbx
 %define lane_data       rbx
 %define tmp2            rbx
-			
+
 %define job_rax         rax
 %define tmp1            rax
 %define size_offset     rax
 %define tmp             rax
 %define start_offset    rax
-			
+
 %define tmp3            arg1
-			
+
 %define extra_blocks    arg2
 %define p               arg2
 
@@ -78,7 +78,7 @@ default rel
 %define lens2           r10
 %define lens3           r11
 
-struc stack_frame 
+struc stack_frame
 	.xmm: resb 16*10
 	.gpr: resb 8*5
 	.rsp: resb 8
@@ -97,7 +97,7 @@ global sha512_mb_mgr_flush_avx2:function
 sha512_mb_mgr_flush_avx2:
 
 	mov     rax, rsp
-	
+
 	sub     rsp, STACK_SPACE
 	and     rsp, ~31
 
@@ -161,7 +161,7 @@ APPEND(skip_,I):
 	mov     len2, idx
 	and     idx, 0xF
 	and     len2, ~0xFF
-	jz      len_is_0        
+	jz      len_is_0
 
 	sub     lens0, len2
 	sub     lens1, len2
@@ -229,7 +229,7 @@ return:
 return_null:
 	xor     job_rax, job_rax
 	jmp     return
-	
+
 section .data align=16
 
 align 16

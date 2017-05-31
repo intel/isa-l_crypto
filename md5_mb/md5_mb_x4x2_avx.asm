@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -32,12 +32,12 @@
 default rel
 
 ; clobbers all XMM registers
-; clobbers all GPRs except arg1 and r8	
+; clobbers all GPRs except arg1 and r8
 
 ;; code to compute octal MD5 using AVX
 
 ; clobbers all XMM registers
-; clobbers all GPRs except arg1 and r8	
+; clobbers all GPRs except arg1 and r8
 
 ; transpose r0, r1, r2, r3, t0, t1
 ; "transpose" data in {r0..r3} using temps {t0..t3}
@@ -52,7 +52,7 @@ default rel
 ; r1 = {d1 c1 b1 a1}
 ; r0 = {d2 c2 b2 a2}
 ; r3 = {d3 c3 b3 a3}
-; 
+;
 %macro TRANSPOSE 6
 %define %%r0 %1
 %define %%r1 %2
@@ -71,7 +71,7 @@ default rel
 
 	vshufps	%%r0, %%r0, %%r2, 0x88	; r0 = {d2 c2 b2 a2}
 	vshufps	%%t0, %%t0, %%t1, 0x88	; t0 = {d0 c0 b0 a0}
-%endmacro	
+%endmacro
 
 ;;
 ;; Magic functions defined in RFC 1321
@@ -172,7 +172,7 @@ default rel
 ;;
 ;; A = B +ROL32((A +MAGIC(B,C,D) +data +const), nrot)
 ;;
-; macro MD5_STEP MAGIC_FUN, A,B,C,D, A2,B2,C3,D2, FUN, TMP, FUN2, TMP2, data, 
+; macro MD5_STEP MAGIC_FUN, A,B,C,D, A2,B2,C3,D2, FUN, TMP, FUN2, TMP2, data,
 ;                MD5const, nrot
 %macro MD5_STEP 16
 %define %%MAGIC_FUN	%1
@@ -240,7 +240,7 @@ rot44 equ  21
 %define C2	xmm8
 %define D2	xmm9
 
-	
+
 %define FUN	E
 %define TMP	F
 %define FUN2	xmm10
@@ -376,7 +376,7 @@ md5_mb_x4x2_avx:
         ; Make ping-pong pointers to the two memory blocks
         mov     mem1, rsp
         lea     mem2, [rsp + 16*16*2]
-	
+
 
 ;; Load first block of data and save back to stack
 %assign I 0
@@ -488,7 +488,7 @@ lloop:
 	MD5_STEP1 MAGIC_G, D,A,B,C, D2,A2,B2,C2, FUN,TMP, mem1+ 2*16, [TBL+29*16], rot22
 	MD5_STEP1 MAGIC_G, C,D,A,B, C2,D2,A2,B2, FUN,TMP, mem1+ 7*16, [TBL+30*16], rot23
 	MD5_STEP1 MAGIC_G, B,C,D,A, B2,C2,D2,A2, FUN,TMP, mem1+12*16, [TBL+31*16], rot24
-	
+
 	vmovdqu	T2,[inp4+IDX+I*16]
 	vmovdqu	T1,[inp5+IDX+I*16]
 	vmovdqu	T4,[inp6+IDX+I*16]
@@ -527,7 +527,7 @@ lloop:
 	MD5_STEP1 MAGIC_H, D,A,B,C, D2,A2,B2,C2, FUN,TMP, mem1+12*16, [TBL+45*16], rot32
 	MD5_STEP1 MAGIC_H, C,D,A,B, C2,D2,A2,B2, FUN,TMP, mem1+15*16, [TBL+46*16], rot33
 	MD5_STEP1 MAGIC_H, B,C,D,A, B2,C2,D2,A2, FUN,TMP, mem1+ 2*16, [TBL+47*16], rot34
-	
+
 	vmovdqu	T2,[inp4+IDX+I*16]
 	vmovdqu	T1,[inp5+IDX+I*16]
 	vmovdqu	T4,[inp6+IDX+I*16]
@@ -583,7 +583,7 @@ lloop:
 	vpaddd	B,B,[BB]
 	vpaddd	C,C,[CC]
 	vpaddd	D,D,[DD]
-	
+
 		vpaddd	A2,A2,[AA2]
 		vpaddd	B2,B2,[BB2]
 		vpaddd	C2,C2,[CC2]
@@ -629,7 +629,7 @@ lastblock:
 	MD5_STEP MAGIC_G, D,A,B,C, D2,A2,B2,C2, FUN,TMP, FUN2,TMP2, mem1+ 2*16, [TBL+29*16], rot22
 	MD5_STEP MAGIC_G, C,D,A,B, C2,D2,A2,B2, FUN,TMP, FUN2,TMP2, mem1+ 7*16, [TBL+30*16], rot23
 	MD5_STEP MAGIC_G, B,C,D,A, B2,C2,D2,A2, FUN,TMP, FUN2,TMP2, mem1+12*16, [TBL+31*16], rot24
-	
+
 	MD5_STEP MAGIC_H, A,B,C,D, A2,B2,C2,D2, FUN,TMP, FUN2,TMP2, mem1+ 5*16, [TBL+32*16], rot31
 	MD5_STEP MAGIC_H, D,A,B,C, D2,A2,B2,C2, FUN,TMP, FUN2,TMP2, mem1+ 8*16, [TBL+33*16], rot32
 	MD5_STEP MAGIC_H, C,D,A,B, C2,D2,A2,B2, FUN,TMP, FUN2,TMP2, mem1+11*16, [TBL+34*16], rot33
@@ -646,7 +646,7 @@ lastblock:
 	MD5_STEP MAGIC_H, D,A,B,C, D2,A2,B2,C2, FUN,TMP, FUN2,TMP2, mem1+12*16, [TBL+45*16], rot32
 	MD5_STEP MAGIC_H, C,D,A,B, C2,D2,A2,B2, FUN,TMP, FUN2,TMP2, mem1+15*16, [TBL+46*16], rot33
 	MD5_STEP MAGIC_H, B,C,D,A, B2,C2,D2,A2, FUN,TMP, FUN2,TMP2, mem1+ 2*16, [TBL+47*16], rot34
-	
+
 	MD5_STEP MAGIC_I, A,B,C,D, A2,B2,C2,D2, FUN,TMP, FUN2,TMP2, mem1+ 0*16, [TBL+48*16], rot41
 	MD5_STEP MAGIC_I, D,A,B,C, D2,A2,B2,C2, FUN,TMP, FUN2,TMP2, mem1+ 7*16, [TBL+49*16], rot42
 	MD5_STEP MAGIC_I, C,D,A,B, C2,D2,A2,B2, FUN,TMP, FUN2,TMP2, mem1+14*16, [TBL+50*16], rot43
@@ -668,7 +668,7 @@ lastblock:
 	vpaddd	B,B,[BB]
 	vpaddd	C,C,[CC]
 	vpaddd	D,D,[DD]
-	
+
 		vpaddd	A2,A2,[AA2]
 		vpaddd	B2,B2,[BB2]
 		vpaddd	C2,C2,[CC2]

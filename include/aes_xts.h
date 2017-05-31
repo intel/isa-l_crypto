@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -54,7 +54,7 @@ encryption, the rest of the keys are stored as follows:
 For decryption, the order of keys is reversed. However, we apply the
 necessary aesimc instructions before storing the expanded keys. For the same key
 used above, the pre-expanded keys will be stored as follows:
-	
+
 <ul>
       <li> Key[0] : Round 10 encryption key
       <li> Key[1] : aesimc(Round 9 encryption key)
@@ -82,7 +82,7 @@ same, then encryption/decryption will occur in-place.
          2^64 - 1 bytes.
     <li> For data lengths from 0 to 15 bytes, the functions return without any error
          codes, without reading or writing any data.
-    <li> The functions only support byte lengths, not bits. 
+    <li> The functions only support byte lengths, not bits.
 </ul>
 
 <b>Initial Tweak</b>

@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -355,8 +355,8 @@ void mh_sha1_block_ref(const uint8_t * input_data, uint32_t(*digests)[HASH_SEGS]
 }
 
 void mh_sha1_tail_ref(uint8_t * partial_buffer, uint32_t total_len,
-			   uint32_t(*mh_sha1_segs_digests)[HASH_SEGS], uint8_t * frame_buffer,
-			   uint32_t digests[SHA1_DIGEST_WORDS])
+		      uint32_t(*mh_sha1_segs_digests)[HASH_SEGS], uint8_t * frame_buffer,
+		      uint32_t digests[SHA1_DIGEST_WORDS])
 {
 	uint64_t partial_buffer_len, len_in_bit;
 
@@ -381,7 +381,7 @@ void mh_sha1_tail_ref(uint8_t * partial_buffer, uint32_t total_len,
 
 	//Calculate multi-hash SHA1 digests (segment digests as input message)
 	sha1_for_mh_sha1_ref((uint8_t *) mh_sha1_segs_digests, digests,
-			 4 * SHA1_DIGEST_WORDS * HASH_SEGS);
+			     4 * SHA1_DIGEST_WORDS * HASH_SEGS);
 
 	return;
 }

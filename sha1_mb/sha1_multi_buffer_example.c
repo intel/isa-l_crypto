@@ -89,14 +89,17 @@ int main(void)
 
 		if (p_job) {	// If we have finished a job, process it
 			checked++;
-			failed += check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
+			failed +=
+			    check_job(p_job->job.result_digest, p_job->user_data,
+				      SHA1_DIGEST_NWORDS);
 		}
 	}
 
 	// Finish remaining jobs
 	while (NULL != (p_job = sha1_ctx_mgr_flush(mgr))) {
 		checked++;
-		failed += check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
+		failed +=
+		    check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
 	}
 
 	printf("Example multi-buffer sha1 completed=%d, failed=%d\n", checked, failed);

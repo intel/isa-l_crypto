@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -42,7 +42,7 @@ extern sha1_mb_x4_avx
 ; idx needs to be in a register not clobberred by sha1_mult
 %define last_len        rsi
 %define idx             rsi
-			
+
 %define size_offset     rdi
 %define tmp2            rdi
 
@@ -54,7 +54,7 @@ extern sha1_mb_x4_avx
 ; idx needs to be in a register not clobberred by sha1_mult
 %define last_len        rdx
 %define idx             rdx
-			
+
 %define size_offset     rcx
 %define tmp2            rcx
 
@@ -70,20 +70,20 @@ extern sha1_mb_x4_avx
 %define start_offset    r11
 
 %define unused_lanes    rbx
-			
+
 %define job_rax         rax
 %define len             rax
 
 %define lane            rbp
 %define tmp3            rbp
 %define lens3           rbp
-			
+
 %define extra_blocks    r8
 %define lens0           r8
-			
+
 %define tmp             r9
 %define lens1           r9
-			
+
 %define lane_data       r10
 %define lens2           r10
 
@@ -161,7 +161,7 @@ start_loop:
 	mov     len2, idx
 	and     idx, 0xF
 	and     len2, ~0xF
-	jz      len_is_0        
+	jz      len_is_0
 
 	sub     lens0, len2
 	sub     lens1, len2
@@ -182,7 +182,7 @@ len_is_0:
 	; process completed job "idx"
 	imul    lane_data, idx, _LANE_DATA_size
 	lea     lane_data, [state + _ldata + lane_data]
-	
+
 	mov     job_rax, [lane_data + _job_in_lane]
 	mov     unused_lanes, [state + _unused_lanes]
 	mov     qword [lane_data + _job_in_lane], 0

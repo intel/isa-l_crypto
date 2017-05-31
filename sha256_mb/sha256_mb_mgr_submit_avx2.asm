@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -51,7 +51,7 @@ default rel
 
 %define size_offset     rdi
 %define tmp2            rdi
-			
+
 %endif
 
 ; Common definitions
@@ -66,15 +66,15 @@ default rel
 %define start_offset    r11
 
 %define unused_lanes    rbx
-			
+
 %define job_rax         rax
 %define len             rax
 
 %define lane            rbp
 %define tmp3            rbp
-			
+
 %define tmp             r9
-			
+
 %define lane_data       r10
 
 
@@ -147,13 +147,13 @@ start_loop:
 	; Find min length
 	vmovdqa xmm0, [state + _lens + 0*16]
 	vmovdqa xmm1, [state + _lens + 1*16]
-	
+
 	vpminud xmm2, xmm0, xmm1        ; xmm2 has {D,C,B,A}
 	vpalignr xmm3, xmm3, xmm2, 8    ; xmm3 has {x,x,D,C}
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has {x,x,E,F}
 	vpalignr xmm3, xmm3, xmm2, 4    ; xmm3 has {x,x,x,E}
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has min value in low dword
-	
+
 	vmovd   DWORD(idx), xmm2
 	mov	len2, idx
 	and	idx, 0xF
@@ -214,15 +214,15 @@ return:
 	vmovdqa  xmm13, [rsp + 8*8 + 16*7]
 	vmovdqa  xmm14, [rsp + 8*8 + 16*8]
 	vmovdqa  xmm15, [rsp + 8*8 + 16*9]
-	mov     rsi, [rsp + 8*1] 
-	mov     rdi, [rsp + 8*2] 
+	mov     rsi, [rsp + 8*1]
+	mov     rdi, [rsp + 8*2]
 %endif
-	mov     rbx, [rsp + 8*0] 
-	mov     rbp, [rsp + 8*3] 
-	mov     r12, [rsp + 8*4] 
-	mov     r13, [rsp + 8*5] 
-	mov     r14, [rsp + 8*6] 
-	mov     r15, [rsp + 8*7] 
+	mov     rbx, [rsp + 8*0]
+	mov     rbp, [rsp + 8*3]
+	mov     r12, [rsp + 8*4]
+	mov     r13, [rsp + 8*5]
+	mov     r14, [rsp + 8*6]
+	mov     r15, [rsp + 8*7]
 	add     rsp, STACK_SPACE
 
 	ret

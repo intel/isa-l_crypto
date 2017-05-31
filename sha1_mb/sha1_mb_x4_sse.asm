@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -49,7 +49,7 @@ default rel
 ; r1 = {d1 c1 b1 a1}
 ; r0 = {d2 c2 b2 a2}
 ; r3 = {d3 c3 b3 a3}
-; 
+;
 %macro TRANSPOSE 6
 %define %%r0 %1
 %define %%r1 %2
@@ -73,7 +73,7 @@ default rel
 
 	shufps  %%r0, %%r2, 0x88        ; r0 = {d2 c2 b2 a2}
 	shufps  %%t0, %%t1, 0x88        ; t0 = {d0 c0 b0 a0}
-%endmacro       
+%endmacro
 ;;
 ;; Magic functions defined in FIPS 180-1
 ;;
@@ -199,7 +199,7 @@ default rel
 %define XMM_SAVE ((15-15)*16 + 1*8)
 %define FRAMESZ 16*16 + XMM_SAVE
 %define _XMM     FRAMESZ - XMM_SAVE
-	
+
 %define MOVPS   movups
 
 %define inp0 r8
@@ -226,7 +226,7 @@ default rel
 %define CC      xmm10
 %define DD      xmm11
 %define EE      xmm12
-	
+
 %define T0      xmm6
 %define T1      xmm7
 %define T2      xmm8
@@ -278,14 +278,14 @@ global sha1_mb_x4_sse:function internal
 sha1_mb_x4_sse:
 
 	sub     rsp, FRAMESZ    ;; FRAMESZ + pushes must be odd multiple of 8
-	
+
 	;; Initialize digests
 	movdqa  A, [ARG1 + 0*16]
 	movdqa  B, [ARG1 + 1*16]
 	movdqa  C, [ARG1 + 2*16]
 	movdqa  D, [ARG1 + 3*16]
 	movdqa  E, [ARG1 + 4*16]
-	
+
 	;; load input pointers
 	mov     inp0,[ARG1 + _data_ptr + 0*8]
 	mov     inp1,[ARG1 + _data_ptr + 1*8]
@@ -394,7 +394,7 @@ lloop:
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
-	
+
 	add     rsp, FRAMESZ
 
 	ret

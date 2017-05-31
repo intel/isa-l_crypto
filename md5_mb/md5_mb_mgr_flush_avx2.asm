@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -65,10 +65,10 @@ default rel
 %define unused_lanes    r9
 
 %define lane_data       r10
-                        
+
 %define job_rax         rax
 %define tmp             rax
-                        
+
 %define num_lanes_inuse r8
 
 %endif ;; if 1
@@ -140,7 +140,7 @@ APPEND(skip_,I):
 	; Find min length
 	vmovdqu ymm0, [state + _lens + 0*32]
         vmovdqu ymm1, [state + _lens + 1*32]
-        
+
         vpminud ymm2, ymm0, ymm1        ; ymm2 has {D,C,B,A}
         vpalignr ymm3, ymm3, ymm2, 8    ; ymm3 has {x,x,D,C}
         vpminud ymm2, ymm2, ymm3        ; ymm2 has {x,x,E,F}
@@ -148,13 +148,13 @@ APPEND(skip_,I):
         vpminud ymm2, ymm2, ymm3        ; ymm2 has min value in low dword
 	vperm2i128 ymm3, ymm2, ymm2, 1	; ymm3 has halves of ymm2 reversed
         vpminud ymm2, ymm2, ymm3        ; ymm2 has min value in low dword
-        
+
 	vmovd   DWORD(idx), xmm2
  	mov	len2, idx
 	and	idx, 0xF
 	shr	len2, 4
 	jz	len_is_0
-       
+
 	vpand   ymm2, ymm2, [rel clear_low_nibble]
         vpshufd ymm2, ymm2, 0
 
@@ -184,7 +184,7 @@ len_is_0:
 	mov	[state + _unused_lanes], unused_lanes
 
         mov     DWORD(num_lanes_inuse), [state + _num_lanes_inuse]
-        sub     num_lanes_inuse, 1  
+        sub     num_lanes_inuse, 1
         mov     [state + _num_lanes_inuse], DWORD(num_lanes_inuse)
 
 	mov	dword [state + _lens + 4*idx], 0xFFFFFFFF
@@ -209,15 +209,15 @@ return:
         vmovdqa  xmm13, [rsp + _XMM_SAVE + 16*7]
         vmovdqa  xmm14, [rsp + _XMM_SAVE + 16*8]
         vmovdqa  xmm15, [rsp + _XMM_SAVE + 16*9]
-        mov     rsi, [rsp + _GPR_SAVE + 8*1] 
-        mov     rdi, [rsp + _GPR_SAVE + 8*2] 
+        mov     rsi, [rsp + _GPR_SAVE + 8*1]
+        mov     rdi, [rsp + _GPR_SAVE + 8*2]
 %endif
-        mov     rbx, [rsp + _GPR_SAVE + 8*0] 
-        mov     rbp, [rsp + _GPR_SAVE + 8*3] 
-        mov     r12, [rsp + _GPR_SAVE + 8*4] 
-        mov     r13, [rsp + _GPR_SAVE + 8*5] 
-        mov     r14, [rsp + _GPR_SAVE + 8*6] 
-        mov     r15, [rsp + _GPR_SAVE + 8*7] 
+        mov     rbx, [rsp + _GPR_SAVE + 8*0]
+        mov     rbp, [rsp + _GPR_SAVE + 8*3]
+        mov     r12, [rsp + _GPR_SAVE + 8*4]
+        mov     r13, [rsp + _GPR_SAVE + 8*5]
+        mov     r14, [rsp + _GPR_SAVE + 8*6]
+        mov     r15, [rsp + _GPR_SAVE + 8*7]
         add     rsp, STACK_SPACE
 
         ret
@@ -225,7 +225,7 @@ return:
 return_null:
 	xor	job_rax, job_rax
 	jmp	return
-        
+
 
 section .data align=16
 
@@ -240,7 +240,7 @@ lane_4:     dq  4
 lane_5:     dq  5
 lane_6:     dq  6
 lane_7:     dq  7
-lane_8:     dq  8  
+lane_8:     dq  8
 lane_9:     dq  9
 lane_10:    dq  10
 lane_11:    dq  11

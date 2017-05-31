@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -187,7 +187,7 @@ int main(void)
 		// Run sha256_sb jobs
 		i = 0;
 		while (i < jobs) {
-			// Submit a new job 
+			// Submit a new job
 			len_rand = SHA256_BLOCK_SIZE +
 			    SHA256_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
 
@@ -201,16 +201,16 @@ int main(void)
 							    buf_ptr[i], lens[i], HASH_ENTIRE);
 
 			// Returned ctx could be:
-			//  - null context (we are just getting started and lanes aren't full yet), or 
-			//  - finished already (an ENTIRE we submitted or a previous LAST is returned), or 
+			//  - null context (we are just getting started and lanes aren't full yet), or
+			//  - finished already (an ENTIRE we submitted or a previous LAST is returned), or
 			//  - an unfinished ctx, we will resubmit
 
 			if ((ctx == NULL) || hash_ctx_complete(ctx)) {
 				i++;
 				continue;
 			} else {
-				// unfinished ctx returned, choose another random update length and submit either 
-				// UPDATE or LAST depending on the amount of buffer remaining 
+				// unfinished ctx returned, choose another random update length and submit either
+				// UPDATE or LAST depending on the amount of buffer remaining
 				while ((ctx != NULL) && !(hash_ctx_complete(ctx))) {
 					j = (unsigned long)(ctx->user_data);	// Get index of the returned ctx
 					buf_ptr[j] = bufs[j] + ctx->total_length;
@@ -230,8 +230,8 @@ int main(void)
 									    buf_ptr[j],
 									    len_rand,
 									    HASH_UPDATE);
-				}	// Either continue submitting any contexts returned here as UPDATE/LAST, or 
-				// go back to submitting new jobs using the index i. 
+				}	// Either continue submitting any contexts returned here as UPDATE/LAST, or
+				// go back to submitting new jobs using the index i.
 
 				i++;
 			}

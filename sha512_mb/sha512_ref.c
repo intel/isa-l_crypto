@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -108,18 +108,18 @@ void sha512_ref(uint8_t * input_data, uint64_t * digest, uint32_t len)
 }
 
 /* From the FIPS, these are the same as for SHA256, but operating on 64 bit words
- * instead of 32 bit. 
+ * instead of 32 bit.
  */
 #define ch(e,f,g) ((e & f) ^ (g & ~e))
 #define maj(a,b,c) ((a & b) ^ (a & c) ^ (b & c))
 
-/* Sigma functions have same form as SHA256 but 
+/* Sigma functions have same form as SHA256 but
  * 	- change the word size to 64bit
- * 	- change the amount to rotate 
+ * 	- change the amount to rotate
  */
 #define ror64(x, r) (((x)>>(r)) ^ ((x)<<(64-(r))))
 
-/* Technically, s0 should be S0 as these are "capital sigma" functions, and likewise the case 
+/* Technically, s0 should be S0 as these are "capital sigma" functions, and likewise the case
  * of the  S0 should be s0, but keep as-is to avoid confusion with the other reference functions.
  */
 #define s0(a) (ror64(a,28) ^ ror64(a,34) ^ ror64(a,39))

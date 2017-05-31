@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -40,12 +40,12 @@ extern md5_mb_x4x2_avx
 ; WINDOWS register definitions
 %define arg1    rcx
 %define arg2    rdx
-                        
+
 %else
 ; UN*X register definitions
 %define arg1    rdi
 %define arg2    rsi
-                        
+
 %endif
 
 ; Common definitions
@@ -59,12 +59,12 @@ extern md5_mb_x4x2_avx
 %define p               r9
 
 %define unused_lanes    rbx
-                        
+
 %define job_rax         rax
 %define len             rax
 
 %define lane            r10
-                        
+
 %define lane_data       r11
 
 %endif ; if 1
@@ -134,7 +134,7 @@ start_loop:
         ; Find min length
 	vmovdqa xmm0, [state + _lens + 0*16]
         vmovdqa xmm1, [state + _lens + 1*16]
-        
+
         vpminud xmm2, xmm0, xmm1        ; xmm2 has {D,C,B,A}
         vpalignr xmm3, xmm3, xmm2, 8    ; xmm3 has {x,x,D,C}
         vpminud xmm2, xmm2, xmm3        ; xmm2 has {x,x,E,F}
@@ -146,7 +146,7 @@ start_loop:
         and	idx, 0xF
         shr	len2, 4
         jz	len_is_0
-       
+
         vpand   xmm2, xmm2, [rel clear_low_nibble]
         vpshufd xmm2, xmm2, 0
 
@@ -165,7 +165,7 @@ len_is_0:
         ; process completed job "idx"
         imul    lane_data, idx, _LANE_DATA_size
         lea     lane_data, [state + _ldata + lane_data]
-        
+
         mov     job_rax, [lane_data + _job_in_lane]
         mov     unused_lanes, [state + _unused_lanes]
         mov     qword [lane_data + _job_in_lane], 0

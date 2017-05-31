@@ -68,4 +68,3 @@ struct slver mh_sha256_finalize_avx512_slver_060002bd;
 struct slver mh_sha256_finalize_avx512_slver = { 0x02bd, 0x00, 0x06 };
 
 #endif // HAVE_AS_KNOWS_AVX512
-

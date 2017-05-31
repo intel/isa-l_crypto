@@ -33,7 +33,7 @@ v2.14
 v2.9
 
 * Multi-buffer MD5 AVX2 tests fixed to work on FreeBSD 9.1 by explicitly aligning
-  structures. 
+  structures.
 
 v2.7
 
@@ -41,7 +41,7 @@ v2.7
 
 
 ================================================================================
-3. CHANGE LOG & FEATURES ADDED 
+3. CHANGE LOG & FEATURES ADDED
 ================================================================================
 
 v2.18
@@ -143,6 +143,6 @@ v2.0
 
 * Added AES XTS units aes_xts_128, aes_xts_256
 
-v1.3 
+v1.3
 
 * Added new multi-buffer units for SHA-256 and MD5: mb_sha256, mb_md5.

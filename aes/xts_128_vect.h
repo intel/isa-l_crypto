@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -42,7 +42,7 @@ struct xts_vector {
 };
 
 /* Define our test vectors statically here. Test vectors are from the standard:
- * "IEEE Standard for Cryptographic Protection of Data on Block-Oriented 
+ * "IEEE Standard for Cryptographic Protection of Data on Block-Oriented
  * Storage Devices"
  * http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4493450
  *
@@ -50,8 +50,8 @@ struct xts_vector {
  * Key1 00000000000000000000000000000000
  * Key2 00000000000000000000000000000000
  * Data Unit Sequence number 0
- * PTX 0000000000000000000000000000000000000000000000000000000000000000 /128bit 
- * TWK 66e94bd4ef8a2c3b884cfa59ca342b2eccd297a8df1559761099f4b39469565c 
+ * PTX 0000000000000000000000000000000000000000000000000000000000000000 /128bit
+ * TWK 66e94bd4ef8a2c3b884cfa59ca342b2eccd297a8df1559761099f4b39469565c
  * CTX 917cf69ebd68b2ec9b9fe9a3eadda692cd43d2f59598ed858c02c2652fbf922e
  * Plaintext length (bytes): 32
  */
@@ -1646,7 +1646,7 @@ struct xts_vector vlist[NVEC] = {
 
 	// pointers to the statically defined vectors here
 
-	// Vector 1 
+	// Vector 1
 	{sizeof(v1_CTX), v1_key1, v1_key2, v1_TW, v1_PTX, v1_CTX}
 	,
 	// Vector 2

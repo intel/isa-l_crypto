@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -32,7 +32,7 @@
 default rel
 
 ; clobbers all XMM registers
-; clobbers all GPRs except arg1 and r8	
+; clobbers all GPRs except arg1 and r8
 
 ;; code to compute octal MD5 using SSE
 
@@ -174,7 +174,7 @@ default rel
 ;;
 ;; A = B +ROL32((A +MAGIC(B,C,D) +data +const), nrot)
 ;;
-; macro MD5_STEP MAGIC_FUN, A,B,C,D, A2,B2,C3,D2, FUN, TMP, FUN2, TMP2, data, 
+; macro MD5_STEP MAGIC_FUN, A,B,C,D, A2,B2,C3,D2, FUN, TMP, FUN2, TMP2, data,
 ;                MD5const, nrot
 %macro MD5_STEP 16
 %define %%MAGIC_FUN     %1

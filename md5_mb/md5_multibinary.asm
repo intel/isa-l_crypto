@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -38,7 +38,7 @@
 default rel
 [bits 64]
 
-; declare the L3 ctx level symbols (these will then call the appropriate 
+; declare the L3 ctx level symbols (these will then call the appropriate
 ; L2 symbols)
 extern md5_ctx_mgr_init_sse
 extern md5_ctx_mgr_submit_sse

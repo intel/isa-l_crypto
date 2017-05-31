@@ -2,7 +2,7 @@
   Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions 
+  modification, are permitted provided that the following conditions
   are met:
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
@@ -65,7 +65,6 @@
 # define MAX_UNALIGNED  (16)
 #endif
 #endif
-
 
 void dump_table(char *title, uint8_t * table, uint8_t count)
 {
@@ -307,8 +306,7 @@ int check_strm_vector(struct gcm_data *gdata, gcm_vector * vector, int test_len)
 			stream = malloc(i - last_break);
 			memcpy(stream, vector->P + last_break, i - last_break);
 		}
-		aesni_gcm128_enc_update(gdata, vector->C + last_break, stream,
-					i - last_break);
+		aesni_gcm128_enc_update(gdata, vector->C + last_break, stream, i - last_break);
 		if (i - last_break != 0)
 			free(stream);
 
@@ -870,8 +868,7 @@ int check_256_strm_vector(struct gcm_data *gdata, gcm_vector * vector, int test_
 			memcpy(stream, vector->P + last_break, i - last_break);
 		}
 
-		aesni_gcm256_enc_update(gdata, vector->C + last_break, stream,
-					i - last_break);
+		aesni_gcm256_enc_update(gdata, vector->C + last_break, stream, i - last_break);
 		if (i - last_break != 0)
 			free(stream);
 
@@ -917,8 +914,7 @@ int check_256_strm_vector(struct gcm_data *gdata, gcm_vector * vector, int test_
 			memcpy(stream, vector->C + last_break, i - last_break);
 		}
 
-		aesni_gcm256_dec_update(gdata, vector->P + last_break, stream,
-					i - last_break);
+		aesni_gcm256_dec_update(gdata, vector->P + last_break, stream, i - last_break);
 		if (i - last_break != 0)
 			free(stream);
 
@@ -931,7 +927,6 @@ int check_256_strm_vector(struct gcm_data *gdata, gcm_vector * vector, int test_
 
 		last_break = i;
 		i += (rand() % test_len / 32) & ALIGNMENT_MASK;
-
 
 	}
 	aesni_gcm256_dec_update(gdata, vector->P + last_break, vector->C + last_break,
@@ -984,7 +979,7 @@ int test_gcm_strm_efence(void)
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % TEST_LEN);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))
@@ -1072,11 +1067,11 @@ int test_gcm_strm_combinations(int test_len)
 	printf("AES GCM random test vectors with random stream of average size %d:",
 	       test_len / 64);
 	for (t = 0; RANDOMS > t; t++) {
-		int Plen = 0; // (rand() % test_len);
+		int Plen = 0;	// (rand() % test_len);
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % test_len);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))
@@ -1166,7 +1161,7 @@ int test_gcm_combinations(void)
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % TEST_LEN);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))
@@ -1256,7 +1251,7 @@ int test_gcm256_combinations(void)
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % TEST_LEN);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))
@@ -1349,7 +1344,7 @@ int test_gcm256_strm_combinations(int test_len)
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % test_len);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))
@@ -1831,7 +1826,7 @@ int test_gcm_strm_combinations2(int length, int start, int breaks)
 		//lengths must be a multiple of 4 bytes
 		int aad_len = (rand() % TEST_LEN);
 		int offset = (rand() % MAX_UNALIGNED);
-		if(offset == 0 && aad_len == 0)
+		if (offset == 0 && aad_len == 0)
 			offset = OFFSET_BASE_VALUE;
 
 		if (0 == (t % 25))

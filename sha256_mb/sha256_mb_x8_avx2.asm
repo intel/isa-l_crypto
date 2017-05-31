@@ -2,7 +2,7 @@
 ;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
-;  modification, are permitted provided that the following conditions 
+;  modification, are permitted provided that the following conditions
 ;  are met:
 ;    * Redistributions of source code must retain the above copyright
 ;      notice, this list of conditions and the following disclaimer.
@@ -38,14 +38,14 @@ default rel
 
 ;; Function clobbers: rax, rcx, rdx,   rbx, rsi, rdi, r9-r15; ymm0-15
 ;; Windows clobbers:  rax rbx     rdx rsi rdi        r9 r10 r11 r12 r13 r14 r15
-;; Windows preserves:         rcx             rbp r8                        
+;; Windows preserves:         rcx             rbp r8
 ;;
 ;; Linux clobbers:    rax rbx rcx rdx rsi            r9 r10 r11 r12 r13 r14 r15
-;; Linux preserves:                       rdi rbp r8                          
+;; Linux preserves:                       rdi rbp r8
 ;;
 ;; clobbers ymm0-15
 
-%ifidn __OUTPUT_FORMAT__, elf64 
+%ifidn __OUTPUT_FORMAT__, elf64
  ; Linux definitions
      %define arg1 	rdi
      %define arg2	rsi
@@ -65,7 +65,7 @@ default rel
 
 %define IDX     rax
 %define ROUND	rbx
-%define TBL	reg3 
+%define TBL	reg3
 
 %define inp0 r9
 %define inp1 r10
@@ -145,7 +145,7 @@ endstruc
 %define _DIGEST	stack_frame.digest
 %define _YTMP	stack_frame.ytmp
 %define _RSP_SAVE	stack_frame.rsp
-    
+
 %define YTMP0	rsp + _YTMP + 0*SZ8
 %define YTMP1	rsp + _YTMP + 1*SZ8
 %define YTMP2	rsp + _YTMP + 2*SZ8
@@ -329,7 +329,7 @@ endstruc
 %endm
 
 
-;; void sha256_x8_avx2(SHA256_ARGS *args, uint64_t bytes); 
+;; void sha256_x8_avx2(SHA256_ARGS *args, uint64_t bytes);
 ;; arg 1 : STATE : pointer to input data
 ;; arg 2 : INP_SIZE  : size of input in blocks
 global sha256_mb_x8_avx2:function internal
@@ -337,7 +337,7 @@ align 16
 sha256_mb_x8_avx2:
 	; general registers preserved in outer calling routine
 	; outer calling routine saves all the XMM registers
-	
+
 	; save rsp, allocate 32-byte aligned for local variables
 	mov	IDX, rsp
 	sub	rsp, FRAMESZ
@@ -345,7 +345,7 @@ sha256_mb_x8_avx2:
 	mov	[rsp + _RSP_SAVE], IDX
 
 
-	;; Load the pre-transposed incoming digest. 
+	;; Load the pre-transposed incoming digest.
 	vmovdqu	a,[STATE + 0*SHA256_DIGEST_ROW_SIZE]
 	vmovdqu	b,[STATE + 1*SHA256_DIGEST_ROW_SIZE]
 	vmovdqu	c,[STATE + 2*SHA256_DIGEST_ROW_SIZE]
@@ -356,7 +356,7 @@ sha256_mb_x8_avx2:
 	vmovdqu	h,[STATE + 7*SHA256_DIGEST_ROW_SIZE]
 
 	lea	TBL,[K256_8_MB]
-    
+
 	;; load the address of each of the 4 message lanes
 	;; getting ready to transpose input onto stack
 	mov	inp0,[STATE + _args_data_ptr + 0*PTR_SZ]
@@ -409,22 +409,22 @@ lloop:
 	vmovdqa	[YTMP1], TT5
 	vmovdqa	[YTMP2], TT6
 	vmovdqa	[YTMP3], TT7
-	ROUND_00_15	TT0,(i*8+0) 
+	ROUND_00_15	TT0,(i*8+0)
 	vmovdqa	TT0, [YTMP0]
-	ROUND_00_15	TT1,(i*8+1) 
+	ROUND_00_15	TT1,(i*8+1)
 	vmovdqa	TT1, [YTMP1]
-	ROUND_00_15	TT2,(i*8+2) 
+	ROUND_00_15	TT2,(i*8+2)
 	vmovdqa	TT2, [YTMP2]
-	ROUND_00_15	TT3,(i*8+3) 
+	ROUND_00_15	TT3,(i*8+3)
 	vmovdqa	TT3, [YTMP3]
-	ROUND_00_15	TT0,(i*8+4) 
-	ROUND_00_15	TT1,(i*8+5) 
-	ROUND_00_15	TT2,(i*8+6) 
-	ROUND_00_15	TT3,(i*8+7) 
+	ROUND_00_15	TT0,(i*8+4)
+	ROUND_00_15	TT1,(i*8+5)
+	ROUND_00_15	TT2,(i*8+6)
+	ROUND_00_15	TT3,(i*8+7)
 %assign i (i+1)
 %endrep
 	add	IDX, 4*4*4
-    
+
 %assign i (i*8)
 
 	jmp	Lrounds_16_xx
@@ -477,12 +477,12 @@ Lrounds_16_xx:
 	add	inp6, IDX
 	mov	[STATE + _args_data_ptr + 6*8], inp6
 	add	inp7, IDX
-	mov	[STATE + _args_data_ptr + 7*8], inp7	
+	mov	[STATE + _args_data_ptr + 7*8], inp7
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
 	mov	rsp, [rsp + _RSP_SAVE]
-	ret 
+	ret
 
 section .data
 align 64
