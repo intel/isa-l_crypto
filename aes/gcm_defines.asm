@@ -35,13 +35,6 @@
 
 
 ;;;;;;
-; Remove the need for different yasm commandlines on Linux vs Windows
-%ifidn __OUTPUT_FORMAT__, elf64
-%define LINUX
-%else
-%define WIN_ABI
-%endif
-
 
 section .data
 
@@ -59,7 +52,9 @@ SHIFT_MASK      dq     0x0706050403020100, 0x0f0e0d0c0b0a0908
 ALL_F           dq     0xffffffffffffffff, 0xffffffffffffffff
 ZERO            dq     0x0000000000000000, 0x0000000000000000
 ONE             dq     0x0000000000000001, 0x0000000000000000
+TWO             dq     0x0000000000000002, 0x0000000000000000
 ONEf            dq     0x0000000000000000, 0x0100000000000000
+TWOf            dq     0x0000000000000000, 0x0200000000000000
 
 section .text
 
@@ -87,6 +82,7 @@ section .text
 ;} gcm_data;
 
 %define HashKey         16*15    ; store HashKey <<1 mod poly here
+%define HashKey_1       16*15    ; store HashKey <<1 mod poly here
 %define HashKey_2       16*16    ; store HashKey^2 <<1 mod poly here
 %define HashKey_3       16*17    ; store HashKey^3 <<1 mod poly here
 %define HashKey_4       16*18    ; store HashKey^4 <<1 mod poly here
@@ -102,15 +98,17 @@ section .text
 %define HashKey_6_k     16*28   ; store XOR of High 64 bits and Low 64 bits of  HashKey^6 <<1 mod poly here (for Karatsuba purposes)
 %define HashKey_7_k     16*29   ; store XOR of High 64 bits and Low 64 bits of  HashKey^7 <<1 mod poly here (for Karatsuba purposes)
 %define HashKey_8_k     16*30   ; store XOR of High 64 bits and Low 64 bits of  HashKey^8 <<1 mod poly here (for Karatsuba purposes)
-%define AadHash		16*31	; store current Hash of data which has been input
-%define AadLen		16*32	; store length of input data which will not be encrypted or decrypted
-%define InLen		16*32+8	; store length of input data which will be encrypted or decrypted
-%define PBlockEncKey	16*33	; encryption key for the partial block at the end of the previous update
-%define OrigIV		16*34	; input IV
-%define CurCount	16*35	; Current counter for generation of encryption key
-%define PBlockLen	16*36	; length of partial block at the end of the previous update
+
+%define AadHash		16*0	; store current Hash of data which has been input
+%define AadLen		16*1	; store length of input data which will not be encrypted or decrypted
+%define InLen		(16*1)+8 ; store length of input data which will be encrypted or decrypted
+%define PBlockEncKey	16*2	; encryption key for the partial block at the end of the previous update
+%define OrigIV		16*3	; input IV
+%define CurCount	16*4	; Current counter for generation of encryption key
+%define PBlockLen	16*5	; length of partial block at the end of the previous update
 
 %define reg(q) xmm %+ q
+%define arg(x) [r14 + STACK_OFFSET + 8*x]
 
 
 
@@ -120,11 +118,12 @@ section .text
     %xdefine arg2 rdx
     %xdefine arg3 r8
     %xdefine arg4 r9
-    %xdefine arg5 [r14 + STACK_OFFSET + 8*5]
+    %xdefine arg5 rsi ;[r14 + STACK_OFFSET + 8*5] - need push and load
     %xdefine arg6 [r14 + STACK_OFFSET + 8*6]
     %xdefine arg7 [r14 + STACK_OFFSET + 8*7]
     %xdefine arg8 [r14 + STACK_OFFSET + 8*8]
     %xdefine arg9 [r14 + STACK_OFFSET + 8*9]
+    %xdefine arg10 [r14 + STACK_OFFSET + 8*10]
 
 %else
     %xdefine arg1 rdi
@@ -136,7 +135,7 @@ section .text
     %xdefine arg7 [r14 + STACK_OFFSET + 8*1]
     %xdefine arg8 [r14 + STACK_OFFSET + 8*2]
     %xdefine arg9 [r14 + STACK_OFFSET + 8*3]
-
+    %xdefine arg10 [r14 + STACK_OFFSET + 8*4]
 %endif
 
 %ifdef NT_LDST

@@ -63,6 +63,9 @@ other_src   += aes/cbc_common.asm aes/cbc_std_vectors.h
 other_src   += aes/gcm_vectors.h aes/ossl_helper.h
 other_src   += aes/xts_128_vect.h
 other_src   += aes/xts_256_vect.h
+other_src   += aes/gcm_sse.asm
+other_src   += aes/gcm_avx_gen2.asm
+other_src   += aes/gcm_avx_gen4.asm
 
 check_tests += aes/cbc_std_vectors_test
 check_tests += aes/gcm_std_vectors_test

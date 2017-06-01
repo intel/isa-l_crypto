@@ -30,9 +30,25 @@
 #include <aes_gcm.h>
 #include <aes_keyexp.h>
 
-void aes_keyexp_128_enc(uint8_t *, uint8_t *);
-void aesni_gcm128_precomp(struct gcm_data *my_ctx_data);
-void aesni_gcm256_precomp(struct gcm_data *my_ctx_data);
+void aes_keyexp_128_enc(const void *, uint8_t *);
+void aes_gcm_precomp_128(struct gcm_key_data *key_data);
+void aes_gcm_precomp_256(struct gcm_key_data *key_data);
+
+void aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
+{
+	aes_keyexp_128_enc(key, key_data->expanded_keys);
+	aes_gcm_precomp_128(key_data);
+}
+
+void aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
+{
+	aes_keyexp_128_enc(key, key_data->expanded_keys);
+	aes_gcm_precomp_256(key_data);
+}
+
+/*
+ * Old interface pre functions
+ */
 
 void aesni_gcm128_pre(uint8_t * key, struct gcm_data *gdata)
 {
@@ -41,8 +57,7 @@ void aesni_gcm128_pre(uint8_t * key, struct gcm_data *gdata)
 	// Prefill the Sub Hash key values for encoding the tag
 	//////
 	aes_keyexp_128_enc(key, (uint8_t *) gdata->expanded_keys);
-	aesni_gcm128_precomp(gdata);
-
+	aes_gcm_precomp_128((struct gcm_key_data *)gdata);
 }
 
 void aesni_gcm256_pre(uint8_t * key, struct gcm_data *gdata)
@@ -53,8 +68,162 @@ void aesni_gcm256_pre(uint8_t * key, struct gcm_data *gdata)
 	// Prefill the Sub Hash key values for encoding the tag
 	//////
 	aes_keyexp_256(key, gdata->expanded_keys, tmp.expanded_keys);
-	aesni_gcm256_precomp(gdata);
+	aes_gcm_precomp_256((struct gcm_key_data *)gdata);
 
+}
+
+/*
+ * GCM compatibility layer for old interface
+ */
+
+void aesni_gcm128_enc(struct gcm_data *my_ctx_data,
+		      uint8_t * out,
+		      uint8_t const *in,
+		      uint64_t plaintext_len,
+		      uint8_t * iv,
+		      uint8_t const *aad,
+		      uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_enc_128((struct gcm_key_data *)my_ctx_data,
+			(struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			out, in, plaintext_len, iv, aad, aad_len, auth_tag, auth_tag_len);
+
+	return;
+}
+
+void aesni_gcm256_enc(struct gcm_data *my_ctx_data,
+		      uint8_t * out,
+		      uint8_t const *in,
+		      uint64_t plaintext_len,
+		      uint8_t * iv,
+		      uint8_t const *aad,
+		      uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_enc_256((struct gcm_key_data *)my_ctx_data,
+			(struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			out, in, plaintext_len, iv, aad, aad_len, auth_tag, auth_tag_len);
+
+	return;
+}
+
+void aesni_gcm128_dec(struct gcm_data *my_ctx_data,
+		      uint8_t * out,
+		      uint8_t const *in,
+		      uint64_t plaintext_len,
+		      uint8_t * iv,
+		      uint8_t const *aad,
+		      uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_dec_128((struct gcm_key_data *)my_ctx_data,
+			(struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			out, in, plaintext_len, iv, aad, aad_len, auth_tag, auth_tag_len);
+	return;
+}
+
+void aesni_gcm256_dec(struct gcm_data *my_ctx_data,
+		      uint8_t * out,
+		      uint8_t const *in,
+		      uint64_t plaintext_len,
+		      uint8_t * iv,
+		      uint8_t const *aad,
+		      uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_dec_256((struct gcm_key_data *)my_ctx_data,
+			(struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			out, in, plaintext_len, iv, aad, aad_len, auth_tag, auth_tag_len);
+	return;
+}
+
+void aesni_gcm128_init(struct gcm_data *my_ctx_data,
+		       uint8_t * iv, uint8_t const *aad, uint64_t aad_len)
+{
+
+	aes_gcm_init_128((struct gcm_key_data *)my_ctx_data,
+			 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			 iv, aad, aad_len);
+	return;
+}
+
+void aesni_gcm256_init(struct gcm_data *my_ctx_data,
+		       uint8_t * iv, uint8_t const *aad, uint64_t aad_len)
+{
+
+	aes_gcm_init_256((struct gcm_key_data *)my_ctx_data,
+			 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			 iv, aad, aad_len);
+	return;
+}
+
+void aesni_gcm128_enc_update(struct gcm_data *my_ctx_data,
+			     uint8_t * out, const uint8_t * in, uint64_t len)
+{
+	aes_gcm_enc_128_update((struct gcm_key_data *)my_ctx_data,
+			       (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			       out, in, len);
+	return;
+}
+
+void aesni_gcm256_enc_update(struct gcm_data *my_ctx_data,
+			     uint8_t * out, const uint8_t * in, uint64_t len)
+{
+	aes_gcm_enc_256_update((struct gcm_key_data *)my_ctx_data,
+			       (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			       out, in, len);
+	return;
+}
+
+void aesni_gcm128_dec_update(struct gcm_data *my_ctx_data,
+			     uint8_t * out, const uint8_t * in, uint64_t len)
+{
+	aes_gcm_dec_128_update((struct gcm_key_data *)my_ctx_data,
+			       (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			       out, in, len);
+	return;
+}
+
+void aesni_gcm256_dec_update(struct gcm_data *my_ctx_data,
+			     uint8_t * out, const uint8_t * in, uint64_t len)
+{
+	aes_gcm_dec_256_update((struct gcm_key_data *)my_ctx_data,
+			       (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+			       out, in, len);
+	return;
+}
+
+void aesni_gcm128_enc_finalize(struct gcm_data *my_ctx_data,
+			       uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_enc_128_finalize((struct gcm_key_data *)my_ctx_data,
+				 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+				 auth_tag, auth_tag_len);
+	return;
+}
+
+void aesni_gcm256_enc_finalize(struct gcm_data *my_ctx_data,
+			       uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_enc_256_finalize((struct gcm_key_data *)my_ctx_data,
+				 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+				 auth_tag, auth_tag_len);
+	return;
+}
+
+void aesni_gcm128_dec_finalize(struct gcm_data *my_ctx_data,
+			       uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_dec_128_finalize((struct gcm_key_data *)my_ctx_data,
+				 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+				 auth_tag, auth_tag_len);
+	return;
+}
+
+void aesni_gcm256_dec_finalize(struct gcm_data *my_ctx_data,
+			       uint8_t * auth_tag, uint64_t auth_tag_len)
+{
+	aes_gcm_dec_256_finalize((struct gcm_key_data *)my_ctx_data,
+				 (struct gcm_context_data *)&(my_ctx_data->aad_hash),
+				 auth_tag, auth_tag_len);
+	return;
 }
 
 struct slver {
