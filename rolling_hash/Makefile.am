@@ -1,8 +1,8 @@
 ########################################################################
-#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#  Copyright(c) 2011-2017 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
-#  modification, are permitted provided that the following conditions 
+#  modification, are permitted provided that the following conditions
 #  are met:
 #    * Redistributions of source code must retain the above copyright
 #      notice, this list of conditions and the following disclaimer.
@@ -27,15 +27,18 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-units     = sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 mh_sha256 aes rolling_hash
+lsrc         += rolling_hash/rolling_hashx_base.c
+lsrc         += rolling_hash/rolling_hash2.c
+lsrc         += rolling_hash/rolling_hash2_until_04.asm
+lsrc         += rolling_hash/rolling_hash2_until_00.asm
+lsrc         += rolling_hash/rolling_hash2_multibinary.asm
 
-default: lib
+src_include  += -I $(srcdir)/rolling_hash
+extern_hdrs  += include/rolling_hashx.h
 
-include $(foreach unit,$(units), $(unit)/Makefile.am)
+other_src    += rolling_hash/rolling_hash2_table.h
+other_src    += include/test.h include/types.h
 
-# Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l_crypto.a
-
-include make.inc
-
-VPATH = . $(units) include
+check_tests  += rolling_hash/rolling_hash2_test
+perf_tests   += rolling_hash/rolling_hash2_perf
+other_tests  += rolling_hash/chunking_with_mb_hash
