@@ -188,9 +188,14 @@ objs = \
 	bin\sha256_for_mh_sha256.obj \
 	bin\murmur3_x64_128_internal.obj \
 	bin\xts_aes_128_multibinary.obj \
-	bin\xts_aes_256_multibinary.obj
+	bin\xts_aes_256_multibinary.obj \
+	bin\rolling_hash2.obj \
+	bin\rolling_hash2_multibinary.obj \
+	bin\rolling_hash2_until_00.obj \
+	bin\rolling_hash2_until_04.obj \
+	bin\rolling_hashx_base.obj
 
-INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Imh_sha256/ -Iaes/ -Iinclude/
+INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Imh_sha256/ -Iaes/ -Irolling_hash/ -Iinclude/
 LINKFLAGS = /nologo
 INCLUDES  = $(INCLUDES) -Ic:\openssl\include
 LINKFLAGS = $(LINKFLAGS) /libpath:c:\openssl\lib
@@ -251,6 +256,10 @@ isa-l_crypto.dll: $(objs)
 {aes}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
 
+{rolling_hash}.c.obj:
+        $(CC) $(CFLAGS) /c -Fo$@ $?
+{rolling_hash}.asm.obj:
+        $(AS) $(AFLAGS) -o $@ $?
 
 # Examples
 ex = sha1_multi_buffer_example.exe
@@ -282,8 +291,8 @@ checks = \
 	xts_128_expanded_key_test.exe \
 	xts_128_test.exe \
 	xts_256_expanded_key_test.exe \
-	xts_256_test.exe
-
+	xts_256_test.exe \
+	rolling_hash2_test.exe
 
 checks: lib $(checks)
 $(checks): $(@B).obj
@@ -311,7 +320,7 @@ tests: lib $(tests)
 $(tests): $(@B).obj
 
 # Performance tests
-perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe mh_sha256_perf.exe
+perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe mh_sha256_perf.exe rolling_hash2_perf.exe
 
 perfs: lib $(perfs)
 $(perfs): $(@B).obj

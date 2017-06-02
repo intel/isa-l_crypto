@@ -62,3 +62,7 @@ mh_sha256_update                       @58
 mh_sha256_finalize                     @59
 mh_sha256_finalize_base                @60
 mh_sha256_update_base                  @61
+rolling_hashx_mask_gen                 @62
+rolling_hash2_run                      @63
+rolling_hash2_reset                    @64
+rolling_hash2_init                     @65
