@@ -28,7 +28,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 %ifidn __OUTPUT_FORMAT__, elf64
-%define WRT_OPT		wrt ..plt
+%define WRT_OPT 	wrt ..plt
 %else
 %define WRT_OPT
 %endif
@@ -58,6 +58,20 @@ extern sha256_ctx_mgr_flush_avx2
  extern sha256_ctx_mgr_flush_avx512
 %endif
 
+%ifdef HAVE_AS_KNOWS_SHANI
+ extern sha256_ctx_mgr_init_sse_ni
+ extern sha256_ctx_mgr_submit_sse_ni
+ extern sha256_ctx_mgr_flush_sse_ni
+%endif
+
+%ifdef HAVE_AS_KNOWS_AVX512
+ %ifdef HAVE_AS_KNOWS_SHANI
+  extern sha256_ctx_mgr_init_avx512_ni
+  extern sha256_ctx_mgr_submit_avx512_ni
+  extern sha256_ctx_mgr_flush_avx512_ni
+ %endif
+%endif
+
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.
 ;;; Therefore, *_dispatch_init is only executed on first call.
 
@@ -67,18 +81,47 @@ mbin_interface sha256_ctx_mgr_submit
 mbin_interface sha256_ctx_mgr_flush
 
 %ifdef HAVE_AS_KNOWS_AVX512
- ; Reuse mbin_dispatch_init6 through replacing base by sse version
- mbin_dispatch_init6 sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, sha256_ctx_mgr_init_sse, sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2, sha256_ctx_mgr_init_avx512
- mbin_dispatch_init6 sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, sha256_ctx_mgr_submit_sse, sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2, sha256_ctx_mgr_submit_avx512
- mbin_dispatch_init6 sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, sha256_ctx_mgr_flush_sse, sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2, sha256_ctx_mgr_flush_avx512
+ ; Reuse mbin_dispatch_init6's extension through replacing base by sse version
+ %ifdef HAVE_AS_KNOWS_SHANI
+  mbin_dispatch_base_to_avx512_shani sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, \
+	sha256_ctx_mgr_init_sse, sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2, \
+	sha256_ctx_mgr_init_avx512, sha256_ctx_mgr_init_sse_ni, sha256_ctx_mgr_init_avx512_ni
+  mbin_dispatch_base_to_avx512_shani sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, \
+	sha256_ctx_mgr_submit_sse, sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2, \
+	sha256_ctx_mgr_submit_avx512, sha256_ctx_mgr_submit_sse_ni, sha256_ctx_mgr_submit_avx512_ni
+  mbin_dispatch_base_to_avx512_shani sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, \
+	sha256_ctx_mgr_flush_sse, sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2, \
+	sha256_ctx_mgr_flush_avx512, sha256_ctx_mgr_flush_sse_ni, sha256_ctx_mgr_flush_avx512_ni
+ %else
+  mbin_dispatch_init6 sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, \
+	sha256_ctx_mgr_init_sse, sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2, \
+	sha256_ctx_mgr_init_avx512
+  mbin_dispatch_init6 sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, \
+	sha256_ctx_mgr_submit_sse, sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2, \
+	sha256_ctx_mgr_submit_avx512
+  mbin_dispatch_init6 sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, \
+	sha256_ctx_mgr_flush_sse, sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2, \
+	sha256_ctx_mgr_flush_avx512
+ %endif
 %else
- mbin_dispatch_init sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2
- mbin_dispatch_init sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2
- mbin_dispatch_init sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2
+ %ifdef HAVE_AS_KNOWS_SHANI
+  mbin_dispatch_sse_to_avx2_shani sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, \
+	sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2, sha256_ctx_mgr_init_sse_ni
+  mbin_dispatch_sse_to_avx2_shani sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, \
+	sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2, sha256_ctx_mgr_submit_sse_ni
+  mbin_dispatch_sse_to_avx2_shani sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, \
+	sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2, sha256_ctx_mgr_flush_sse_ni
+ %else
+  mbin_dispatch_init sha256_ctx_mgr_init, sha256_ctx_mgr_init_sse, \
+	sha256_ctx_mgr_init_avx, sha256_ctx_mgr_init_avx2
+  mbin_dispatch_init sha256_ctx_mgr_submit, sha256_ctx_mgr_submit_sse, \
+	sha256_ctx_mgr_submit_avx, sha256_ctx_mgr_submit_avx2
+  mbin_dispatch_init sha256_ctx_mgr_flush, sha256_ctx_mgr_flush_sse, \
+	sha256_ctx_mgr_flush_avx, sha256_ctx_mgr_flush_avx2
+ %endif
 %endif
 
-
-;;;       func				core, ver, snum
-slversion sha256_ctx_mgr_init,		00,   03,  0160
+;;;       func  			core, ver, snum
+slversion sha256_ctx_mgr_init,  	00,   03,  0160
 slversion sha256_ctx_mgr_submit,	00,   03,  0161
-slversion sha256_ctx_mgr_flush,		00,   03,  0162
+slversion sha256_ctx_mgr_flush, 	00,   03,  0162

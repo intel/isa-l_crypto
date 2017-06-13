@@ -54,6 +54,13 @@ lsrc += sha256_mb/sha256_ctx_avx512.c \
 
 lsrc += sha256_mb/sha256_opt_x1.asm
 
+lsrc += sha256_mb/sha256_ni_x1.asm \
+	sha256_mb/sha256_ctx_sse_ni.c \
+	sha256_mb/sha256_ctx_avx512_ni.c \
+	sha256_mb/sha256_mb_mgr_submit_sse_ni.asm \
+	sha256_mb/sha256_mb_mgr_flush_sse_ni.asm \
+	sha256_mb/sha256_mb_mgr_flush_avx512_ni.asm
+
 src_include += -I $(srcdir)/sha256_mb
 
 extern_hdrs +=  include/sha256_mb.h \
@@ -71,7 +78,8 @@ other_src += 	include/datastruct.asm \
 
 check_tests  +=	sha256_mb/sha256_mb_test  \
 		sha256_mb/sha256_mb_rand_test  \
-		sha256_mb/sha256_mb_rand_update_test
+		sha256_mb/sha256_mb_rand_update_test \
+		sha256_mb/sha256_mb_flush_test
 
 unit_tests   += sha256_mb/sha256_mb_rand_ssl_test
 
@@ -84,6 +92,9 @@ sha256_mb_sha256_mb_rand_test_LDADD = sha256_mb/sha256_ref.lo libisal_crypto.la
 
 sha256_mb_rand_update_test: sha256_ref.o
 sha256_mb_sha256_mb_rand_update_test_LDADD = sha256_mb/sha256_ref.lo libisal_crypto.la
+
+sha256_mb_flush_test: sha256_ref.o
+sha256_mb_sha256_mb_flush_test_LDADD = sha256_mb/sha256_ref.lo libisal_crypto.la
 
 sha256_mb_rand_ssl_test: LDLIBS += -lcrypto
 sha256_mb_sha256_mb_rand_ssl_test_LDFLAGS = -lcrypto
