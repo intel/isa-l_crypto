@@ -152,7 +152,7 @@ APPEND(skip_,I):
 	jz	len_is_0
 
 	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
-	cmp	dword [state + _num_lanes_inuse], SHA1_SB_THRESHOLD_SSE
+	cmp	dword [state + _num_lanes_inuse], SHA1_SB_THRESHOLD_AVX512
 	ja	mb_processing
 
 	; lensN-len2=idx
