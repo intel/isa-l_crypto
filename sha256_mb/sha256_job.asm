@@ -38,6 +38,17 @@
 %define STS_COMPLETED		2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Threshold constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; if number of lanes in use <= threshold, using sb func
+%define SHA256_SB_THRESHOLD_SSE		1
+%define SHA256_SB_THRESHOLD_AVX		1
+%define SHA256_SB_THRESHOLD_AVX2	1
+%define SHA256_SB_THRESHOLD_AVX512	1
+%define SHA256_NI_SB_THRESHOLD_SSE	4 ; shani is faster than sse sha256_mb
+%define SHA256_NI_SB_THRESHOLD_AVX512	6
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Define SHA256_JOB structure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

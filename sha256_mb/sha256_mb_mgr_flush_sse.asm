@@ -33,6 +33,8 @@
 %include "reg_sizes.asm"
 
 extern  sha256_mb_x4_sse
+extern sha256_opt_x1
+
 default rel
 
 %ifidn __OUTPUT_FORMAT__, elf64
@@ -112,9 +114,9 @@ sha256_mb_mgr_flush_sse:
 	movdqa  [rsp + _XMM_SAVE + 16*9], xmm15
 %endif
 
-	mov     unused_lanes, [state + _unused_lanes]
-	bt      unused_lanes, 16+3
-	jc      return_null
+	; use num_lanes_inuse to judge all lanes are empty
+	cmp	dword [state + _num_lanes_inuse], 0
+	jz	return_null
 
 	; find a lane with a non-null job
 	xor     idx, idx
@@ -156,6 +158,23 @@ APPEND(skip_,I):
 	and     len2, ~0xF
 	jz      len_is_0
 
+	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
+	cmp	dword [state + _num_lanes_inuse], SHA256_SB_THRESHOLD_SSE
+	ja	mb_processing
+
+	; lensN-len2=idx
+	shr     len2, 4
+	mov     [state + _lens + idx*4], DWORD(idx)
+	mov	r10, idx
+	or	r10, 0x1000	; sse has 4 lanes *4, r10b is idx, r10b2 is 16
+	; "state" and "args" are the same address, arg1
+	; len is arg2, idx and nlane in r10
+	call    sha256_opt_x1
+	; state and idx are intact
+	jmp	len_is_0
+
+mb_processing:
+
 	sub     lens0, len2
 	sub     lens1, len2
 	sub     lens2, len2
@@ -183,6 +202,8 @@ len_is_0:
 	shl     unused_lanes, 4
 	or      unused_lanes, idx
 	mov     [state + _unused_lanes], unused_lanes
+
+	sub     dword [state + _num_lanes_inuse], 1
 
 	movd    xmm0, [state + _args_digest + 4*idx + 0*16]
 	pinsrd  xmm0, [state + _args_digest + 4*idx + 1*16], 1

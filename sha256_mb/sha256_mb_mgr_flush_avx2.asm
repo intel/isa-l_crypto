@@ -33,6 +33,8 @@
 %include "reg_sizes.asm"
 
 extern sha256_mb_x8_avx2
+extern sha256_opt_x1
+
 default rel
 
 %ifidn __OUTPUT_FORMAT__, elf64
@@ -61,8 +63,8 @@ default rel
 %define job     arg2
 %define len2    arg2
 
-; idx must be a register not clobberred by sha1_mult
-%define idx             r8
+; idx must be a register not clobberred by sha256_mb_x8_avx2 and sha256_opt_x1
+%define idx             rbp
 
 %define unused_lanes    rbx
 %define lane_data       rbx
@@ -117,10 +119,9 @@ sha256_mb_mgr_flush_avx2:
 	vmovdqa  [rsp + _XMM_SAVE + 16*9], xmm15
 %endif
 
-	; if bit (32+3) is set, then all lanes are empty
-	mov	unused_lanes, [state + _unused_lanes]
-	bt	unused_lanes, 32+3
-	jc	return_null
+	; use num_lanes_inuse to judge all lanes are empty
+	cmp	dword [state + _num_lanes_inuse], 0
+	jz	return_null
 
 	; find a lane with a non-null job
 	xor	idx, idx
@@ -169,6 +170,22 @@ APPEND(skip_,I):
 	shr	len2, 4
 	jz	len_is_0
 
+	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
+	cmp	dword [state + _num_lanes_inuse], SHA256_SB_THRESHOLD_AVX2
+	ja	mb_processing
+
+	; lensN-len2=idx
+	mov     [state + _lens + idx*4], DWORD(idx)
+	mov	r10, idx
+	or	r10, 0x2000	; avx2 has 8 lanes *4, r10b is idx, r10b2 is 32
+	; "state" and "args" are the same address, arg1
+	; len is arg2, idx and nlane in r10
+	call    sha256_opt_x1
+	; state and idx are intact
+	jmp	len_is_0
+
+mb_processing:
+
 	vpand   xmm2, xmm2, [rel clear_low_nibble]
 	vpshufd xmm2, xmm2, 0
 
@@ -195,6 +212,8 @@ len_is_0:
 	shl	unused_lanes, 4
 	or	unused_lanes, idx
 	mov	[state + _unused_lanes], unused_lanes
+
+	sub     dword [state + _num_lanes_inuse], 1
 
 	vmovd	xmm0, [state + _args_digest + 4*idx + 0*4*8]
 	vpinsrd	xmm0, [state + _args_digest + 4*idx + 1*4*8], 1

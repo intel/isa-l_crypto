@@ -52,6 +52,8 @@ lsrc += sha256_mb/sha256_ctx_avx512.c \
 	sha256_mb/sha256_mb_mgr_flush_avx512.asm \
 	sha256_mb/sha256_mb_x16_avx512.asm
 
+lsrc += sha256_mb/sha256_opt_x1.asm
+
 src_include += -I $(srcdir)/sha256_mb
 
 extern_hdrs +=  include/sha256_mb.h \
@@ -73,7 +75,8 @@ check_tests  +=	sha256_mb/sha256_mb_test  \
 
 unit_tests   += sha256_mb/sha256_mb_rand_ssl_test
 
-perf_tests  +=  sha256_mb/sha256_mb_vs_ossl_perf
+perf_tests  +=  sha256_mb/sha256_mb_vs_ossl_perf \
+		sha256_mb/sha256_mb_vs_ossl_shortage_perf
 
 sha256_mb_rand_ssl_test: sha256_ref.o
 sha256_mb_rand_test: sha256_ref.o
@@ -87,3 +90,6 @@ sha256_mb_sha256_mb_rand_ssl_test_LDFLAGS = -lcrypto
 
 sha256_mb_vs_ossl_perf: LDLIBS += -lcrypto
 sha256_mb_sha256_mb_vs_ossl_perf_LDFLAGS = -lcrypto
+
+sha256_mb_vs_ossl_shortage_perf: LDLIBS += -lcrypto
+sha256_mb_sha256_mb_vs_ossl_shortage_perf_LDFLAGS = -lcrypto

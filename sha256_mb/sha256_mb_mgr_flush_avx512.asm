@@ -34,6 +34,8 @@
 %ifdef HAVE_AS_KNOWS_AVX512
 
 extern sha256_mb_x16_avx512
+extern sha256_opt_x1
+
 default rel
 
 %ifidn __OUTPUT_FORMAT__, elf64
@@ -62,8 +64,8 @@ default rel
 %define job     arg2
 %define len2    arg2
 
-; idx must be a register not clobberred by sha1_mult
-%define idx             r8
+; idx must be a register not clobberred by sha256_mb_x16_avx2 and sha256_opt_x1
+%define idx             rbp
 
 %define num_lanes_inuse r9
 %define unused_lanes    rbx
@@ -164,6 +166,22 @@ APPEND(skip_,I):
 	and	idx, 0xF
 	shr	len2, 4
 	jz	len_is_0
+
+	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
+	cmp	dword [state + _num_lanes_inuse], SHA256_SB_THRESHOLD_AVX512
+	ja	mb_processing
+
+	; lensN-len2=idx
+	mov     [state + _lens + idx*4], DWORD(idx)
+	mov	r10, idx
+	or	r10, 0x4000	; avx2 has 8 lanes *4, r10b is idx, r10b2 is 32
+	; "state" and "args" are the same address, arg1
+	; len is arg2, idx and nlane in r10
+	call    sha256_opt_x1
+	; state and idx are intact
+	jmp	len_is_0
+
+mb_processing:
 
 	vpand   ymm2, ymm2, [rel clear_low_nibble]
         vpshufd ymm2, ymm2, 0

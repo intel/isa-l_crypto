@@ -151,6 +151,7 @@ sha256_mb_mgr_submit_avx:
 	mov     p, [job + _buffer]
 	mov     [state + _args_data_ptr + 8*lane], p
 
+	add	dword [state + _num_lanes_inuse], 1
 	cmp     unused_lanes, 0xF
 	jne     return_null
 
@@ -199,6 +200,8 @@ len_is_0:
 	shl     unused_lanes, 4
 	or      unused_lanes, idx
 	mov     [state + _unused_lanes], unused_lanes
+
+	sub	dword [state + _num_lanes_inuse], 1
 
 	vmovd    xmm0, [state + _args_digest + 4*idx + 0*16]
 	vpinsrd  xmm0, [state + _args_digest + 4*idx + 1*16], 1
