@@ -58,7 +58,7 @@ else
       AC_MSG_RESULT([no])
     fi
     AC_MSG_CHECKING([for optional yasm SHA-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha1msg1 %xmm5,%xmm4;]])])
+    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha256rnds2 %xmm0,%xmm1,%xmm2;]])])
     if yasm -f elf64 -p gas conftest.c 2> /dev/null; then
       yasm_knows_shani=yes
       AC_MSG_RESULT([yes])
@@ -91,8 +91,8 @@ else
       AC_MSG_RESULT([no])
     fi
     AC_MSG_CHECKING([for optional nasm SHA-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha1msg1 xmm5,xmm4;]])])
-    sed -i -e '/sha1msg1/!d' conftest.c
+    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha256rnds2 xmm2,xmm1,xmm0;]])])
+    sed -i -e '/sha256rnds2/!d' conftest.c
     if nasm -f elf64  conftest.c 2> /dev/null; then
       nasm_knows_shani=yes
       AC_MSG_RESULT([yes])
