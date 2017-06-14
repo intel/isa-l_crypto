@@ -126,15 +126,15 @@ sha1_mb_mgr_submit_sse_ni:
 	mov     [state + _unused_lanes], unused_lanes
 	mov     DWORD(len), [job + _len]
 
-	shl	len, 4
-	or	len, lane
+	shl     len, 4
+	or      len, lane
 
 	mov     [lane_data + _job_in_lane], job
 	mov     [state + _lens + 4*lane], DWORD(len)
 
 	; Load digest words from result_digest
-	movdqa	xmm0, [job + _result_digest + 0*16]
-	mov	DWORD(tmp), [job + _result_digest + 1*16]
+	movdqa  xmm0, [job + _result_digest + 0*16]
+	mov     DWORD(tmp), [job + _result_digest + 1*16]
 	movd    [state + _args_digest + 4*lane + 0*16], xmm0
 	pextrd  [state + _args_digest + 4*lane + 1*16], xmm0, 1
 	pextrd  [state + _args_digest + 4*lane + 2*16], xmm0, 2
@@ -144,7 +144,27 @@ sha1_mb_mgr_submit_sse_ni:
 	mov     p, [job + _buffer]
 	mov     [state + _args_data_ptr + 8*lane], p
 
-	add	dword [state + _num_lanes_inuse], 1
+	add     dword [state + _num_lanes_inuse], 1
+
+	; compare with shani-sb threshold, if num_lanes_sse <= threshold, using shani func
+  %if SHA1_NI_SB_THRESHOLD_SSE >= 4     ; there are 4 lanes in sse mb
+  ; shani glue code
+	mov     idx, len        ; len is (job's len<<4|job's idx)
+	mov     len2, idx
+	and     idx, 0xF
+	and     len2, ~0xF
+	jz      len_is_0
+	; lensN-len2=idx
+	shr     len2, 4
+	mov     [state + _lens + idx*4], DWORD(idx)
+	mov     r10, idx
+	or      r10, 0x1000     ; sse has 4 lanes *4, r10b is idx, r10b2 is 16
+	; "state" and "args" are the same address, arg1
+	; len is arg2, idx and nlane in r10
+	call    sha1_ni_x1
+	; state and idx are intact
+  %else
+  ; original mb code
 	cmp     unused_lanes, 0xF
 	jne     return_null
 
@@ -166,23 +186,6 @@ start_loop:
 	and     len2, ~0xF
 	jz      len_is_0
 
-	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
-	cmp	dword [state + _num_lanes_inuse], SHA1_NI_SB_THRESHOLD_SSE
-	ja	mb_processing
-
-	; lensN-len2=idx
-	shr     len2, 4
-	mov     [state + _lens + idx*4], DWORD(idx)
-	mov	r10, idx
-	or	r10, 0x1000	; sse has 4 lanes *4, r10b is idx, r10b2 is 16
-	; "state" and "args" are the same address, arg1
-	; len is arg2, idx and nlane in r10
-	call    sha1_ni_x1
-	; state and idx are intact
-	jmp	len_is_0
-
-mb_processing:
-
 	sub     lens0, len2
 	sub     lens1, len2
 	sub     lens2, len2
@@ -197,6 +200,7 @@ mb_processing:
 	; len is arg2
 	call    sha1_mb_x4_sse
 	; state and idx are intact
+  %endif
 
 len_is_0:
 	; process completed job "idx"
