@@ -1964,8 +1964,10 @@ FN_NAME(init,_):
 	push	r13
 %ifidn __OUTPUT_FORMAT__, win64
 	; xmm6:xmm15 need to be maintained for Windows
+        push    arg5
 	sub	rsp, 1*16
 	movdqu	[rsp + 0*16],xmm6
+        mov     arg5, [rsp + 1*16 + 8*3 + 8*5]
 %endif
 
 	GCM_INIT arg1, arg2, arg3, arg4, arg5
@@ -1973,6 +1975,7 @@ FN_NAME(init,_):
 %ifidn __OUTPUT_FORMAT__, win64
 	movdqu	xmm6 , [rsp + 0*16]
 	add	rsp, 1*16
+        pop     arg5
 %endif
 	pop	r13
 	pop	r12
