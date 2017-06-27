@@ -193,7 +193,21 @@ objs = \
 	bin\rolling_hash2_multibinary.obj \
 	bin\rolling_hash2_until_00.obj \
 	bin\rolling_hash2_until_04.obj \
-	bin\rolling_hashx_base.obj
+	bin\rolling_hashx_base.obj \
+	bin\sha1_ctx_avx512_ni.obj \
+	bin\sha1_ctx_sse_ni.obj \
+	bin\sha1_mb_mgr_flush_avx512_ni.obj \
+	bin\sha1_mb_mgr_flush_sse_ni.obj \
+	bin\sha1_mb_mgr_submit_sse_ni.obj \
+	bin\sha1_ni_x1.obj \
+	bin\sha1_opt_x1.obj \
+	bin\sha256_ctx_avx512_ni.obj \
+	bin\sha256_ctx_sse_ni.obj \
+	bin\sha256_mb_mgr_flush_avx512_ni.obj \
+	bin\sha256_mb_mgr_flush_sse_ni.obj \
+	bin\sha256_mb_mgr_submit_sse_ni.obj \
+	bin\sha256_ni_x1.obj \
+	bin\sha256_opt_x1.obj
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128 -Imh_sha256/ -Iaes/ -Irolling_hash/ -Iinclude/
 LINKFLAGS = /nologo
@@ -211,10 +225,14 @@ dll: bin isa-l_crypto.dll
 bin: ; -mkdir $@
 
 isa-l_crypto_static.lib: $(objs)
-	lib -out:$@ $?
+	lib -out:$@ @<<
+$?
+<<
 
 isa-l_crypto.dll: $(objs)
-	link -out:$@ -dll -def:isa-l_crypto.def $?
+	link -out:$@ -dll -def:isa-l_crypto.def @<<
+$?
+<<
 
 {sha1_mb}.c.obj:
 	$(CC) $(CFLAGS) /c -Fo$@ $?
@@ -292,7 +310,9 @@ checks = \
 	xts_128_test.exe \
 	xts_256_expanded_key_test.exe \
 	xts_256_test.exe \
-	rolling_hash2_test.exe
+	rolling_hash2_test.exe \
+	sha1_mb_flush_test.exe \
+	sha256_mb_flush_test.exe
 
 checks: lib $(checks)
 $(checks): $(@B).obj
@@ -320,7 +340,27 @@ tests: lib $(tests)
 $(tests): $(@B).obj
 
 # Performance tests
-perfs = md5_mb_vs_ossl_perf.exe sha1_mb_vs_ossl_perf.exe sha256_mb_vs_ossl_perf.exe sha512_mb_vs_ossl_perf.exe cbc_ossl_perf.exe gcm_ossl_perf.exe xts_128_dec_ossl_perf.exe xts_128_dec_perf.exe xts_128_enc_ossl_perf.exe xts_128_enc_perf.exe xts_256_dec_ossl_perf.exe xts_256_dec_perf.exe xts_256_enc_ossl_perf.exe xts_256_enc_perf.exe md5_mb_vs_ossl_perf.exe mh_sha1_perf.exe mh_sha1_murmur3_x64_128_perf.exe mh_sha256_perf.exe rolling_hash2_perf.exe
+perfs = \
+	md5_mb_vs_ossl_perf.exe \
+	sha1_mb_vs_ossl_perf.exe \
+	sha256_mb_vs_ossl_perf.exe \
+	sha512_mb_vs_ossl_perf.exe \
+	cbc_ossl_perf.exe \
+	gcm_ossl_perf.exe \
+	xts_128_dec_ossl_perf.exe \
+	xts_128_dec_perf.exe \
+	xts_128_enc_ossl_perf.exe \
+	xts_128_enc_perf.exe \
+	xts_256_dec_ossl_perf.exe \
+	xts_256_dec_perf.exe \
+	xts_256_enc_ossl_perf.exe \
+	xts_256_enc_perf.exe \
+	mh_sha1_perf.exe \
+	mh_sha1_murmur3_x64_128_perf.exe \
+	mh_sha256_perf.exe \
+	rolling_hash2_perf.exe \
+	sha1_mb_vs_ossl_shortage_perf.exe \
+	sha256_mb_vs_ossl_shortage_perf.exe
 
 perfs: lib $(perfs)
 $(perfs): $(@B).obj
@@ -368,3 +408,7 @@ xts_128_rand_ossl_test.exe:  libeay32.lib
 xts_256_enc_ossl_perf.exe:  libeay32.lib
 xts_256_dec_ossl_perf.exe:  libeay32.lib
 xts_256_rand_ossl_test.exe:  libeay32.lib
+sha1_mb_flush_test.exe: sha1_ref.obj
+sha1_mb_vs_ossl_shortage_perf.exe:  libeay32.lib
+sha256_mb_flush_test.exe: sha256_ref.obj
+sha256_mb_vs_ossl_shortage_perf.exe:  libeay32.lib
