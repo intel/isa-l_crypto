@@ -16,6 +16,8 @@ applications.  ISA-L_crypto includes:
 * AES - block ciphers
   - XTS, GCM, CBC
 
+* Rolling hash - Hash input in a window which moves through the input
+
 See [ISA-L_crypto for updates.](https://github.com/01org/isa-l_crypto)
 For non-crypto ISA-L see [isa-l on github.](https://github.com/01org/isa-l)
 

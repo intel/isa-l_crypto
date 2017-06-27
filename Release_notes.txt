@@ -43,6 +43,24 @@ v2.7
 ================================================================================
 3. CHANGE LOG & FEATURES ADDED
 ================================================================================
+v2.19
+
+* Multi-buffer hash (sha1_mb, sha256_mb)
+
+  - Choose fast single buffer routine to do flush operation if lanes aren't full.
+
+  - Add SHA-NI support for Goldmont and Cannonlake.
+
+* AES-GCM interface updates.
+
+  - New interface separates the expanded keys and other context into two
+  structures.  The old interface is maintained for backward compatibility.
+
+  - User no longer has to append the GCM_IV_END_MARK manually to then end of iv
+  as this is now done automatically.  This update should also improve performance
+  of small packets.
+
+* Rolling hash is released.
 
 v2.18
 
