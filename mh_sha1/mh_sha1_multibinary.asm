@@ -28,12 +28,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-%ifidn __OUTPUT_FORMAT__, elf64
-%define WRT_OPT		wrt ..plt
-%else
-%define WRT_OPT
-%endif
-
 %include "reg_sizes.asm"
 %include "multibinary.asm"
 
