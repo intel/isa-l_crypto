@@ -122,18 +122,22 @@
 %endif
 %endif
 
+%ifndef FUNCT_EXTENSION
+%define FUNCT_EXTENSION
+%endif
+
 %ifdef GCM128_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _128 %+ y %+ avx_gen2
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _128 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 9
 %endif
 
 %ifdef GCM192_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _192 %+ y %+ avx_gen2
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _192 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 11
 %endif
 
 %ifdef GCM256_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _256 %+ y %+ avx_gen2
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _256 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 13
 %endif
 
@@ -1853,6 +1857,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 ;void   aes_gcm_precomp_128_avx_gen2
 ;        (struct gcm_key_data *key_data);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(precomp,_)
 FN_NAME(precomp,_):
 
@@ -1906,6 +1911,7 @@ FN_NAME(precomp,_):
         pop     r13
         pop     r12
         ret
+%endif	; _nt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void   aes_gcm_init_128_avx_gen2(
@@ -1915,6 +1921,7 @@ FN_NAME(precomp,_):
 ;        const   u8 *aad,
 ;        u64     aad_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(init,_)
 FN_NAME(init,_):
 
@@ -1939,6 +1946,7 @@ FN_NAME(init,_):
 	pop	r13
 	pop	r12
 ret
+%endif	; _nt
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1988,6 +1996,7 @@ FN_NAME(dec,_update_):
 ;        u8      *auth_tag,
 ;        u64     auth_tag_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(enc,_finalize_)
 FN_NAME(enc,_finalize_):
 
@@ -2015,6 +2024,7 @@ FN_NAME(enc,_finalize_):
 
 	pop r12
         ret
+%endif	; _nt
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2024,6 +2034,7 @@ FN_NAME(enc,_finalize_):
 ;        u8      *auth_tag,
 ;        u64     auth_tag_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(dec,_finalize_)
 FN_NAME(dec,_finalize_):
 
@@ -2051,6 +2062,7 @@ FN_NAME(dec,_finalize_):
 
 	pop r12
 ret
+%endif	; _nt
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

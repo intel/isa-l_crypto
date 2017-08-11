@@ -35,6 +35,10 @@ extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes
 lsrc     += aes/gcm_multibinary.asm aes/gcm_pre.c
 lsrc     += aes/gcm128_avx_gen2.asm aes/gcm128_avx_gen4.asm aes/gcm128_sse.asm
 lsrc     += aes/gcm256_avx_gen2.asm aes/gcm256_avx_gen4.asm aes/gcm256_sse.asm
+lsrc     += aes/gcm128_avx_gen2_nt.asm aes/gcm128_avx_gen4_nt.asm aes/gcm128_sse_nt.asm
+lsrc     += aes/gcm256_avx_gen2_nt.asm aes/gcm256_avx_gen4_nt.asm aes/gcm256_sse_nt.asm
+lsrc     += aes/gcm_multibinary_nt.asm
+
 lsrc     += aes/keyexp_multibinary.asm
 lsrc     += aes/keyexp_128.asm aes/keyexp_192.asm aes/keyexp_256.asm
 lsrc     += aes/cbc_multibinary.asm

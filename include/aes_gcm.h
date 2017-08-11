@@ -425,6 +425,183 @@ void aes_gcm_pre_256(
 	);
 
 
+
+/* ---- NT versions ---- */
+/**
+ * @brief GCM-AES Encryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of encrypt has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_enc_128_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,         //!< Ciphertext output. Encrypt in-place is allowed
+	uint8_t const *in,    //!< Plaintext input
+	uint64_t len,         //!< Length of data in Bytes for encryption
+	uint8_t *iv,          //!< iv pointer to 12 byte IV structure.
+	                      //!< Internally, library concates 0x00000001 value to it.
+	uint8_t const *aad,   //!< Additional Authentication Data (AAD)
+	uint64_t aad_len,     //!< Length of AAD
+	uint8_t *auth_tag,    //!< Authenticated Tag output
+	uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of 4 bytes).
+	                      //!< Valid values are 16 (most likely), 12 or 8
+	);
+
+/**
+ * @brief GCM-AES Encryption using 256 bit keys, Non-temporal data
+ *
+ * Non-temporal version of encrypt has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_enc_256_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,         //!< Ciphertext output. Encrypt in-place is allowed
+	uint8_t const *in,    //!< Plaintext input
+	uint64_t len,         //!< Length of data in Bytes for encryption
+	uint8_t *iv,          //!< iv pointer to 12 byte IV structure.
+	                      //!< Internally, library concates 0x00000001 value to it.
+	uint8_t const *aad,   //!< Additional Authentication Data (AAD)
+	uint64_t aad_len,     //!< Length of AAD
+	uint8_t *auth_tag,    //!< Authenticated Tag output
+	uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of 4 bytes).
+	                      //!< Valid values are 16 (most likely), 12 or 8
+	);
+
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of decrypt has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_dec_128_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,         //!< Plaintext output. Decrypt in-place is allowed
+	uint8_t const *in,    //!< Ciphertext input
+	uint64_t len,         //!< Length of data in Bytes for decryption
+	uint8_t *iv,          //!< iv pointer to 12 byte IV structure.
+	                      //!< Internally, library concates 0x00000001 value to it.
+	uint8_t const *aad,   //!< Additional Authentication Data (AAD)
+	uint64_t aad_len,     //!< Length of AAD
+	uint8_t *auth_tag,    //!< Authenticated Tag output
+	uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of 4 bytes).
+	                      //!< Valid values are 16 (most likely), 12 or 8
+	);
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of decrypt has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_dec_256_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,         //!< Plaintext output. Decrypt in-place is allowed
+	uint8_t const *in,    //!< Ciphertext input
+	uint64_t len,         //!< Length of data in Bytes for decryption
+	uint8_t *iv,          //!< iv pointer to 12 byte IV structure.
+	                      //!< Internally, library concates 0x00000001 value to it.
+	uint8_t const *aad,   //!< Additional Authentication Data (AAD)
+	uint64_t aad_len,     //!< Length of AAD
+	uint8_t *auth_tag,    //!< Authenticated Tag output
+	uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of 4 bytes).
+	                      //!< Valid values are 16 (most likely), 12 or 8
+	);
+
+
+/**
+ * @brief Encrypt a block of a AES-128-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of encrypt update has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - All partial input buffers must be a multiple of 16 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_enc_128_update_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed.
+	const uint8_t *in,  //!< Plaintext input
+	uint64_t len        //!< Length of data in Bytes for encryption
+	);
+
+/**
+ * @brief Encrypt a block of a AES-256-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of encrypt update has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - All partial input buffers must be a multiple of 16 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_enc_256_update_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed.
+	const uint8_t *in,  //!< Plaintext input
+	uint64_t len        //!< Length of data in Bytes for encryption
+	);
+
+/**
+ * @brief Decrypt a block of a AES-128-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of decrypt update has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - All partial input buffers must be a multiple of 16 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_dec_128_update_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed.
+	const uint8_t *in,  //!< Ciphertext input
+	uint64_t len        //!< Length of data in Bytes for decryption
+	);
+
+/**
+ * @brief Decrypt a block of a AES-256-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of decrypt update has additional restrictions:
+ * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - All partial input buffers must be a multiple of 16 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires SSE4.1 and AESNI
+ */
+void aes_gcm_dec_256_update_nt(
+	const struct gcm_key_data *key_data,   //!< GCM expanded key data
+	struct gcm_context_data *context_data, //!< GCM operation context data
+	uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed.
+	const uint8_t *in,  //!< Ciphertext input
+	uint64_t len        //!< Length of data in Bytes for decryption
+	);
+
+
 /* ------------------ Old interface for backward compatability ------------ */
 
 /**
