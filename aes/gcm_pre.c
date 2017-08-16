@@ -234,6 +234,12 @@ struct slver {
 };
 
 // Version info
+struct slver aes_gcm_pre_128_slver_000002c7;
+struct slver aes_gcm_pre_128_slver = { 0x02c7, 0x00, 0x00 };
+
+struct slver aes_gcm_pre_256_slver_000002d7;
+struct slver aes_gcm_pre_256_slver = { 0x02d7, 0x00, 0x00 };
+
 struct slver aesni_gcm128_pre_slver_00000287;
 struct slver aesni_gcm128_pre_slver = { 0x0287, 0x00, 0x00 };
 

@@ -150,6 +150,20 @@ mbin_dispatch_init aes_gcm_precomp_256, aes_gcm_precomp_256_sse, aes_gcm_precomp
 
 
 ;;;       func				core, ver, snum
+slversion aes_gcm_enc_128,		00,   00,  02c0
+slversion aes_gcm_dec_128,		00,   00,  02c1
+slversion aes_gcm_init_128,		00,   00,  02c2
+slversion aes_gcm_enc_128_update,	00,   00,  02c3
+slversion aes_gcm_dec_128_update,	00,   00,  02c4
+slversion aes_gcm_enc_128_finalize,	00,   00,  02c5
+slversion aes_gcm_dec_128_finalize,	00,   00,  02c6
+slversion aes_gcm_enc_256,		00,   00,  02d0
+slversion aes_gcm_dec_256,		00,   00,  02d1
+slversion aes_gcm_init_256,		00,   00,  02d2
+slversion aes_gcm_enc_256_update,	00,   00,  02d3
+slversion aes_gcm_dec_256_update,	00,   00,  02d4
+slversion aes_gcm_enc_256_finalize,	00,   00,  02d5
+slversion aes_gcm_dec_256_finalize,	00,   00,  02d6
 slversion aesni_gcm128_enc,		00,   00,  0280
 slversion aesni_gcm128_dec,		00,   00,  0281
 slversion aesni_gcm128_init,		00,   00,  0282
