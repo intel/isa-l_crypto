@@ -151,6 +151,13 @@ objs = \
 	bin\gcm256_sse.obj \
 	bin\gcm_multibinary.obj \
 	bin\gcm_pre.obj \
+	bin\gcm128_avx_gen2_nt.obj \
+	bin\gcm128_avx_gen4_nt.obj \
+	bin\gcm128_sse_nt.obj \
+	bin\gcm256_avx_gen2_nt.obj \
+	bin\gcm256_avx_gen4_nt.obj \
+	bin\gcm256_sse_nt.obj \
+	bin\gcm_multibinary_nt.obj \
 	bin\keyexp_128.obj \
 	bin\keyexp_192.obj \
 	bin\keyexp_256.obj \
@@ -306,6 +313,7 @@ checks = \
 	mh_sha256_test.exe \
 	cbc_std_vectors_test.exe \
 	gcm_std_vectors_test.exe \
+	gcm_nt_std_vectors_test.exe \
 	xts_128_expanded_key_test.exe \
 	xts_128_test.exe \
 	xts_256_expanded_key_test.exe \
