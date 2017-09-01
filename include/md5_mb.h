@@ -170,7 +170,7 @@ typedef struct {
 	MD5_JOB        job;             // Must be at struct offset 0.
 	HASH_CTX_STS   status;		//!< Context status flag
 	HASH_CTX_ERROR error;		//!< Context error flag
-	uint32_t       total_length;	//!< Running counter of length processed for this CTX's job
+	uint64_t       total_length;	//!< Running counter of length processed for this CTX's job
 	const void*    incoming_buffer; //!< pointer to data input buffer for this CTX's job
 	uint32_t       incoming_buffer_length; //!< length of buffer for this job in bytes.
 	uint8_t        partial_block_buffer[MD5_BLOCK_SIZE * 2]; //!< CTX partial blocks

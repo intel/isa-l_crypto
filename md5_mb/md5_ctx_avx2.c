@@ -36,7 +36,7 @@
 #endif
 
 static inline void hash_init_digest(MD5_WORD_T * digest);
-static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint32_t total_len);
+static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len);
 static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx);
 
 void md5_ctx_mgr_init_avx2(MD5_HASH_CTX_MGR * mgr)
@@ -218,9 +218,9 @@ static inline void hash_init_digest(MD5_WORD_T * digest)
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint32_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len)
 {
-	uint32_t i = total_len & (MD5_BLOCK_SIZE - 1);
+	uint32_t i = (uint32_t) (total_len & (MD5_BLOCK_SIZE - 1));
 
 	// memset(&padblock[i], 0, MD5_BLOCK_SIZE);
 	memclr_fixedlen(&padblock[i], MD5_BLOCK_SIZE);
