@@ -45,23 +45,6 @@ extern "C" {
 # define inline __inline
 #endif
 
-#ifndef __SSE__
-# define __ERR_COMPILER_FLAGS
-#endif
-
-#ifdef __ERR_COMPILER_FLAGS
-
-#ifdef __GNUC__
-# error "The compiler must be configured to optimize for speed and support at least SSE instructions."
-# error "Please specify the following gcc flags: -O3 [-mavx]"
-#endif
-
-#ifdef _MSC_VER
-# error "Please compile with ''/O2 /D__SSE__ /arch:SSE''  -OR-  ''/O2 /D__AVX__ /arch:AVX''"
-#endif
-
-#endif
-
 #include <stdint.h>
 #include <immintrin.h>
 
