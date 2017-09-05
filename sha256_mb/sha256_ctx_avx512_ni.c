@@ -48,7 +48,7 @@
 #if defined(HAVE_AS_KNOWS_AVX512) && defined(HAVE_AS_KNOWS_SHANI)
 
 static inline void hash_init_digest(SHA256_WORD_T * digest);
-static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint32_t total_len);
+static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint64_t total_len);
 static SHA256_HASH_CTX *sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR * mgr,
 						SHA256_HASH_CTX * ctx);
 
@@ -231,9 +231,9 @@ static inline void hash_init_digest(SHA256_WORD_T * digest)
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint32_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint64_t total_len)
 {
-	uint32_t i = total_len & (SHA256_BLOCK_SIZE - 1);
+	uint32_t i = (uint32_t) (total_len & (SHA256_BLOCK_SIZE - 1));
 
 	memclr_fixedlen(&padblock[i], SHA256_BLOCK_SIZE);
 	padblock[i] = 0x80;
