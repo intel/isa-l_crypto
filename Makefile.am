@@ -35,7 +35,7 @@ include rolling_hash/Makefile.am
 
 # LIB version info not necessarily the same as package version
 LIBISAL_CURRENT=2
-LIBISAL_REVISION=19
+LIBISAL_REVISION=20
 LIBISAL_AGE=0
 
 lib_LTLIBRARIES = libisal_crypto.la

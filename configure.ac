@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.69)
 AC_INIT([libisal_crypto],
-        [2.19.0],
+        [2.20.0],
         [sg.support.isal@intel.com],
         [isa-l_crypto],
         [http://01.org/storage-acceleration-library])
