@@ -1,5 +1,5 @@
 ================================================================================
-v2.19 Intel Intelligent Storage Acceleration Library Crypto Release Notes
+v2.20 Intel Intelligent Storage Acceleration Library Crypto Release Notes
 ================================================================================
 
 ================================================================================
@@ -20,6 +20,13 @@ RELEASE NOTE CONTENTS
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
+v2.20
+
+* Fix issue with new aes_gcm API, aes_gcm_pre_256 was incorrect.
+
+* Multi-buffer hash max length extended.  Previous max length for
+  {sha1,sha256,sha512,md5}_mb was 4095MB.  While there is still a 4GB limit for
+  each submit, the total hashed length can now be larger then 4GB.
 
 v2.18
 
@@ -43,6 +50,14 @@ v2.7
 ================================================================================
 3. CHANGE LOG & FEATURES ADDED
 ================================================================================
+v2.20
+
+* New functions
+  - Non-temporal versions of aes_gcm added.
+
+* Multi-buffer hash improvement
+  - Increase max length of hash in {sha1,sha256,sha512,md5}_mb to > 4GB.
+
 v2.19
 
 * Multi-buffer hash (sha1_mb, sha256_mb)
