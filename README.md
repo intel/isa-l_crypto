@@ -55,3 +55,4 @@ Other targets include:
 * `make tests` : create additional unit tests
 * `make perfs` : create included performance tests
 * `make ex`    : build examples
+* `make doc`   : build API manual

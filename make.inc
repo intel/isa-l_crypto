@@ -39,11 +39,12 @@
 #	trace - get simulator trace
 #	clean - remove object files
 
-version ?= #auto filled on release
+version ?= 2.20.0
 
 CC  = gcc
 AS  = yasm
 SIM = sde $(SIMFLAGS) --
+AWK = awk
 
 DEBUG      = -g
 DEBUG_yasm = -g dwarf2
@@ -202,6 +203,22 @@ $(so_lib_name): $(shared_objs) $(aobjs)
 	@$(CC) $(CFLAGS) --shared  $(LDFLAGS) -o $@ $^
 	@(cd $(@D); ln -f -s $(so_lib_inst) $(soname))
 
+isa-l_crypto.h:
+	@echo 'Building $@'
+	@echo ''			>> $@
+	@echo '#ifndef _ISAL_CRYPTO_H_'	>> $@
+	@echo '#define _ISAL_CRYPTO_H_'	>> $@
+	@echo ''			>> $@
+	@echo '#define.ISAL_CRYPTO_MAJOR_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$3}' >> $@
+	@echo '#define.ISAL_CRYPTO_MINOR_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$4}' >> $@
+	@echo '#define.ISAL_CRYPTO_PATCH_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$5}' >> $@
+	@echo '#define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch)  ((maj) * 0x10000 + (min) * 0x100 + (patch))' >> $@
+	@echo '#define ISAL_CRYPTO_VERSION ISAL_CRYPTO_MAKE_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION, ISAL_CRYPTO_PATCH_VERSION)' >> $@
+	@echo ''			>> $@
+	@for unit in $(sort $(extern_hdrs)); do echo "#include <isa-l_crypto/$$unit>" | sed -e 's;include/;;' >> $@; done
+	@echo '#endif //_ISAL_CRYPTO_H_'	>> $@
+
+
 # Target for install
 prefix = /usr/local
 install_dirs = $(prefix)/lib $(prefix)/include/isa-l_crypto
@@ -209,14 +226,17 @@ $(install_dirs): ; mkdir -p $@
 install: $(sort $(extern_hdrs)) | $(install_dirs) $(lib_name) $(so_lib_name) isa-l_crypto.h
 	install -m 644 $(lib_name) $(prefix)/lib/libisal_crypto.a
 	install -m 644 $^ $(prefix)/include/isa-l_crypto/.
-	install -m 664 include/isa-l_crypto.h $(prefix)/include/.
+	install -m 664 isa-l_crypto.h $(prefix)/include/.
+	install -m 664 include/types.h $(prefix)/include/isa-l_crypto/.
 	install -m 664 $(so_lib_name) $(prefix)/lib/$(so_lib_ver)
 	(cd $(prefix)/lib && ln -f -s $(so_lib_ver) $(soname) && ln -f -s $(so_lib_ver) $(so_lib_inst))
 ifeq ($(shell uname),Darwin)
 	(cd $(prefix)/lib && ln -f -s $(so_lib_ver) $(basename $(so_lib_inst)).dylib)
-endif
+	which glibtool && glibtool --mode=finish $(prefix)/lib
+else
 	which libtool && libtool --mode=finish $(prefix)/lib || \
 	echo 'Lib installed at $(prefix)/lib. Run system-dependent programs to add shared lib path.'
+endif
 
 uninstall:
 	$(RM) $(prefix)/lib/libisal_crypto.a
@@ -240,3 +260,8 @@ perf_report:
 clean:
 	@echo Cleaning up
 	@$(RM) -r $(O) *.o *.a $(all_tests) $(lib_name) $(so_lib_name)
+
+doc: isa-l_crypto.h
+	(cat Doxyfile; echo 'PROJECT_NUMBER=$(version)') | doxygen -
+	$(MAKE) -C generated_doc/latex &> generated_doc/latex_build_api.log
+	cp generated_doc/latex/refman.pdf isa-l_crypto_api_$(version).pdf
