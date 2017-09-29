@@ -84,11 +84,12 @@ int aes_cbc_precomp(
  * arg 5: len_bytes:  length in bytes (multiple of 16)
  */
 void aes_cbc_dec_128(
-	void     *in,
+	void     *in,        //!< Input cipher text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or dec_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
+	void     *out,       //!< Output plain text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 
 /** @brief CBC-AES 192 bit key Decryption
  *
@@ -96,11 +97,12 @@ void aes_cbc_dec_128(
 *
 */
 void aes_cbc_dec_192(
-	void     *in,
+	void     *in,        //!< Input cipher text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or dec_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
+	void     *out,       //!< Output plain text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 
 /** @brief CBC-AES 256 bit key Decryption
  *
@@ -108,11 +110,12 @@ void aes_cbc_dec_192(
 *
 */
 void aes_cbc_dec_256(
-	void     *in,
+	void     *in,        //!< Input cipher text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or dec_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
+	void     *out,       //!< Output plain text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 
 /** @brief CBC-AES 128 bit key Encryption
  *
@@ -125,23 +128,24 @@ void aes_cbc_dec_256(
  * arg 5: len_bytes:  length in bytes (multiple of 16)
  */
 int aes_cbc_enc_128(
-	void     *in,
+	void     *in,        //!< Input plain text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or enc_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
-
+	void     *out,       //!< Output cipher text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 /** @brief CBC-AES 192 bit key Encryption
  *
 * @requires SSE4.1 and AESNI
 *
 */
 int aes_cbc_enc_192(
-	void     *in,
+	void     *in,        //!< Input plain text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or enc_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
+	void     *out,       //!< Output cipher text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 
 /** @brief CBC-AES 256 bit key Encryption
  *
@@ -149,11 +153,12 @@ int aes_cbc_enc_192(
 *
 */
 int aes_cbc_enc_256(
-	void     *in,
+	void     *in,        //!< Input plain text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or enc_keys of cbc_key_data
-	void     *out,
-	uint64_t len_bytes); //!< Must be a multiple of 16 bytes
+	void     *out,       //!< Output cipher text
+	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
+	);
 
 #ifdef __cplusplus
 }

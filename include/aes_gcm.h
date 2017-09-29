@@ -610,7 +610,7 @@ void aes_gcm_dec_256_update_nt(
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_enc(struct gcm_data *my_ctx_data,
+void aesni_gcm128_enc(struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * out,	//!< Ciphertext output. Encrypt in-place is allowed.
 		   uint8_t const *in,	//!< Plaintext input
 		   uint64_t plaintext_len,	//!< Length of data in Bytes for encryption.
@@ -628,7 +628,7 @@ void aesni_gcm128_enc(struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_dec(struct gcm_data *my_ctx_data,
+void aesni_gcm128_dec(struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * out,	//!< Plaintext output. Decrypt in-place is allowed.
 		   uint8_t const *in,	//!< Ciphertext input
 		   uint64_t plaintext_len,	//!< Length of data in Bytes for encryption.
@@ -645,7 +645,7 @@ void aesni_gcm128_dec(struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_init( struct gcm_data *my_ctx_data,
+void aesni_gcm128_init( struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * iv,	//!< Pre-counter block j0: 4 byte salt (from Security Association) concatenated with 8 byte Initialization Vector (from IPSec ESP Payload) concatenated with 0x00000001. 16-byte pointer.
 		   uint8_t const *aad,	//!< Additional Authentication Data (AAD).
 		   uint64_t aad_len	//!< Length of AAD.
@@ -657,7 +657,7 @@ void aesni_gcm128_init( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_enc_update( struct gcm_data *my_ctx_data,
+void aesni_gcm128_enc_update( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t		*out, 			//!< Ciphertext output. Encrypt in-place is allowed.
 		const uint8_t   *in, 	//!< Plaintext input
 		uint64_t	plaintext_len //!< Length of data in Bytes for encryption.
@@ -669,7 +669,7 @@ void aesni_gcm128_enc_update( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_dec_update( struct gcm_data *my_ctx_data,
+void aesni_gcm128_dec_update( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t		*out, 			//!< Ciphertext output. Encrypt in-place is allowed.
 	        const uint8_t   *in, 	//!< Plaintext input
 		uint64_t	plaintext_len //!< Length of data in Bytes for encryption.
@@ -681,7 +681,7 @@ void aesni_gcm128_dec_update( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_enc_finalize( struct gcm_data *my_ctx_data,
+void aesni_gcm128_enc_finalize( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t			*auth_tag, //!< Authenticated Tag output.
 		uint64_t		auth_tag_len //!< Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8.
     );
@@ -692,7 +692,7 @@ void aesni_gcm128_enc_finalize( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm128_dec_finalize( struct gcm_data *my_ctx_data,
+void aesni_gcm128_dec_finalize( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t			*auth_tag, //!< Authenticated Tag output.
 		uint64_t		auth_tag_len //!< Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8.
     );
@@ -711,7 +711,7 @@ void aesni_gcm128_pre(uint8_t * key, struct gcm_data *gdata
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_enc(struct gcm_data *my_ctx_data,
+void aesni_gcm256_enc(struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * out,	//!< Ciphertext output. Encrypt in-place is allowed.
 		   uint8_t const *in,	//!< Plaintext input
 		   uint64_t plaintext_len,	//!< Length of data in Bytes for encryption.
@@ -729,7 +729,7 @@ void aesni_gcm256_enc(struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_dec(struct gcm_data *my_ctx_data,
+void aesni_gcm256_dec(struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * out,	//!< Plaintext output. Decrypt in-place is allowed.
 		   uint8_t const *in,	//!< Ciphertext input
 		   uint64_t plaintext_len,	//!< Length of data in Bytes for encryption.
@@ -746,7 +746,7 @@ void aesni_gcm256_dec(struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_init( struct gcm_data *my_ctx_data,
+void aesni_gcm256_init( struct gcm_data *my_ctx_data, //!< GCM context
 		   uint8_t * iv,	//!< Pre-counter block j0: 4 byte salt (from Security Association) concatenated with 8 byte Initialization Vector (from IPSec ESP Payload) concatenated with 0x00000001. 16-byte pointer.
 		   uint8_t const *aad,	//!< Additional Authentication Data (AAD).
 		   uint64_t aad_len	//!< Length of AAD.
@@ -758,7 +758,7 @@ void aesni_gcm256_init( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_enc_update( struct gcm_data *my_ctx_data,
+void aesni_gcm256_enc_update( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t		*out, 			//!< Ciphertext output. Encrypt in-place is allowed.
 		const		uint8_t *in, 	//!< Plaintext input
 		uint64_t	plaintext_len //!< Length of data in Bytes for encryption.
@@ -770,7 +770,7 @@ void aesni_gcm256_enc_update( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_dec_update( struct gcm_data *my_ctx_data,
+void aesni_gcm256_dec_update( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t		*out, 			//!< Ciphertext output. Encrypt in-place is allowed.
 		const		uint8_t *in, 	//!< Plaintext input
 		uint64_t	plaintext_len //!< Length of data in Bytes for encryption.
@@ -782,7 +782,7 @@ void aesni_gcm256_dec_update( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_enc_finalize( struct gcm_data *my_ctx_data,
+void aesni_gcm256_enc_finalize( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t			*auth_tag, //!< Authenticated Tag output.
 		uint64_t		auth_tag_len //!< Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8.
     );
@@ -793,7 +793,7 @@ void aesni_gcm256_enc_finalize( struct gcm_data *my_ctx_data,
  * @requires SSE4.1 and AESNI
  *
  */
-void aesni_gcm256_dec_finalize( struct gcm_data *my_ctx_data,
+void aesni_gcm256_dec_finalize( struct gcm_data *my_ctx_data, //!< GCM context
 		uint8_t			*auth_tag, //!< Authenticated Tag output.
 		uint64_t		auth_tag_len //!< Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8.
     );

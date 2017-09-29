@@ -95,7 +95,7 @@ void rolling_hash2_reset(struct rh_state2 *state, uint8_t * init_bytes);
  * @param offset  Offset from buffer to match, set if match found
  * @returns FINGERPRINT_RET_HIT - match found, FINGERPRINT_RET_MAX - exceeded max length
  */
-int rolling_hash2_run(struct rh_state2 *state, uint8_t * buffer, uint32_t buffer_length,
+int rolling_hash2_run(struct rh_state2 *state, uint8_t * buffer, uint32_t max_len,
 		      uint32_t mask, uint32_t trigger, uint32_t * offset);
 
 /**
