@@ -113,7 +113,7 @@
 %define IV_CNT          (1)
 
 ; instruction set specific operation definitions
-%define MOVDQ         movdqu
+%define MOVDQ         vmovdqu
 %macro PXOR 2
    vpxor %1, %1, %2
 %endm

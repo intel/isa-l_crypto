@@ -111,7 +111,7 @@
 %define PARALLEL_BLOCKS (UNROLLED_LOOPS)
 
 ; instruction set specific operation definitions
-%define MOVDQ         movdqu
+%define MOVDQ         vmovdqu
 %macro PXOR 2
    vpxor %1, %1, %2
 %endm
