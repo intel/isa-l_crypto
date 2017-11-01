@@ -54,6 +54,7 @@ lsrc += sha1_mb/sha1_ctx_avx512.c \
 lsrc += sha1_mb/sha1_opt_x1.asm
 
 lsrc += sha1_mb/sha1_ni_x1.asm \
+	sha1_mb/sha1_ni_x2.asm \
 	sha1_mb/sha1_ctx_sse_ni.c \
 	sha1_mb/sha1_ctx_avx512_ni.c \
 	sha1_mb/sha1_mb_mgr_submit_sse_ni.asm \

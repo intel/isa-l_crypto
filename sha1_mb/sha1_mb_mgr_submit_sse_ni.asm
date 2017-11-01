@@ -34,7 +34,7 @@
 
 %ifdef HAVE_AS_KNOWS_SHANI
 extern sha1_mb_x4_sse
-extern sha1_ni_x1
+extern sha1_ni_x2
 
 %ifidn __OUTPUT_FORMAT__, win64
 ; WINDOWS register definitions
@@ -146,23 +146,35 @@ sha1_mb_mgr_submit_sse_ni:
 
 	add     dword [state + _num_lanes_inuse], 1
 
+	cmp     unused_lanes, 0xF32	; we will process two jobs at the same time
+	jne 	return_null 		; wait for another sha_ni job
+
 	; compare with shani-sb threshold, if num_lanes_sse <= threshold, using shani func
   %if SHA1_NI_SB_THRESHOLD_SSE >= 4     ; there are 4 lanes in sse mb
   ; shani glue code
-	mov     idx, len        ; len is (job's len<<4|job's idx)
+	mov     DWORD(lens0), [state + _lens + 0*4]
+	mov     idx, lens0
+	mov     DWORD(lens1), [state + _lens + 1*4]
+	cmp     lens1, idx
+	cmovb   idx, lens1
 	mov     len2, idx
 	and     idx, 0xF
 	and     len2, ~0xF
 	jz      len_is_0
 	; lensN-len2=idx
+	sub     lens0, len2
+	sub     lens1, len2
+
 	shr     len2, 4
-	mov     [state + _lens + idx*4], DWORD(idx)
+	mov     [state + _lens + 0*4], DWORD(lens0)
+	mov     [state + _lens + 1*4], DWORD(lens1)
 	mov     r10, idx
 	or      r10, 0x1000     ; sse has 4 lanes *4, r10b is idx, r10b2 is 16
 	; "state" and "args" are the same address, arg1
 	; len is arg2, idx and nlane in r10
-	call    sha1_ni_x1
+	call    sha1_ni_x2
 	; state and idx are intact
+
   %else
   ; original mb code
 	cmp     unused_lanes, 0xF
@@ -251,7 +263,6 @@ return:
 return_null:
 	xor     job_rax, job_rax
 	jmp     return
-
 
 section .data align=16
 
