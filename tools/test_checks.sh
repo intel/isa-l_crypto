@@ -51,11 +51,11 @@ time $MAKE install
 
 # Check for gnu executable stack set
 if command -V readelf >/dev/null 2>&1; then
-    if readelf -W -l $tmp_install_dir/lib/libisal.so | grep 'GNU_STACK' | grep -q 'RWE'; then
-	echo Stack NX check $tmp_install_dir/lib/libisal.so Fail
+    if readelf -W -l $tmp_install_dir/lib/libisal_crypto.so | grep 'GNU_STACK' | grep -q 'RWE'; then
+	echo Stack NX check $tmp_install_dir/lib/libisal_crypto.so Fail
 	exit 1
     else
-	echo Stack NX check $tmp_install_dir/lib/libisal.so Pass
+	echo Stack NX check $tmp_install_dir/lib/libisal_crypto.so Pass
     fi
 else
     echo Stack NX check not supported

@@ -65,11 +65,11 @@ msg+=$'Std makefile build: Pass\n'
 
 # Check for gnu executable stack set
 if command -V readelf >/dev/null 2>&1; then
-    if readelf -W -l bin/libisal.so | grep 'GNU_STACK' | grep -q 'RWE'; then
-	echo $0: Stack NX check bin/libisal.so: Fail
+    if readelf -W -l bin/libisal_crypto.so | grep 'GNU_STACK' | grep -q 'RWE'; then
+	echo $0: Stack NX check bin/libisal_crypto.so: Fail
 	exit 1
     else
-	msg+=$'Stack NX check bin/lib/libisal.so: Pass\n'
+	msg+=$'Stack NX check bin/lib/libisal_crypto.so: Pass\n'
     fi
 else
     msg+=$'Stack NX check not supported: Skip\n'
