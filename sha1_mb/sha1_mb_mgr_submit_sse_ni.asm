@@ -90,7 +90,7 @@ extern sha1_ni_x2
 %define lens2           r10
 
 ; STACK_SPACE needs to be an odd multiple of 8
-%define STACK_SPACE     8*4 + 16*10 + 8
+%define STACK_SPACE     8*6 + 16*10 + 8
 
 ; SHA1_JOB* sha1_mb_mgr_submit_sse_ni(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
 ; arg 1 : rcx : state
@@ -101,6 +101,8 @@ sha1_mb_mgr_submit_sse_ni:
 	sub     rsp, STACK_SPACE
 	mov     [rsp + 8*0], rbx
 	mov     [rsp + 8*3], rbp
+	mov     [rsp + 8*4], r12
+	mov     [rsp + 8*5], r13
 %ifidn __OUTPUT_FORMAT__, win64
 	mov     [rsp + 8*1], rsi
 	mov     [rsp + 8*2], rdi
@@ -256,6 +258,8 @@ return:
 %endif
 	mov     rbx, [rsp + 8*0]
 	mov     rbp, [rsp + 8*3]
+	mov     r12, [rsp + 8*4]
+	mov     r13, [rsp + 8*5]
 	add     rsp, STACK_SPACE
 
 	ret

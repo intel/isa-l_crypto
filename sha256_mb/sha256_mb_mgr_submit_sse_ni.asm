@@ -92,7 +92,7 @@ default rel
 
 ; STACK_SPACE needs to be an odd multiple of 8
 %define _XMM_SAVE       16*10
-%define _GPR_SAVE       8*5
+%define _GPR_SAVE       8*7
 %define STACK_SPACE     _GPR_SAVE + _XMM_SAVE
 
 ; SHA256_JOB* sha256_mb_mgr_submit_sse_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
@@ -105,6 +105,8 @@ sha256_mb_mgr_submit_sse_ni:
 	mov     [rsp + _XMM_SAVE + 8*0], rbx
 	mov     [rsp + _XMM_SAVE + 8*1], rbp
 	mov     [rsp + _XMM_SAVE + 8*2], r12
+	mov     [rsp + _XMM_SAVE + 8*5], r13
+	mov     [rsp + _XMM_SAVE + 8*6], r14
 %ifidn __OUTPUT_FORMAT__, win64
 	mov     [rsp + _XMM_SAVE + 8*3], rsi
 	mov     [rsp + _XMM_SAVE + 8*4], rdi
@@ -265,6 +267,8 @@ return:
 	mov     rbx, [rsp + _XMM_SAVE + 8*0]
 	mov     rbp, [rsp + _XMM_SAVE + 8*1]
 	mov     r12, [rsp + _XMM_SAVE + 8*2]
+	mov     r13, [rsp + _XMM_SAVE + 8*5]
+	mov     r14, [rsp + _XMM_SAVE + 8*6]
 	add     rsp, STACK_SPACE
 
 	ret
