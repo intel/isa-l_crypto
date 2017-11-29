@@ -94,6 +94,7 @@ perf_tests  += aes/xts_256_enc_ossl_perf
 perf_tests  += aes/xts_128_enc_perf aes/xts_128_dec_perf aes/xts_128_dec_ossl_perf
 perf_tests  += aes/xts_256_enc_perf aes/xts_256_dec_perf aes/xts_256_dec_ossl_perf
 
+examples += aes/gcm_simple_example
 
 cbc_ossl_perf: LDLIBS += -lcrypto
 aes_cbc_ossl_perf_LDFLAGS = -lcrypto
