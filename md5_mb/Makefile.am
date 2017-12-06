@@ -29,7 +29,8 @@
 
 lsrc += md5_mb/md5_ctx_sse.c \
 	md5_mb/md5_ctx_avx.c \
-	md5_mb/md5_ctx_avx2.c
+	md5_mb/md5_ctx_avx2.c \
+	md5_mb/md5_ctx_base.c
 
 lsrc += md5_mb/md5_mb_mgr_init_sse.c \
 	md5_mb/md5_mb_mgr_init_avx2.c \
