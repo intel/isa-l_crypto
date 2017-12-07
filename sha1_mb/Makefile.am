@@ -29,7 +29,8 @@
 
 lsrc += sha1_mb/sha1_ctx_sse.c \
 	sha1_mb/sha1_ctx_avx.c \
-	sha1_mb/sha1_ctx_avx2.c
+	sha1_mb/sha1_ctx_avx2.c \
+	sha1_mb/sha1_ctx_base.c
 
 lsrc += sha1_mb/sha1_mb_mgr_init_sse.c \
 	sha1_mb/sha1_mb_mgr_init_avx2.c
