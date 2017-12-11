@@ -80,11 +80,11 @@ time $MAKE -f Makefile.unx -j $cpus perfs
 msg+=$'Std makefile build perf: Pass\n'
 
 # Std makefile run tests
-time $MAKE -f Makefile.unx -j $cpus $build_opt $test_level
+time $MAKE -f Makefile.unx -j $cpus $build_opt D="TEST_SEED=$S" $test_level
 msg+=$'Std makefile tests: Pass\n'
 
 # Std makefile build other
-time $MAKE -f Makefile.unx -j $cpus $build_opt other
+time $MAKE -f Makefile.unx -j $cpus $build_opt D="TEST_SEED=$S" other
 msg+=$'Other tests build: Pass\n'
 
 $MAKE -f Makefile.unx clean
