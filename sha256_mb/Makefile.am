@@ -29,7 +29,8 @@
 
 lsrc += sha256_mb/sha256_ctx_sse.c \
 	sha256_mb/sha256_ctx_avx.c \
-	sha256_mb/sha256_ctx_avx2.c
+	sha256_mb/sha256_ctx_avx2.c \
+	sha256_mb/sha256_ctx_base.c
 
 lsrc += sha256_mb/sha256_mb_mgr_init_sse.c \
 	sha256_mb/sha256_mb_mgr_init_avx2.c
