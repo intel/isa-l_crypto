@@ -30,7 +30,8 @@
 lsrc += sha512_mb/sha512_ctx_sse.c \
 	sha512_mb/sha512_ctx_avx.c \
 	sha512_mb/sha512_ctx_avx2.c \
-	sha512_mb/sha512_ctx_sb_sse4.c
+	sha512_mb/sha512_ctx_sb_sse4.c \
+	sha512_mb/sha512_ctx_base.c
 
 lsrc += sha512_mb/sha512_mb_mgr_init_sse.c \
 	sha512_mb/sha512_mb_mgr_init_avx2.c \
