@@ -88,7 +88,7 @@ default rel
     movdqa %%regT, %%regB
     pand  %%regF, %%regC
     pandn %%regT, %%regD
-    por   %%regF, %%regF
+    por   %%regF, %%regT
 %endmacro
 
 ; macro MAGIC_F1 F,B,C,D,T   ;; F = (B ^ C ^ D)
