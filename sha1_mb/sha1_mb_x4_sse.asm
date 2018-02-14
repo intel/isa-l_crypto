@@ -84,11 +84,10 @@ default rel
 %define %%regC %3
 %define %%regD %4
 %define %%regT %5
-    movdqa %%regF, %%regB
-    movdqa %%regT, %%regB
-    pand  %%regF, %%regC
-    pandn %%regT, %%regD
-    por   %%regF, %%regT
+    movdqa  %%regF,%%regC
+    pxor  %%regF,%%regD
+    pand  %%regF,%%regB
+    pxor  %%regF,%%regD
 %endmacro
 
 ; macro MAGIC_F1 F,B,C,D,T   ;; F = (B ^ C ^ D)
