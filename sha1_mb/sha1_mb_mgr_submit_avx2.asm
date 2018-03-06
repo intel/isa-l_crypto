@@ -117,63 +117,64 @@ sha1_mb_mgr_submit_avx2:
 	vmovdqa  [rsp + 8*8 + 16*9], xmm15
 %endif
 
-	mov	unused_lanes, [state + _unused_lanes]
-	mov	lane, unused_lanes
-	and	lane, 0xF
+	mov	DWORD(tmp2), _unused_lanes
+	add	tmp2, state 	; tmp2= state + _unused_lanes
+	mov	unused_lanes, [tmp2]
+	mov	DWORD(lane), DWORD(unused_lanes)
+	and	DWORD(lane), 0xF
 	shr	unused_lanes, 4
-	imul	lane_data, lane, _LANE_DATA_size
 	mov	dword [job + _status], STS_BEING_PROCESSED
-	lea	lane_data, [state + _ldata + lane_data]
-	mov	[state + _unused_lanes], unused_lanes
+	lea	lane_data, [state + lane*8]
+	mov	[tmp2], unused_lanes
 	mov	DWORD(len), [job + _len]
 
-	mov	[lane_data + _job_in_lane], job
+	mov	[lane_data + _job_in_lane + _ldata ], job
 
-	shl	len,4
-	or	len, lane
-	mov	[state + _lens + 4*lane], DWORD(len)
+	shl	DWORD(len),4
+	or	DWORD(len), DWORD(lane)
+	lea	p, [state + 4*lane]
+	mov	[p + _lens], DWORD(len)
 	; Load digest words from result_digest
+	; p isn't
 	vmovdqu	xmm0, [job + _result_digest + 0*16]
 	mov	DWORD(tmp), [job + _result_digest + 1*16]
 
-	vmovd   [state + _args_digest + 4*lane + 0*32], xmm0
-	vpextrd [state + _args_digest + 4*lane + 1*32], xmm0, 1
-	vpextrd [state + _args_digest + 4*lane + 2*32], xmm0, 2
-	vpextrd [state + _args_digest + 4*lane + 3*32], xmm0, 3
-	mov     [state + _args_digest + 4*lane + 4*32], DWORD(tmp)
-
+	vmovd   [p + 0*32], xmm0
+	vpextrd [p + 1*32], xmm0, 1
+	vpextrd [p + 2*32], xmm0, 2
+	vpextrd [p + 3*32], xmm0, 3
+	mov     [p + 4*32], DWORD(tmp)
 	mov	p, [job + _buffer]
-	mov	[state + _args_data_ptr + 8*lane], p
+	mov	[lane_data + _args_data_ptr ], p
 
 	add	dword [state + _num_lanes_inuse], 1
-	cmp	unused_lanes, 0xf
+	cmp	DWORD(unused_lanes), 0xf
 	jne	return_null
 
 start_loop:
 	; Find min length
-	vmovdqa xmm0, [state + _lens + 0*16]
-	vmovdqa xmm1, [state + _lens + 1*16]
-
+	lea	rax,  [state +_lens]
+	vmovdqu ymm0, [rax + 0*16]
+	vextracti128 xmm1, ymm0, 0x1
 	vpminud xmm2, xmm0, xmm1        ; xmm2 has {D,C,B,A}
 	vpalignr xmm3, xmm3, xmm2, 8    ; xmm3 has {x,x,D,C}
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has {x,x,E,F}
 	vpalignr xmm3, xmm3, xmm2, 4    ; xmm3 has {x,x,x,E}
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has min value in low dword
-
+	vpcmpeqd xmm3, xmm3, xmm3
+	vpslld	xmm3, xmm3, 0x4		; mask to clear low nibble
 	vmovd   DWORD(idx), xmm2
-	mov	len2, idx
-	and	idx, 0xF
-	shr	len2, 4
+	mov	DWORD(len2), DWORD(idx)
+	and	DWORD(idx), 0xF
+	shr	DWORD(len2), 4
 	jz	len_is_0
 
-	vpand   xmm2, xmm2, [rel clear_low_nibble]
-	vpshufd xmm2, xmm2, 0
+	vpand   xmm2, xmm2, xmm3
+	vpbroadcastd ymm2, xmm2
 
-	vpsubd  xmm0, xmm0, xmm2
-	vpsubd  xmm1, xmm1, xmm2
+	vpsubd  ymm0, ymm0, ymm2
 
-	vmovdqa [state + _lens + 0*16], xmm0
-	vmovdqa [state + _lens + 1*16], xmm1
+	vmovdqu [rax + 0*16], ymm0
 
 
 	; "state" and "args" are the same address, arg1
@@ -184,24 +185,27 @@ start_loop:
 
 len_is_0:
 	; process completed job "idx"
-	imul	lane_data, idx, _LANE_DATA_size
-	lea	lane_data, [state + _ldata + lane_data]
-
-	mov	job_rax, [lane_data + _job_in_lane]
-	mov	unused_lanes, [state + _unused_lanes]
-	mov	qword [lane_data + _job_in_lane], 0
-	mov	dword [job_rax + _status], STS_COMPLETED
+	lea	lane_data, [state + idx*8]
+	add	lane_data, _ldata + _job_in_lane
+	mov	DWORD(tmp2), _unused_lanes
+	add	tmp2, state
+	xor	DWORD(tmp3), DWORD(tmp3)
+	mov	job_rax, [lane_data]
+	mov	unused_lanes, [tmp2]
+	mov	qword [lane_data], tmp3
+	mov	BYTE(tmp3), STS_COMPLETED
+	mov	dword [job_rax + _status], DWORD(tmp3)
 	shl	unused_lanes, 4
 	or	unused_lanes, idx
-	mov	[state + _unused_lanes], unused_lanes
-
+	mov	[tmp2], unused_lanes
 	sub     dword [state + _num_lanes_inuse], 1
+	lea	tmp2, [state + _args_digest + 4*idx ]
 
-	vmovd	xmm0, [state + _args_digest + 4*idx + 0*32]
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 1*32], 1
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 2*32], 2
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 3*32], 3
-	mov	DWORD(tmp),  [state + _args_digest + 4*idx + 4*32]
+	vmovd	xmm0, [tmp2 + 0*32]
+	vpinsrd	xmm0, [tmp2 + 1*32], 1
+	vpinsrd	xmm0, [tmp2 + 2*32], 2
+	vpinsrd	xmm0, [tmp2 + 3*32], 3
+	mov	DWORD(tmp),  [tmp2 + 4*32]
 
 	vmovdqa	[job_rax + _result_digest + 0*16], xmm0
 	mov	[job_rax + _result_digest + 1*16], DWORD(tmp)
@@ -233,13 +237,5 @@ return:
 	ret
 
 return_null:
-	xor	job_rax, job_rax
+	xor	DWORD(job_rax), DWORD(job_rax)
 	jmp	return
-
-
-section .data align=16
-
-align 16
-clear_low_nibble:
-	dq 0x00000000FFFFFFF0, 0x0000000000000000
-
