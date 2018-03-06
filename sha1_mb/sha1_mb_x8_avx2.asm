@@ -29,6 +29,8 @@
 
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+%use smartalign
+ALIGNMODE P6
 
 default rel
 
@@ -193,7 +195,7 @@ default rel
 %define %%immCNT %9
 %define %%MAGIC	%10
 	vpaddd	%%regE, %%regE,%%immCNT
-	vpaddd	%%regE, %%regE,[rsp + (%%memW * 32)]
+	vpaddd	%%regE, %%regE,[RSP_OFFSET + (%%memW * 32)]
 	PROLD_nd	%%regT,5, %%regF,%%regA
 	vpaddd	%%regE, %%regE,%%regT
 	%%MAGIC	%%regF,%%regB,%%regC,%%regD,%%regT      ;; FUN  = MAGIC_Fi(B,C,D)
@@ -214,17 +216,17 @@ default rel
 %define %%MAGIC	%10
 	vpaddd	%%regE, %%regE,%%immCNT
 
-	vmovdqu	W14, [rsp + ((%%memW - 14) & 15) * 32]
+	vmovdqu	W14, [RSP_OFFSET + ((%%memW - 14) & 15) * 32]
 	vpxor	W16, W16, W14
-	vpxor	W16, W16, [rsp + ((%%memW -  8) & 15) * 32]
-	vpxor	W16, W16, [rsp + ((%%memW -  3) & 15) * 32]
+	vpxor	W16, W16, [RSP_OFFSET + ((%%memW -  8) & 15) * 32]
+	vpxor	W16, W16, [RSP_OFFSET + ((%%memW -  3) & 15) * 32]
 
 	vpsrld	%%regF, W16, (32-1)
 	vpslld	W16, W16, 1
 	vpor	%%regF, %%regF, W16
 	ROTATE_W
 
-	vmovdqu	[rsp + ((%%memW - 0) & 15) * 32],%%regF
+	vmovdqu	[RSP_OFFSET + ((%%memW - 0) & 15) * 32],%%regF
 	vpaddd	%%regE, %%regE,%%regF
 
 	PROLD_nd	%%regT,5, %%regF, %%regA
@@ -259,12 +261,12 @@ default rel
 	%define inp7 rcx
 	%define arg1 rdi
 	%define arg2 rsi
-	%define RSP_SAVE rdx
+	%define RSP_OFFSET rdx
 %else
 	%define inp7 rdi
 	%define arg1 rcx
 	%define arg2 rdx
-	%define RSP_SAVE rsi
+	%define RSP_OFFSET rsi
 %endif
 
 
@@ -342,78 +344,88 @@ align 32
 global sha1_mb_x8_avx2:function internal
 sha1_mb_x8_avx2:
 
-	push	RSP_SAVE
+	push	RSP_OFFSET
+	push	rbx
 
-	; save rsp
-	mov	RSP_SAVE, rsp
-	sub	rsp, FRAMESZ	;; FRAMESZ + pushes must be even multiple of 8
+	; save RSP_OFFSET
+	mov	RSP_OFFSET, rsp
+	sub	RSP_OFFSET, FRAMESZ	;; FRAMESZ + pushes must be even multiple of 8
 
-	; align rsp to 32 Bytes
-	and	rsp, ~0x1F
-
+	; align RSP_OFFSET to 32 Bytes
+	and	RSP_OFFSET, ~0x1F
+	mov	eax, _data_ptr
+	add	rax, arg1	
 	;; Initialize digests
 	vmovdqu	A, [arg1 + 0*32]
 	vmovdqu	B, [arg1 + 1*32]
 	vmovdqu	C, [arg1 + 2*32]
 	vmovdqu	D, [arg1 + 3*32]
 	vmovdqu	E, [arg1 + 4*32]
-
 	;; transpose input onto stack
-	mov	inp0,[arg1+_data_ptr+0*8]
-	mov	inp1,[arg1+_data_ptr+1*8]
-	mov	inp2,[arg1+_data_ptr+2*8]
-	mov	inp3,[arg1+_data_ptr+3*8]
-	mov	inp4,[arg1+_data_ptr+4*8]
-	mov	inp5,[arg1+_data_ptr+5*8]
-	mov	inp6,[arg1+_data_ptr+6*8]
-	mov	inp7,[arg1+_data_ptr+7*8]
+	mov	inp0,[rax+0*8]
+	mov	inp1,[rax+1*8]
+	mov	inp2,[rax+2*8]
+	mov	inp3,[rax+3*8]
+	mov	inp4,[rax+4*8]
+	mov	inp5,[rax+5*8]
+	mov	inp6,[rax+6*8]
+	mov	inp7,[rax+7*8]
 
-	xor	IDX, IDX
+	mov	DWORD(IDX), 64 ; address increment
+	lea	rbx, [K00_19]  ; offset into .data 
+align 16
 lloop:
-	vmovdqu	F, [PSHUFFLE_BYTE_FLIP_MASK]
+	vbroadcasti128	F, [rbx+(PSHUFFLE_BYTE_FLIP_MASK - K00_19)]
 %assign I 0
 %rep 2
-	VMOVPS	T0,[inp0+IDX]
-	VMOVPS	T1,[inp1+IDX]
-	VMOVPS	T2,[inp2+IDX]
-	VMOVPS	T3,[inp3+IDX]
-	VMOVPS	T4,[inp4+IDX]
-	VMOVPS	T5,[inp5+IDX]
-	VMOVPS	T6,[inp6+IDX]
-	VMOVPS	T7,[inp7+IDX]
+	VMOVPS	T0,[inp0+I*32]
+	VMOVPS	T1,[inp1+I*32]
+	VMOVPS	T2,[inp2+I*32]
+	VMOVPS	T3,[inp3+I*32]
+	VMOVPS	T4,[inp4+I*32]
+	VMOVPS	T5,[inp5+I*32]
+	VMOVPS	T6,[inp6+I*32]
+	VMOVPS	T7,[inp7+I*32]
 	TRANSPOSE8	T0, T1, T2, T3, T4, T5, T6, T7, T8, T9
 	vpshufb	T0, T0, F
-	vmovdqu	[rsp+(I*8+0)*32],T0
+	vmovdqu	[RSP_OFFSET+(I*8+0)*32],T0
 	vpshufb	T1, T1, F
-	vmovdqu	[rsp+(I*8+1)*32],T1
+	vmovdqu	[RSP_OFFSET+(I*8+1)*32],T1
 	vpshufb	T2, T2, F
-	vmovdqu	[rsp+(I*8+2)*32],T2
+	vmovdqu	[RSP_OFFSET+(I*8+2)*32],T2
 	vpshufb	T3, T3, F
-	vmovdqu	[rsp+(I*8+3)*32],T3
+	vmovdqu	[RSP_OFFSET+(I*8+3)*32],T3
 	vpshufb	T4, T4, F
-	vmovdqu	[rsp+(I*8+4)*32],T4
+	vmovdqu	[RSP_OFFSET+(I*8+4)*32],T4
 	vpshufb	T5, T5, F
-	vmovdqu	[rsp+(I*8+5)*32],T5
+	vmovdqu	[RSP_OFFSET+(I*8+5)*32],T5
 	vpshufb	T6, T6, F
-	vmovdqu	[rsp+(I*8+6)*32],T6
+	vmovdqu	[RSP_OFFSET+(I*8+6)*32],T6
 	vpshufb	T7, T7, F
-	vmovdqu	[rsp+(I*8+7)*32],T7
-	add	IDX, 32
+	vmovdqu	[RSP_OFFSET+(I*8+7)*32],T7
 %assign I (I+1)
 %endrep
+	add	inp0, IDX
+	add	inp1, IDX
+	add	inp2, IDX
+	add	inp3, IDX
+	add	inp4, IDX
+	add	inp5, IDX
+	add	inp6, IDX
+	add	inp7, IDX
 
 
 	; save old digests
-	vmovdqu	AA, A
-	vmovdqu	BB, B
-	vmovdqu	CC, C
-	vmovdqu	DD, D
-	vmovdqu	EE, E
+	vmovdqa	AA, A
+	vmovdqa	BB, B
+	vmovdqa	CC, C
+	vmovdqa	DD, D
+	vmovdqa	EE, E
 
 ;;
 ;; perform 0-79 steps
 ;;
-	vmovdqu	K, [K00_19]
+	vpbroadcastq	K, [rbx]
 ;; do rounds 0...15
 %assign I 0
 %rep 16
@@ -423,8 +435,8 @@ lloop:
 %endrep
 
 ;; do rounds 16...19
-	vmovdqu	W16, [rsp + ((16 - 16) & 15) * 32]
-	vmovdqu	W15, [rsp + ((16 - 15) & 15) * 32]
+	vmovdqu	W16, [RSP_OFFSET + ((16 - 16) & 15) * 32]
+	vmovdqu	W15, [RSP_OFFSET + ((16 - 15) & 15) * 32]
 %rep 4
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F0
 	ROTATE_ARGS
@@ -432,7 +444,7 @@ lloop:
 %endrep
 
 ;; do rounds 20...39
-	vmovdqu	K, [K20_39]
+	vpbroadcastq K, [rbx + (K20_39 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F1
 	ROTATE_ARGS
@@ -440,7 +452,7 @@ lloop:
 %endrep
 
 ;; do rounds 40...59
-	vmovdqu	K, [K40_59]
+	vpbroadcastq K, [rbx + (K40_59 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F2
 	ROTATE_ARGS
@@ -448,7 +460,7 @@ lloop:
 %endrep
 
 ;; do rounds 60...79
-	vmovdqu	K, [K60_79]
+	vpbroadcastq K, [rbx + (K60_79 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F3
 	ROTATE_ARGS
@@ -463,7 +475,7 @@ lloop:
 
 	sub	arg2, 1
 	jne	lloop
-
+	lea	rax, [arg1+_data_ptr]
 	; write out digests
 	vmovdqu	[arg1 + 0*32], A
 	vmovdqu	[arg1 + 1*32], B
@@ -472,44 +484,30 @@ lloop:
 	vmovdqu	[arg1 + 4*32], E
 
 	;; update input pointers
-	add	inp0, IDX
-	add	inp1, IDX
-	add	inp2, IDX
-	add	inp3, IDX
-	add	inp4, IDX
-	add	inp5, IDX
-	add	inp6, IDX
-	add	inp7, IDX
-	mov	[arg1+_data_ptr+0*8], inp0
-	mov	[arg1+_data_ptr+1*8], inp1
-	mov	[arg1+_data_ptr+2*8], inp2
-	mov	[arg1+_data_ptr+3*8], inp3
-	mov	[arg1+_data_ptr+4*8], inp4
-	mov	[arg1+_data_ptr+5*8], inp5
-	mov	[arg1+_data_ptr+6*8], inp6
-	mov	[arg1+_data_ptr+7*8], inp7
+	mov	[rax+0*8], inp0
+	mov	[rax+1*8], inp1
+	mov	[rax+2*8], inp2
+	mov	[rax+3*8], inp3
+	mov	[rax+4*8], inp4
+	mov	[rax+5*8], inp5
+	mov	[rax+6*8], inp6
+	mov	[rax+7*8], inp7
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
 
-	mov	rsp, RSP_SAVE
-
-	pop	RSP_SAVE
+	pop	rbx
+	pop	RSP_OFFSET
 	ret
 
 
 
-section .data align=32
+section .data align=64
 
-align 32
-K00_19:			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
+align 64
+K00_19:			dq 0x5A8279995A827999
+K20_39:                 dq 0x6ED9EBA16ED9EBA1
+K40_59:                 dq 0x8F1BBCDC8F1BBCDC
+K60_79:                 dq 0xCA62C1D6CA62C1D6
 
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
