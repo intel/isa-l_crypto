@@ -120,44 +120,75 @@ sha1_mb_mgr_flush_avx2:
 %endif
 
 	; use num_lanes_inuse to judge all lanes are empty
-	cmp	dword [state + _num_lanes_inuse], 0
-	jz	return_null
+	
+	lea     tmp, [state+  _ldata + 1 * _LANE_DATA_size + _job_in_lane]
+        xor     DWORD(idx), DWORD(idx)
+        cmp     DWORD(idx), dword [tmp + _num_lanes_inuse -(_ldata + 1 * _LANE_DATA_size + _job_in_lane)] ; idx=zero. offset from tmp
+        jz      return_null
 
-	; find a lane with a non-null job
-	xor	idx, idx
-	cmp	qword [state + _ldata + 1 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [one]
-	cmp	qword [state + _ldata + 2 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [two]
-	cmp	qword [state + _ldata + 3 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [three]
-	cmp	qword [state + _ldata + 4 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [four]
-	cmp	qword [state + _ldata + 5 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [five]
-	cmp	qword [state + _ldata + 6 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [six]
-	cmp	qword [state + _ldata + 7 * _LANE_DATA_size + _job_in_lane], 0
-	cmovne	idx, [seven]
 
-	; copy idx to empty lanes
+	vpxor   xmm0, xmm0,xmm0
+        vpcmpeqq ymm1,ymm0,[tmp]
+        vpcmpeqq ymm2,ymm0,[tmp+4*_LANE_DATA_size +_job_in_lane]
+        vpmovmskb DWORD(tmp), ymm2 ; high cmp mask
+        vpmovmskb DWORD(idx), ymm1 ; low cmp mask
+        shl     tmp, 32
+        or      idx, tmp
+        not     idx
+        tzcnt   idx, idx
+        shr     DWORD(idx), 3 ; divide by 8
+        add     DWORD(idx), 1 ;
+
 copy_lane_data:
-	mov	tmp, [state + _args + _data_ptr + 8*idx]
+	lea     tmp, [state + 8*idx]
+	mov	ebp, _args + _data_ptr
+        or      DWORD(tmp4), -1 ; 0xFFFFFFFF
+	
+	vpbroadcastq ymm1, [tmp+rbp]; broadcast tmp
+        
+        lea     r9, [state+ _ldata+ _job_in_lane]
+	mov	r15, rbp  ; offset from state = _args + _data_ptr
+        add     r15,state
+        mov     ebx, _lens - (_args + _data_ptr)
+        add     rbx, r15
+	vpcmpeqq ymm2, ymm0, [r9]	; 4 lanes, mask for qwords
+	vmovdqu ymm3, [r15]
+	vpmovmskb	eax, ymm2 	;low mask
+	vpblendvb ymm3, ymm3, ymm1, ymm2 ; 
+	vpcmpeqq ymm4, ymm0, [r9 + 4 * _LANE_DATA_size]	; 4 lanes, mask for qwords
+	vpmovmskb	ebp, ymm4	; high mask
+	vmovdqu [r15], ymm3
+	vmovdqu ymm3, [r15+0x20]
+	vpblendvb ymm3, ymm3, ymm1, ymm4 ; 
+	vmovdqu [r15+0x20], ymm3
+	shl	rbp, 32
+	or	rax, rbp ; merge the mask
 
 %assign I 0
-%rep 8
-	cmp	qword [state + _ldata + I * _LANE_DATA_size + _job_in_lane], 0
-	jne	APPEND(skip_,I)
-	mov	[state + _args + _data_ptr + 8*I], tmp
-	mov 	dword [state + _lens + 4*I], 0xFFFFFFFF
-APPEND(skip_,I):
+%rep 4
+        mov     ebp, [rbx + 4*I]
+        test	al, 1	;  check the LSB of mask
+	cmovnz	ebp, DWORD(tmp4)	
+	shr	rax,8
+        mov     dword [rbx + 4*I], ebp
+
+%assign I (I+1)
+%endrep
+
+	; after 4 iteration we don't need REX prefix anymore
+%assign I 4
+%rep 4
+        mov     ebp, [rbx + 4*I]
+        test	al, 1	;  check the LSB of mask
+	cmovnz	ebp, DWORD(tmp4)	
+	shr	eax,8
+        mov     dword [rbx + 4*I], ebp
 %assign I (I+1)
 %endrep
 
 	; Find min length
-	vmovdqa xmm0, [state + _lens + 0*16]
-	vmovdqa xmm1, [state + _lens + 1*16]
-
+	vmovdqu ymm0, [state + _lens + 0*16]
+	vextracti128 xmm1, ymm0, 0x1
 	vpminud xmm2, xmm0, xmm1        ; xmm2 has {D,C,B,A}
 	vpalignr xmm3, xmm3, xmm2, 8    ; xmm3 has {x,x,D,C}
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has {x,x,E,F}
@@ -165,10 +196,14 @@ APPEND(skip_,I):
 	vpminud xmm2, xmm2, xmm3        ; xmm2 has min value in low dword
 
 	vmovd   DWORD(idx), xmm2
-	mov	len2, idx
-	and	idx, 0xF
-	shr	len2, 4
+	mov	DWORD(len2), DWORD(idx)
+	and	DWORD(idx), 0xF
+	shr	DWORD(len2), 4
+	test	DWORD(len2), DWORD(len2)
 	jz	len_is_0
+
+	vpcmpeqd xmm3,xmm3,xmm3		; prepare mask to clean low nibble
+	vpslld  xmm3,xmm3, 4
 
 	; compare with sha-sb threshold, if num_lanes_inuse <= threshold, using sb func
 	cmp	dword [state + _num_lanes_inuse], SHA1_SB_THRESHOLD_AVX2
@@ -185,15 +220,13 @@ APPEND(skip_,I):
 	jmp	len_is_0
 
 mb_processing:
+	vpand   xmm2, xmm2,xmm3
+	vpbroadcastd ymm2, xmm2
 
-	vpand   xmm2, xmm2, [rel clear_low_nibble]
-	vpshufd xmm2, xmm2, 0
+	vpsubd  ymm0, ymm0, ymm2
 
-	vpsubd  xmm0, xmm0, xmm2
-	vpsubd  xmm1, xmm1, xmm2
+	vmovdqu [state + _lens + 0*16], ymm0
 
-	vmovdqa [state + _lens + 0*16], xmm0
-	vmovdqa [state + _lens + 1*16], xmm1
 
 
 	; "state" and "args" are the same address, arg1
@@ -203,24 +236,27 @@ mb_processing:
 
 len_is_0:
 	; process completed job "idx"
-	imul	lane_data, idx, _LANE_DATA_size
-	lea	lane_data, [state + _ldata + lane_data]
-
-	mov	job_rax, [lane_data + _job_in_lane]
-	mov	qword [lane_data + _job_in_lane], 0
-	mov	dword [job_rax + _status], STS_COMPLETED
-	mov	unused_lanes, [state + _unused_lanes]
+	lea	lane_data, [state + idx*8]
+	xor	DWORD(tmp4),DWORD(tmp4)
+	add	lane_data, _ldata + _job_in_lane
+	mov	job_rax, [lane_data]
+	mov	qword [lane_data], tmp4		; tmp4 is zero
+	mov	BYTE(tmp4), STS_COMPLETED
+	mov	dword [job_rax + _status], DWORD(tmp4)
+	mov	DWORD(tmp4), _unused_lanes
+	add	tmp4, state
+	mov	unused_lanes, [tmp4]
 	shl	unused_lanes, 4
 	or	unused_lanes, idx
-	mov	[state + _unused_lanes], unused_lanes
-
-	sub     dword [state + _num_lanes_inuse], 1
-
-	vmovd	xmm0, [state + _args_digest + 4*idx + 0*32]
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 1*32], 1
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 2*32], 2
-	vpinsrd	xmm0, [state + _args_digest + 4*idx + 3*32], 3
-	mov	DWORD(tmp2),  [state + _args_digest + 4*idx + 4*32]
+	mov	[tmp4], unused_lanes
+	
+	sub     dword [state + _num_lanes_inuse], 1;  DWORD(tmp4)
+	lea	tmp4, [state + _args_digest + 4*idx]
+	vmovd	xmm0, [tmp4 + 0*32]
+	vpinsrd	xmm0, [tmp4 + 1*32], 1
+	vpinsrd	xmm0, [tmp4 + 2*32], 2
+	vpinsrd	xmm0, [tmp4 + 3*32], 3
+	mov	DWORD(tmp2),  [tmp4 + 4*32]
 
 	vmovdqa	[job_rax + _result_digest + 0*16], xmm0
 	mov	[job_rax + _result_digest + 1*16], DWORD(tmp2)
@@ -252,19 +288,5 @@ return:
 	ret
 
 return_null:
-	xor	job_rax, job_rax
+	xor	DWORD(job_rax), DWORD(job_rax)
 	jmp	return
-
-section .data align=16
-
-align 16
-clear_low_nibble:
-	dq 0x00000000FFFFFFF0, 0x0000000000000000
-one:	dq  1
-two:	dq  2
-three:	dq  3
-four:	dq  4
-five:	dq  5
-six:	dq  6
-seven:	dq  7
-
