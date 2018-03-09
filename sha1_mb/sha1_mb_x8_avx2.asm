@@ -425,7 +425,7 @@ lloop:
 ;;
 ;; perform 0-79 steps
 ;;
-	vpbroadcastq	K, [rbx]
+	vpbroadcastd	K, [rbx]
 ;; do rounds 0...15
 %assign I 0
 %rep 16
@@ -444,7 +444,7 @@ lloop:
 %endrep
 
 ;; do rounds 20...39
-	vpbroadcastq K, [rbx + (K20_39 - K00_19)]
+	vpbroadcastd K, [rbx + (K20_39 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F1
 	ROTATE_ARGS
@@ -452,7 +452,7 @@ lloop:
 %endrep
 
 ;; do rounds 40...59
-	vpbroadcastq K, [rbx + (K40_59 - K00_19)]
+	vpbroadcastd K, [rbx + (K40_59 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F2
 	ROTATE_ARGS
@@ -460,7 +460,7 @@ lloop:
 %endrep
 
 ;; do rounds 60...79
-	vpbroadcastq K, [rbx + (K60_79 - K00_19)]
+	vpbroadcastd K, [rbx + (K60_79 - K00_19)]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F3
 	ROTATE_ARGS
@@ -505,9 +505,9 @@ lloop:
 section .data align=64
 
 align 64
-K00_19:			dq 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6
+K00_19:			dd 0x5A827999
+K20_39:                 dd 0x6ED9EBA1
+K40_59:                 dd 0x8F1BBCDC
+K60_79:                 dd 0xCA62C1D6
 
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
