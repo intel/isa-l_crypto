@@ -148,7 +148,7 @@ sha1_mb_mgr_submit_avx2:
 	mov	[lane_data + _args_data_ptr ], p
 
 	add	dword [state + _num_lanes_inuse], 1
-	cmp	DWORD(unused_lanes), 0xf
+	cmp	unused_lanes, 0xf
 	jne	return_null
 
 start_loop:

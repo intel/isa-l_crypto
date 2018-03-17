@@ -29,8 +29,6 @@
 
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
-%use smartalign
-ALIGNMODE P6
 
 default rel
 
@@ -246,7 +244,7 @@ default rel
 %define FRAMESZ	32*16 + 0*8 + YMM_SAVE
 %define _YMM     FRAMESZ - YMM_SAVE
 
-%define VMOVPS	vmovups
+%define VMOVPS	vmovdqu
 
 %define IDX  rax
 %define inp0 r9
@@ -373,7 +371,7 @@ sha1_mb_x8_avx2:
 
 	mov	DWORD(IDX), 64 ; address increment
 	lea	rbx, [K00_19]  ; offset into .data 
-align 16
+	xchg	ax, ax	  ; 2 bytes nop to align lloop
 lloop:
 	vbroadcasti128	F, [rbx+(PSHUFFLE_BYTE_FLIP_MASK - K00_19)]
 %assign I 0
