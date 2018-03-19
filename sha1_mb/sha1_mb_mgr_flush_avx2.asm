@@ -142,7 +142,7 @@ sha1_mb_mgr_flush_avx2:
 copy_lane_data:
 	lea     tmp, [state + 8*idx]
 	mov	ebp, _args + _data_ptr
-        or      DWORD(tmp4), -1 ; 0xFFFFFFFF
+	or      DWORD(tmp4), -1 ; 0xFFFFFFFF
 	
 	vpbroadcastq ymm1, [tmp+rbp]; broadcast tmp
         
