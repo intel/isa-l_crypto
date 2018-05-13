@@ -30,6 +30,10 @@
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
+%ifdef __NASM_VER__
+%use smartalign
+ALIGNMODE P6
+%endif
 default rel
 
 ;; code to compute oct SHA1 using SSE-256
@@ -371,7 +375,7 @@ sha1_mb_x8_avx2:
 
 	mov	DWORD(IDX), 64 ; address increment
 	lea	rbx, [K00_19]  ; offset into .data 
-	xchg	ax, ax	  ; 2 bytes nop to align lloop
+align 16
 lloop:
 	vbroadcasti128	F, [rbx+(PSHUFFLE_BYTE_FLIP_MASK - K00_19)]
 %assign I 0
