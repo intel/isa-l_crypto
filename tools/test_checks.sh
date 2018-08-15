@@ -14,6 +14,7 @@ command -V greadlink >/dev/null 2>&1 && READLINK=greadlink
 
 out="$PWD"
 src=$($READLINK -f $(dirname $0))/..
+source $src/tools/test_tools.sh
 cd "$src"
 tmp_install_dir=$out/tmp_install
 
@@ -46,8 +47,12 @@ fi
 time ./autogen.sh
 time ./configure --prefix=$tmp_install_dir $opt_config_target
 time $MAKE -j $cpus
+test_start "check_tests"
 time $MAKE check -j $cpus D="-D TEST_SEED=$S"
+test_end "check_tests"
+test_start "installation_test"
 time $MAKE install
+test_end "installation_test"
 
 # Check for gnu executable stack set
 if command -V readelf >/dev/null 2>&1; then

@@ -21,6 +21,7 @@ command -V greadlink >/dev/null 2>&1 && READLINK=greadlink
 
 out="$PWD"
 src=$($READLINK -f $(dirname $0))/..
+source $src/tools/test_tools.sh
 cd "$src"
 
 # Run on mult cpus
@@ -60,15 +61,19 @@ fi
 
 # Std makefile build test
 $MAKE -f Makefile.unx clean
+test_start "extended_build_test"
 time $MAKE -f Makefile.unx -j $cpus $build_opt
+test_end "extended_build_test"
 msg+=$'Std makefile build: Pass\n'
 
 # Check for gnu executable stack set
 if command -V readelf >/dev/null 2>&1; then
+    test_start "stack_nx_check"
     if readelf -W -l bin/libisal_crypto.so | grep 'GNU_STACK' | grep -q 'RWE'; then
 	echo $0: Stack NX check bin/libisal_crypto.so: Fail
 	exit 1
     else
+    test_end "stack_nx_check"
 	msg+=$'Stack NX check bin/lib/libisal_crypto.so: Pass\n'
     fi
 else
@@ -76,15 +81,21 @@ else
 fi
 
 # Std makefile build perf tests
+test_start "extended_perf_test"
 time $MAKE -f Makefile.unx -j $cpus perfs
+test_end "extended_perf_test"
 msg+=$'Std makefile build perf: Pass\n'
 
 # Std makefile run tests
+test_start "extended_makefile_tests"
 time $MAKE -f Makefile.unx -j $cpus $build_opt D="TEST_SEED=$S" $test_level
+test_end "extended_makefile_tests"
 msg+=$'Std makefile tests: Pass\n'
 
 # Std makefile build other
+test_start "extended_other_tests"
 time $MAKE -f Makefile.unx -j $cpus $build_opt D="TEST_SEED=$S" other
+test_end "extended_other_tests"
 msg+=$'Other tests build: Pass\n'
 
 $MAKE -f Makefile.unx clean
