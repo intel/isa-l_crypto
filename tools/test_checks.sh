@@ -49,10 +49,10 @@ time ./configure --prefix=$tmp_install_dir $opt_config_target
 time $MAKE -j $cpus
 test_start "check_tests"
 time $MAKE check -j $cpus D="-D TEST_SEED=$S"
-test_end "check_tests"
+test_end "check_tests" $?
 test_start "installation_test"
 time $MAKE install
-test_end "installation_test"
+test_end "installation_test" $?
 
 # Check for gnu executable stack set
 if command -V readelf >/dev/null 2>&1; then
