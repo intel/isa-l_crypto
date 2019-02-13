@@ -42,6 +42,10 @@
 version ?= 2.21.0
 host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
 arch ?= $(shell uname | grep -v -e Linux -e BSD )
+ifeq ($(host_cpu)_$(arch),aarch64_)
+arch = aarch64
+endif
+
 
 CC  = gcc
 AS  = yasm
@@ -73,6 +77,10 @@ ASFLAGS_mingw = -f win64
 ARFLAGS_mingw = cr $@
 LDFLAGS_mingw = -Wl,--force-exe-suffix
 
+# arch=aarch64 build options
+ASFLAGS_aarch64 = -D__ASSEMBLY__ -c
+ARFLAGS_aarch64 = cr $@
+
 LDFLAGS_so = -Wl,-soname,$(soname)
 
 ifeq ($(arch),mingw)
@@ -87,6 +95,11 @@ ifeq ($(shell uname),Darwin)
    STRIP_gcc  =
 endif
 
+ifeq ($(arch),aarch64)
+  AS=gcc
+  SIM=
+endif
+
 INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH)))
 CFLAGS   = $(CFLAGS_$(arch)) $(CFLAGS_$(CC)) $(DEBUG) -O2 $(DEFINES) $(INCLUDE)
 ASFLAGS  = $(ASFLAGS_$(arch)) $(ASFLAGS_$(CC)) $(DEBUG_$(AS)) $(DEFINES) $(INCLUDE)
@@ -95,7 +108,7 @@ DEFINES += $(addprefix -D , $D)
 
 lsrc += $(lsrc_$(host_cpu))
 O = bin
-lobj  += $(patsubst %.c,%.o,$(patsubst %.asm,%.o,$(lsrc) $(lsrc_intrinsic)))
+lobj  += $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(patsubst %.asm,%.o,$(lsrc) $(lsrc_intrinsic))))
 objs  = $(addprefix $(O)/,$(notdir $(lobj)))
 
 
@@ -151,9 +164,15 @@ $(addsuffix .run,$(all_tests)): %.run : %
 # Other build rules
 msg = $(if $(DEBUG),DEBUG) $(patsubst 32,32-bit,$(host_cpu)) $D
 
+# gcc assembly files
+$(O)/%.o: %.S
+	@echo "  ---> Building $< $(msg)"
+	@$(AS) $(ASFLAGS) -o $@ $<
+# yasm/nasm assembly files
 $(O)/%.o: %.asm
 	@echo "  ---> Building $< $(msg)"
 	@$(AS) $(ASFLAGS) -o $@ $<
+
 
 $(O)/%.o %.o: %.c
 	@echo "  ---> Building $< $(msg)"
@@ -190,6 +209,7 @@ soname      = $(so_lib_inst).$(word 1, $(subst ., ,$(version)))
 
 slib: $(so_lib_name)
 aobjs  += $(addprefix $(O)/,$(patsubst %.asm,%.o,$(filter %.asm,$(notdir $(lsrc) $(lsrc_intrinsic)))))
+aobjs  += $(addprefix $(O)/,$(patsubst %.S,%.o,$(filter %.S,$(notdir $(lsrc) $(lsrc_intrinsic)))))
 shared_objs  += $(addprefix $(O)/shared_ver_,$(patsubst %.c,%.o,$(filter %.c,$(notdir $(lsrc) $(lsrc_intrinsic)))))
 
 $(O)/shared_ver_%.o: %.c
