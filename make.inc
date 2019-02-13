@@ -44,7 +44,11 @@ host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
 arch ?= $(shell uname | grep -v -e Linux -e BSD )
 
 CC  = gcc
+ifeq ($(host_cpu),aarch64)
+AS = gcc
+else
 AS  = yasm
+endif
 SIM = sde $(SIMFLAGS) --
 AWK = awk
 
@@ -54,7 +58,11 @@ DEBUG_nasm = -g
 
 # Default arch= build options
 CFLAGS_    = -Wall
+ifeq ($(host_cpu),aarch64)
+ASFLAGS_   :=
+else
 ASFLAGS_   = -f elf64
+endif
 ARFLAGS_   = cr $@
 STRIP_gcc  = strip -d -R .comment $@
 
@@ -94,10 +102,10 @@ ARFLAGS  = $(ARFLAGS_$(arch))
 DEFINES += $(addprefix -D , $D)
 
 lsrc += $(lsrc_$(host_cpu))
-O = bin
-lobj  += $(patsubst %.c,%.o,$(patsubst %.asm,%.o,$(lsrc) $(lsrc_intrinsic)))
-objs  = $(addprefix $(O)/,$(notdir $(lobj)))
 
+O = bin
+lobj  += $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(patsubst %.asm,%.o,$(lsrc) $(lsrc_intrinsic))))
+objs  = $(addprefix $(O)/,$(notdir $(lobj)))
 
 lib_name ?= isa-l_crypto.a
 default: lib slib
@@ -151,10 +159,16 @@ $(addsuffix .run,$(all_tests)): %.run : %
 # Other build rules
 msg = $(if $(DEBUG),DEBUG) $(patsubst 32,32-bit,$(host_cpu)) $D
 
+# yasm/nasm assembly files
 $(O)/%.o: %.asm
 	@echo "  ---> Building $< $(msg)"
 	@$(AS) $(ASFLAGS) -o $@ $<
 
+
+# gcc assembly files
+$(O)/%.o: $(host_cpu)/%.S
+	@echo "  ---> Building $< $(msg)"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 $(O)/%.o %.o: %.c
 	@echo "  ---> Building $< $(msg)"
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
@@ -190,6 +204,7 @@ soname      = $(so_lib_inst).$(word 1, $(subst ., ,$(version)))
 
 slib: $(so_lib_name)
 aobjs  += $(addprefix $(O)/,$(patsubst %.asm,%.o,$(filter %.asm,$(notdir $(lsrc) $(lsrc_intrinsic)))))
+aobjs  += $(addprefix $(O)/,$(patsubst %.S,%.o,$(filter %.S,$(notdir $(lsrc) $(lsrc_intrinsic)))))
 shared_objs  += $(addprefix $(O)/shared_ver_,$(patsubst %.c,%.o,$(filter %.c,$(notdir $(lsrc) $(lsrc_intrinsic)))))
 
 $(O)/shared_ver_%.o: %.c

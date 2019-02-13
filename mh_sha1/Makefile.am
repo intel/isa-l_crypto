@@ -41,10 +41,24 @@ lsrc_mh_sha1  =	mh_sha1/mh_sha1.c \
 lsrc_mh_sha1 += mh_sha1/mh_sha1_block_avx512.asm \
 		mh_sha1/mh_sha1_avx512.c
 
-lsrc        += 	$(lsrc_sha1) \
+lsrc_x86_64  += $(lsrc_sha1) \
 		$(lsrc_mh_sha1)
 
-other_src   += 	mh_sha1/mh_sha1_ref.c \
+lsrc_x86_32  += $(lsrc_x86_64)
+
+lsrc_base_aliases += mh_sha1/mh_sha1_base_aliases.c
+
+lsrc_aarch64 += mh_sha1/mh_sha1_block_base.c \
+		mh_sha1/mh_sha1_finalize_base.c \
+		mh_sha1/mh_sha1_update_base.c \
+		mh_sha1/sha1_for_mh_sha1.c \
+		mh_sha1/mh_sha1.c
+
+lsrc_aarch64 += mh_sha1/mh_sha1_base_aliaes.c
+
+lsrc_base_aliases += mh_sha1/mh_sha1_base_aliaes.c
+
+other_src    += mh_sha1/mh_sha1_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \
 		include/test.h \
