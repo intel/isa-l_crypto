@@ -159,16 +159,25 @@ $(addsuffix .run,$(all_tests)): %.run : %
 # Other build rules
 msg = $(if $(DEBUG),DEBUG) $(patsubst 32,32-bit,$(host_cpu)) $D
 
+ifeq ($(host_cpu),aarch64)
+# gcc assembly files
+$(O)/%.o: $(host_cpu)/%.S
+	@echo "  ---> Building $< $(msg)"
+	@$(COMPILE.c) -D__ASSEMBLY__ $(OUTPUT_OPTION) $<
+$(O)/%.o %.o: $(host_cpu)/%.c
+	@echo "  ---> Building $< $(msg)"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
+$(O)/shared_ver_%.o: $(host_cpu)/%.c
+	@echo "  ---> Building shared $< $(msg)"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
+else
 # yasm/nasm assembly files
 $(O)/%.o: %.asm
 	@echo "  ---> Building $< $(msg)"
 	@$(AS) $(ASFLAGS) -o $@ $<
 
 
-# gcc assembly files
-$(O)/%.o: $(host_cpu)/%.S
-	@echo "  ---> Building $< $(msg)"
-	@$(COMPILE.c) $(OUTPUT_OPTION) $<
+endif
 $(O)/%.o %.o: %.c
 	@echo "  ---> Building $< $(msg)"
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
