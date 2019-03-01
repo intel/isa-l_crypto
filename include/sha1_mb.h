@@ -443,6 +443,10 @@ void      sha1_mb_mgr_init_avx512_ni    (SHA1_MB_JOB_MGR *state);
 SHA1_JOB* sha1_mb_mgr_submit_avx512_ni  (SHA1_MB_JOB_MGR *state, SHA1_JOB* job);
 SHA1_JOB* sha1_mb_mgr_flush_avx512_ni   (SHA1_MB_JOB_MGR *state);
 
+void      sha1_mb_mgr_init_ce   (SHA1_MB_JOB_MGR *state);
+SHA1_JOB* sha1_mb_mgr_submit_ce (SHA1_MB_JOB_MGR *state, SHA1_JOB* job);
+SHA1_JOB* sha1_mb_mgr_flush_ce  (SHA1_MB_JOB_MGR *state);
+
 #ifdef __cplusplus
 }
 #endif

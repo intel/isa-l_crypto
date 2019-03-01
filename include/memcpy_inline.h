@@ -362,7 +362,7 @@ static inline void memclr_sse_varlen(void *dst, size_t nbytes)
 #define memcpy_fixedlen memcpy
 
 #define memclr_varlen(dst,n)   memset(dst,0,n)
-#define memclr_fixedlen memset(dst,0,n)
+#define memclr_fixedlen(dst,n) memset(dst,0,n)
 
 #endif
 

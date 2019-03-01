@@ -48,8 +48,9 @@ ifeq ($(host_cpu),aarch64)
 AS = gcc
 else
 AS  = yasm
-endif
 SIM = sde $(SIMFLAGS) --
+endif
+
 AWK = awk
 
 DEBUG      = -g
@@ -60,6 +61,7 @@ DEBUG_nasm = -g
 CFLAGS_    = -Wall
 ifeq ($(host_cpu),aarch64)
 ASFLAGS_   :=
+CFLAGS_    +=  -march=armv8-a+crypto
 else
 ASFLAGS_   = -f elf64
 endif

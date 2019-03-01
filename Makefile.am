@@ -104,6 +104,7 @@ if USE_NASM
 endif
 if CPU_AARCH64
   as_filter = gcc -D__ASSEMBLY__
+  my_CFLAGS += -march=armv8-a+crypto
 endif
 CCAS = $(as_filter)
 EXTRA_DIST += tools/yasm-filter.sh tools/nasm-filter.sh

@@ -67,7 +67,13 @@ lsrc_x86_32 += 	$(lsrc_x86_64)
 lsrc_aarch64 += sha1_mb/sha1_ctx_base.c \
 		sha1_mb/sha1_ref.c
 
-lsrc_aarch64 += sha1_mb/sha1_ctx_base_aliases.c
+lsrc_aarch64 += sha1_mb/aarch64/sha1_mb_multibinary.S \
+		sha1_mb/aarch64/sha1_mb_dispatch_init.c  \
+		sha1_mb/aarch64/sha1_ctx_ce.c	\
+		sha1_mb/aarch64/sha1_mb_x1_ce.S		\
+		sha1_mb/aarch64/sha1_mb_x2_ce.S		\
+		sha1_mb/aarch64/sha1_mb_mgr_ce.c
+
 
 lsrc_base_aliases += sha1_mb/sha1_ctx_base_aliases.c
 
