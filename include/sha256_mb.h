@@ -416,6 +416,39 @@ SHA256_HASH_CTX* sha256_ctx_mgr_submit_avx512_ni (SHA256_HASH_CTX_MGR* mgr, SHA2
 SHA256_HASH_CTX* sha256_ctx_mgr_flush_avx512_ni (SHA256_HASH_CTX_MGR* mgr);
 
 
+/**
+ * @brief Initialize the SHA256 multi-buffer manager structure.
+ * @requires Arm64 crypto extension
+ *
+ * @param mgr Structure holding context level state info
+ * @returns void
+ */
+void      sha256_ctx_mgr_init_ce   (SHA256_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief  Submit a new SHA256 job to the multi-buffer manager.
+ * @requires Arm64 crypto extension
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+SHA256_HASH_CTX* sha256_ctx_mgr_submit_ce (SHA256_HASH_CTX_MGR* mgr, SHA256_HASH_CTX* ctx,
+					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA256 jobs and return when complete.
+ * @requires Arm64 crypto extension
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+SHA256_HASH_CTX* sha256_ctx_mgr_flush_ce  (SHA256_HASH_CTX_MGR* mgr);
+
+
 /*******************************************************************
  * Scheduler (internal) level out-of-order function prototypes
  ******************************************************************/
@@ -443,6 +476,10 @@ SHA256_JOB* sha256_mb_mgr_flush_sse_ni   (SHA256_MB_JOB_MGR *state);
 void        sha256_mb_mgr_init_avx512_ni    (SHA256_MB_JOB_MGR *state);
 SHA256_JOB* sha256_mb_mgr_submit_avx512_ni  (SHA256_MB_JOB_MGR *state, SHA256_JOB* job);
 SHA256_JOB* sha256_mb_mgr_flush_avx512_ni   (SHA256_MB_JOB_MGR *state);
+
+void        sha256_mb_mgr_init_ce   (SHA256_MB_JOB_MGR *state);
+SHA256_JOB* sha256_mb_mgr_submit_ce (SHA256_MB_JOB_MGR *state, SHA256_JOB* job);
+SHA256_JOB* sha256_mb_mgr_flush_ce  (SHA256_MB_JOB_MGR *state);
 
 #ifdef __cplusplus
 }
