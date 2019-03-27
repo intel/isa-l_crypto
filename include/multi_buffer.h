@@ -112,6 +112,7 @@ typedef enum {
 #define hash_ctx_digest(ctx)     ((ctx)->job.result_digest)
 #define hash_ctx_processing(ctx) ((ctx)->status & HASH_CTX_STS_PROCESSING)
 #define hash_ctx_complete(ctx)   ((ctx)->status == HASH_CTX_STS_COMPLETE)
+#define hash_ctx_idle(ctx)   ((ctx)->status == HASH_CTX_STS_IDLE)
 #define hash_ctx_status(ctx)     ((ctx)->status)
 #define hash_ctx_error(ctx)      ((ctx)->error)
 #define hash_ctx_init(ctx) \

@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sha256_mb.h"
-
+#include <assert.h>
 #define TEST_LEN  (1024*1024)
 #define TEST_BUFS 100
 #ifndef RANDOMS
@@ -118,14 +118,29 @@ int main(void)
 						    &ctxpool[i],
 						    buf_ptr[i], UPDATE_SIZE, HASH_UPDATE);
 
-		// Add jobs while available or finished
-		if ((ctx == NULL) || hash_ctx_complete(ctx)) {
-			i++;
+		if (ctx != NULL && hash_ctx_idle(ctx)) {
+			// Resubmit unfinished job
+			i = (unsigned long)(ctx->user_data);
+			buf_ptr[i] += UPDATE_SIZE;
 			continue;
 		}
-		// Resubmit unfinished job
-		i = (unsigned long)(ctx->user_data);
-		buf_ptr[i] += UPDATE_SIZE;
+		if (ctx) {
+			assert(ctx->error == 0);
+		}
+
+		/* ctx is null or ctx is free
+		 * Both cases mean free lane are available
+		 * try to find out the next job and submit it
+		 */
+		for (; i < TEST_BUFS; i++) {
+			ctx = &ctxpool[i];
+			// Add jobs that is not started
+			if (hash_ctx_complete(ctx)
+			    && buf_ptr[i] == bufs[i]) {
+				break;
+			}
+		}
+
 	}
 
 	// Start flushing finished jobs, end on last flushed
