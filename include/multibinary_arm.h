@@ -49,14 +49,9 @@
 	.type \name,%function
 	.align	2
 	\name\():
-#ifdef __PIC__
 		adrp	x10, :got:\name\()_dispatched
 		ldr	x10, [x10, #:got_lo12:\name\()_dispatched]
 		ldr	x10,[x10]
-#else
-		adrp	x10, \name\()_dispatched
-		ldr	x10, [x10, :lo12:\name\()_dispatched]
-#endif
 		br	x10
 		nop
 	.size \name,. - \name
