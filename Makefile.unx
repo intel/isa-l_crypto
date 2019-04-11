@@ -29,7 +29,7 @@
 
 units_x86_64     = sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 mh_sha256 aes rolling_hash
 units_x86_32     = $(units_x86_64)
-units_aarch64    = sha1_mb mh_sha1 sha256_mb
+units_aarch64    = sha1_mb mh_sha1 sha256_mb sha512_mb
 host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
 units ?= $(units_$(host_cpu))
 default: lib
