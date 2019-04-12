@@ -1,5 +1,5 @@
 ########################################################################
-#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#  Copyright(c) 2011-2019 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
@@ -27,19 +27,19 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-units_x86_64     = sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 mh_sha256 aes rolling_hash sm3_mb
-units_x86_32     = $(units_x86_64)
-units_aarch64    = sha1_mb mh_sha1
-host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
-units ?= $(units_$(host_cpu))
+lsrc += sm3_mb/sm3_ctx_base.c \
+	sm3_mb/sm3_multibinary.asm
 
-default: lib
+src_include += -I $(srcdir)/sm3_mb
 
-include $(foreach unit,$(units), $(unit)/Makefile.am)
+extern_hdrs +=  include/sm3_mb.h \
+                include/multi_buffer.h
 
-# Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l_crypto.a
+other_src +=    include/datastruct.asm \
+                include/multibinary.asm \
+                include/reg_sizes.asm \
+                include/memcpy_inline.h \
+                include/memcpy.asm \
+                include/intrinreg.h
 
-include make.inc
-
-VPATH = . $(units) include $(units:%=%/$(host_cpu))
+check_tests  += sm3_mb/sm3_ref_test
