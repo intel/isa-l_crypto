@@ -97,7 +97,7 @@ endif
 
 ifeq ($(arch),aarch64)
   AS=gcc
-  SIM=
+  SIM=$(EXEC_WRAPPER)
 endif
 
 INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH)))
@@ -148,8 +148,10 @@ other: $(notdir $(other_tests))
 tests: $(all_unit_tests)
 perfs: $(all_perf_tests)
 checks: $(all_check_tests)
+ifneq ($(host_cpu),aarch64)
 check test perf: SIM=
 trace: SIMFLAGS = -debugtrace
+endif
 check test sim:
 	@echo Finished running $@
 
