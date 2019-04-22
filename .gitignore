@@ -1,0 +1,27 @@
+# Objects
+*~
+*.o
+*.lo
+*.so
+*.dll
+*.exp
+*.lib
+bin
+
+# Autobuild
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+build-aux
+config.*
+configure
+.deps
+.dirstamp
+.libs
+libtool
+
+# Generated files
+isa-l_crypto.h
+/libisal_crypto.la
+libisal_crypto.pc
