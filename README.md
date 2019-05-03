@@ -19,9 +19,9 @@ applications.  ISA-L_crypto includes:
 * Rolling hash - Hash input in a window which moves through the input
 
 Also see:
-* [ISA-L_crypto for updates](https://github.com/01org/isa-l_crypto).
-* For non-crypto ISA-L see [isa-l on github](https://github.com/01org/isa-l).
-* The [github wiki](https://github.com/01org/isa-l/wiki) covering isa-l and
+* [ISA-L_crypto for updates](https://github.com/intel/isa-l_crypto).
+* For non-crypto ISA-L see [isa-l on github](https://github.com/intel/isa-l).
+* The [github wiki](https://github.com/intel/isa-l/wiki) covering isa-l and
   isa-l crypto.
 * [Contributing](CONTRIBUTING.md).
 
@@ -30,7 +30,8 @@ Building ISA-L
 
 ### Prerequisites
 
-* Assembler: nasm v2.11.01 or later or yasm version 1.2.0 or later.
+* Assembler: nasm v2.11.01 or later (nasm v2.13 or better suggested for building in AVX512 support)
+  or yasm version 1.2.0 or later.
 * Compiler: gcc, clang, icc or VC compiler.
 * Make: GNU 'make' or 'nmake' (Windows).
 * Optional: Building with autotools requires autoconf/automake packages.
