@@ -7,6 +7,11 @@ pkginclude_HEADERS = include/test.h include/types.h
 noinst_LTLIBRARIES =
 INCLUDE = -I $(srcdir)/include/
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libisal_crypto.pc
+EXTRA_DIST += libisal_crypto.pc.in
+CLEANFILES += libisal_crypto.pc
+
 lsrc=
 src_include=
 extern_hdrs=
