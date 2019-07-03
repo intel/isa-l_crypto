@@ -61,7 +61,7 @@ int main(void)
 
 	// Init ctx contents
 	for (i = 0; i < TEST_BUFS; i++) {
-		bufs[i] = (unsigned char *)calloc((size_t) TEST_LEN, 1);
+		bufs[i] = (unsigned char *)calloc((size_t)TEST_LEN, 1);
 		if (bufs[i] == NULL) {
 			printf("malloc failed test aborted\n");
 			return 1;
