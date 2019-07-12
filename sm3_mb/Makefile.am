@@ -27,7 +27,7 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-lsrc += sm3_mb/sm3_ctx_base.c \
+lsrc_x86_64 += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/sm3_multibinary.asm
 
 src_include += -I $(srcdir)/sm3_mb
@@ -40,6 +40,36 @@ other_src +=    include/datastruct.asm \
                 include/reg_sizes.asm \
                 include/memcpy_inline.h \
                 include/memcpy.asm \
-                include/intrinreg.h
+                include/intrinreg.h \
+		sm3_mb/sm3_test_helper.c
 
 check_tests  += sm3_mb/sm3_ref_test
+
+unit_tests   += sm3_mb/sm3_mb_rand_ssl_test \
+		sm3_mb/sm3_mb_rand_test \
+		sm3_mb/sm3_mb_rand_update_test \
+		sm3_mb/sm3_mb_flush_test
+
+sm3_mb_rand_ssl_test: LDLIBS += -lcrypto
+sm3_mb_sm3_mb_rand_ssl_test_LDFLAGS = -lcrypto
+
+sm3_mb_rand_ssl_test: sm3_test_helper.o
+sm3_mb_sm3_mb_rand_ssl_test_LDADD = sm3_mb/sm3_test_helper.lo libisal_crypto.la
+
+sm3_mb_rand_update_test: LDLIBS += -lcrypto
+sm3_mb_sm3_mb_rand_update_test_LDFLAGS = -lcrypto
+
+sm3_mb_rand_update_test: sm3_test_helper.o
+sm3_mb_sm3_mb_rand_update_test_LDADD = sm3_mb/sm3_test_helper.lo libisal_crypto.la
+
+sm3_mb_flush_test: LDLIBS += -lcrypto
+sm3_mb_sm3_mb_flush_test_LDFLAGS = -lcrypto
+
+sm3_mb_flush_test: sm3_test_helper.o
+sm3_mb_sm3_mb_flush_test_LDADD = sm3_mb/sm3_test_helper.lo libisal_crypto.la
+
+sm3_mb_rand_test: LDLIBS += -lcrypto
+sm3_mb_sm3_mb_rand_test_LDFLAGS = -lcrypto
+
+sm3_mb_rand_test: sm3_test_helper.o
+sm3_mb_sm3_mb_rand_test_LDADD = sm3_mb/sm3_test_helper.lo libisal_crypto.la
