@@ -52,6 +52,20 @@ other_src   += 	mh_sha256/mh_sha256_ref.c \
 		include/test.h \
 		mh_sha256/mh_sha256_internal.h
 
+lsrc_aarch64 += $(lsrc_sha256)	\
+		mh_sha256/mh_sha256_base_aliases.c \
+		mh_sha256/mh_sha256.c \
+		mh_sha256/mh_sha256_finalize_base.c \
+		mh_sha256/mh_sha256_update_base.c \
+		mh_sha256/mh_sha256_block_base.c
+
+lsrc_base_aliases += $(lsrc_sha256)	\
+		mh_sha256/mh_sha256_base_aliases.c \
+		mh_sha256/mh_sha256.c \
+		mh_sha256/mh_sha256_finalize_base.c \
+		mh_sha256/mh_sha256_update_base.c \
+		mh_sha256/mh_sha256_block_base.c
+
 src_include += -I $(srcdir)/mh_sha256
 
 extern_hdrs +=	include/mh_sha256.h

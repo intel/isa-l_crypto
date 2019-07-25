@@ -30,6 +30,12 @@
 lsrc_x86_64 += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/sm3_multibinary.asm
 
+lsrc_base_aliases += sm3_mb/sm3_ctx_base.c \
+	sm3_mb/sm3_ctx_base_aliases.c
+
+lsrc_aarch64 += sm3_mb/sm3_ctx_base.c \
+	sm3_mb/sm3_ctx_base_aliases.c
+
 src_include += -I $(srcdir)/sm3_mb
 
 extern_hdrs +=  include/sm3_mb.h \

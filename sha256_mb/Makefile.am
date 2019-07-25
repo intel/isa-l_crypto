@@ -65,7 +65,11 @@ lsrc_x86_64 += 	sha256_mb/sha256_ni_x1.asm \
 
 lsrc_x86_32 += 	$(lsrc_x86_64)
 
-lsrc_aarch64 += sha256_mb/sha256_ctx_base.c
+lsrc_aarch64 += sha256_mb/sha256_ctx_base_aliases.c	\
+		sha256_mb/sha256_ctx_base.c
+
+lsrc_base_aliases += sha256_mb/sha256_ctx_base_aliases.c	\
+		sha256_mb/sha256_ctx_base.c
 
 src_include += -I $(srcdir)/sha256_mb
 

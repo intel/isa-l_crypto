@@ -42,8 +42,9 @@
 version ?= 2.22.0
 host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
 arch ?= $(shell uname | grep -v -e Linux -e BSD )
+
 ifeq ($(host_cpu)_$(arch),aarch64_)
-arch = aarch64
+  arch = aarch64
 endif
 
 
@@ -77,10 +78,6 @@ ASFLAGS_mingw = -f win64
 ARFLAGS_mingw = cr $@
 LDFLAGS_mingw = -Wl,--force-exe-suffix
 
-# arch=aarch64 build options
-ASFLAGS_aarch64 = -D__ASSEMBLY__ -c
-ARFLAGS_aarch64 = cr $@
-
 LDFLAGS_so = -Wl,-soname,$(soname)
 
 ifeq ($(arch),mingw)
@@ -95,8 +92,11 @@ ifeq ($(shell uname),Darwin)
    STRIP_gcc  =
 endif
 
+# arch=aarch64 build options
+ASFLAGS_aarch64 = -c
+ARFLAGS_aarch64 = cr $@
 ifeq ($(arch),aarch64)
-  AS=gcc
+  AS=$(CC) -D__ASSEMBLY__
   SIM=
 endif
 
@@ -106,6 +106,9 @@ ASFLAGS  = $(ASFLAGS_$(arch)) $(ASFLAGS_$(CC)) $(DEBUG_$(AS)) $(DEFINES) $(INCLU
 ARFLAGS  = $(ARFLAGS_$(arch))
 DEFINES += $(addprefix -D , $D)
 
+ifeq ($(filter aarch64 x86_%,$(host_cpu)),)
+  host_cpu=base_aliases
+endif
 lsrc += $(lsrc_$(host_cpu))
 O = bin
 lobj  += $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(patsubst %.asm,%.o,$(lsrc) $(lsrc_intrinsic))))
