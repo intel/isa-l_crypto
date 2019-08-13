@@ -73,7 +73,7 @@ extern "C" {
 #endif
 #define ISAL_GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 
-#if (defined(__ICC) || defined( __GNUC__ ) || defined(__clang__))
+#if (defined(__ICC) || defined( __GNUC__ ) || defined(__clang__)) && !defined(ISAL_UNIT_TEST)
 # if __has_extension(attribute_deprecated_with_message) \
 	|| (ISAL_GCC_VERSION >= 40500) \
 	|| (__INTEL_COMPILER >= 1100)
