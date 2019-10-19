@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+;  Copyright(c) 2011-2019 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
 ;  modification, are permitted provided that the following conditions
@@ -38,6 +38,10 @@
 %endif
 %endif
 
+%ifndef AS_FEATURE_LEVEL
+%define AS_FEATURE_LEVEL 4
+%endif
+
 %define EFLAGS_HAS_CPUID        (1<<21)
 %define FLAG_CPUID1_ECX_CLMUL   (1<<1)
 %define FLAG_CPUID1_EDX_SSE2    (1<<26)
@@ -60,9 +64,18 @@
 %define FLAG_CPUID7_EBX_SHA            (1<<29)
 %define FLAG_CPUID7_EBX_AVX512BW       (1<<30)
 %define FLAG_CPUID7_EBX_AVX512VL       (1<<31)
+
 %define FLAG_CPUID7_ECX_AVX512VBMI     (1<<1)
+%define FLAG_CPUID7_ECX_AVX512VBMI2    (1 << 6)
+%define FLAG_CPUID7_ECX_GFNI           (1 << 8)
+%define FLAG_CPUID7_ECX_VAES           (1 << 9)
+%define FLAG_CPUID7_ECX_VPCLMULQDQ     (1 << 10)
+%define FLAG_CPUID7_ECX_VNNI           (1 << 11)
+%define FLAG_CPUID7_ECX_BITALG         (1 << 12)
+%define FLAG_CPUID7_ECX_VPOPCNTDQ      (1 << 14)
 
 %define FLAGS_CPUID7_ECX_AVX512_G1 (FLAG_CPUID7_EBX_AVX512F | FLAG_CPUID7_EBX_AVX512VL | FLAG_CPUID7_EBX_AVX512BW | FLAG_CPUID7_EBX_AVX512CD | FLAG_CPUID7_EBX_AVX512DQ)
+%define FLAGS_CPUID7_ECX_AVX512_G2 (FLAG_CPUID7_ECX_AVX512VBMI2 | FLAG_CPUID7_ECX_GFNI | FLAG_CPUID7_ECX_VAES | FLAG_CPUID7_ECX_VPCLMULQDQ | FLAG_CPUID7_ECX_VNNI | FLAG_CPUID7_ECX_BITALG | FLAG_CPUID7_ECX_VPOPCNTDQ)
 
 %define FLAG_XGETBV_EAX_XMM            (1<<1)
 %define FLAG_XGETBV_EAX_YMM            (1<<2)
@@ -209,7 +222,18 @@ section .text
 %endif
 
 %ifidn __OUTPUT_FORMAT__, macho64
-%define elf64 macho64
+ %define elf64 macho64
+ mac_equ equ 1
+ %ifdef __NASM_VER__
+  %define ISAL_SYM_TYPE_FUNCTION
+  %define ISAL_SYM_TYPE_DATA_INTERNAL
+ %else
+  %define ISAL_SYM_TYPE_FUNCTION function
+  %define ISAL_SYM_TYPE_DATA_INTERNAL data internal
+ %endif
+%else
+ %define ISAL_SYM_TYPE_FUNCTION function
+ %define ISAL_SYM_TYPE_DATA_INTERNAL data internal
 %endif
 
 %macro slversion 4
