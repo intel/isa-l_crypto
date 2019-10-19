@@ -49,7 +49,7 @@ endif
 
 
 CC  = gcc
-AS  = yasm
+AS  = nasm
 SIM = sde $(SIMFLAGS) --
 AWK = awk
 
@@ -83,6 +83,7 @@ LDFLAGS_so = -Wl,-soname,$(soname)
 ifeq ($(arch),mingw)
   CC=x86_64-w64-mingw32-gcc
   AR=x86_64-w64-mingw32-ar
+  AS=yasm
 endif
 
 ASFLAGS_Darwin = -f macho64 --prefix=_
@@ -131,6 +132,7 @@ unit_testswin64 = $(unit_tests)
 exampleswin64 = $(examples)
 perf_testswin64 = $(perf_tests)
 
+
 # Build and run unit tests, performance tests, etc.
 all_tests = $(notdir $(sort $(perf_tests) $(check_tests) $(unit_tests) $(examples) $(other_tests)))
 all_unit_tests = $(notdir $(sort $(check_tests) $(unit_tests)))
@@ -141,6 +143,25 @@ $(all_unit_tests): % : %.c $(lib_name)
 $(all_perf_tests): % : %.c $(lib_name)
 $(sort $(notdir $(examples))): % : %.c $(lib_name)
 $(sort $(notdir $(other_tests))): % : %.c $(lib_name)
+
+# Check for modern as
+test-as = $(shell hash printf && printf $(3) > $(2) && $(AS) $(ASFLAGS) ${tmpf} -o /dev/null 2> /dev/null && echo $(1) || echo $(4))
+as_4  := "pblendvb xmm2, xmm1;"
+as_6  := "vinserti32x8 zmm0, ymm1, 1;"
+as_10 := "vpcompressb zmm0 {k1}, zmm1;"
+
+tmpf := $(shell mktemp)
+as_feature_level := $(call test-as, 4,  $(tmpf), $(as_4),  $(as_feature_level))
+as_feature_level := $(call test-as, 6,  $(tmpf), $(as_6),  $(as_feature_level))
+as_feature_level := $(call test-as, 10, $(tmpf), $(as_10), $(as_feature_level))
+tmpf := $(shell rm ${tmpf})
+
+ifneq ($(findstring $(as_feature_level),6 10),)
+  D_HAVE_AS_KNOWS_AVX512_y := -DHAVE_AS_KNOWS_AVX512
+endif
+
+CFLAGS  += -DAS_FEATURE_LEVEL=$(as_feature_level) $(D_HAVE_AS_KNOWS_AVX512_y)
+ASFLAGS += -DAS_FEATURE_LEVEL=$(as_feature_level) $(D_HAVE_AS_KNOWS_AVX512_y)
 
 sim test trace: $(addsuffix .run,$(all_unit_tests))
 perf: $(addsuffix .run,$(all_perf_tests))
