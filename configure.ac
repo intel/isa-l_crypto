@@ -168,11 +168,7 @@ if test x"$is_x86" = x"yes"; then
       AC_MSG_RESULT([no])
     fi
 
-    if test x"$arch" = x"mingw"; then
-      AS=yasm
-      as_feature_level=$yasm_feature_level
-      as_knows_shani=$yasm_knows_shani
-    elif test $nasm_feature_level -ge $yasm_feature_level ; then
+    if test $nasm_feature_level -ge $yasm_feature_level ; then
       AS=nasm
       as_feature_level=$nasm_feature_level
       as_knows_shani=$nasm_knows_shani
@@ -258,8 +254,12 @@ if test x"$is_x86" = x"yes"; then
   esac
 
   # Fix for nasm missing windows features
-  if test x"$arch" = x"mingw" -a x"$AS" != x"yasm"; then
+  if test x"$arch" = x"mingw"; then
+    AS=yasm
+    as_feature_level=$yasm_feature_level
+    if test $as_feature_level -lt 2 ; then
       AC_MSG_ERROR([Mingw build requires Yasm 1.2.0 or later.])
+    fi
   fi
 
   AC_DEFINE_UNQUOTED(AS_FEATURE_LEVEL, [$as_feature_level], [Assembler feature level.])
