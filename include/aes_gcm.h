@@ -153,14 +153,19 @@ struct gcm_key_data {
         uint8_t shifted_hkey_6[GCM_ENC_KEY_LEN];  // store HashKey^6 <<1 mod poly here
         uint8_t shifted_hkey_7[GCM_ENC_KEY_LEN];  // store HashKey^7 <<1 mod poly here
         uint8_t shifted_hkey_8[GCM_ENC_KEY_LEN];  // store HashKey^8 <<1 mod poly here
-        uint8_t shifted_hkey_1_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_2_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^2 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_3_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^3 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_4_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^4 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_5_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^5 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_6_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^6 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_7_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^7 <<1 mod poly here (for Karatsuba purposes)
-        uint8_t shifted_hkey_8_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits and Low 64 bits of  HashKey^8 <<1 mod poly here (for Karatsuba purposes)
+        uint8_t shifted_hkey_1_k[GCM_ENC_KEY_LEN];  // store XOR of High 64 bits
+        uint8_t shifted_hkey_2_k[GCM_ENC_KEY_LEN];  // and Low 64b of HashKey^n <<1 mod poly
+        uint8_t shifted_hkey_3_k[GCM_ENC_KEY_LEN];  // here (for Karatsuba purposes)
+        uint8_t shifted_hkey_4_k[GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_5_k[GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_6_k[GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_7_k[GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_8_k[GCM_ENC_KEY_LEN];
+#ifdef GCM_BIG_DATA
+        uint8_t shifted_hkey_n_k[GCM_ENC_KEY_LEN * (128 - 16)]; // Big data version needs 128
+#else
+        uint8_t shifted_hkey_n_k[GCM_ENC_KEY_LEN * (48 - 16)]; // Others vaes version needs 48
+#endif
 }
 #if defined (__unix__) || (__APPLE__) || (__MINGW32__)
         __attribute__ ((aligned (16)));

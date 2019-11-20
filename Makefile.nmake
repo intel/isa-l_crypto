@@ -152,6 +152,8 @@ objs = \
 	bin\gcm128_sse.obj \
 	bin\gcm256_avx_gen2.obj \
 	bin\gcm256_avx_gen4.obj \
+	bin\gcm128_vaes_avx512.obj \
+	bin\gcm256_vaes_avx512.obj \
 	bin\gcm256_sse.obj \
 	bin\gcm_multibinary.obj \
 	bin\gcm_pre.obj \

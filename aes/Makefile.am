@@ -35,8 +35,10 @@ extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes
 lsrc_x86_64     += aes/gcm_multibinary.asm aes/gcm_pre.c
 lsrc_x86_64     += aes/gcm128_avx_gen2.asm aes/gcm128_avx_gen4.asm aes/gcm128_sse.asm
 lsrc_x86_64     += aes/gcm256_avx_gen2.asm aes/gcm256_avx_gen4.asm aes/gcm256_sse.asm
+lsrc_x86_64     += aes/gcm128_vaes_avx512.asm aes/gcm256_vaes_avx512.asm
 lsrc_x86_64     += aes/gcm128_avx_gen2_nt.asm aes/gcm128_avx_gen4_nt.asm aes/gcm128_sse_nt.asm
 lsrc_x86_64     += aes/gcm256_avx_gen2_nt.asm aes/gcm256_avx_gen4_nt.asm aes/gcm256_sse_nt.asm
+
 lsrc_x86_64     += aes/gcm_multibinary_nt.asm
 
 lsrc_x86_64     += aes/keyexp_multibinary.asm
@@ -64,6 +66,8 @@ lsrc_x86_32 	+= $(lsrc_x86_64)
 other_src   += include/multibinary.asm
 other_src   += include/test.h include/types.h include/reg_sizes.asm
 other_src   += aes/gcm_defines.asm
+other_src   += aes/aes_common.asm
+other_src   += aes/clear_regs.asm
 other_src   += aes/cbc_common.asm aes/cbc_std_vectors.h
 other_src   += aes/gcm_vectors.h aes/ossl_helper.h
 other_src   += aes/xts_128_vect.h
@@ -71,6 +75,8 @@ other_src   += aes/xts_256_vect.h
 other_src   += aes/gcm_sse.asm
 other_src   += aes/gcm_avx_gen2.asm
 other_src   += aes/gcm_avx_gen4.asm
+other_src   += aes/gcm_keys_vaes_avx512.asm
+other_src   += aes/gcm_vaes_avx512.asm
 
 check_tests += aes/cbc_std_vectors_test
 check_tests += aes/gcm_std_vectors_test
