@@ -73,7 +73,6 @@ other_src   += aes/gcm_avx_gen2.asm
 other_src   += aes/gcm_avx_gen4.asm
 
 check_tests += aes/cbc_std_vectors_test
-check_tests += aes/gcm_std_vectors_old_api_test
 check_tests += aes/gcm_std_vectors_test
 check_tests += aes/gcm_nt_std_vectors_test
 check_tests += aes/xts_128_test
@@ -82,7 +81,6 @@ check_tests += aes/xts_128_expanded_key_test
 check_tests += aes/xts_256_expanded_key_test
 
 unit_tests  += aes/cbc_std_vectors_random_test
-unit_tests  += aes/gcm_std_vectors_random_old_api_test
 unit_tests  += aes/gcm_std_vectors_random_test
 unit_tests  += aes/gcm_nt_rand_test
 unit_tests  += aes/xts_128_rand aes/xts_128_rand_ossl_test
@@ -105,8 +103,6 @@ gcm_ossl_perf: LDLIBS += -lcrypto
 aes_gcm_ossl_perf_LDFLAGS = -lcrypto
 gcm_std_vectors_random_test: LDLIBS += -lcrypto
 aes_gcm_std_vectors_random_test_LDFLAGS = -lcrypto
-gcm_std_vectors_random_old_api_test: LDLIBS += -lcrypto
-aes_gcm_std_vectors_random_old_api_test_LDFLAGS = -lcrypto
 gcm_nt_rand_test: LDLIBS += -lcrypto
 aes_gcm_nt_rand_test_LDFLAGS = -lcrypto
 xts_128_enc_ossl_perf: LDLIBS += -lcrypto

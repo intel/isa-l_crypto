@@ -164,17 +164,3 @@ slversion aes_gcm_enc_256_update,	00,   00,  02d3
 slversion aes_gcm_dec_256_update,	00,   00,  02d4
 slversion aes_gcm_enc_256_finalize,	00,   00,  02d5
 slversion aes_gcm_dec_256_finalize,	00,   00,  02d6
-slversion aesni_gcm128_enc,		00,   00,  0280
-slversion aesni_gcm128_dec,		00,   00,  0281
-slversion aesni_gcm128_init,		00,   00,  0282
-slversion aesni_gcm128_enc_update,	00,   00,  0283
-slversion aesni_gcm128_dec_update,	00,   00,  0284
-slversion aesni_gcm128_enc_finalize,	00,   00,  0285
-slversion aesni_gcm128_dec_finalize,	00,   00,  0286
-slversion aesni_gcm256_enc,		00,   00,  0288
-slversion aesni_gcm256_dec,		00,   00,  0289
-slversion aesni_gcm256_init,		00,   00,  028a
-slversion aesni_gcm256_enc_update,	00,   00,  028b
-slversion aesni_gcm256_dec_update,	00,   00,  028c
-slversion aesni_gcm256_enc_finalize,	00,   00,  028d
-slversion aesni_gcm256_dec_finalize,	00,   00,  028e
