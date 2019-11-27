@@ -38,6 +38,7 @@ lsrc_x86_64     += aes/gcm256_avx_gen2.asm aes/gcm256_avx_gen4.asm aes/gcm256_ss
 lsrc_x86_64     += aes/gcm128_vaes_avx512.asm aes/gcm256_vaes_avx512.asm
 lsrc_x86_64     += aes/gcm128_avx_gen2_nt.asm aes/gcm128_avx_gen4_nt.asm aes/gcm128_sse_nt.asm
 lsrc_x86_64     += aes/gcm256_avx_gen2_nt.asm aes/gcm256_avx_gen4_nt.asm aes/gcm256_sse_nt.asm
+lsrc_x86_64     += aes/gcm128_vaes_avx512_nt.asm aes/gcm256_vaes_avx512_nt.asm
 
 lsrc_x86_64     += aes/gcm_multibinary_nt.asm
 

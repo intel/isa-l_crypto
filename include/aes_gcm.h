@@ -35,10 +35,10 @@
  * selected by defining the compile time option NT_LDST. The use of this option
  * places the following restriction on the gcm encryption functions:
  *
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
  *
  * - When using the streaming API, all partial input buffers must be a multiple
- *   of 16 bytes long except for the last input buffer.
+ *   of 64 bytes long except for the last input buffer.
  *
  * - In-place encryption/decryption is not recommended.
  *
@@ -436,7 +436,7 @@ void aes_gcm_pre_256(
  * @brief GCM-AES Encryption using 128 bit keys, Non-temporal data
  *
  * Non-temporal version of encrypt has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
  * @requires SSE4.1 and AESNI
@@ -460,7 +460,7 @@ void aes_gcm_enc_128_nt(
  * @brief GCM-AES Encryption using 256 bit keys, Non-temporal data
  *
  * Non-temporal version of encrypt has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
  * @requires SSE4.1 and AESNI
@@ -485,7 +485,7 @@ void aes_gcm_enc_256_nt(
  * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
  *
  * Non-temporal version of decrypt has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
  * @requires SSE4.1 and AESNI
@@ -509,7 +509,7 @@ void aes_gcm_dec_128_nt(
  * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
  *
  * Non-temporal version of decrypt has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
  * @requires SSE4.1 and AESNI
@@ -534,8 +534,8 @@ void aes_gcm_dec_256_nt(
  * @brief Encrypt a block of a AES-128-GCM Encryption message, Non-temporal data
  *
  * Non-temporal version of encrypt update has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
- * - All partial input buffers must be a multiple of 16 bytes long except for
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
@@ -553,8 +553,8 @@ void aes_gcm_enc_128_update_nt(
  * @brief Encrypt a block of a AES-256-GCM Encryption message, Non-temporal data
  *
  * Non-temporal version of encrypt update has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
- * - All partial input buffers must be a multiple of 16 bytes long except for
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
@@ -572,8 +572,8 @@ void aes_gcm_enc_256_update_nt(
  * @brief Decrypt a block of a AES-128-GCM Encryption message, Non-temporal data
  *
  * Non-temporal version of decrypt update has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
- * - All partial input buffers must be a multiple of 16 bytes long except for
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
@@ -591,8 +591,8 @@ void aes_gcm_dec_128_update_nt(
  * @brief Decrypt a block of a AES-256-GCM Encryption message, Non-temporal data
  *
  * Non-temporal version of decrypt update has additional restrictions:
- * - The plaintext and cyphertext buffers must be aligned on a 16 byte boundary.
- * - All partial input buffers must be a multiple of 16 bytes long except for
+ * - The plaintext and cyphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *

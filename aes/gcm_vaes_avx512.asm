@@ -126,20 +126,24 @@
 %endif
 %endif
 
+%ifndef FUNCT_EXTENSION
+%define FUNCT_EXTENSION
+%endif
+
 ;; Decide on AES-GCM key size to compile for
 %ifdef GCM128_MODE
 %define NROUNDS 9
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _128 %+ y %+ vaes_avx512
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _128 %+ y %+ vaes_avx512 %+ FUNCT_EXTENSION
 %endif
 
 %ifdef GCM192_MODE
 %define NROUNDS 11
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _192 %+ y %+ vaes_avx512
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _192 %+ y %+ vaes_avx512 %+ FUNCT_EXTENSION
 %endif
 
 %ifdef GCM256_MODE
 %define NROUNDS 13
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _256 %+ y %+ vaes_avx512
+%define FN_NAME(x,y) aes_gcm_ %+ x %+ _256 %+ y %+ vaes_avx512 %+ FUNCT_EXTENSION
 %endif
 
 %if (AS_FEATURE_LEVEL) >= 10
@@ -3870,6 +3874,7 @@ default rel
 ;       aes_gcm_precomp_256_vaes_avx512
 ;       (struct gcm_key_data *key_data)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(precomp,_)
 FN_NAME(precomp,_):
 ;; Parameter is passed through register
@@ -3908,6 +3913,7 @@ FN_NAME(precomp,_):
 exit_precomp:
 
         ret
+%endif	; _nt
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3918,6 +3924,7 @@ exit_precomp:
 ;        const u8 *aad,
 ;        u64      aad_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(init,_)
 FN_NAME(init,_):
         FUNC_SAVE
@@ -3952,6 +3959,7 @@ exit_init:
 
         FUNC_RESTORE
         ret
+%endif	; _nt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void   aes_gcm_enc_128_update_vaes_avx512 / aes_gcm_enc_192_update_vaes_avx512 /
@@ -4046,6 +4054,7 @@ exit_update_dec:
 ;        u8       *auth_tag,
 ;        u64      auth_tag_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(enc,_finalize_)
 FN_NAME(enc,_finalize_):
 
@@ -4078,6 +4087,7 @@ FN_NAME(enc,_finalize_):
 
 exit_enc_fin:
         ret
+%endif	; _nt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void   aes_gcm_dec_128_finalize_vaes_avx512 / aes_gcm_dec_192_finalize_vaes_avx512
@@ -4087,6 +4097,7 @@ exit_enc_fin:
 ;        u8       *auth_tag,
 ;        u64      auth_tag_len);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(dec,_finalize_)
 FN_NAME(dec,_finalize_):
 
@@ -4119,6 +4130,7 @@ FN_NAME(dec,_finalize_):
 
 exit_dec_fin:
         ret
+%endif	; _nt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void   aes_gcm_enc_128_vaes_avx512 / aes_gcm_enc_192_vaes_avx512 / aes_gcm_enc_256_vaes_avx512
