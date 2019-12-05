@@ -672,11 +672,12 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 %if(%%num_initial_blocks>0)
         vmovdqa %%T3, reg(i)
 %assign i (i+1)
-%endif
+
 %rep %%num_initial_blocks-1
         vmovdqu [rsp + TMP %+ i], reg(i)
 %assign i (i+1)
 %endrep
+%endif
 
                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                 ;; Haskey_i_k holds XORed values of the low and high parts of
@@ -1191,6 +1192,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 %assign i (9-%%num_initial_blocks)
+%if %%num_initial_blocks > 0
 %rep %%num_initial_blocks-1
                 ;; Encrypt the message for all but the last block
                 VXLDR  %%T1, [%%PLAIN_CYPH_IN + %%DATA_OFFSET]
@@ -1205,7 +1207,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
                 vpshufb  reg(i), [rel SHUF_MASK]
 %assign i (i+1)
 %endrep
-
+%endif
                 ;; The final block of data may be <16B
                 sub      %%LENGTH, 16*(%%num_initial_blocks-1)
 
@@ -1261,6 +1263,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 %assign j (j+1)
 %assign k (k-1)
 %assign rep_count (%%num_initial_blocks-1)
+%if rep_count > 0
 %rep rep_count
 
         vmovdqu         %%T5, [%%GDATA_KEY + HashKey_ %+ k]
@@ -1280,7 +1283,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 %assign j (j+1)
 %assign k (k-1)
 %endrep
-
+%endif
         ;; Record that a reduction is needed
         mov            r12, 1
 
@@ -1357,6 +1360,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 %else
 %assign rep_count (%%num_initial_blocks-1)
 %endif
+%if rep_count > 0
 %rep rep_count
 
         vmovdqu         %%T5, [%%GDATA_KEY + HashKey_ %+ k]
@@ -1376,6 +1380,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 %assign j (j+1)
 %assign k (k-1)
 %endrep
+%endif
 
 %%_small_initial_compute_hash:
 
