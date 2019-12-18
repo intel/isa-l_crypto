@@ -94,7 +94,12 @@ ifeq ($(shell uname),Darwin)
 endif
 
 # arch=aarch64 build options
-ASFLAGS_aarch64 = -c
+ifeq ($(lib_debug),1)
+  ASFLAGS_aarch64 = -g -c
+else
+  ASFLAGS_aarch64 = -c
+endif
+
 ARFLAGS_aarch64 = cr $@
 ifeq ($(arch),aarch64)
   AS=$(CC) -D__ASSEMBLY__
@@ -222,7 +227,9 @@ endif
 $(lib_name): $(objs)
 	@echo "  ---> Creating Lib $@"
 	@$(AR) $(ARFLAGS) $^
+ifneq ($(lib_debug),1)
 	@$(STRIP_$(CC))
+endif
 
 
 # Target for shared lib
