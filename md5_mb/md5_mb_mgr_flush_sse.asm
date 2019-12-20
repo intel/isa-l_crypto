@@ -190,6 +190,7 @@ len_is_0:
 	mov	[state + _unused_lanes], unused_lanes
 
 	mov	dword [state + _lens + 4*idx], 0xFFFFFFFF
+	sub     dword [state + _num_lanes_inuse], 1
 
 	movd	xmm0, [state + _args_digest + 4*idx + 0*32]
 	pinsrd	xmm0, [state + _args_digest + 4*idx + 1*32], 1

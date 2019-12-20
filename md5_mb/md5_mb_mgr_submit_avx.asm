@@ -127,6 +127,7 @@ md5_mb_mgr_submit_avx:
         mov     p, [job + _buffer]
         mov     [state + _args_data_ptr + 8*lane], p
 
+	add     dword [state + _num_lanes_inuse], 1
         cmp     unused_lanes, 0xF
         jne     return_null
 
@@ -175,6 +176,7 @@ len_is_0:
         mov     [state + _unused_lanes], unused_lanes
 
 	mov	dword [state + _lens + 4*idx], 0xFFFFFFFF
+	sub     dword [state + _num_lanes_inuse], 1
 
         vmovd    xmm0, [state + _args_digest + 4*idx + 0*32]
         vpinsrd  xmm0, [state + _args_digest + 4*idx + 1*32], 1
