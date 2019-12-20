@@ -191,6 +191,8 @@ len_is_0:
 	or      unused_lanes, idx
 	mov     [state + _unused_lanes], unused_lanes
 
+	sub     dword [state + _num_lanes_inuse], 1
+
 	vmovq    xmm0, [state + _args_digest + 8*idx + 0*32]
 	vpinsrq  xmm0, [state + _args_digest + 8*idx + 1*32], 1
 	vmovq    xmm1, [state + _args_digest + 8*idx + 2*32]
