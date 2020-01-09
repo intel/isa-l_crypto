@@ -33,6 +33,8 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_submit)
 	unsigned long auxval = getauxval(AT_HWCAP);
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_submit_sm);
+	if (auxval & HWCAP_ASIMD)
+		return PROVIDER_INFO(sm3_ctx_mgr_submit_asimd);
 
 	return PROVIDER_BASIC(sm3_ctx_mgr_submit);
 
@@ -43,6 +45,8 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_init)
 	unsigned long auxval = getauxval(AT_HWCAP);
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_init_sm);
+	if (auxval & HWCAP_ASIMD)
+		return PROVIDER_INFO(sm3_ctx_mgr_init_asimd);
 
 	return PROVIDER_BASIC(sm3_ctx_mgr_init);
 
@@ -53,6 +57,8 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_flush)
 	unsigned long auxval = getauxval(AT_HWCAP);
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_flush_sm);
+	if (auxval & HWCAP_ASIMD)
+		return PROVIDER_INFO(sm3_ctx_mgr_flush_asimd);
 
 	return PROVIDER_BASIC(sm3_ctx_mgr_flush);
 
