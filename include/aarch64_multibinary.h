@@ -175,8 +175,6 @@
 
 	\name\()_dispatcher_info:
 		.quad   \base         //func_entry
-		.quad   0                       //function revision
-		.quad   0                       //function name
 	.size   \name\()_dispatcher_info,. - \name\()_dispatcher_info
 
 	.balign 8
