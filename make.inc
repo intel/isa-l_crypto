@@ -40,12 +40,7 @@
 #	clean - remove object files
 
 version ?= 2.22.0
-host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
-arch ?= $(shell uname | grep -v -e Linux -e BSD )
 
-ifeq ($(host_cpu)_$(arch),aarch64_)
-  arch = aarch64
-endif
 
 
 CC  = gcc
@@ -105,7 +100,12 @@ ifeq ($(arch),aarch64)
   AS=$(CC) -D__ASSEMBLY__
   SIM=
 endif
-
+# arch=noarch build options
+ARFLAGS_noarch = cr $@
+CFLAGS_noarch= -DNOARCH
+ifeq ($(arch),noarch)
+  host_cpu=base_aliases
+endif
 INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH)))
 CFLAGS   = $(CFLAGS_$(arch)) $(CFLAGS_$(CC)) $(DEBUG) -O2 $(DEFINES) $(INCLUDE)
 ASFLAGS  = $(ASFLAGS_$(arch)) $(ASFLAGS_$(CC)) $(DEBUG_$(AS)) $(DEFINES) $(INCLUDE)
@@ -194,9 +194,13 @@ $(addsuffix .run,$(all_tests)): %.run : %
 msg = $(if $(DEBUG),DEBUG) $(patsubst 32,32-bit,$(host_cpu)) $D
 
 # gcc assembly files
-$(O)/%.o: %.S
+$(O)/%.o: $(host_cpu)/%.S
 	@echo "  ---> Building $< $(msg)"
 	@$(AS) $(ASFLAGS) -o $@ $<
+
+$(O)/%.o   : $(host_cpu)/%.c
+	@echo "  ---> Building $< $(msg)"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 # yasm/nasm assembly files
 $(O)/%.o: %.asm
 	@echo "  ---> Building $< $(msg)"
@@ -247,6 +251,9 @@ $(O)/shared_ver_%.o: %.c
 	@echo "  ---> Building shared $< $(msg)"
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 
+$(O)/shared_ver_%.o: $(host_cpu)/%.c
+	@echo "  ---> Building shared $< $(msg)"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 ifneq ($(lib_debug),1)
  $(so_lib_name): DEBUG_$(AS)=
  $(so_lib_name): DEBUG=

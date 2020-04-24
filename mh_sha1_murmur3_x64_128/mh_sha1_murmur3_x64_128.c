@@ -74,8 +74,8 @@ void mh_sha1_murmur3_x64_128_block_base(const uint8_t * input_data,
 	return;
 }
 
-#if defined(__i386__) || defined(__x86_64__) || defined( _M_X64) \
-	|| defined(_M_IX86)
+#if (!defined(NOARCH)) && (defined(__i386__) || defined(__x86_64__) \
+	|| defined( _M_X64) || defined(_M_IX86))
 /***************mh_sha1_murmur3_x64_128_update***********/
 // mh_sha1_murmur3_x64_128_update_sse.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_sse
