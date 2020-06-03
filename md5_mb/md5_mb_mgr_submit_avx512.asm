@@ -104,6 +104,7 @@ align 64
 ; arg 2 : rdx : job
 mk_global md5_mb_mgr_submit_avx512, function
 md5_mb_mgr_submit_avx512:
+	endbranch
 
 	sub	rsp, STACK_SPACE
 	; we need to save/restore all GPRs because lower layer clobbers them

@@ -119,6 +119,7 @@ section .text
 ;
 mk_global aes_keyexp_192_sse, function
 aes_keyexp_192_sse:
+	endbranch
 
 %ifnidn __OUTPUT_FORMAT__, elf64
 	sub	rsp, 16*2 + 8
@@ -197,6 +198,7 @@ aes_keyexp_192_sse:
 
 mk_global aes_keyexp_192_avx, function
 aes_keyexp_192_avx:
+	endbranch
 
 %ifnidn __OUTPUT_FORMAT__, elf64
 	sub	rsp, 16*2 + 8

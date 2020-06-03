@@ -150,6 +150,7 @@ section .text
 align 16
 mk_global rolling_hash2_run_until_00, function
 func(rolling_hash2_run_until_00)
+	endbranch
 	FUNC_SAVE
 	mov	pos.w, dword [idx]
 	sub	max, 2

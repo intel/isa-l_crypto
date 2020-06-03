@@ -1168,6 +1168,7 @@ section .text
 
 mk_global XTS_AES_256_dec_avx, function
 XTS_AES_256_dec_avx:
+	endbranch
 
 	sub     rsp, VARIABLE_OFFSET
 

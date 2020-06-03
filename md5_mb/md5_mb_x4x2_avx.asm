@@ -349,6 +349,7 @@ STACK_SIZE      equ     MEM + 16*8 + 8
 align 32
 mk_global md5_mb_x4x2_avx, function, internal
 md5_mb_x4x2_avx:
+	endbranch
 	sub	rsp, STACK_SIZE
 
 	;; Initialize digests

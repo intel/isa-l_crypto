@@ -3877,6 +3877,7 @@ default rel
 %ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(precomp,_)
 FN_NAME(precomp,_):
+	endbranch
 ;; Parameter is passed through register
 %ifdef SAFE_PARAM
         ;; Check key_data != NULL
@@ -3927,6 +3928,7 @@ exit_precomp:
 %ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(init,_)
 FN_NAME(init,_):
+	endbranch
         FUNC_SAVE
 
 %ifdef SAFE_PARAM
@@ -3972,6 +3974,7 @@ exit_init:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 global FN_NAME(enc,_update_)
 FN_NAME(enc,_update_):
+	endbranch
         FUNC_SAVE
 
 %ifdef SAFE_PARAM
@@ -4014,6 +4017,7 @@ exit_update_enc:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 global FN_NAME(dec,_update_)
 FN_NAME(dec,_update_):
+	endbranch
         FUNC_SAVE
 
 %ifdef SAFE_PARAM
@@ -4057,6 +4061,7 @@ exit_update_dec:
 %ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(enc,_finalize_)
 FN_NAME(enc,_finalize_):
+	endbranch
 
 ;; All parameters are passed through registers
 %ifdef SAFE_PARAM
@@ -4100,6 +4105,7 @@ exit_enc_fin:
 %ifnidn FUNCT_EXTENSION, _nt
 global FN_NAME(dec,_finalize_)
 FN_NAME(dec,_finalize_):
+	endbranch
 
 ;; All parameters are passed through registers
 %ifdef SAFE_PARAM
@@ -4147,6 +4153,7 @@ exit_dec_fin:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 global FN_NAME(enc,_)
 FN_NAME(enc,_):
+	endbranch
 
         FUNC_SAVE
 
@@ -4221,6 +4228,7 @@ exit_enc:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 global FN_NAME(dec,_)
 FN_NAME(dec,_):
+	endbranch
 
         FUNC_SAVE
 

@@ -335,6 +335,7 @@ align 32
 ;
 global mh_sha1_murmur3_x64_128_block_avx512
 func(mh_sha1_murmur3_x64_128_block_avx512)
+	endbranch
 	FUNC_SAVE
 
 	; save rsp

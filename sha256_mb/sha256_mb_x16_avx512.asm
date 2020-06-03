@@ -457,6 +457,7 @@ align 64
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 local_func_decl(sha256_mb_x16_avx512)
 sha256_mb_x16_avx512:
+	endbranch
 	mov	rax, rsp
         sub     rsp, STACK_SPACE
 	and	rsp, ~63	; align stack to multiple of 64

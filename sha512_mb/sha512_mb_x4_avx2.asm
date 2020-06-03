@@ -280,6 +280,7 @@ endstruc
 mk_global sha512_mb_x4_avx2, function, internal
 align 32
 sha512_mb_x4_avx2:
+	endbranch
 	; general registers preserved in outer calling routine
 	; outer calling routine saves all the XMM registers
 

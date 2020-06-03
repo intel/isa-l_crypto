@@ -958,6 +958,7 @@ section .text
 
 mk_global XTS_AES_128_dec_vaes, function
 XTS_AES_128_dec_vaes:
+	endbranch
 
 %define ALIGN_STACK
 %ifdef ALIGN_STACK

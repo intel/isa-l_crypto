@@ -86,6 +86,7 @@ align 32
 ;
 mk_global sha256_ni_x1, function, internal
 sha256_ni_x1:
+	endbranch
 	shl     NBLK, 6 	; transform blk amount into bytes
 	jz      backto_mgr
 

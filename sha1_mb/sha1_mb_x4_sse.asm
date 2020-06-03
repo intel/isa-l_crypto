@@ -278,6 +278,7 @@ align 32
 ;
 mk_global sha1_mb_x4_sse, function, internal
 sha1_mb_x4_sse:
+	endbranch
 
 	sub     rsp, FRAMESZ    ;; FRAMESZ + pushes must be odd multiple of 8
 

@@ -350,6 +350,7 @@ align 32
 ;
 mk_global mh_sha256_block_avx, function, internal
 func(mh_sha256_block_avx)
+	endbranch
 	FUNC_SAVE
 	; save rsp
 	mov	RSP_SAVE, rsp

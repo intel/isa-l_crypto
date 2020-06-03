@@ -926,6 +926,7 @@ section .text
 
 mk_global XTS_AES_128_enc_expanded_key_vaes, function
 XTS_AES_128_enc_expanded_key_vaes:
+	endbranch
 
 %define ALIGN_STACK
 %ifdef ALIGN_STACK

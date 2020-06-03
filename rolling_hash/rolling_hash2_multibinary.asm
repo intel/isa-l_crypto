@@ -65,6 +65,7 @@ section .text
 ;;;;
 mk_global rolling_hash2_run_until, function
 rolling_hash2_run_until_mbinit:
+	endbranch
 	call	rolling_hash2_run_until_dispatch_init
 
 rolling_hash2_run_until:

@@ -120,6 +120,7 @@ section .text
 
 mk_global aes_cbc_dec_192_sse, function
 func(aes_cbc_dec_192_sse)
+	endbranch
 	FUNC_SAVE
 
         FILL_KEY_CACHE CKEY_CNT, FIRST_CKEY, KEYS, MOVDQ

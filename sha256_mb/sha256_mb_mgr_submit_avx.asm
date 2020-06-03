@@ -102,6 +102,7 @@ section .text
 ; arg 2 : rdx : job
 mk_global sha256_mb_mgr_submit_avx, function
 sha256_mb_mgr_submit_avx:
+	endbranch
 
 	sub     rsp, STACK_SPACE
 	mov     [rsp + _XMM_SAVE + 8*0], rbx

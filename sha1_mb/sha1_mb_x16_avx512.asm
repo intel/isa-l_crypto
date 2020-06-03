@@ -351,6 +351,8 @@ align 64
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 local_func_decl(sha1_mb_x16_avx512)
 sha1_mb_x16_avx512:
+	endbranch
+
 	;; Initialize digests
 	vmovups	A, [DIGEST + 0*64]
 	vmovups	B, [DIGEST + 1*64]

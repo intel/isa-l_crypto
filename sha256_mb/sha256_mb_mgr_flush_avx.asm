@@ -98,6 +98,7 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 ; arg 1 : rcx : state
 mk_global sha256_mb_mgr_flush_avx, function
 sha256_mb_mgr_flush_avx:
+	endbranch
 
 	sub     rsp, STACK_SPACE
 	mov     [rsp + _GPR_SAVE + 8*0], rbx

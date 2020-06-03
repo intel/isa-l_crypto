@@ -337,6 +337,7 @@ endstruc
 mk_global sha256_mb_x8_avx2, function, internal
 align 16
 sha256_mb_x8_avx2:
+	endbranch
 	; general registers preserved in outer calling routine
 	; outer calling routine saves all the XMM registers
 

@@ -343,6 +343,7 @@ align 32
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 mk_global sha1_mb_x8_avx2, function, internal
 sha1_mb_x8_avx2:
+	endbranch
 
 	push	RSP_SAVE
 

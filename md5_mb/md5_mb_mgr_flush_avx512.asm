@@ -112,6 +112,7 @@ align 64
 ; arg 1 : rcx : state
 mk_global md5_mb_mgr_flush_avx512, function
 md5_mb_mgr_flush_avx512:
+	endbranch
 	sub	rsp, STACK_SPACE
 	mov	[rsp + _GPR_SAVE + 8*0], rbx
 	mov	[rsp + _GPR_SAVE + 8*3], rbp

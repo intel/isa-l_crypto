@@ -342,6 +342,7 @@ align 32
 ;
 mk_global mh_sha1_block_avx2, function, internal
 func(mh_sha1_block_avx2)
+	endbranch
 	FUNC_SAVE
 
 	; save rsp

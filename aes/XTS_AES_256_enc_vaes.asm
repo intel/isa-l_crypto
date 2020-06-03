@@ -1136,6 +1136,7 @@ section .text
 
 mk_global XTS_AES_256_enc_vaes, function
 XTS_AES_256_enc_vaes:
+	endbranch
 
 %define ALIGN_STACK
 %ifdef ALIGN_STACK

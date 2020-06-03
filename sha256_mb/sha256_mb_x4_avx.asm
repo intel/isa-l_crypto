@@ -251,6 +251,7 @@ section .text
 mk_global sha256_mb_x4_avx, function, internal
 align 32
 sha256_mb_x4_avx:
+	endbranch
 	sub	rsp, FRAMESZ
 
 	;; Initialize digests

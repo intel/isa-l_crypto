@@ -98,6 +98,7 @@ endstruc
 ; arg 1 : rcx : state
 mk_global sha512_mb_mgr_flush_avx2, function
 sha512_mb_mgr_flush_avx2:
+	endbranch
 
 	mov     rax, rsp
 

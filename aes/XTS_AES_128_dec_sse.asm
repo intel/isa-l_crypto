@@ -989,6 +989,7 @@ section .text
 
 mk_global XTS_AES_128_dec_sse, function
 XTS_AES_128_dec_sse:
+	endbranch
 
 	sub     rsp, VARIABLE_OFFSET
 

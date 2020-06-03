@@ -1102,6 +1102,7 @@ section .text
 
 mk_global XTS_AES_256_enc_expanded_key_sse, function
 XTS_AES_256_enc_expanded_key_sse:
+	endbranch
 
 	sub     rsp, VARIABLE_OFFSET
 

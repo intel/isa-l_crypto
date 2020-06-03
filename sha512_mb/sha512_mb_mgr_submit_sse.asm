@@ -103,6 +103,7 @@ endstruc
 ; arg 2 : rdx : job
 mk_global sha512_mb_mgr_submit_sse, function
 sha512_mb_mgr_submit_sse:
+	endbranch
 
 	mov	rax, rsp
 

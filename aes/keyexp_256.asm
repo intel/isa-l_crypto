@@ -100,6 +100,7 @@ section .text
 ;
 mk_global aes_keyexp_256_sse, function
 aes_keyexp_256_sse:
+	endbranch
         movdqu	xmm1, [KEY]			; loading the AES key
 	movdqu	[EXP_ENC_KEYS + 16*0], xmm1
         movdqu	[EXP_DEC_KEYS + 16*14], xmm1	; Storing key in memory
@@ -193,6 +194,7 @@ aes_keyexp_256_sse:
 
 mk_global aes_keyexp_256_avx, function
 aes_keyexp_256_avx:
+	endbranch
         vmovdqu	xmm1, [KEY]			; loading the AES key
 	vmovdqu	[EXP_ENC_KEYS + 16*0], xmm1
         vmovdqu	[EXP_DEC_KEYS + 16*14], xmm1	; Storing key in memory

@@ -331,6 +331,7 @@ align 32
 
 mk_global md5_mb_x8x2_avx2, function, internal
 md5_mb_x8x2_avx2:
+	endbranch
 	mov	rax, rsp
 	sub	rsp, STACK_size
 	and	rsp, -32

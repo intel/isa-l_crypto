@@ -320,6 +320,8 @@ STACK_SPACE	equ _GPR_SAVE + _GPR_SAVE_SIZE
 ;
 mk_global sha1_opt_x1, function, internal
 sha1_opt_x1:
+	endbranch
+
 	sub     rsp, STACK_SPACE
 	mov     [rsp + _GPR_SAVE + 8*0], rbx
 	mov     [rsp + _GPR_SAVE + 8*1], rbp

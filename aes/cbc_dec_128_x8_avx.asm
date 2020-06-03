@@ -118,6 +118,7 @@ section .text
 ;; aes_cbc_dec_128_avx(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
 mk_global aes_cbc_dec_128_avx, function
 func(aes_cbc_dec_128_avx)
+	endbranch
 	FUNC_SAVE
 
         FILL_KEY_CACHE CKEY_CNT, FIRST_CKEY, KEYS, MOVDQ

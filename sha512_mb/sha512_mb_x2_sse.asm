@@ -238,6 +238,7 @@ endstruc
 mk_global sha512_mb_x2_sse, function, internal
 align 32
 sha512_mb_x2_sse:
+	endbranch
 	; general registers preserved in outer calling routine
 	; outer calling routine saves all the XMM registers
 	sub	rsp, STACK_size

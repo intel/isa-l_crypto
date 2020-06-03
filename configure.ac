@@ -64,6 +64,17 @@ AS_IF([test "x$enable_debug" = "xyes"], [
 ])
 # If this build is for x86, look for yasm and nasm
 if test x"$is_x86" = x"yes"; then
+AC_MSG_CHECKING([whether Intel CET is enabled])
+AC_TRY_COMPILE([],[
+#ifndef __CET__
+# error CET is not enabled
+#endif],
+                 [AC_MSG_RESULT([yes])
+                  intel_cet_enabled=yes],
+                 [AC_MSG_RESULT([no])
+                  intel_cet_enabled=no])
+
+
   # Pick an assembler yasm or nasm
   if test x"$AS" = x""; then
     # Check for yasm and yasm features
@@ -285,6 +296,9 @@ else
   AM_CONDITIONAL(WITH_SHANI, test "x" = "y")
   AM_CONDITIONAL(DARWIN, test "x" = "y")
 fi
+
+AM_CONDITIONAL(INTEL_CET_ENABLED, [test x"$intel_cet_enabled" = x"yes"])
+
 # Check for header files
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h string.h])
 

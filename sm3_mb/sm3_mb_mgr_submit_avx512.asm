@@ -92,6 +92,8 @@ section .text
 
 mk_global sm3_mb_mgr_submit_avx512, function
 sm3_mb_mgr_submit_avx512:
+	endbranch
+
 	; save these registers
 	sub     rsp, STACK_SPACE
 	; rsp contain stack ptr , mov to stack bottom

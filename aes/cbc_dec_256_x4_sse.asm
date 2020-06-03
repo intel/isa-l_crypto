@@ -117,6 +117,7 @@
 
 mk_global aes_cbc_dec_256_sse, function
 func(aes_cbc_dec_256_sse)
+	endbranch
 	FUNC_SAVE
 
         FILL_KEY_CACHE CKEY_CNT, FIRST_CKEY, KEYS, MOVDQ

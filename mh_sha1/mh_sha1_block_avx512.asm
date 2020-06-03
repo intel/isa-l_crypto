@@ -174,7 +174,7 @@ section .text
 
  %define stack_size  10*16 + 7*8		; must be an odd multiple of 8
  ; remove unwind info macros
- %define func(x) x:
+ %define func(x) x: endbranch
  %macro FUNC_SAVE 0
 	sub	rsp, stack_size
 	movdqa	[rsp + 0*16], xmm6
@@ -252,6 +252,7 @@ align 32
 ;
 global mh_sha1_block_avx512
 func(mh_sha1_block_avx512)
+	endbranch
 	FUNC_SAVE
 
 	; save rsp

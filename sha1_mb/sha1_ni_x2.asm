@@ -92,6 +92,7 @@ align 32
 ;
 mk_global sha1_ni_x2, function, internal
 sha1_ni_x2:
+	endbranch
 	mov	RSPSAVE, rsp
 	sub     rsp, FRAMESZ
 	and	rsp, ~0xF	; Align 16Bytes downward

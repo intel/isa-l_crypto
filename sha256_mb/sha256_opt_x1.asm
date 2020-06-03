@@ -386,6 +386,7 @@ section .text
 section .text
 mk_global sha256_opt_x1, function, internal
 sha256_opt_x1:
+	endbranch
 	sub     rsp, STACK_SIZE
 	mov     [rsp + _GPR_SAVE + 8*0], rbx
 	mov     [rsp + _GPR_SAVE + 8*1], rbp

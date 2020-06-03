@@ -412,6 +412,7 @@ align 64
 
 local_func_decl(md5_mb_x16x2_avx512)
 md5_mb_x16x2_avx512:
+	endbranch
 	mov	rax, rsp
 	sub	rsp, STACK_size
 	and	rsp, -64

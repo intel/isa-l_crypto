@@ -76,6 +76,7 @@ section .text
 ;
 mk_global aes_keyexp_128_sse, function
 aes_keyexp_128_sse:
+	endbranch
         movdqu	xmm1, [KEY]	; loading the AES key
 	movdqu	[EXP_ENC_KEYS + 16*0], xmm1
         movdqu	[EXP_DEC_KEYS + 16*10], xmm1  ; Storing key in memory
@@ -149,6 +150,7 @@ aes_keyexp_128_sse:
 
 mk_global aes_keyexp_128_avx, function
 aes_keyexp_128_avx:
+	endbranch
         vmovdqu	xmm1, [KEY]	; loading the AES key
 	vmovdqu	[EXP_ENC_KEYS + 16*0], xmm1
         vmovdqu	[EXP_DEC_KEYS + 16*10], xmm1  ; Storing key in memory
@@ -228,6 +230,7 @@ aes_keyexp_128_avx:
 ;
 mk_global aes_keyexp_128_enc_sse, function
 aes_keyexp_128_enc_sse:
+	endbranch
         movdqu	xmm1, [KEY]	; loading the AES key
 	movdqu	[EXP_ENC_KEYS + 16*0], xmm1
 	pxor	xmm3, xmm3
@@ -276,6 +279,7 @@ aes_keyexp_128_enc_sse:
 
 mk_global aes_keyexp_128_enc_avx, function
 aes_keyexp_128_enc_avx:
+	endbranch
         vmovdqu	xmm1, [KEY]	; loading the AES key
 	vmovdqu	[EXP_ENC_KEYS + 16*0], xmm1
 	vpxor	xmm3, xmm3, xmm3
