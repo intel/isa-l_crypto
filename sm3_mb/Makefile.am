@@ -61,7 +61,8 @@ check_tests  +=	sm3_mb/sm3_ref_test
 unit_tests   +=	sm3_mb/sm3_mb_rand_ssl_test \
 		sm3_mb/sm3_mb_rand_test \
 		sm3_mb/sm3_mb_rand_update_test \
-		sm3_mb/sm3_mb_flush_test
+		sm3_mb/sm3_mb_flush_test \
+		sm3_mb/sm3_mb_test
 
 sm3_mb_rand_ssl_test: LDLIBS += -lcrypto
 sm3_mb_sm3_mb_rand_ssl_test_LDFLAGS = -lcrypto
