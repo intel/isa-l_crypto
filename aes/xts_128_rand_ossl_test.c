@@ -31,6 +31,9 @@
 #include <stdlib.h>
 #include <openssl/evp.h>
 
+#ifndef TEST_SEED
+# define TEST_SEED 0x1234
+#endif
 #define TEST_LEN  (1024*1024)
 #define TEST_LOOPS 100
 #ifndef RANDOMS
@@ -84,7 +87,7 @@ static inline
 	return 0;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
 
 	unsigned char key1[16], key2[16], tinit[16];
@@ -92,6 +95,15 @@ int main(void)
 	unsigned char keyssl[32];	/* SSL takes both keys together */
 	unsigned int rand_len, t;
 	int i, j, k;
+	int seed;
+
+	if (argc == 1)
+		seed = TEST_SEED;
+	else
+		seed = atoi(argv[1]);
+
+	srand(seed);
+	printf("SEED: %d\n", seed);
 
 	/* Initialise our cipher context, which can use same input vectors */
 	EVP_CIPHER_CTX *ctx;
@@ -109,6 +121,48 @@ int main(void)
 		printf("malloc of testsize failed\n");
 		return -1;
 	}
+
+	/**************************** LENGTH SCAN TEST *************************/
+	printf("aes_xts_128_rand_ossl test, %d sets of various length: ", 2 * 1024);
+
+	mk_rand_data(key1, key2, tinit, pt, TEST_LEN);
+
+	/* Set up key for the SSL engine */
+	for (k = 0; k < 16; k++) {
+		keyssl[k] = key1[k];
+		keyssl[k + 16] = key2[k];
+	}
+
+	for (k = 0, i = 16; k == 0 && i < (2 * 1024); i++) {
+
+		/* Encrypt using each method */
+		XTS_AES_128_enc(key2, key1, tinit, i, pt, ct);
+		openssl_aes_128_xts_enc(ctx, keyssl, tinit, i, pt, refct);
+
+		// Compare
+		for (k = 0, j = 0; j < i && k == 0; j++) {
+			if (ct[j] != refct[j])
+				k = 1;
+		}
+		if (k)
+			printf(" XTS_AES_128_enc size=%d failed at byte %d!\n", i, j);
+
+		/* Decrypt using each method */
+		XTS_AES_128_dec(key2, key1, tinit, i, ct, dt);
+		openssl_aes_128_xts_dec(ctx, keyssl, tinit, i, refct, refdt);
+
+		for (k = 0, j = 0; j < TEST_LEN && k == 0; j++) {
+			if (dt[j] != refdt[j])
+				k = 1;
+		}
+		if (k)
+			printf(" XTS_AES_128_dec size=%d failed at byte %d!\n", i, j);
+		if (0 == i % 128)
+			printf(".");
+	}
+	if (k)
+		return -1;
+	printf("Pass\n");
 
 	/**************************** FIXED LENGTH TEST *************************/
 	printf("aes_xts_128_rand_ossl test, %d sets of length %d: ", TEST_LOOPS, TEST_LEN);
