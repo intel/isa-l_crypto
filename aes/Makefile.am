@@ -62,6 +62,10 @@ lsrc_x86_64     += aes/XTS_AES_256_dec_avx.asm aes/XTS_AES_256_dec_expanded_key_
 lsrc_x86_64     += aes/XTS_AES_256_enc_avx.asm aes/XTS_AES_256_enc_expanded_key_avx.asm
 lsrc_x86_64     += aes/XTS_AES_256_dec_sse.asm aes/XTS_AES_256_dec_expanded_key_sse.asm
 lsrc_x86_64     += aes/XTS_AES_256_enc_sse.asm aes/XTS_AES_256_enc_expanded_key_sse.asm
+lsrc_x86_64     += aes/XTS_AES_256_enc_vaes.asm
+lsrc_x86_64     += aes/XTS_AES_128_enc_vaes.asm
+lsrc_x86_64     += aes/XTS_AES_256_enc_expanded_key_vaes.asm
+lsrc_x86_64     += aes/XTS_AES_128_enc_expanded_key_vaes.asm
 
 lsrc_x86_32 	+= $(lsrc_x86_64)
 other_src   += include/multibinary.asm
