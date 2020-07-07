@@ -42,7 +42,9 @@ lsrc_base_aliases   += 	rolling_hash/rolling_hashx_base.c	\
 
 lsrc_aarch64	    += 	rolling_hash/rolling_hashx_base.c	\
 			rolling_hash/rolling_hash2.c	\
-			rolling_hash/rolling_hash2_base_aliases.c
+			rolling_hash/aarch64/rolling_hash2_aarch64_multibinary.S \
+			rolling_hash/aarch64/rolling_hash2_aarch64_dispatcher.c \
+			rolling_hash/aarch64/rolling_hash2_run_until_unroll.S
 
 src_include  += -I $(srcdir)/rolling_hash
 extern_hdrs  += include/rolling_hashx.h
