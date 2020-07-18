@@ -173,7 +173,7 @@ void aes_gcm_perf(void)
 		}
 
 		perf_stop(&stop);
-		printf("openssl_aes_gcm_enc" TEST_TYPE_STR ":\t");
+		printf("openssl_aes_gcm_dec" TEST_TYPE_STR ":\t");
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 
@@ -233,7 +233,7 @@ void aes_gcm_perf(void)
 		}
 
 		perf_stop(&stop);
-		printf("openssl_aes_256_gcm_enc" TEST_TYPE_STR ":\t");
+		printf("openssl_aes_256_gcm_dec" TEST_TYPE_STR ":\t");
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 }

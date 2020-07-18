@@ -265,7 +265,7 @@ int aes_256_perf(uint8_t * key)
 		}
 
 		perf_stop(&stop);
-		printf("ISA-L__aes_cbc_256 encode" TEST_TYPE_STR ":  ");
+		printf("ISA-L__aes_cbc_256_encode" TEST_TYPE_STR ":  ");
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 	{
@@ -291,7 +291,7 @@ int aes_256_perf(uint8_t * key)
 		}
 
 		perf_stop(&stop);
-		printf("ISA-L__aes_cbc_256 decode" TEST_TYPE_STR ":  ");
+		printf("ISA-L__aes_cbc_256_decode" TEST_TYPE_STR ":  ");
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 	{
