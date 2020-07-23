@@ -27,51 +27,39 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%include "reg_sizes.asm"
-%include "multibinary.asm"
-default rel
-[bits 64]
+%include "datastruct.asm"
 
-extern sm3_ctx_mgr_init_base
-extern sm3_ctx_mgr_submit_base
-extern sm3_ctx_mgr_flush_base
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Define constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%ifdef HAVE_AS_KNOWS_AVX512
- extern sm3_ctx_mgr_init_avx512
- extern sm3_ctx_mgr_submit_avx512
- extern sm3_ctx_mgr_flush_avx512
-%endif
+%define STS_UNKNOWN		0
+%define STS_BEING_PROCESSED	1
+%define STS_COMPLETED		2
 
-;;; *_mbinit are initial values for *_dispatched; is updated on first call.
-;;; Therefore, *_dispatch_init is only executed on first call.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Threshold constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; if number of lanes in use <= threshold, using sb func
+%define SM3_SB_THRESHOLD_SSE		1
+%define SM3_SB_THRESHOLD_AVX		1
+%define SM3_SB_THRESHOLD_AVX2	1
+%define SM3_SB_THRESHOLD_AVX512	1
+%define SM3_NI_SB_THRESHOLD_SSE	4 ; shani is faster than sse sha256_mb
+%define SM3_NI_SB_THRESHOLD_AVX512	6
 
-; Initialise symbols
-mbin_interface sm3_ctx_mgr_init
-mbin_interface sm3_ctx_mgr_submit
-mbin_interface sm3_ctx_mgr_flush
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Define SHA256_JOB structure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+START_FIELDS	; SHA256_JOB
 
-;;; don't have imlement see/avx/avx2 yet
-%ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 sm3_ctx_mgr_init, sm3_ctx_mgr_init_base, \
-	sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_base, \
-	sm3_ctx_mgr_init_avx512
-  mbin_dispatch_init6 sm3_ctx_mgr_submit, sm3_ctx_mgr_submit_base, \
-	sm3_ctx_mgr_submit_base, sm3_ctx_mgr_submit_base, sm3_ctx_mgr_submit_base, \
-	sm3_ctx_mgr_submit_avx512
-  mbin_dispatch_init6 sm3_ctx_mgr_flush, sm3_ctx_mgr_flush_base, \
-	sm3_ctx_mgr_flush_base, sm3_ctx_mgr_flush_base, sm3_ctx_mgr_flush_base, \
-	sm3_ctx_mgr_flush_avx512
-%else
-  mbin_dispatch_init2 sm3_ctx_mgr_init, sm3_ctx_mgr_init_base
-  mbin_dispatch_init2 sm3_ctx_mgr_submit, sm3_ctx_mgr_submit_base
-  mbin_dispatch_init2 sm3_ctx_mgr_flush, sm3_ctx_mgr_flush_base
-%endif
+;;;	name				size	align
+FIELD	_buffer,			8,	8	; pointer to buffer
+FIELD	_len,				8,	8	; length in bytes
+FIELD	_result_digest,			8*4,	64	; Digest (output)
+FIELD	_status,			4,	4
+FIELD	_user_data,			8,	8
 
-
-
-;;;       func  			core, ver, snum
-slversion sm3_ctx_mgr_init,  	00,   00, 2300
-slversion sm3_ctx_mgr_submit,	00,   00, 2301
-slversion sm3_ctx_mgr_flush, 	00,   00, 2302
-
+%assign _SM3_JOB_size	_FIELD_OFFSET
+%assign _SM3_JOB_align	_STRUCT_ALIGN

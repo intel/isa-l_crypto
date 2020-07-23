@@ -27,51 +27,51 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%include "reg_sizes.asm"
-%include "multibinary.asm"
-default rel
-[bits 64]
-
-extern sm3_ctx_mgr_init_base
-extern sm3_ctx_mgr_submit_base
-extern sm3_ctx_mgr_flush_base
-
-%ifdef HAVE_AS_KNOWS_AVX512
- extern sm3_ctx_mgr_init_avx512
- extern sm3_ctx_mgr_submit_avx512
- extern sm3_ctx_mgr_flush_avx512
-%endif
-
-;;; *_mbinit are initial values for *_dispatched; is updated on first call.
-;;; Therefore, *_dispatch_init is only executed on first call.
-
-; Initialise symbols
-mbin_interface sm3_ctx_mgr_init
-mbin_interface sm3_ctx_mgr_submit
-mbin_interface sm3_ctx_mgr_flush
+%include "datastruct.asm"
 
 
-;;; don't have imlement see/avx/avx2 yet
-%ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 sm3_ctx_mgr_init, sm3_ctx_mgr_init_base, \
-	sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_base, \
-	sm3_ctx_mgr_init_avx512
-  mbin_dispatch_init6 sm3_ctx_mgr_submit, sm3_ctx_mgr_submit_base, \
-	sm3_ctx_mgr_submit_base, sm3_ctx_mgr_submit_base, sm3_ctx_mgr_submit_base, \
-	sm3_ctx_mgr_submit_avx512
-  mbin_dispatch_init6 sm3_ctx_mgr_flush, sm3_ctx_mgr_flush_base, \
-	sm3_ctx_mgr_flush_base, sm3_ctx_mgr_flush_base, sm3_ctx_mgr_flush_base, \
-	sm3_ctx_mgr_flush_avx512
-%else
-  mbin_dispatch_init2 sm3_ctx_mgr_init, sm3_ctx_mgr_init_base
-  mbin_dispatch_init2 sm3_ctx_mgr_submit, sm3_ctx_mgr_submit_base
-  mbin_dispatch_init2 sm3_ctx_mgr_flush, sm3_ctx_mgr_flush_base
-%endif
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Define SM3 Out Of Order Data Structures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+START_FIELDS    ; LANE_DATA
+;;;     name            size    align
+FIELD   _job_in_lane,   8,      8       ; pointer to job object
+END_FIELDS
+
+%assign _LANE_DATA_size _FIELD_OFFSET
+%assign _LANE_DATA_align        _STRUCT_ALIGN
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;       func  			core, ver, snum
-slversion sm3_ctx_mgr_init,  	00,   00, 2300
-slversion sm3_ctx_mgr_submit,	00,   00, 2301
-slversion sm3_ctx_mgr_flush, 	00,   00, 2302
+START_FIELDS    ; SM3_ARGS_X16
+;;;     name            size    align
+FIELD   _digest,        4*8*16,  4       ; transposed digest
+FIELD   _data_ptr,      8*16,    8       ; array of pointers to data
+END_FIELDS
 
+%assign _SM3_ARGS_X4_size    _FIELD_OFFSET
+%assign _SM3_ARGS_X4_align   _STRUCT_ALIGN
+%assign _SM3_ARGS_X8_size	_FIELD_OFFSET
+%assign _SM3_ARGS_X8_align	_STRUCT_ALIGN
+%assign _SM3_ARGS_X16_size	_FIELD_OFFSET
+%assign _SM3_ARGS_X16_align	_STRUCT_ALIGN
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+START_FIELDS    ; MB_MGR
+;;;     name            size    align
+FIELD   _args,          _SM3_ARGS_X4_size, _SM3_ARGS_X4_align
+FIELD   _lens,          4*16,    8
+FIELD   _unused_lanes,  8,      8
+FIELD   _ldata,         _LANE_DATA_size*16, _LANE_DATA_align
+FIELD   _num_lanes_inuse, 4,    4
+END_FIELDS
+
+%assign _MB_MGR_size    _FIELD_OFFSET
+%assign _MB_MGR_align   _STRUCT_ALIGN
+
+_args_digest    equ     _args + _digest
+_args_data_ptr  equ     _args + _data_ptr

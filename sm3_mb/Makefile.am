@@ -1,5 +1,5 @@
 ########################################################################
-#  Copyright(c) 2011-2019 Intel Corporation All rights reserved.
+#  Copyright(c) 2011-2020 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
@@ -38,20 +38,27 @@ lsrc_aarch64 += sm3_mb/sm3_ctx_base.c \
 
 src_include += -I $(srcdir)/sm3_mb
 
-extern_hdrs +=  include/sm3_mb.h \
-                include/multi_buffer.h
+extern_hdrs +=	include/sm3_mb.h \
+		include/multi_buffer.h
 
-other_src +=    include/datastruct.asm \
-                include/multibinary.asm \
-                include/reg_sizes.asm \
-                include/memcpy_inline.h \
-                include/memcpy.asm \
-                include/intrinreg.h \
+lsrc_x86_64 +=	sm3_mb/sm3_ctx_avx512.c \
+		sm3_mb/sm3_mb_mgr_submit_avx512.asm \
+		sm3_mb/sm3_mb_mgr_flush_avx512.asm \
+		sm3_mb/sm3_mb_x16_avx512.asm
+
+other_src +=	include/datastruct.asm \
+		include/multibinary.asm \
+		include/reg_sizes.asm \
+		include/memcpy_inline.h \
+		include/memcpy.asm \
+		include/intrinreg.h \
+		sm3_mb/sm3_job.asm \
+		sm3_mb/sm3_mb_mgr_datastruct.asm \
 		sm3_mb/sm3_test_helper.c
 
-check_tests  += sm3_mb/sm3_ref_test
+check_tests  +=	sm3_mb/sm3_ref_test
 
-unit_tests   += sm3_mb/sm3_mb_rand_ssl_test \
+unit_tests   +=	sm3_mb/sm3_mb_rand_ssl_test \
 		sm3_mb/sm3_mb_rand_test \
 		sm3_mb/sm3_mb_rand_update_test \
 		sm3_mb/sm3_mb_flush_test
