@@ -206,7 +206,7 @@ MD5_HASH_CTX* md5_ctx_mgr_submit_sse (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx,
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
- * @brief Finish all submitted MD5 jobs and return when complete.
+ * @brief Wait for any of submitted MD5 jobs to complete and return its ctx info when complete.
  * @requires SSE4.1
  *
  * @param mgr	Structure holding context level state info
@@ -238,7 +238,7 @@ MD5_HASH_CTX* md5_ctx_mgr_submit_avx (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx,
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
- * @brief Finish all submitted MD5 jobs and return when complete.
+ * @brief Wait for any of submitted MD5 jobs to complete and return its ctx info when complete.
  * @requires AVX
  *
  * @param mgr	Structure holding context level state info
@@ -270,7 +270,7 @@ MD5_HASH_CTX* md5_ctx_mgr_submit_avx2 (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx,
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
- * @brief Finish all submitted MD5 jobs and return when complete.
+ * @brief Wait for any of submitted MD5 jobs to complete and return its ctx info when complete.
  * @requires AVX2
  *
  * @param mgr	Structure holding context level state info
@@ -302,7 +302,7 @@ MD5_HASH_CTX* md5_ctx_mgr_submit_avx512 (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ct
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
- * @brief Finish all submitted MD5 jobs and return when complete.
+ * @brief Wait for any of submitted MD5 jobs to complete and return its ctx info when complete.
  * @requires AVX512
  *
  * @param mgr	Structure holding context level state info
@@ -336,7 +336,7 @@ MD5_HASH_CTX* md5_ctx_mgr_submit (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx,
 				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
 
 /**
- * @brief Finish all submitted MD5 jobs and return when complete.
+ * @brief Wait for any of submitted MD5 jobs to complete and return its ctx info when complete.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
  *
  * @param mgr	Structure holding context level state info
