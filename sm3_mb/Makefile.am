@@ -34,7 +34,15 @@ lsrc_base_aliases += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/sm3_ctx_base_aliases.c
 
 lsrc_aarch64 += sm3_mb/sm3_ctx_base.c \
-	sm3_mb/sm3_ctx_base_aliases.c
+	sm3_mb/aarch64/sm3_mb_aarch64_dispatcher.c \
+	sm3_mb/aarch64/sm3_mb_multibinary_aarch64.S \
+	sm3_mb/aarch64/sm3_mb_mgr_sm_aarch64.c	\
+	sm3_mb/aarch64/sm3_mb_ctx_sm_aarch64.c	\
+	sm3_mb/aarch64/sm3_mb_sm_x1.S		\
+	sm3_mb/aarch64/sm3_mb_sm_x2.S		\
+	sm3_mb/aarch64/sm3_mb_sm_x3.S		\
+	sm3_mb/aarch64/sm3_mb_sm_x4.S
+
 
 src_include += -I $(srcdir)/sm3_mb
 
