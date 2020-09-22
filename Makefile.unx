@@ -48,5 +48,6 @@ include $(foreach unit,$(units), $(unit)/Makefile.am)
 lib_name := bin/isa-l_crypto.a
 
 include make.inc
+include tools/gen_nmake.mk
 
 VPATH = . $(units) include
