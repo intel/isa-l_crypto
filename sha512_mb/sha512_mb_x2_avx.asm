@@ -238,7 +238,7 @@ endstruc
 ;; arg 1 : STATE    : pointer args (only 2 of the 4 lanes used)
 ;; arg 2 : INP_SIZE : size of data in blocks (assumed >= 1)
 ;;
-global sha512_mb_x2_avx:function internal
+mk_global sha512_mb_x2_avx, function, internal
 align 32
 sha512_mb_x2_avx:
 	; general registers preserved in outer calling routine

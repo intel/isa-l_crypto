@@ -93,7 +93,7 @@ extern sha1_mb_x4_avx
 ; SHA1_JOB* sha1_mb_mgr_submit_avx(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-global sha1_mb_mgr_submit_avx:function
+mk_global sha1_mb_mgr_submit_avx, function
 sha1_mb_mgr_submit_avx:
 
 	sub     rsp, STACK_SPACE

@@ -61,7 +61,7 @@ default rel
    %define arg2 rsi	; arg1
    %define var1 rdx	; arg2
    %define var2 rcx	; arg3
-   %define local_func_decl(func_name) global func_name:function internal
+   %define local_func_decl(func_name) mk_global func_name, function, internal
 %endif
 
 %define state    arg1

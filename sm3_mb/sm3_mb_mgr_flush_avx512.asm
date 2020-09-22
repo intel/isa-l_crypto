@@ -92,7 +92,7 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 ; SM3_JOB* sm3_mb_mgr_flush_avx512(SM3_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-global sm3_mb_mgr_flush_avx512:function
+mk_global sm3_mb_mgr_flush_avx512, function
 sm3_mb_mgr_flush_avx512:
 	; Save the stack
 	sub     rsp, STACK_SPACE

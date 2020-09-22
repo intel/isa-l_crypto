@@ -232,7 +232,7 @@ endstruc
 ;; arg 1 : STATE    : pointer args (only 2 of the 4 lanes used)
 ;; arg 2 : INP_SIZE : size of data in blocks (assumed >= 1)
 ;;
-global sha512_mb_x2_sse:function internal
+mk_global sha512_mb_x2_sse, function, internal
 align 32
 sha512_mb_x2_sse:
 	; general registers preserved in outer calling routine
@@ -334,7 +334,7 @@ Lrounds_16_xx:
 
 section .data
 align 64
-global K512_2_MB:data internal
+mk_global K512_2_MB, data, internal
 K512_2_MB:
 	dq	0x428a2f98d728ae22, 0x428a2f98d728ae22
 	dq	0x7137449123ef65cd, 0x7137449123ef65cd

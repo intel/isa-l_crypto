@@ -79,7 +79,7 @@ default rel
 ; JOB* submit_job(MB_MGR *state, JOB_MD5 *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-global md5_mb_mgr_submit_avx2:function
+mk_global md5_mb_mgr_submit_avx2, function
 md5_mb_mgr_submit_avx2:
 
         sub     rsp, STACK_SPACE

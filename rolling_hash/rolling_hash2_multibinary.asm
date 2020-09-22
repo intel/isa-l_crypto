@@ -63,7 +63,7 @@ section .text
 ;;;;
 ; rolling_hash2_run_until multibinary function
 ;;;;
-global rolling_hash2_run_until:function
+mk_global rolling_hash2_run_until, function
 rolling_hash2_run_until_mbinit:
 	call	rolling_hash2_run_until_dispatch_init
 

@@ -94,7 +94,7 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 ; SHA1_JOB* sha1_mb_mgr_flush_sse(SHA1_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-global sha1_mb_mgr_flush_sse:function
+mk_global sha1_mb_mgr_flush_sse, function
 sha1_mb_mgr_flush_sse:
 
 	sub     rsp, STACK_SPACE

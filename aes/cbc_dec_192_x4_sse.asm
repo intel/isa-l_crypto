@@ -118,7 +118,7 @@
 
 section .text
 
-global aes_cbc_dec_192_sse:function
+mk_global aes_cbc_dec_192_sse, function
 func(aes_cbc_dec_192_sse)
 	FUNC_SAVE
 

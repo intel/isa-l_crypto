@@ -101,7 +101,7 @@ endstruc
 ; SHA512_JOB* sha512_mb_mgr_submit_avx(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-global sha512_mb_mgr_submit_avx:function
+mk_global sha512_mb_mgr_submit_avx, function
 sha512_mb_mgr_submit_avx:
 
 	mov	rax, rsp

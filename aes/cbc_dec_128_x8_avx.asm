@@ -116,7 +116,7 @@
 section .text
 
 ;; aes_cbc_dec_128_avx(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
-global aes_cbc_dec_128_avx:function
+mk_global aes_cbc_dec_128_avx, function
 func(aes_cbc_dec_128_avx)
 	FUNC_SAVE
 

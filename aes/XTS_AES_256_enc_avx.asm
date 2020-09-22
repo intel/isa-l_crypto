@@ -1155,7 +1155,7 @@ default rel
 
 section .text
 
-global XTS_AES_256_enc_avx:function
+mk_global XTS_AES_256_enc_avx, function
 XTS_AES_256_enc_avx:
 
 	sub     rsp, VARIABLE_OFFSET

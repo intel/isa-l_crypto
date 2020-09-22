@@ -1134,7 +1134,7 @@ default rel
 
 section .text
 
-global XTS_AES_256_enc_vaes:function
+mk_global XTS_AES_256_enc_vaes, function
 XTS_AES_256_enc_vaes:
 
 %define ALIGN_STACK

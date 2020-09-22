@@ -98,7 +98,7 @@ default rel
 ; SHA256_JOB* sha256_mb_mgr_submit_sse_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-global sha256_mb_mgr_submit_sse_ni:function
+mk_global sha256_mb_mgr_submit_sse_ni, function
 sha256_mb_mgr_submit_sse_ni:
 
 	sub     rsp, STACK_SPACE

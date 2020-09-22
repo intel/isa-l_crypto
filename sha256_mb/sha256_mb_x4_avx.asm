@@ -246,7 +246,7 @@ default rel
 ;;
 ;; Clobbers registers: arg2, rax, rbx, r8-r12, xmm0-xmm15
 ;;
-global sha256_mb_x4_avx:function internal
+mk_global sha256_mb_x4_avx, function, internal
 align 32
 sha256_mb_x4_avx:
 	sub	rsp, FRAMESZ

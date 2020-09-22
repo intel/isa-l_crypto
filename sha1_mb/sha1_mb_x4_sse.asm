@@ -274,7 +274,7 @@ align 32
 ;
 ; Clobbers registers: ARG2, rax, r8-r11, xmm0-xmm15
 ;
-global sha1_mb_x4_sse:function internal
+mk_global sha1_mb_x4_sse, function, internal
 sha1_mb_x4_sse:
 
 	sub     rsp, FRAMESZ    ;; FRAMESZ + pushes must be odd multiple of 8

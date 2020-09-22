@@ -339,7 +339,7 @@ align 32
 ; void sha1_x8_avx2(SHA1_MB_ARGS_X8, uint32_t size)
 ; arg 1 : pointer to input data
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
-global sha1_mb_x8_avx2:function internal
+mk_global sha1_mb_x8_avx2, function, internal
 sha1_mb_x8_avx2:
 
 	push	RSP_SAVE

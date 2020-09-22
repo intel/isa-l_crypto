@@ -115,7 +115,7 @@
 
 %include "cbc_common.asm"
 
-global aes_cbc_dec_256_sse:function
+mk_global aes_cbc_dec_256_sse, function
 func(aes_cbc_dec_256_sse)
 	FUNC_SAVE
 

@@ -95,7 +95,7 @@ endstruc
 
 ; SHA512_JOB* sha512_mb_mgr_flush_avx512(SHA512_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-global sha512_mb_mgr_flush_avx512:function
+mk_global sha512_mb_mgr_flush_avx512, function
 sha512_mb_mgr_flush_avx512:
 
 	mov     rax, rsp

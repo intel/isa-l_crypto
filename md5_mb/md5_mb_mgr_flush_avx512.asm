@@ -109,7 +109,7 @@ section .text
 
 ; JOB* md5_mb_mgr_flush_avx512(MB_MGR_HMAC_OOO *state)
 ; arg 1 : rcx : state
-global md5_mb_mgr_flush_avx512:function
+mk_global md5_mb_mgr_flush_avx512, function
 md5_mb_mgr_flush_avx512:
 	sub	rsp, STACK_SPACE
 	mov	[rsp + _GPR_SAVE + 8*0], rbx

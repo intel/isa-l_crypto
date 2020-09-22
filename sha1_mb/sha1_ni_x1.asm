@@ -80,7 +80,7 @@ align 32
 ;
 ; Clobbers registers: rax, r9~r11, xmm0-xmm7
 ;
-global sha1_ni_x1:function internal
+mk_global sha1_ni_x1, function, internal
 sha1_ni_x1:
 	mov	RSPSAVE, rsp
 	sub     rsp, FRAMESZ

@@ -522,7 +522,7 @@ align 32
 ; arg 3 pointer to murmur3 digest
 ; arg 4 number  of 1KB blocks
 ;
-global mh_sha1_murmur3_x64_128_block_avx:function internal
+mk_global mh_sha1_murmur3_x64_128_block_avx, function, internal
 func(mh_sha1_murmur3_x64_128_block_avx)
 	FUNC_SAVE
 	; save rsp

@@ -987,7 +987,7 @@ default rel
 
 section .text
 
-global XTS_AES_128_dec_sse:function
+mk_global XTS_AES_128_dec_sse, function
 XTS_AES_128_dec_sse:
 
 	sub     rsp, VARIABLE_OFFSET

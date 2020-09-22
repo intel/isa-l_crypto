@@ -326,7 +326,7 @@ align 32
 ; arg 1 : pointer to MD5_ARGS structure
 ; arg 2 : number of blocks (>=1)
 
-global md5_mb_x8x2_avx2:function internal
+mk_global md5_mb_x8x2_avx2, function, internal
 md5_mb_x8x2_avx2:
 	mov	rax, rsp
 	sub	rsp, STACK_size

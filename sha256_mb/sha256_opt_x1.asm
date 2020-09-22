@@ -382,7 +382,7 @@ default rel
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 section .text
-global sha256_opt_x1:function internal
+mk_global sha256_opt_x1, function, internal
 sha256_opt_x1:
 	sub     rsp, STACK_SIZE
 	mov     [rsp + _GPR_SAVE + 8*0], rbx

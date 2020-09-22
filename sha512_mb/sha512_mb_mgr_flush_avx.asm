@@ -91,7 +91,7 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 ; SHA512_JOB* sha512_mb_mgr_flush_avx(SHA512_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-global sha512_mb_mgr_flush_avx:function
+mk_global sha512_mb_mgr_flush_avx, function
 sha512_mb_mgr_flush_avx:
 
 	sub     rsp, STACK_SPACE

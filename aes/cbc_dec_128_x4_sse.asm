@@ -115,7 +115,7 @@
 section .text
 
 align 16
-global aes_cbc_dec_128_sse:function
+mk_global aes_cbc_dec_128_sse, function
 func(aes_cbc_dec_128_sse)
 	FUNC_SAVE
 

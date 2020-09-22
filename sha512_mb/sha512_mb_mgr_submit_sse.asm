@@ -101,7 +101,7 @@ endstruc
 ; SHA512_JOB* sha512_mb_mgr_submit_sse(SHA512_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-global sha512_mb_mgr_submit_sse:function
+mk_global sha512_mb_mgr_submit_sse, function
 sha512_mb_mgr_submit_sse:
 
 	mov	rax, rsp

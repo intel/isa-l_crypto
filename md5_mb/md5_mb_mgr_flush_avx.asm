@@ -84,7 +84,7 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 ; JOB* md5_mb_mgr_flush_avx(MB_MGR_HMAC_OOO *state)
 ; arg 1 : rcx : state
-global md5_mb_mgr_flush_avx:function
+mk_global md5_mb_mgr_flush_avx, function
 md5_mb_mgr_flush_avx:
         sub     rsp, STACK_SPACE
         mov     [rsp + _GPR_SAVE + 8*0], rbx

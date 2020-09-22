@@ -87,7 +87,7 @@ default rel
 ; STACK_SPACE needs to be an odd multiple of 8
 %define STACK_SPACE	8*8 + 16*10 + 8
 
-global sm3_mb_mgr_submit_avx512:function
+mk_global sm3_mb_mgr_submit_avx512, function
 sm3_mb_mgr_submit_avx512:
 	; save these registers
 	sub     rsp, STACK_SPACE
