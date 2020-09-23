@@ -464,7 +464,7 @@ sha1_opt_x1:
 
 
 ;;----------------------
-section .data align=128
+section .data align=64
 
 align 128
 K_XMM_AR:
