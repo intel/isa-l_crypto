@@ -30,7 +30,9 @@
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
+[bits 64]
 default rel
+section .text
 
 ;; code to compute oct SHA1 using SSE-256
 ;; outer calling routine takes care of save and restore of XMM registers

@@ -34,6 +34,10 @@
 
 extern sha1_mb_x4_sse
 
+[bits 64]
+default rel
+section .text
+
 %ifidn __OUTPUT_FORMAT__, win64
 ; WINDOWS register definitions
 %define arg1    rcx

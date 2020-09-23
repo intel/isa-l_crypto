@@ -28,8 +28,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 %include "reg_sizes.asm"
+
+[bits 64]
 default rel
-BITS 64
 section .text
 
 ; Virtual Registers

@@ -32,6 +32,10 @@
 
 %include "reg_sizes.asm"
 
+[bits 64]
+default rel
+section .text
+
 ; Uses the f() function of the aeskeygenassist result
 %macro key_expansion_256_sse 0
 	;; Assumes the xmm3 includes all zeros at this point.

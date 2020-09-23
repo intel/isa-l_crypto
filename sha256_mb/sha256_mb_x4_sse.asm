@@ -30,7 +30,9 @@
 %include "sha256_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
+[bits 64]
 default rel
+section .text
 
 ;; code to compute quad SHA256 using SSE
 ;; Logic designed/laid out by JDG

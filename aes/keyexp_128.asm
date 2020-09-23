@@ -31,6 +31,10 @@
 
 %include "reg_sizes.asm"
 
+[bits 64]
+default rel
+section .text
+
 %macro key_expansion_128_sse 0
 	;; Assumes the xmm3 includes all zeros at this point.
         pshufd	xmm2, xmm2, 11111111b

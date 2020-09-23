@@ -29,6 +29,10 @@
 
 %include "reg_sizes.asm"
 
+[bits 64]
+default rel
+section .text
+
 %ifidn __OUTPUT_FORMAT__, elf64
 %define KEY		rdi
 %define EXP_ENC_KEYS	rsi

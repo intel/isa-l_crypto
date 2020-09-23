@@ -35,7 +35,10 @@
 %ifdef HAVE_AS_KNOWS_SHANI
 extern  sha256_mb_x4_sse
 extern  sha256_ni_x2
+
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 ; Linux register definitions

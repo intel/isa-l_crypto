@@ -32,7 +32,9 @@
 
 %ifdef HAVE_AS_KNOWS_AVX512
 
+[bits 64]
 default rel
+section .text
 
 ;; code to compute oct SHA1 using AVX-512
 ;; outer calling routine takes care of save and restore of XMM registers

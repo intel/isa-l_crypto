@@ -40,7 +40,10 @@
 
 ;todo sm3_mb_x16_avx512
 extern sm3_mb_x16_avx512
+
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 %define arg1    rdi ; state

@@ -29,7 +29,10 @@
 
 %include "sha512_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+
+[bits 64]
 default rel
+section .text
 
 ;; code to compute quad SHA512 using AVX2
 ;; use YMMs to tackle the larger digest size

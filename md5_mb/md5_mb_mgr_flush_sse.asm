@@ -33,7 +33,10 @@
 %include "reg_sizes.asm"
 
 extern md5_mb_x4x2_sse
+
+[bits 64]
 default rel
+section .text
 
 %if 1
 %ifidn __OUTPUT_FORMAT__, elf64

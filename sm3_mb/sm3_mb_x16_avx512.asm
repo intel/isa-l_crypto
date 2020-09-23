@@ -33,7 +33,9 @@
 
 %ifdef HAVE_AS_KNOWS_AVX512
 
+[bits 64]
 default rel
+section .text
 
 ; Define Stack Layout
 START_FIELDS

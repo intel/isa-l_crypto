@@ -33,7 +33,10 @@
 %include "reg_sizes.asm"
 
 extern sha256_mb_x4_avx
+
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 ; Linux register definitions

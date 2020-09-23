@@ -33,7 +33,10 @@
 
 %ifdef HAVE_AS_KNOWS_AVX512
 extern md5_mb_x16x2_avx512
+
+[bits 64]
 default rel
+section .text
 
 %if 1
 %ifidn __OUTPUT_FORMAT__, elf64
@@ -104,8 +107,6 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 %endmacro
 
 align 64
-default rel
-section .text
 
 ; JOB* md5_mb_mgr_flush_avx512(MB_MGR_HMAC_OOO *state)
 ; arg 1 : rcx : state

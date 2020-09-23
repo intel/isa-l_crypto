@@ -35,7 +35,10 @@
 %ifdef HAVE_AS_KNOWS_AVX512
 
 extern sha256_mb_x16_avx512
+
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 ; Linux register definitions

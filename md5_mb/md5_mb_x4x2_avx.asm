@@ -29,7 +29,10 @@
 
 %include "md5_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+
+[bits 64]
 default rel
+section .text
 
 ; clobbers all XMM registers
 ; clobbers all GPRs except arg1 and r8

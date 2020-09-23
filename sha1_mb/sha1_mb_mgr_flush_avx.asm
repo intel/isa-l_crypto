@@ -35,7 +35,9 @@
 extern sha1_mb_x4_avx
 extern sha1_opt_x1
 
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 ; LINUX register definitions

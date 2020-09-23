@@ -29,7 +29,10 @@
 
 %include "sha512_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
+
+[bits 64]
 default rel
+section .text
 
 ;; code to compute SHA512 by-2 using AVX
 ;; outer calling routine takes care of save and restore of XMM registers

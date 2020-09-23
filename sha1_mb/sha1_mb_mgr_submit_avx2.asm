@@ -35,6 +35,10 @@
 
 extern sha1_mb_x8_avx2
 
+[bits 64]
+default rel
+section .text
+
 %ifidn __OUTPUT_FORMAT__, elf64
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LINUX register definitions

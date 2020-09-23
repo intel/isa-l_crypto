@@ -31,7 +31,11 @@
 %include "reg_sizes.asm"
 
 %ifdef HAVE_AS_KNOWS_AVX512
+
+[bits 64]
 default rel
+section .text
+
 ;; code to compute quad SHA512 using AVX512
 ;; use ZMMs to tackle the larger digest size
 ;; outer calling routine takes care of save and restore of XMM registers

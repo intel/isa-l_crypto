@@ -31,7 +31,10 @@
 %include "md5_mb_mgr_datastruct.asm"
 
 %include "reg_sizes.asm"
+
+[bits 64]
 default rel
+section .text
 
 extern md5_mb_x4x2_avx
 

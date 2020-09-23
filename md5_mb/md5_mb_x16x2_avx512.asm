@@ -31,7 +31,11 @@
 %include "reg_sizes.asm"
 
 %ifdef HAVE_AS_KNOWS_AVX512
+
+[bits 64]
 default rel
+section .text
+
 
 ;; code to compute double octal MD5 using AVX512
 
@@ -401,8 +405,6 @@ endstruc
 %endmacro
 
 align 64
-default rel
-section .text
 
 ; void md5_mb_x16x2_avx512(MD5_ARGS *args, UINT64 num_blks)
 ; arg 1 : pointer to MD5_ARGS structure
