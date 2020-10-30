@@ -50,6 +50,10 @@ if CPU_X86_32
 include aes/Makefile.am
 endif
 
+if CPU_AARCH64
+include aes/aarch64/Makefile.am
+endif
+
 # LIB version info not necessarily the same as package version
 LIBISAL_CURRENT=2
 LIBISAL_REVISION=23
