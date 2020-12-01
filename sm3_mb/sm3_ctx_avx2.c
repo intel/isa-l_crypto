@@ -38,13 +38,11 @@
 
 static inline void hash_init_digest(SM3_WORD_T * digest);
 static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE * 2], uint64_t total_len);
-static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr,
-						SM3_HASH_CTX * ctx);
+static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx);
 
 void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR * state);
 SM3_JOB *sm3_mb_mgr_submit_avx2(SM3_MB_JOB_MGR * state, SM3_JOB * job);
 SM3_JOB *sm3_mb_mgr_flush_avx2(SM3_MB_JOB_MGR * state);
-
 
 void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR * state)
 {
@@ -63,8 +61,7 @@ void sm3_ctx_mgr_init_avx2(SM3_HASH_CTX_MGR * mgr)
 }
 
 SM3_HASH_CTX *sm3_ctx_mgr_submit_avx2(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx,
-					    const void *buffer, uint32_t len,
-					    HASH_CTX_FLAG flags)
+				      const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 	if (flags & (~HASH_ENTIRE)) {
 		// User should not pass anything other than FIRST, UPDATE, or LAST
@@ -135,8 +132,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_submit_avx2(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx
 
 			ctx->job.buffer = ctx->partial_block_buffer;
 			ctx->job.len = 1;
-			ctx = (SM3_HASH_CTX *) sm3_mb_mgr_submit_avx2(&mgr->mgr,
-									    &ctx->job);
+			ctx = (SM3_HASH_CTX *) sm3_mb_mgr_submit_avx2(&mgr->mgr, &ctx->job);
 		}
 	}
 
@@ -166,8 +162,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_flush_avx2(SM3_HASH_CTX_MGR * mgr)
 	}
 }
 
-static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr,
-						SM3_HASH_CTX * ctx)
+static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx)
 {
 	while (ctx) {
 		if (ctx->status & HASH_CTX_STS_COMPLETE) {
@@ -206,7 +201,7 @@ static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr,
 				ctx->job.buffer = (uint8_t *) buffer;
 				ctx->job.len = len;
 				ctx = (SM3_HASH_CTX *) sm3_mb_mgr_submit_avx2(&mgr->mgr,
-										    &ctx->job);
+									      &ctx->job);
 				continue;
 			}
 		}
@@ -220,8 +215,7 @@ static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr,
 			    (HASH_CTX_STS) (HASH_CTX_STS_PROCESSING | HASH_CTX_STS_COMPLETE);
 			ctx->job.buffer = buf;
 			ctx->job.len = (uint32_t) n_extra_blocks;
-			ctx = (SM3_HASH_CTX *) sm3_mb_mgr_submit_avx2(&mgr->mgr,
-									    &ctx->job);
+			ctx = (SM3_HASH_CTX *) sm3_mb_mgr_submit_avx2(&mgr->mgr, &ctx->job);
 			continue;
 		}
 
