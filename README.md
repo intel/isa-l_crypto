@@ -9,7 +9,7 @@ applications.  ISA-L_crypto includes:
   - SHA1, SHA256, SHA512, MD5, SM3
 
 * Multi-hash - Get the performance of multi-buffer hashing with a single-buffer
-  interface.
+  interface. Specification ref : [Multi-Hash white paper](https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/multi-hash-paper.pdf)
 
 * Multi-hash + murmur - run both together.
 
