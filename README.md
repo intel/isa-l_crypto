@@ -6,7 +6,7 @@ applications.  ISA-L_crypto includes:
 
 * Multi-buffer hashes - run multiple hash jobs together on one core for much
   better throughput than single-buffer versions.
-  - SHA1, SHA256, SHA512, MD5
+  - SHA1, SHA256, SHA512, MD5, SM3
 
 * Multi-hash - Get the performance of multi-buffer hashing with a single-buffer
   interface.
