@@ -34,7 +34,10 @@
 %include "reg_sizes.asm"
 
 extern sm3_mb_x8_avx2
+
+[bits 64]
 default rel
+section .text
 
 %ifidn __OUTPUT_FORMAT__, elf64
 ; Linux register definitions
