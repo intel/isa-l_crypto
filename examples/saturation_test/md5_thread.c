@@ -197,7 +197,7 @@ void *MB_THREAD_FUNC(void *arg)
 
       out:
 	free(ctxpool);
-	free(mgr);
+	aligned_free(mgr);
 	for (j = 0; j < rounds_buf; j++) {
 		free(carry_buf[j]);
 		free(digests[j]);
