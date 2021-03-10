@@ -218,6 +218,7 @@ objs = \
 	bin\cbc_enc_192_x8_sb.obj \
 	bin\cbc_enc_256_x4_sb.obj \
 	bin\cbc_enc_256_x8_sb.obj \
+	bin\cbc_dec_vaes_avx512.obj \
 	bin\cbc_pre.obj \
 	bin\xts_aes_128_multibinary.obj \
 	bin\XTS_AES_128_dec_sse.obj \
