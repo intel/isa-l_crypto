@@ -981,7 +981,7 @@ int test_gcm_strm_efence(void)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
@@ -1076,7 +1076,7 @@ int test_gcm_strm_combinations(int test_len)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
@@ -1169,7 +1169,7 @@ int test_gcm_combinations(void)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
@@ -1262,7 +1262,7 @@ int test_gcm256_combinations(void)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
@@ -1358,7 +1358,7 @@ int test_gcm256_strm_combinations(int test_len)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
@@ -1852,7 +1852,7 @@ int test_gcm_strm_combinations2(int length, int start, int breaks)
 		if (test.Plen + offset != 0) {
 			posix_memalign((void **)&test.P, 64, test.Plen + offset);
 			posix_memalign((void **)&test.C, 64, test.Plen + offset);
-		} else {	//This else clause is here becuase openssl 1.0.1k does not handle NULL pointers
+		} else {	//This else clause is here because openssl 1.0.1k does not handle NULL pointers
 			posix_memalign((void **)&test.P, 64, 16);
 			posix_memalign((void **)&test.C, 64, 16);
 		}
