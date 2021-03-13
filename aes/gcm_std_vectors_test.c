@@ -298,7 +298,7 @@ void aes_gcm_stream_dec_128(const struct gcm_key_data *key_data,
 			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_128(key_data, context, iv, aad, aad_len);
-	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in verctors
+	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
 	uint32_t i;
 	uint32_t offset = 0, dist;
 
@@ -427,7 +427,7 @@ void aes_gcm_stream_enc_256(const struct gcm_key_data *key_data,
 			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_256(key_data, context, iv, aad, aad_len);
-	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in verctors
+	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
 	uint32_t i;
 	uint32_t offset = 0, dist;
 
@@ -454,7 +454,7 @@ void aes_gcm_stream_dec_256(const struct gcm_key_data *key_data,
 			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_256(key_data, context, iv, aad, aad_len);
-	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in verctors
+	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
 	uint32_t i;
 	uint32_t offset = 0, dist;
 
