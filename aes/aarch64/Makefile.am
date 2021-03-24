@@ -31,15 +31,23 @@
 src_include += -I $(srcdir)/aes
 
 lsrc_aarch64 += aes/gcm_pre.c \
-                aes/aarch64/gcm_multibinary_aarch64.S    \
-                aes/aarch64/keyexp_multibinary_aarch64.S \
-                aes/aarch64/gcm_aarch64_dispatcher.c    \
-                aes/aarch64/keyexp_aarch64_dispatcher.c \
+                aes/aarch64/gcm_multibinary_aarch64.S       \
+                aes/aarch64/keyexp_multibinary_aarch64.S    \
+                aes/aarch64/gcm_aarch64_dispatcher.c        \
+                aes/aarch64/keyexp_aarch64_dispatcher.c     \
                 aes/aarch64/keyexp_128_aarch64_aes.S        \
                 aes/aarch64/keyexp_192_aarch64_aes.S        \
                 aes/aarch64/keyexp_256_aarch64_aes.S        \
-                aes/aarch64/gcm_aarch64_aes.S       \
-                aes/aarch64/gcm256_aarch64_aes.S
+                aes/aarch64/aes_gcm_aes_finalize_128.S      \
+                aes/aarch64/aes_gcm_aes_init.S              \
+                aes/aarch64/aes_gcm_enc_dec_128.S           \
+                aes/aarch64/aes_gcm_precomp_128.S           \
+                aes/aarch64/aes_gcm_update_128.S            \
+                aes/aarch64/aes_gcm_aes_finalize_256.S      \
+                aes/aarch64/aes_gcm_consts.S                \
+                aes/aarch64/aes_gcm_enc_dec_256.S           \
+                aes/aarch64/aes_gcm_precomp_256.S           \
+                aes/aarch64/aes_gcm_update_256.S
 
 check_tests += aes/gcm_std_vectors_test
 check_tests += aes/gcm_nt_std_vectors_test
