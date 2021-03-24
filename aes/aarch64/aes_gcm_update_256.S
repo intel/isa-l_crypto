@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2020 Arm Corporation All rights reserved.
+  Copyright(c) 2021 Arm Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -26,7 +26,7 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
-#define KEY_LEN 256
-    .arch armv8-a+crypto
-    .text
-#include "gcm_aarch64_aes.S"
+#include "gcm_common_256.S"
+#include "gcm_update.S"
+
+
