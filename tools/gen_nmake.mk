@@ -107,6 +107,7 @@ endif
 	@echo '	-if exist isa-l_crypto.dll del isa-l_crypto.dll'	>> $@
 	@echo '	-if exist isa-l_crypto.exp del isa-l_crypto.exp'	>> $@
 	@echo ''		>> $@
+	@echo 'libcrypto.lib:' 	>> $@
 	@cat $(foreach unit,$(units), $(unit)/Makefile.am)  | sed  \
 		-e '/: /!d' \
 		-e 's/\([^ :]*\)[ ]*/\1.exe /g' \
@@ -117,6 +118,6 @@ endif
 		-e '/:.*\%.*:/d' \
 		-e 's/ :/:/' \
 		-e 's/LDLIBS *+=//' \
-		-e 's/-lcrypto/libeay32.lib/' \
+		-e 's/-lcrypto/libcrypto.lib/' \
 		-e 's/ $$//' \
 			>> $@
