@@ -29,114 +29,11 @@
 
 	.arch armv8-a
 
-.macro  declare_var_vector_reg name:req,reg:req
-	\name	.req      v\reg
-.endm
+#include "sha1_asimd_common.S"
 
-/* macro F = (D ^ (B & (C ^ D))) */
-.macro FUNC_F0 reg_f:req,reg_b:req,reg_c:req,reg_d:req
-	eor	\reg_f\().16b, \reg_c\().16b, \reg_d\().16b
-	and	\reg_f\().16b, \reg_b\().16b, \reg_f\().16b
-	eor	\reg_f\().16b, \reg_d\().16b, \reg_f\().16b
-.endm
-
-/* F = (B ^ C ^ D) */
-.macro FUNC_F1 reg_f:req,reg_b:req,reg_c:req,reg_d:req
-	eor	\reg_f\().16b, \reg_b\().16b, \reg_c\().16b
-	eor	\reg_f\().16b, \reg_f\().16b, \reg_d\().16b
-.endm
-
-/* F = ((B & C) | (B & D) | (C & D)) */
-.macro FUNC_F2 reg_f:req,reg_b:req,reg_c:req,reg_d:req
-	and	vT0.16b, \reg_b\().16b, \reg_c\().16b
-	and	vT1.16b, \reg_b\().16b, \reg_d\().16b
-	and	vT2.16b, \reg_c\().16b, \reg_d\().16b
-	orr	\reg_f\().16b, vT0.16b, vT1.16b
-	orr	\reg_f\().16b, \reg_f\().16b, vT2.16b
-.endm
-
-/* F = (B ^ C ^ D) */
-.macro FUNC_F3 reg_f:req,reg_b:req,reg_c:req,reg_d:req
-	FUNC_F1	\reg_f,\reg_b,\reg_c,\reg_d
-.endm
-
-.macro SHA1_STEP_00_15 reg_a:req,reg_b:req,reg_c:req,reg_d:req,reg_e:req,reg_f:req,windex:req,reg_k:req,data:req,func_f:req,reg_t:req
-	// e = (a leftrotate 5) + f + e + k + w[i]
-	ushr	\reg_t\().4s, \reg_a\().4s, 32 - 5
-	add	\reg_e\().4s, \reg_e\().4s, \reg_k\().4s
-	add	tmp, \data, (\windex * 16)
-	ld1	{\reg_f\().4s}, [tmp]
-	sli	\reg_t\().4s, \reg_a\().4s, 5
-	add	\reg_e\().4s, \reg_e\().4s, \reg_f\().4s
-	add	\reg_e\().4s, \reg_e\().4s, \reg_t\().4s
-	ushr	\reg_t\().4s, \reg_b\().4s, 32 - 30
-	\func_f	\reg_f\(), \reg_b\(), \reg_c\(), \reg_d\()
-	add	\reg_e\().4s, \reg_e\().4s, \reg_f\().4s
-	sli	\reg_t\().4s, \reg_b\().4s, 30
-	mov	\reg_b\().16b, \reg_t\().16b
-.endm
-
-.macro SHA1_STEP_16_79 reg_a:req,reg_b:req,reg_c:req,reg_d:req,reg_e:req,reg_f:req,windex:req,reg_k:req,data:req,func_f:req,reg_t:req
-	/* w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) leftrotate 1 */
-	add	tmp, \data, #(((\windex - 14) & 15) * 16)
-	ld1	{vT1.4s}, [tmp]
-	add	tmp, \data, #(((\windex - 8) & 15) * 16)
-	ld1	{vT2.4s}, [tmp]
-	add	tmp, \data, #(((\windex - 3) & 15) * 16)
-	ld1	{vT3.4s}, [tmp]
-	add	tmp, \data, #((\windex & 15) * 16)
-	ld1	{vT0.4s}, [tmp]
-	eor	vT1.16b, vT1.16b, vT2.16b
-	eor	vT0.16b, vT0.16b, vT3.16b
-	eor	vT0.16b, vT0.16b, vT1.16b
-	// e = (a leftrotate 5) + f + e + k + w[i]
-	ushr	\reg_t\().4s, vT0.4s, 32 - 1
-	add	\reg_e\().4s, \reg_e\().4s, \reg_k\().4s
-	ushr	vT1.4s, \reg_a\().4s, 32 - 5
-	sli	\reg_t\().4s, vT0.4s, 1
-	add	\reg_e\().4s, \reg_e\().4s, \reg_t\().4s
-	sli	vT1.4s, \reg_a\().4s, 5
-	st1	{\reg_t\().4s}, [tmp]
-	add	\reg_e\().4s, \reg_e\().4s, vT1.4s
-	mov	\reg_t\().16b, \reg_b\().16b
-	\func_f	\reg_f\(), \reg_b\(), \reg_c\(), \reg_d\()
-	ushr	\reg_b\().4s, \reg_t\().4s, 32 - 30
-	add	\reg_e\().4s, \reg_e\().4s, \reg_f\().4s
-	sli	\reg_b\().4s, \reg_t\().4s, 30
-.endm
-
-declare_var_vector_reg	VA, 0
-declare_var_vector_reg	VB, 1
-declare_var_vector_reg	VC, 2
-declare_var_vector_reg	VD, 3
-declare_var_vector_reg	VE, 4
-declare_var_vector_reg	VF, 5
-declare_var_vector_reg	vKey, 6
-declare_var_vector_reg	vTmp, 7
-declare_var_vector_reg	vT0, 16
-declare_var_vector_reg	vT1, 17
-declare_var_vector_reg	vT2, 18
-declare_var_vector_reg	vT3, 19
-declare_var_vector_reg	vAA, 20
-declare_var_vector_reg	vBB, 21
-declare_var_vector_reg	vCC, 22
-declare_var_vector_reg	vDD, 23
-declare_var_vector_reg	vEE, 24
-declare_var_vector_reg	TT, 0
-
-.macro SWAP_STATES
-	.unreq TT
-	TT .req VE
-	.unreq VE
-	VE .req VD
-	.unreq VD
-	VD .req VC
-	.unreq VC
-	VC .req VB
-	.unreq VB
-	VB .req VA
-	.unreq VA
-	VA .req TT
+.macro load_x4_word idx:req
+	ld1 {WORD\idx\().16b},[segs_ptr]
+	add segs_ptr,segs_ptr,#64
 .endm
 
 /*
@@ -154,134 +51,51 @@ declare_var_vector_reg	TT, 0
 	sha1_digest	.req	x1
 	data_buf	.req	x2
 	num_blocks	.req	w3
-
-	src	.req	x5
-	dst	.req	x6
-	offs	.req	x7
-	mh_segs	.req	x8
-	key	.req	w9
-	key_adr	.req	x9
-	tmp	.req	x10
+	src	.req	x4
+	dst	.req	x5
+	offs	.req	x6
+	mh_segs	.req	x7
+	tmp	.req	x8
+	segs_ptr	.req	x9
+	block_ctr	.req	w10
 
 	.global mh_sha1_block_asimd
 	.type mh_sha1_block_asimd, %function
 mh_sha1_block_asimd:
 	cmp	num_blocks, #0
 	beq	.return
-
-.block_loop:
-	mov	src, input_data
-.set counter, 0
-
-.rept 16
-	// reverse the input data to big-endian
-	// and transform input data from DWORD*16_SEGS to DWORD*4_SEGS * 4
-	// so that we are able to process 4 SEGS each time by 128-bit NEON
-	ld1	{vT0.4S, vT1.4S, vT2.4S, vT3.4S}, [src], #64
-
-	rev32	vT0.16b, vT0.16b
-	add	dst, data_buf, counter * 16
-	rev32	vT1.16b, vT1.16b
-	st1	{vT0.4S}, [dst]
-	add	dst, dst, 256
-	rev32	vT2.16b, vT2.16b
-	st1	{vT1.4S}, [dst]
-	add	dst, dst, 256
-	rev32	vT3.16b, vT3.16b
-	st1	{vT2.4S}, [dst]
-	add	dst, dst, 256
-	st1	{vT3.4S}, [dst]
-
-	.set counter, counter+1
-.endr
+	sha1_asimd_save_stack
 
 	mov	mh_segs, #0
-
 .seg_loops:
+	add	segs_ptr,input_data,mh_segs
 	mov	offs, #64
-	/* load four segments of digest each time */
 	add	src, sha1_digest, mh_segs
 	ld1	{VA.4S}, [src], offs
 	ld1	{VB.4S}, [src], offs
-	mov	vAA.16B, VA.16B
 	ld1	{VC.4S}, [src], offs
-	mov	vBB.16B, VB.16B
 	ld1	{VD.4S}, [src], offs
-	mov	vCC.16B, VC.16B
 	ld1	{VE.4S}, [src], offs
-	mov	vDD.16B, VD.16B
-	mov	vEE.16B, VE.16B
+	mov	block_ctr,num_blocks
 
-	.set WI, 0
+.block_loop:
+	sha1_single
+	subs	block_ctr, block_ctr, 1
+	bne	.block_loop
 
-	adr	key_adr, KEY_0
-	ld1	{vKey.4s}, [key_adr]
-
-	// 0 ~ 15
-.rept 16
-	SHA1_STEP_00_15	VA,VB,VC,VD,VE,VF,WI,vKey,data_buf,FUNC_F0,vTmp
-	SWAP_STATES
-	.set WI, WI + 1
-.endr
-
-	// 16 ~ 19
-.rept 4
-	SHA1_STEP_16_79	VA,VB,VC,VD,VE,VF,WI,vKey,data_buf,FUNC_F0,vTmp
-	SWAP_STATES
-	.set WI, WI + 1
-.endr
-
-	// 20 ~ 39
-	adr	key_adr, KEY_1
-	ld1	{vKey.4s}, [key_adr]
-.rept 20
-	SHA1_STEP_16_79	VA,VB,VC,VD,VE,VF,WI,vKey,data_buf,FUNC_F1,vTmp
-
-	SWAP_STATES
-	.set WI, WI + 1
-.endr
-
-	// 40 ~ 59
-	adr	key_adr, KEY_2
-	ld1	{vKey.4s}, [key_adr]
-.rept 20
-	SHA1_STEP_16_79	VA,VB,VC,VD,VE,VF,WI,vKey,data_buf,FUNC_F2,vTmp
-	SWAP_STATES
-	.set WI, WI + 1
-.endr
-
-	// 60 ~ 79
-	adr	key_adr, KEY_3
-	ld1	{vKey.4s}, [key_adr]
-.rept 20
-	SHA1_STEP_16_79	VA,VB,VC,VD,VE,VF,WI,vKey,data_buf,FUNC_F3,vTmp
-	SWAP_STATES
-	.set WI, WI + 1
-.endr
-
-	add	VA.4s, vAA.4s, VA.4s
 	mov	offs, #64
 	add	dst, sha1_digest, mh_segs
-	add	VB.4s, vBB.4s, VB.4s
 	st1	{VA.4S}, [dst], offs
-	add	VC.4s, vCC.4s, VC.4s
 	st1	{VB.4S}, [dst], offs
-	add	VD.4s, vDD.4s, VD.4s
 	st1	{VC.4S}, [dst], offs
-	add	VE.4s, vEE.4s, VE.4s
 	st1	{VD.4S}, [dst], offs
 	st1	{VE.4S}, [dst], offs
 
-	add	data_buf, data_buf, 256
 	add	mh_segs, mh_segs, #16
 	cmp	mh_segs, #64
 	bne	.seg_loops
 
-	sub	data_buf, data_buf, 1024
-	add	input_data, input_data, 1024
-	subs	num_blocks, num_blocks, 1
-	bne	.block_loop
-
+	sha1_asimd_restore_stack
 .return:
 	ret
 
