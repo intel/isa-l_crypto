@@ -38,6 +38,12 @@
 #define inline __inline
 #endif
 
+#if (__GNUC__ >= 11)
+# define OPT_FIX __attribute__ ((noipa))
+#else
+# define OPT_FIX
+#endif
+
 #define F1(b,c,d) (d ^ (b & (c ^ d)))
 #define F2(b,c,d) (c ^ (d & (b ^ c)))
 #define F3(b,c,d) (b ^ c ^ d)
@@ -56,7 +62,7 @@
 static void md5_init(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len);
 static uint32_t md5_update(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len);
 static void md5_final(MD5_HASH_CTX * ctx, uint32_t remain_len);
-static void md5_single(const void *data, uint32_t digest[4]);
+static void OPT_FIX md5_single(const void *data, uint32_t digest[4]);
 static inline void hash_init_digest(MD5_WORD_T * digest);
 
 void md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR * mgr)

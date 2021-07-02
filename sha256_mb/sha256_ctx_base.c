@@ -37,6 +37,12 @@
 #define inline __inline
 #endif
 
+#if (__GNUC__ >= 11)
+# define OPT_FIX __attribute__ ((noipa))
+#else
+# define OPT_FIX
+#endif
+
 #define ror32(x, r) (((x)>>(r)) ^ ((x)<<(32-(r))))
 
 #define W(x) w[(x) & 15]
@@ -61,7 +67,7 @@
 static void sha256_init(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t len);
 static uint32_t sha256_update(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t len);
 static void sha256_final(SHA256_HASH_CTX * ctx, uint32_t remain_len);
-static void sha256_single(const void *data, uint32_t digest[]);
+static void OPT_FIX sha256_single(const void *data, uint32_t digest[]);
 static inline void hash_init_digest(SHA256_WORD_T * digest);
 
 void sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR * mgr)

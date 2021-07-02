@@ -37,12 +37,18 @@
 #define inline __inline
 #endif
 
+#if (__GNUC__ >= 11)
+# define OPT_FIX __attribute__ ((noipa))
+#else
+# define OPT_FIX
+#endif
+
 #define rol32(x, r) (((x)<<(r)) | ((x)>>(32-(r))))
 
 static void sm3_init(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len);
-static uint32_t sm3_update(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len);
-static void sm3_final(SM3_HASH_CTX * ctx, uint32_t remain_len);
-static void sm3_single(const volatile void *data, uint32_t digest[]);
+static uint32_t OPT_FIX sm3_update(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len);
+static void OPT_FIX sm3_final(SM3_HASH_CTX * ctx, uint32_t remain_len);
+static void OPT_FIX sm3_single(const volatile void *data, uint32_t digest[]);
 static inline void hash_init_digest(SM3_WORD_T * digest);
 
 static inline uint32_t P0(uint32_t X)
