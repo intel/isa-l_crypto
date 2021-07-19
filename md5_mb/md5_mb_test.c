@@ -88,8 +88,14 @@ int main(void)
 	MD5_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
 	uint32_t i, j, k, t, checked = 0;
 	uint32_t *good;
+	int ret;
 
-	posix_memalign((void *)&mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+	ret = posix_memalign((void *)&mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+	if ((ret != 0) || (mgr == NULL)) {
+		printf("posix_memalign failed test aborted\n");
+		return 1;
+	}
+
 	md5_ctx_mgr_init(mgr);
 
 	// Init contexts before first use
