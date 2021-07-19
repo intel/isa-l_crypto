@@ -79,12 +79,12 @@ int aes_128_perf(uint8_t * key)
 	ret = posix_memalign((void **)&iv, 16, (CBC_IV_DATA_LEN));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	if ((NULL == iv) || (NULL == key_data))
 		return 1;
@@ -160,12 +160,12 @@ int aes_192_perf(uint8_t * key)
 	ret = posix_memalign((void **)&iv, 16, (CBC_IV_DATA_LEN));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	if ((NULL == iv) || (NULL == key_data))
 		return 1;
@@ -240,12 +240,12 @@ int aes_256_perf(uint8_t * key)
 	ret = posix_memalign((void **)&iv, 16, (CBC_IV_DATA_LEN));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return -1;
+		return 1;
 	}
 	if ((NULL == iv) || (NULL == key_data))
 		return 1;
