@@ -73,6 +73,9 @@ AC_TRY_COMPILE([],[
                   intel_cet_enabled=yes],
                  [AC_MSG_RESULT([no])
                   intel_cet_enabled=no])
+AS_IF([test "x$intel_cet_enabled" = "xyes"], [
+        AC_DEFINE(INTEL_CET_ENABLED, [1], [Intel CET enabled.])
+])
 
 
   # Pick an assembler yasm or nasm
@@ -296,8 +299,6 @@ else
   AM_CONDITIONAL(WITH_SHANI, test "x" = "y")
   AM_CONDITIONAL(DARWIN, test "x" = "y")
 fi
-
-AM_CONDITIONAL(INTEL_CET_ENABLED, [test x"$intel_cet_enabled" = x"yes"])
 
 # Check for header files
 AC_CHECK_HEADERS([limits.h stdint.h stdlib.h string.h])
