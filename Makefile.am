@@ -41,7 +41,15 @@ include mh_sha1_murmur3_x64_128/Makefile.am
 include mh_sha256/Makefile.am
 include rolling_hash/Makefile.am
 include sm3_mb/Makefile.am
+if CPU_X86_64
 include aes/Makefile.am
+endif
+if CPU_X86_32
+include aes/Makefile.am
+endif
+if CPU_AARCH64
+include aes/Makefile.am
+endif
 
 # LIB version info not necessarily the same as package version
 LIBISAL_CURRENT=2
