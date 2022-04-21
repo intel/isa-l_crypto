@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2020 Arm Corporation All rights reserved.
+  Copyright(c) 2022 Arm Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -28,9 +28,22 @@
 **********************************************************************/
 #include <aarch64_multibinary.h>
 
+extern int md5_mb_sve_max_lanes(void);
+static inline int sve_capable(unsigned long flag)
+{
+	if (flag & HWCAP_SVE) {
+		return md5_mb_sve_max_lanes() >= 8;
+	}
+	return 0;
+}
+
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_submit)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+	if (sve_capable(auxval)) {
+		return PROVIDER_INFO(md5_ctx_mgr_submit_sve);
+	}
+
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(md5_ctx_mgr_submit_asimd);
 
@@ -41,6 +54,10 @@ DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_submit)
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_init)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+	if (sve_capable(auxval)) {
+		return PROVIDER_INFO(md5_ctx_mgr_init_sve);
+	}
+
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(md5_ctx_mgr_init_asimd);
 
@@ -51,9 +68,12 @@ DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_init)
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_flush)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+	if (sve_capable(auxval)) {
+		return PROVIDER_INFO(md5_ctx_mgr_flush_sve);
+	}
+
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(md5_ctx_mgr_flush_asimd);
 
 	return PROVIDER_BASIC(md5_ctx_mgr_flush);
-
 }
