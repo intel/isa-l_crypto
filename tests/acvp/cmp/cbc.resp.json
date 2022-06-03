@@ -1,0 +1,22 @@
+[ {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+        "NA"
+    ]
+}, {
+    "vsId": 0,
+    "algorithm": "ACVP-AES-CBC",
+    "testGroups": [
+        {
+            "tgId": 1,
+            "tests": [
+                {
+                    "tcId": 1,
+                    "ct": "D296CD94C2CCCF8A3A863028B5E1DC0A7586602D253CFFF91B8266BEA6D61AB1"
+                }
+            ]
+        }
+    ]
+} ]

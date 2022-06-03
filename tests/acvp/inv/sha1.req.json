@@ -1,0 +1,40 @@
+[
+  {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+      "NA"
+    ]
+  },
+  {
+    "vsId": 0,
+    "algorithm": "SHA-1",
+    "revision": "1.0",
+    "isSample": true,
+    "testGroups": [
+      {
+        "tgId": 1,
+        "testType": "AFT",
+        "tests": [
+          {
+            "tcId": 2,
+            "msg": "abcd",
+            "len": 4
+          }
+        ]
+      },
+      {
+        "tgId": 3,
+        "testType": "MCT",
+        "tests": [
+          {
+            "tcId": 4,
+            "msg": "abcd",
+            "len": 4
+          }
+        ]
+      }
+    ]
+  }
+]

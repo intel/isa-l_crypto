@@ -1,0 +1,23 @@
+[ {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+        "NA"
+    ]
+}, {
+    "vsId": 0,
+    "algorithm": "ACVP-AES-GCM",
+    "testGroups": [
+        {
+            "tgId": 1,
+            "tests": [
+                {
+                    "tcId": 2,
+                    "ct": "701AFA1CC039C0D765128A665DAB69243899BF7318CCDC81C9931DA17FBE8EDD7D17CB8B4C26FC81E3284F2B7FBA713D",
+                    "tag": "421E8153466B5A08557BBC2BFA69E235"
+                }
+            ]
+        }
+    ]
+} ]
