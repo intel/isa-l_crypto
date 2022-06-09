@@ -30,11 +30,16 @@ Building ISA-L
 
 ### Prerequisites
 
+x86_64:
 * Assembler: nasm v2.11.01 or later (nasm v2.13 or better suggested for building in AVX512 support)
   or yasm version 1.2.0 or later.
 * Compiler: gcc, clang, icc or VC compiler.
 * Make: GNU 'make' or 'nmake' (Windows).
 * Optional: Building with autotools requires autoconf/automake packages.
+
+aarch64:
+* Assembler: gas v2.24 or later.
+* Compiler: gcc v8 or later.
 
 ### Autotools
 To build and install the library with autotools it is usually sufficient to run:
