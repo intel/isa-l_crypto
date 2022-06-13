@@ -87,7 +87,7 @@
 	.if	have_sve2 == 0
 		lsl	\tmp\().s,\in\().s,\bits
 	.else
-		movprfx	\out\().d,\in\().d
+		movprfx	\out,\in
 		xar	\out\().s,\out\().s,VZERO.s,32-\bits
 	.endif
 
@@ -136,7 +136,7 @@
 		eor	\ret\().d,\x\().d,\y\().d
 		sve_bitop	eor,\ret,\z
 	.else
-		movprfx	\ret\().d,\x\().d
+		movprfx	\ret,\x
 		eor3	\ret\().d,\ret\().d,\y\().d,\z\().d
 	.endif
 .endm
@@ -155,8 +155,8 @@
 		and	\tmp\().d,\x\().d,\y\().d
 		sve_bitop	orr,\ret,\tmp
 	.else
-		movprfx	\ret\().d,\x\().d
-		bsl	\ret\().d,\ret\().d,\y\().d,\z\().d
+		movprfx	\ret,\y
+		bsl	\ret\().d,\ret\().d,\z\().d,\x\().d
 	.endif
 .endm
 
@@ -386,8 +386,8 @@
 	.endr
 .endm
 
-.macro sm3_single	sve2:vararg
-	.ifnb	\sve2
+.macro sm3_single	sve2_flag:req
+	.if	\sve2_flag == 1
 		have_sve2 = 1
 	.else
 		have_sve2=0
@@ -410,7 +410,7 @@
 	revb	WORD2.s, p0/m, WORD2.s
 	revb	WORD3.s, p0/m, WORD3.s
 	.if     have_sve2 == 1
-		mov	VZERO.s,p0/m,#0
+		dup	VZERO.s,#0
 	.endif
 	sm3_exec
 .endm
