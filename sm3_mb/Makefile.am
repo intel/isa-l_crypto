@@ -44,6 +44,8 @@ lsrc_aarch64 += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/aarch64/sm3_mb_sm_x4.S		\
 	sm3_mb/aarch64/sm3_mb_mgr_sve.c		\
 	sm3_mb/aarch64/sm3_mb_ctx_sve.c		\
+	sm3_mb/aarch64/sm3_mb_mgr_sve2.c	\
+	sm3_mb/aarch64/sm3_mb_ctx_sve2.c	\
 	sm3_mb/aarch64/sm3_mb_sve.S		\
 	sm3_mb/aarch64/sm3_mb_mgr_asimd_aarch64.c	\
 	sm3_mb/aarch64/sm3_mb_ctx_asimd_aarch64.c	\

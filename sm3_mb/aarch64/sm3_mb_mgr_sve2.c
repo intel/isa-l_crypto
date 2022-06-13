@@ -38,7 +38,7 @@
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
-extern void sm3_mb_sve(int blocks, int total_lanes, SM3_JOB **);
+extern void sm3_mb_sve2(int blocks, int total_lanes, SM3_JOB **);
 extern void sm3_mb_asimd_x4(SM3_JOB *, SM3_JOB *, SM3_JOB *, SM3_JOB *, int);
 extern void sm3_mb_asimd_x1(SM3_JOB *, int);
 extern int sm3_mb_sve_max_lanes(void);
@@ -51,7 +51,7 @@ extern int sm3_mb_sve_max_lanes(void);
 	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void sm3_mb_mgr_init_sve(SM3_MB_JOB_MGR * state)
+void sm3_mb_mgr_init_sve2(SM3_MB_JOB_MGR * state)
 {
 	unsigned int i;
 	int maxjobs = sm3_mb_sve_max_lanes();
@@ -107,7 +107,7 @@ static int sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR * state)
 	blocks = len >> 4;
 
 	if (lanes >= 4 && (lanes >= maxjobs - 2)) {
-		sm3_mb_sve(blocks, lanes, job_vecs);
+		sm3_mb_sve2(blocks, lanes, job_vecs);
 	} else {
 		i = 0;
 		while (i + 3 < lanes) {
@@ -162,7 +162,7 @@ static void sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR * state, SM3_JOB * job)
 	state->num_lanes_inuse++;
 }
 
-SM3_JOB *sm3_mb_mgr_submit_sve(SM3_MB_JOB_MGR * state, SM3_JOB * job)
+SM3_JOB *sm3_mb_mgr_submit_sve2(SM3_MB_JOB_MGR * state, SM3_JOB * job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -195,7 +195,7 @@ SM3_JOB *sm3_mb_mgr_submit_sve(SM3_MB_JOB_MGR * state, SM3_JOB * job)
 	return ret;
 }
 
-SM3_JOB *sm3_mb_mgr_flush_sve(SM3_MB_JOB_MGR * state)
+SM3_JOB *sm3_mb_mgr_flush_sve2(SM3_MB_JOB_MGR * state)
 {
 	SM3_JOB *ret;
 

@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2019-2020 Arm Corporation All rights reserved.
+  Copyright(c) 2019-2022 Arm Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -29,19 +29,45 @@
 #include <aarch64_multibinary.h>
 
 extern int sm3_mb_sve_max_lanes(void);
-static inline int use_sve(unsigned long auxval)
+
+/* run time check of SVE2 regardless whether compile environment
+ * has HWCAP2_SVE2 set
+ */
+#ifndef HWCAP2_SVE2
+#define HWCAP2_SVE2	(1 << 1)
+#endif
+
+#define CAP_SVE	1
+#define CAP_SVE2	2
+#define CAP_NOSVE	0
+
+static inline int sve_capable(unsigned long auxval)
 {
-	return ((auxval & HWCAP_SVE) && (sm3_mb_sve_max_lanes() >= 8));
+	if (auxval & HWCAP_SVE) {
+		if (getauxval(AT_HWCAP2) & HWCAP2_SVE2) {
+			return CAP_SVE2;
+		}
+		if (sm3_mb_sve_max_lanes() >= 8)
+			return CAP_SVE;
+	}
+	return CAP_NOSVE;
 }
 
 DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_submit)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_submit_sm);
 
-	if (use_sve(auxval))
+	switch (sve_capable(auxval)) {
+	case CAP_SVE:
 		return PROVIDER_INFO(sm3_ctx_mgr_submit_sve);
+	case CAP_SVE2:
+		return PROVIDER_INFO(sm3_ctx_mgr_submit_sve2);
+	default:
+		break;
+	}
 
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(sm3_ctx_mgr_submit_asimd);
@@ -51,11 +77,18 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_submit)
 DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_init)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_init_sm);
 
-	if (use_sve(auxval))
+	switch (sve_capable(auxval)) {
+	case CAP_SVE:
 		return PROVIDER_INFO(sm3_ctx_mgr_init_sve);
+	case CAP_SVE2:
+		return PROVIDER_INFO(sm3_ctx_mgr_init_sve2);
+	default:
+		break;
+	}
 
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(sm3_ctx_mgr_init_asimd);
@@ -65,11 +98,18 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_init)
 DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_flush)
 {
 	unsigned long auxval = getauxval(AT_HWCAP);
+
 	if (auxval & HWCAP_SM3)
 		return PROVIDER_INFO(sm3_ctx_mgr_flush_sm);
 
-	if (use_sve(auxval))
+	switch (sve_capable(auxval)) {
+	case CAP_SVE:
 		return PROVIDER_INFO(sm3_ctx_mgr_flush_sve);
+	case CAP_SVE2:
+		return PROVIDER_INFO(sm3_ctx_mgr_flush_sve2);
+	default:
+		break;
+	}
 
 	if (auxval & HWCAP_ASIMD)
 		return PROVIDER_INFO(sm3_ctx_mgr_flush_asimd);
