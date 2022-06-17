@@ -29,7 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <openssl/md5.h>
+#include <openssl/evp.h>
 #include "md5_mb.h"
 #include "test.h"
 
@@ -50,6 +50,19 @@
 #endif
 
 #define TEST_MEM TEST_LEN * TEST_BUFS * TEST_LOOPS
+
+unsigned char md5_ossl(const uint8_t * d, unsigned long n, uint8_t * md)
+{
+	unsigned int tmplen;
+	EVP_MD_CTX *c;
+
+	c = EVP_MD_CTX_create();
+	EVP_DigestInit_ex(c, EVP_md5(), NULL);
+	EVP_DigestUpdate(c, d, n);
+	EVP_DigestFinal_ex(c, md, &tmplen);
+	EVP_MD_CTX_destroy(c);
+	return 1;
+}
 
 /* Reference digest global to reduce stack usage */
 static uint8_t digest_ssl[TEST_BUFS][4 * MD5_DIGEST_NWORDS];
@@ -85,7 +98,7 @@ int main(void)
 	perf_start(&start);
 	for (t = 0; t < TEST_LOOPS; t++) {
 		for (i = 0; i < TEST_BUFS; i++)
-			MD5(bufs[i], TEST_LEN, digest_ssl[i]);
+			md5_ossl(bufs[i], TEST_LEN, digest_ssl[i]);
 	}
 	perf_stop(&stop);
 
