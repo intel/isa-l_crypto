@@ -62,6 +62,8 @@ lsrc_aarch64 += md5_mb/md5_ctx_base.c \
 		md5_mb/aarch64/md5_mb_asimd_x1.S  \
 		md5_mb/aarch64/md5_ctx_aarch64_sve.c  \
 		md5_mb/aarch64/md5_mb_mgr_aarch64_sve.c  \
+		md5_mb/aarch64/md5_ctx_aarch64_sve2.c  \
+		md5_mb/aarch64/md5_mb_mgr_aarch64_sve2.c  \
 		md5_mb/aarch64/md5_mb_sve.S  \
 		md5_mb/aarch64/md5_mb_multibinary.S
 

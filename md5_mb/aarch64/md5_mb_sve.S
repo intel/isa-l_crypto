@@ -27,7 +27,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
+#if defined(NO_SVE2)
 	.arch armv8.2-a+sve
+#else
+	.arch armv8.2-a+sve2
+#endif
+
 
 // copying data from sparse memory unto continous stack space
 // in oroder to gather-load into SVE registers
@@ -73,7 +78,7 @@ md5_mb_sve_max_lanes:
 	.size md5_mb_sve_max_lanes, .-md5_mb_sve_max_lanes
 
 /*
- *  void md5_mb_sve(int blocks, int total_lanes, MD5_JOB **job_vec)
+ *  void md5_mb_sve/sv2(int blocks, int total_lanes, MD5_JOB **job_vec)
  */
 	num_blocks	.req	w0
 	total_lanes	.req	w1
@@ -92,10 +97,8 @@ md5_mb_sve_max_lanes:
 	abcd_buf	.req	x14
 	md5key_adr	.req	x15
 
-	.global md5_mb_sve
-	.type md5_mb_sve, %function
-md5_mb_sve:
-	cbz	num_blocks,.return
+.macro IMPLEMENT_MD5_MB sve2_flag:req
+	cbz	num_blocks,.return\sve2_flag\()
 	md5_sve_save_stack
 	mov	savedsp,sp
 	// reserve (16 * lanes) for abcd buf
@@ -110,49 +113,67 @@ md5_mb_sve:
 	mov	src,job_vec
 	mov	dst,abcd_buf
 	mov	counter,total_lanes
-.ldr_hash:
+.ldr_hash\sve2_flag\():
 	ldr	tmp,[src],8
 	add	tmp,tmp,64
 	ld1	{v0.16b},[tmp]
 	st1	{v0.16b},[dst],16
 	subs	counter,counter,1
-	bne	.ldr_hash
+	bne	.ldr_hash\sve2_flag\()
 	ld4w	{VA_0.s,VB_0.s,VC_0.s,VD_0.s},p0/z,[abcd_buf]
 	mov	block_ctr,0
 	cntp	veclen,p0,p0.s
 	cmp	veclen_w,total_lanes
-	b.eq	.loop_1x
+	b.eq	.loop_1x\sve2_flag\()
 	whilelo	p1.s,veclen_w,total_lanes
 	add	tmp,abcd_buf,veclen,lsl #4
 	ld4w	{VA_1.s,VB_1.s,VC_1.s,VD_1.s},p1/z,[tmp]
-	b	.loop_2x
-.loop_1x:
-	md5_single	1
+	b	.loop_2x\sve2_flag\()
+.loop_1x\sve2_flag\():
+	md5_single	1,\sve2_flag
 	add	block_ctr, block_ctr, 1
 	cmp	block_ctr_w,num_blocks
-	bne	.loop_1x
+	bne	.loop_1x\sve2_flag\()
 	st4w	{VA_0.s,VB_0.s,VC_0.s,VD_0.s},p0,[abcd_buf]
 	b	1f
-.loop_2x:
-	md5_single	2
+.loop_2x\sve2_flag\():
+	md5_single	2,\sve2_flag
 	add	block_ctr, block_ctr, 1
 	cmp	block_ctr_w,num_blocks
-	bne	.loop_2x
+	bne	.loop_2x\sve2_flag\()
 	st4w	{VA_0.s,VB_0.s,VC_0.s,VD_0.s},p0,[abcd_buf]
 	add	tmp,abcd_buf,veclen,lsl #4
 	st4w	{VA_1.s,VB_1.s,VC_1.s,VD_1.s},p1,[tmp]
 1:
 	mov	dst,job_vec
 	mov	src,abcd_buf
-.str_hash:
+.str_hash\sve2_flag\():
 	ld1	{v0.16b},[src],16
 	ldr	tmp,[dst],8
 	add	tmp,tmp,64
 	st1	{v0.16b},[tmp]
 	subs	total_lanes,total_lanes,1
-	bne	.str_hash
+	bne	.str_hash\sve2_flag\()
 	mov	sp,savedsp
 	md5_sve_restore_stack
-.return:
+.return\sve2_flag\():
 	ret
+.endm
+
+	.global md5_mb_sve
+	.type md5_mb_sve, %function
+md5_mb_sve:
+.sve_entry:
+	IMPLEMENT_MD5_MB 0
 	.size md5_mb_sve, .-md5_mb_sve
+
+	.global md5_mb_sve2
+	.type md5_mb_sve2, %function
+md5_mb_sve2:
+#if	!defined(NO_SVE2)
+	IMPLEMENT_MD5_MB 1
+#else
+#warning "SVE2 has been bypassed in the build"
+	b	.sve_entry
+#endif
+	.size md5_mb_sve2, .-md5_mb_sve2

@@ -34,7 +34,7 @@
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
-extern void md5_mb_sve(int blocks, int total_lanes, MD5_JOB **);
+extern void md5_mb_sve2(int blocks, int total_lanes, MD5_JOB **);
 extern void md5_mb_asimd_x4(MD5_JOB *, MD5_JOB *, MD5_JOB *, MD5_JOB *, int);
 extern void md5_mb_asimd_x1(MD5_JOB *, int);
 extern int md5_mb_sve_max_lanes(void);
@@ -47,7 +47,7 @@ extern int md5_mb_sve_max_lanes(void);
 	(((state->lens[i]&(~0xff))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xff))!=0) && state->ldata[i].job_in_lane==NULL)
-void md5_mb_mgr_init_sve(MD5_MB_JOB_MGR * state)
+void md5_mb_mgr_init_sve2(MD5_MB_JOB_MGR * state)
 {
 	unsigned int j;
 	state->unused_lanes[0] = 0x0706050403020100;
@@ -99,7 +99,7 @@ static int md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR * state)
 	// lanes is less than single vector capacity minus 2
 	// Things might change for future micro-architecture
 	if (lanes >= 4 && lanes >= maxjobs / 2 - 2) {
-		md5_mb_sve(blocks, lanes, job_vecs);
+		md5_mb_sve2(blocks, lanes, job_vecs);
 	} else {
 		i = 0;
 		while (i + 3 < lanes) {
@@ -167,7 +167,7 @@ static void md5_mb_mgr_insert_job(MD5_MB_JOB_MGR * state, MD5_JOB * job)
 	state->num_lanes_inuse++;
 }
 
-MD5_JOB *md5_mb_mgr_submit_sve(MD5_MB_JOB_MGR * state, MD5_JOB * job)
+MD5_JOB *md5_mb_mgr_submit_sve2(MD5_MB_JOB_MGR * state, MD5_JOB * job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -199,7 +199,7 @@ MD5_JOB *md5_mb_mgr_submit_sve(MD5_MB_JOB_MGR * state, MD5_JOB * job)
 	return ret;
 }
 
-MD5_JOB *md5_mb_mgr_flush_sve(MD5_MB_JOB_MGR * state)
+MD5_JOB *md5_mb_mgr_flush_sve2(MD5_MB_JOB_MGR * state)
 {
 	MD5_JOB *ret;
 
