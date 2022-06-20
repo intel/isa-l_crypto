@@ -38,8 +38,11 @@ x86_64:
 * Optional: Building with autotools requires autoconf/automake packages.
 
 aarch64:
-* Assembler: gas v2.24 or later.
+* Assembler: gas v2.34 or later.
 * Compiler: gcc v8 or later.
+* For gas v2.24~v2.34, sve2 instructions are not supported. To workaround it, sve2 optimization should be disabled by
+    * ./configure --disable-sve2
+    * make -f Makefile.unx DEFINES+=-DNO_SVE2=1
 
 ### Autotools
 To build and install the library with autotools it is usually sufficient to run:

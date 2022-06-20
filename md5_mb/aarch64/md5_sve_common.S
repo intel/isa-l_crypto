@@ -56,6 +56,7 @@
 	VBB_1	.req z31
 	VCC_1	.req z8
 	VDD_1	.req z9
+	VZERO	.req z10
 	TT	.req z0
 
 .macro rotate_left_x1	out:req,in:req,tmp:req,bits
@@ -67,14 +68,13 @@
 			lsr	\out\().s,\in\().s,32-\bits
 			orr	\out\().d,\out\().d,\tmp\().d
 		.else
-			movprfx	\out\().d,\in\().d
+			movprfx	\out,\in
 			xar	\out\().s,\out\().s,VZERO.s,32-\bits
 		.endif
 	.endif
 .endm
 
 .macro rotate_left_x2	out:req,in:req,tmp:req,bits,out1:req,in1:req,tmp1:req,bits1
-
 	.if \bits == 16
 		revh	\out\().s,p0/m,\in\().s
 		revh	\out1\().s,p0/m,\in1\().s
@@ -87,9 +87,9 @@
 			orr	\out\().d,\out\().d,\tmp\().d
 			orr	\out1\().d,\out1\().d,\tmp1\().d
 		.else
-			movprfx	\out\().d,\in\().d
+			movprfx	\out,\in
 			xar	\out\().s,\out\().s,VZERO.s,32-\bits
-			movprfx	\out1\().d,\in1\().d
+			movprfx	\out1,\in1
 			xar	\out1\().s,\out1\().s,VZERO.s,32-\bits1
 		.endif
 	.endif
@@ -101,8 +101,8 @@
 		and	\tmp\().d,\x\().d,\y\().d
 		orr	\ret\().d,\ret\().d,\tmp\().d
 	.else
-		movprfx	\ret\().d,\x\().d
-		bsl	\ret\().d,\ret\().d,\y\().d,\z\().d
+		movprfx	\ret,\y
+		bsl	\ret\().d,\ret\().d,\z\().d,\x\().d
 	.endif
 .endm
 
@@ -115,10 +115,10 @@
 		orr	\ret\().d,\ret\().d,\tmp\().d
 		orr	\ret1\().d,\ret1\().d,\tmp1\().d
 	.else
-		movprfx	\ret\().d,\x\().d
-		bsl	\ret\().d,\ret\().d,\y\().d,\z\().d
-		movprfx	\ret1\().d,\x1\().d
-		bsl	\ret1\().d,\ret1\().d,\y1\().d,\z1\().d
+		movprfx	\ret,\y
+		bsl	\ret\().d,\ret\().d,\z\().d,\x\().d
+		movprfx	\ret1,\y1
+		bsl	\ret1\().d,\ret1\().d,\z1\().d,\x1\().d
 	.endif
 .endm
 
@@ -149,7 +149,7 @@
 		eor	VF_0.d,VB_0.d,VC_0.d
 		eor	VF_0.d,VF_0.d,VD_0.d
 	.else
-		movprfx	VF_0.d,VB_0.d
+		movprfx	VF_0,VB_0
 		eor3	VF_0.d,VF_0.d,VC_0.d,VD_0.d
 	.endif
 .endm
@@ -161,9 +161,9 @@
 		eor	VF_0.d,VF_0.d,VD_0.d
 		eor	VF_1.d,VF_1.d,VD_1.d
 	.else
-		movprfx	VF_0.d,VB_0.d
+		movprfx	VF_0,VB_0
 		eor3	VF_0.d,VF_0.d,VC_0.d,VD_0.d
-		movprfx	VF_1.d,VB_1.d
+		movprfx	VF_1,VB_1
 		eor3	VF_1.d,VF_1.d,VC_1.d,VD_1.d
 	.endif
 .endm
@@ -376,10 +376,10 @@
 	add	VD_1.s,VD_1.s,VDD_1.s
 .endm
 
-.macro md5_single	pipelines:req,sve2
-	.ifnb	\sve2
+.macro md5_single	pipelines:req,sve2_flag:req
+	.if	\sve2_flag == 1
 		have_sve2=1
-		eor	VZERO.d,VZERO.d,VZERO.d
+		dup	VZERO.s,#0
 	.else
 		have_sve2=0
 	.endif
@@ -392,15 +392,13 @@
 .endm
 
 .macro md5_sve_save_stack
-	stp	d8,d9,[sp, -48]!
+	stp	d8,d9,[sp, -32]!
 	stp	d10,d11,[sp, 16]
-	stp	d12,d13,[sp, 32]
 .endm
 
 .macro md5_sve_restore_stack
 	ldp	d10,d11,[sp, 16]
-	ldp	d12,d13,[sp, 32]
-	ldp	d8,d9,[sp],48
+	ldp	d8,d9,[sp],32
 .endm
 
 	.section .rodata.cst16,"aM",@progbits,16
