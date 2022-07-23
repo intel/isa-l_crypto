@@ -24,6 +24,7 @@ Also see:
 * The [github wiki](https://github.com/intel/isa-l/wiki) covering isa-l and
   isa-l crypto.
 * [Contributing](CONTRIBUTING.md).
+* [Security Policy](SECURITY.md).
 
 Building ISA-L
 --------------
