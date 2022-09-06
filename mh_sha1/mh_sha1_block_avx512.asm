@@ -96,8 +96,8 @@ section .text
 	; 20-39, 60-79 Parity(B,C,D) = B ^ C ^ D
 	; 40-59 Maj(B,C,D) = (B&C) ^ (B&D) ^ (C&D)
 
-	vmovdqa32	XTMP1, B		; Copy B
 	vpaddd		E, E, %%WT		; E = E + Wt
+	vmovdqa32	XTMP1, B		; Copy B
 	vpternlogd	XTMP1, C, D, %%F_IMMED	; TMP1 = Ft(B,C,D)
 	vpaddd		E, E, KT		; E = E + Wt + Kt
 	vprold		XTMP0, A, 5		; TMP0 = ROTL_5(A)
@@ -144,16 +144,8 @@ section .text
 
  %define func(x) x:
  %macro FUNC_SAVE 0
-	push	r12
-	push	r13
-	push	r14
-	push	r15
  %endmacro
  %macro FUNC_RESTORE 0
-	pop	r15
-	pop	r14
-	pop	r13
-	pop	r12
  %endmacro
 %else
  ; Windows
@@ -254,16 +246,10 @@ global mh_sha1_block_avx512
 func(mh_sha1_block_avx512)
 	endbranch
 	FUNC_SAVE
-
-	; save rsp
-	mov	RSP_SAVE, rsp
-
-	cmp	loops, 0
+	test	loops, loops
 	jle	.return
 
-	; align rsp to 64 Bytes needed by avx512
-	and	rsp, ~0x3f
-
+	lea	rax,  [PSHUFFLE_BYTE_FLIP_MASK]
 	; copy segs_digests into registers.
 	VMOVPS  HH0, [mh_digests_p + 64*0]
 	VMOVPS  HH1, [mh_digests_p + 64*1]
@@ -271,8 +257,9 @@ func(mh_sha1_block_avx512)
 	VMOVPS  HH3, [mh_digests_p + 64*3]
 	VMOVPS  HH4, [mh_digests_p + 64*4]
 	;a mask used to transform to big-endian data
-	vmovdqa64 SHUF_MASK, [PSHUFFLE_BYTE_FLIP_MASK]
+	vbroadcasti64x2 SHUF_MASK, [rax]
 
+align 32
 .block_loop:
 	;transform to big-endian data and store on aligned_frame
 	;using extra 16 ZMM registers instead of stack
@@ -293,7 +280,7 @@ func(mh_sha1_block_avx512)
 	vmovdqa64  D, HH3
 	vmovdqa64  E, HH4
 
-	vmovdqa32	KT, [K00_19]
+	vpbroadcastd	KT, [rax+K00_19-PSHUFFLE_BYTE_FLIP_MASK]
 %assign I 0xCA
 %assign J 0
 %assign K 2
@@ -306,13 +293,13 @@ func(mh_sha1_block_avx512)
 	MSG_SCHED_ROUND_16_79  APPEND(W,J), APPEND(W,K), APPEND(W,L), APPEND(W,M)
 	%endif
 	%if N = 19
-		vmovdqa32	KT, [K20_39]
+		vpbroadcastd	KT, [rax+K20_39-PSHUFFLE_BYTE_FLIP_MASK]
 		%assign I 0x96
 	%elif N = 39
-		vmovdqa32	KT, [K40_59]
+		vpbroadcastd	KT, [rax+K40_59-PSHUFFLE_BYTE_FLIP_MASK]
 		%assign I 0xE8
 	%elif N = 59
-		vmovdqa32	KT, [K60_79]
+		vpbroadcastd	KT, [rax+K60_79-PSHUFFLE_BYTE_FLIP_MASK]
 		%assign I 0x96
 	%endif
 	%if N % 10 = 9
@@ -343,8 +330,6 @@ func(mh_sha1_block_avx512)
 	VMOVPS  [mh_digests_p + 64*3], HH3
 	VMOVPS  [mh_digests_p + 64*4], HH4
 
-	mov	rsp, RSP_SAVE			; restore rsp
-
 .return:
 	FUNC_RESTORE
 	ret
@@ -355,48 +340,11 @@ section .data align=64
 align 64
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203
 			 dq 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203
-			 dq 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203
-			 dq 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203
-			 dq 0x0c0d0e0f08090a0b
 
-K00_19:			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-			dq 0x5A8279995A827999
-
-K20_39:			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-			dq  0x6ED9EBA16ED9EBA1
-
-K40_59:			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-			dq  0x8F1BBCDC8F1BBCDC
-
-K60_79:			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
-			dq  0xCA62C1D6CA62C1D6
+K00_19:			dd  0x5A827999
+K20_39:			dd  0x6ED9EBA1
+K40_59:			dd  0x8F1BBCDC
+K60_79:			dd  0xCA62C1D6
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64

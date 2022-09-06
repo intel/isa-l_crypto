@@ -163,6 +163,8 @@ FIELD	_rsp,		8,	8
 %define %%t1 %18
 
 	; process top half (r0..r3) {a...d}
+	vpmovzxbq TMP2, [TBL+PSHUFFLE_TRANSPOSE16_MASK1-TABLE]
+	vpmovzxbq TMP3, [TBL+PSHUFFLE_TRANSPOSE16_MASK2-TABLE]
 	vshufps	%%t0, %%r0, %%r1, 0x44	; t0 = {b13 b12 a13 a12   b9  b8  a9  a8   b5 b4 a5 a4   b1 b0 a1 a0}
 	vshufps	%%r0, %%r0, %%r1, 0xEE	; r0 = {b15 b14 a15 a14   b11 b10 a11 a10  b7 b6 a7 a6   b3 b2 a3 a2}
 	vshufps	%%t1, %%r2, %%r3, 0x44	; t1 = {d13 d12 c13 c12   d9  d8  c9  c8   d5 d4 c5 c4   d1 d0 c1 c0}
@@ -206,44 +208,44 @@ FIELD	_rsp,		8,	8
 	vshufps	%%r12, %%r12, %%r14, 0xDD	; r12 = {p15 015 n15 m15   p11 011 n11 m11  p7 07 n7 m7   p3 03 n3 m3}
 	vshufps	%%r10, %%r10, %%t1,  0x88	; r10 = {p12 012 n12 m12   p8  08  n8  m8   p4 04 n4 m4   p0 00 n0 m0}
 
-	vmovdqa32 %%r14, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r14, TMP2
 	vpermi2q  %%r14, %%t0, %%r2		; r14 = {h8  g8  f8  e8   d8  c8  b8  a8   h0 g0 f0 e0	 d0 c0 b0 a0}
-	vmovdqa32 %%t1,  [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%t1,  TMP3
 	vpermi2q  %%t1,  %%t0, %%r2		; t1  = {h12 g12 f12 e12  d12 c12 b12 a12  h4 g4 f4 e4	 d4 c4 b4 a4}
 
-	vmovdqa32 %%r2, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r2, TMP2
 	vpermi2q  %%r2, %%r3, %%r7		; r2  = {h9  g9  f9  e9   d9  c9  b9  a9   h1 g1 f1 e1	 d1 c1 b1 a1}
-	vmovdqa32 %%t0, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%t0, TMP3
 	vpermi2q  %%t0, %%r3, %%r7		; t0  = {h13 g13 f13 e13  d13 c13 b13 a13  h5 g5 f5 e5	 d5 c5 b5 a5}
 
-	vmovdqa32 %%r3, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r3, TMP2
 	vpermi2q  %%r3, %%r1, %%r5		; r3  = {h10 g10 f10 e10  d10 c10 b10 a10  h2 g2 f2 e2	 d2 c2 b2 a2}
-	vmovdqa32 %%r7, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r7, TMP3
 	vpermi2q  %%r7, %%r1, %%r5		; r7  = {h14 g14 f14 e14  d14 c14 b14 a14  h6 g6 f6 e6	 d6 c6 b6 a6}
 
-	vmovdqa32 %%r1, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r1, TMP2
 	vpermi2q  %%r1, %%r0, %%r4		; r1  = {h11 g11 f11 e11  d11 c11 b11 a11  h3 g3 f3 e3	 d3 c3 b3 a3}
-	vmovdqa32 %%r5, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r5, TMP3
 	vpermi2q  %%r5, %%r0, %%r4		; r5  = {h15 g15 f15 e15  d15 c15 b15 a15  h7 g7 f7 e7	 d7 c7 b7 a7}
 
-	vmovdqa32 %%r0, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r0, TMP2
 	vpermi2q  %%r0, %%r6, %%r10		; r0 = {p8  o8  n8  m8   l8  k8  j8  i8   p0 o0 n0 m0	 l0 k0 j0 i0}
-	vmovdqa32 %%r4,  [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r4,  TMP3
 	vpermi2q  %%r4, %%r6, %%r10		; r4  = {p12 o12 n12 m12  l12 k12 j12 i12  p4 o4 n4 m4	 l4 k4 j4 i4}
 
-	vmovdqa32 %%r6, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r6, TMP2
 	vpermi2q  %%r6, %%r11, %%r15		; r6  = {p9  o9  n9  m9   l9  k9  j9  i9   p1 o1 n1 m1	 l1 k1 j1 i1}
-	vmovdqa32 %%r10, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r10, TMP3
 	vpermi2q  %%r10, %%r11, %%r15		; r10 = {p13 o13 n13 m13  l13 k13 j13 i13  p5 o5 n5 m5	 l5 k5 j5 i5}
 
-	vmovdqa32 %%r11, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r11, TMP2
 	vpermi2q  %%r11, %%r9, %%r13		; r11 = {p10 o10 n10 m10  l10 k10 j10 i10  p2 o2 n2 m2	 l2 k2 j2 i2}
-	vmovdqa32 %%r15, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r15, TMP3
 	vpermi2q  %%r15, %%r9, %%r13		; r15 = {p14 o14 n14 m14  l14 k14 j14 i14  p6 o6 n6 m6	 l6 k6 j6 i6}
 
-	vmovdqa32 %%r9, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r9, TMP2
 	vpermi2q  %%r9, %%r8, %%r12		; r9  = {p11 o11 n11 m11  l11 k11 j11 i11  p3 o3 n3 m3	 l3 k3 j3 i3}
-	vmovdqa32 %%r13, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r13, TMP3
 	vpermi2q  %%r13, %%r8, %%r12		; r13 = {p15 o15 n15 m15  l15 k15 j15 i15  p7 o7 n7 m7	 l7 k7 j7 i7}
 
 	;; At this point r8 and r12 can be used as scratch registers
@@ -326,7 +328,7 @@ FIELD	_rsp,		8,	8
 %define %%Y 	%2
 %define %%Z 	%3
 	; I < 16 return (X ^ Y ^ Z)
-	vmovups TMP0,%%X
+	vmovdqa64 TMP0,%%X
 	vpternlogd TMP0,%%Y,%%Z,0x96
 %endmacro
 
@@ -341,10 +343,8 @@ FIELD	_rsp,		8,	8
 %define %%Z 	%3
 	; I > 16 return (x & y) | (x & z) | (y & z)
 	; Same as (x & y) | (z & (x | y))
-	vporq TMP0,%%X,%%Y
-	vpandq TMP0,%%Z
-	vpandq TMP1,%%X,%%Y
-	vporq TMP0,TMP1
+	vmovdqa64 TMP0, %%X
+	vpternlogq TMP0, %%Y, %%Z, 0xE8
 %endmacro
 
 
@@ -356,7 +356,7 @@ FIELD	_rsp,		8,	8
 %define %%Y 	%2
 %define %%Z 	%3
 	; I < 16 return (x ^ y ^ z)
-        vmovups TMP0,%%X
+        vmovdqa64 TMP0,%%X
         vpternlogd TMP0,%%Y,%%Z,0x96
 %endmacro
 
@@ -367,9 +367,8 @@ FIELD	_rsp,		8,	8
 %define %%Z 	%3
 
 	; I > 16 return (x & y) | ((~x) & z)
-	vpandq TMP0,%%X,%%Y
-	vpandnd TMP1,%%X,%%Z
-	vporq TMP0,TMP1
+	vmovdqa64 TMP0, %%X
+	vpternlogq TMP0, %%Y, %%Z, 0xCA
 %endmacro
 
 ;; void sm3_mb_x16_avx512(SM3_MB_ARGS_X16, uint32_t size)
@@ -379,10 +378,9 @@ local_func_decl(sm3_mb_x16_avx512)
 sm3_mb_x16_avx512:
 	endbranch
 
-	mov	rax, rsp
-        sub     rsp, STACK_SPACE
-	and	rsp, ~63	; align stack to multiple of 64
-	mov	[rsp + _rsp], rax
+	push	rbx
+	lea	rbx, [rsp-STACK_SPACE]
+	and	rbx, ~63	; align stack to multiple of 64
 
 	lea	TBL, [TABLE]
 
@@ -397,8 +395,10 @@ sm3_mb_x16_avx512:
 	vmovups	H, [DIGEST + 7*64]
 
 	xor IDX, IDX
+	jmp	lloop
 
 %assign cur_loop 0
+align 32
 lloop:
 	;; start message expand
 	;; Transpose input data
@@ -441,14 +441,14 @@ lloop:
 	vmovups	WB14,[inp6+IDX]
 	vmovups	WB15,[inp7+IDX]
 
-	vmovdqa32	[rsp + _DIGEST_SAVE + 64*0], A
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*1], B
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*2], C
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*3], D
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*4], E
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*5], F
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*6], G
-        vmovdqa32	[rsp + _DIGEST_SAVE + 64*7], H
+	vmovdqa32	[rbx + _DIGEST_SAVE + 64*0], A
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*1], B
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*2], C
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*3], D
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*4], E
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*5], F
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*6], G
+        vmovdqa32	[rbx + _DIGEST_SAVE + 64*7], H
 
 	add	IDX, 64
 
@@ -456,7 +456,7 @@ lloop:
 	 TRANSPOSE16 WB0, WB1, WB2, WB3, WB4, WB5, WB6, WB7, WB8, WB9, WB10, WB11, WB12, WB13, WB14, WB15, TMP0, TMP1
 
 	; little endian to big endian
-	vmovdqa32 TMP0, [SHUF_MASK]
+	vbroadcasti64x2 TMP0, [TBL+SHUF_MASK-TABLE]
 	vpshufb WB0,TMP0
 	vpshufb WB1,TMP0
 	vpshufb WB2,TMP0
@@ -485,8 +485,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vmovdqa32 TMP2, [TBL + (I*64)]
-	vpaddd TMP2,E
+	vpaddd TMP2,E, [TBL+ I*4]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -520,17 +519,17 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovups D,C
+	vmovdqa64 D,C
 	vprold B,9
-	vmovups C,B
-	vmovups B,A
-	vmovups A,TMP3
-	vmovups H,G
+	vmovdqa64 C,B
+	vmovdqa64 B,A
+	vmovdqa64 A,TMP3
+	vmovdqa64 H,G
 	vprold F,19
-	vmovups G,F
-	vmovups F,E
+	vmovdqa64 G,F
+	vmovdqa64 F,E
 	P TMP2
-	vmovups E,TMP0
+	vmovdqa64 E,TMP0
 
 	;vprold B,9
 	;vprold F,19
@@ -556,14 +555,12 @@ lloop:
 
 	; clac WB(I+4)
 	vprold APPEND(WB,J),APPEND(WB,J_3),15
-	vpxord APPEND(WB,J),APPEND(WB,J_16)
-	vpxord APPEND(WB,J),APPEND(WB,J_9)
+	vpternlogq APPEND(WB,J), APPEND(WB,J_9), APPEND(WB,J_16), 0x96
 
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpxord APPEND(WB,J),TMP0
-	vpxord APPEND(WB,J),APPEND(WB,J_6)
+	vpternlogq APPEND(WB,J), TMP0, APPEND(WB,J_6), 0x96
 
 	; (A <<< 12)
 	; store in TMP0
@@ -572,8 +569,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vmovdqa32 TMP2, [TBL + (I*64)]
-	vpaddd TMP2,E
+	vpaddd TMP2,E, [TBL+ I*4]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -606,17 +602,17 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovups D,C
+	vmovdqa64 D,C
 	vprold B,9
-	vmovups C,B
-	vmovups B,A
-	vmovups A,TMP3
-	vmovups H,G
+	vmovdqa64 C,B
+	vmovdqa64 B,A
+	vmovdqa64 A,TMP3
+	vmovdqa64 H,G
 	vprold F,19
-	vmovups G,F
-	vmovups F,E
+	vmovdqa64 G,F
+	vmovdqa64 F,E
 	P TMP2
-	vmovups E,TMP0
+	vmovdqa64 E,TMP0
 
 	%assign I (I+1)
 %endrep
@@ -634,14 +630,12 @@ lloop:
 	%assign J (((I+4) % 20))
 
 	vprold APPEND(WB,J),APPEND(WB,J_3),15
-	vpxord APPEND(WB,J),APPEND(WB,J_16)
-	vpxord APPEND(WB,J),APPEND(WB,J_9)
+	vpternlogq APPEND(WB,J), APPEND(WB,J_9), APPEND(WB,J_16), 0x96
 
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpxord APPEND(WB,J),TMP0
-	vpxord APPEND(WB,J),APPEND(WB,J_6)
+	vpternlogq APPEND(WB,J), TMP0, APPEND(WB,J_6), 0x96
 
 	; (A <<< 12)
 	; store in TMP0
@@ -650,8 +644,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vmovdqa32 TMP2, [TBL + (I*64)]
-	vpaddd TMP2,E
+	vpaddd TMP2,E, [TBL+I*4]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -684,29 +677,29 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovups D,C
+	vmovdqa64 D,C
 	vprold B,9
-	vmovups C,B
-	vmovups B,A
-	vmovups A,TMP3
-	vmovups H,G
+	vmovdqa64 C,B
+	vmovdqa64 B,A
+	vmovdqa64 A,TMP3
+	vmovdqa64 H,G
 	vprold F,19
-	vmovups G,F
-	vmovups F,E
+	vmovdqa64 G,F
+	vmovdqa64 F,E
 	P TMP2
-	vmovups E,TMP0
+	vmovdqa64 E,TMP0
 
 	%assign I (I+1)
 %endrep
 	; Xor old digest
-        vpxord		A, A, [rsp + _DIGEST_SAVE + 64*0]
-        vpxord		B, B, [rsp + _DIGEST_SAVE + 64*1]
-        vpxord		C, C, [rsp + _DIGEST_SAVE + 64*2]
-        vpxord		D, D, [rsp + _DIGEST_SAVE + 64*3]
-        vpxord		E, E, [rsp + _DIGEST_SAVE + 64*4]
-        vpxord		F, F, [rsp + _DIGEST_SAVE + 64*5]
-        vpxord		G, G, [rsp + _DIGEST_SAVE + 64*6]
-        vpxord		H, H, [rsp + _DIGEST_SAVE + 64*7]
+        vpxord		A, A, [rbx + _DIGEST_SAVE + 64*0]
+        vpxord		B, B, [rbx + _DIGEST_SAVE + 64*1]
+        vpxord		C, C, [rbx + _DIGEST_SAVE + 64*2]
+        vpxord		D, D, [rbx + _DIGEST_SAVE + 64*3]
+        vpxord		E, E, [rbx + _DIGEST_SAVE + 64*4]
+        vpxord		F, F, [rbx + _DIGEST_SAVE + 64*5]
+        vpxord		G, G, [rbx + _DIGEST_SAVE + 64*6]
+        vpxord		H, H, [rbx + _DIGEST_SAVE + 64*7]
 
 	%assign cur_loop cur_loop+1
 	sub 	SIZE, 1
@@ -717,16 +710,12 @@ lloop:
 
 last_loop:
 
-%assign I 0
-%rep 8
-        mov    inp0, [IN + (2*I)*8]
-        mov    inp1, [IN + (2*I +1)*8]
-        add    inp0, IDX
-        add    inp1, IDX
-        mov    [IN + (2*I)*8], inp0
-        mov    [IN + (2*I+1)*8], inp1
-%assign I (I+1)
-%endrep
+	vpbroadcastq TMP1, IDX
+	vpaddq	TMP0, TMP1, [IN]
+	vpaddq	TMP1, TMP1, [IN+64]
+	vmovdqu32 [IN], TMP0
+	vmovdqu32 [IN+64], TMP1
+
 	; Write out digest
 	vmovups	[DIGEST + 0*64], A
 	vmovups	[DIGEST + 1*64], B
@@ -737,295 +726,100 @@ last_loop:
 	vmovups	[DIGEST + 6*64], G
 	vmovups	[DIGEST + 7*64], H
 
-
-        mov     rsp, [rsp + _rsp]
+	pop	rbx
+	xor	eax, eax
         ret
 
 
 section .data
 align 64
 TABLE:
-	dq 0x79cc451979cc4519,0x79cc451979cc4519
-	dq 0x79cc451979cc4519,0x79cc451979cc4519
-	dq 0x79cc451979cc4519,0x79cc451979cc4519
-	dq 0x79cc451979cc4519,0x79cc451979cc4519
-	dq 0xf3988a32f3988a32,0xf3988a32f3988a32
-	dq 0xf3988a32f3988a32,0xf3988a32f3988a32
-	dq 0xf3988a32f3988a32,0xf3988a32f3988a32
-	dq 0xf3988a32f3988a32,0xf3988a32f3988a32
-	dq 0xe7311465e7311465,0xe7311465e7311465
-	dq 0xe7311465e7311465,0xe7311465e7311465
-	dq 0xe7311465e7311465,0xe7311465e7311465
-	dq 0xe7311465e7311465,0xe7311465e7311465
-	dq 0xce6228cbce6228cb,0xce6228cbce6228cb
-	dq 0xce6228cbce6228cb,0xce6228cbce6228cb
-	dq 0xce6228cbce6228cb,0xce6228cbce6228cb
-	dq 0xce6228cbce6228cb,0xce6228cbce6228cb
-	dq 0x9cc451979cc45197,0x9cc451979cc45197
-	dq 0x9cc451979cc45197,0x9cc451979cc45197
-	dq 0x9cc451979cc45197,0x9cc451979cc45197
-	dq 0x9cc451979cc45197,0x9cc451979cc45197
-	dq 0x3988a32f3988a32f,0x3988a32f3988a32f
-	dq 0x3988a32f3988a32f,0x3988a32f3988a32f
-	dq 0x3988a32f3988a32f,0x3988a32f3988a32f
-	dq 0x3988a32f3988a32f,0x3988a32f3988a32f
-	dq 0x7311465e7311465e,0x7311465e7311465e
-	dq 0x7311465e7311465e,0x7311465e7311465e
-	dq 0x7311465e7311465e,0x7311465e7311465e
-	dq 0x7311465e7311465e,0x7311465e7311465e
-	dq 0xe6228cbce6228cbc,0xe6228cbce6228cbc
-	dq 0xe6228cbce6228cbc,0xe6228cbce6228cbc
-	dq 0xe6228cbce6228cbc,0xe6228cbce6228cbc
-	dq 0xe6228cbce6228cbc,0xe6228cbce6228cbc
-	dq 0xcc451979cc451979,0xcc451979cc451979
-	dq 0xcc451979cc451979,0xcc451979cc451979
-	dq 0xcc451979cc451979,0xcc451979cc451979
-	dq 0xcc451979cc451979,0xcc451979cc451979
-	dq 0x988a32f3988a32f3,0x988a32f3988a32f3
-	dq 0x988a32f3988a32f3,0x988a32f3988a32f3
-	dq 0x988a32f3988a32f3,0x988a32f3988a32f3
-	dq 0x988a32f3988a32f3,0x988a32f3988a32f3
-	dq 0x311465e7311465e7,0x311465e7311465e7
-	dq 0x311465e7311465e7,0x311465e7311465e7
-	dq 0x311465e7311465e7,0x311465e7311465e7
-	dq 0x311465e7311465e7,0x311465e7311465e7
-	dq 0x6228cbce6228cbce,0x6228cbce6228cbce
-	dq 0x6228cbce6228cbce,0x6228cbce6228cbce
-	dq 0x6228cbce6228cbce,0x6228cbce6228cbce
-	dq 0x6228cbce6228cbce,0x6228cbce6228cbce
-	dq 0xc451979cc451979c,0xc451979cc451979c
-	dq 0xc451979cc451979c,0xc451979cc451979c
-	dq 0xc451979cc451979c,0xc451979cc451979c
-	dq 0xc451979cc451979c,0xc451979cc451979c
-	dq 0x88a32f3988a32f39,0x88a32f3988a32f39
-	dq 0x88a32f3988a32f39,0x88a32f3988a32f39
-	dq 0x88a32f3988a32f39,0x88a32f3988a32f39
-	dq 0x88a32f3988a32f39,0x88a32f3988a32f39
-	dq 0x11465e7311465e73,0x11465e7311465e73
-	dq 0x11465e7311465e73,0x11465e7311465e73
-	dq 0x11465e7311465e73,0x11465e7311465e73
-	dq 0x11465e7311465e73,0x11465e7311465e73
-	dq 0x228cbce6228cbce6,0x228cbce6228cbce6
-	dq 0x228cbce6228cbce6,0x228cbce6228cbce6
-	dq 0x228cbce6228cbce6,0x228cbce6228cbce6
-	dq 0x228cbce6228cbce6,0x228cbce6228cbce6
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x7a879d8a7a879d8a,0x7a879d8a7a879d8a
-	dq 0x7a879d8a7a879d8a,0x7a879d8a7a879d8a
-	dq 0x7a879d8a7a879d8a,0x7a879d8a7a879d8a
-	dq 0x7a879d8a7a879d8a,0x7a879d8a7a879d8a
-	dq 0xf50f3b14f50f3b14,0xf50f3b14f50f3b14
-	dq 0xf50f3b14f50f3b14,0xf50f3b14f50f3b14
-	dq 0xf50f3b14f50f3b14,0xf50f3b14f50f3b14
-	dq 0xf50f3b14f50f3b14,0xf50f3b14f50f3b14
-	dq 0xea1e7629ea1e7629,0xea1e7629ea1e7629
-	dq 0xea1e7629ea1e7629,0xea1e7629ea1e7629
-	dq 0xea1e7629ea1e7629,0xea1e7629ea1e7629
-	dq 0xea1e7629ea1e7629,0xea1e7629ea1e7629
-	dq 0xd43cec53d43cec53,0xd43cec53d43cec53
-	dq 0xd43cec53d43cec53,0xd43cec53d43cec53
-	dq 0xd43cec53d43cec53,0xd43cec53d43cec53
-	dq 0xd43cec53d43cec53,0xd43cec53d43cec53
-	dq 0xa879d8a7a879d8a7,0xa879d8a7a879d8a7
-	dq 0xa879d8a7a879d8a7,0xa879d8a7a879d8a7
-	dq 0xa879d8a7a879d8a7,0xa879d8a7a879d8a7
-	dq 0xa879d8a7a879d8a7,0xa879d8a7a879d8a7
-	dq 0x50f3b14f50f3b14f,0x50f3b14f50f3b14f
-	dq 0x50f3b14f50f3b14f,0x50f3b14f50f3b14f
-	dq 0x50f3b14f50f3b14f,0x50f3b14f50f3b14f
-	dq 0x50f3b14f50f3b14f,0x50f3b14f50f3b14f
-	dq 0xa1e7629ea1e7629e,0xa1e7629ea1e7629e
-	dq 0xa1e7629ea1e7629e,0xa1e7629ea1e7629e
-	dq 0xa1e7629ea1e7629e,0xa1e7629ea1e7629e
-	dq 0xa1e7629ea1e7629e,0xa1e7629ea1e7629e
-	dq 0x43cec53d43cec53d,0x43cec53d43cec53d
-	dq 0x43cec53d43cec53d,0x43cec53d43cec53d
-	dq 0x43cec53d43cec53d,0x43cec53d43cec53d
-	dq 0x43cec53d43cec53d,0x43cec53d43cec53d
-	dq 0x879d8a7a879d8a7a,0x879d8a7a879d8a7a
-	dq 0x879d8a7a879d8a7a,0x879d8a7a879d8a7a
-	dq 0x879d8a7a879d8a7a,0x879d8a7a879d8a7a
-	dq 0x879d8a7a879d8a7a,0x879d8a7a879d8a7a
-	dq 0x0f3b14f50f3b14f5,0x0f3b14f50f3b14f5
-	dq 0x0f3b14f50f3b14f5,0x0f3b14f50f3b14f5
-	dq 0x0f3b14f50f3b14f5,0x0f3b14f50f3b14f5
-	dq 0x0f3b14f50f3b14f5,0x0f3b14f50f3b14f5
-	dq 0x1e7629ea1e7629ea,0x1e7629ea1e7629ea
-	dq 0x1e7629ea1e7629ea,0x1e7629ea1e7629ea
-	dq 0x1e7629ea1e7629ea,0x1e7629ea1e7629ea
-	dq 0x1e7629ea1e7629ea,0x1e7629ea1e7629ea
-	dq 0x3cec53d43cec53d4,0x3cec53d43cec53d4
-	dq 0x3cec53d43cec53d4,0x3cec53d43cec53d4
-	dq 0x3cec53d43cec53d4,0x3cec53d43cec53d4
-	dq 0x3cec53d43cec53d4,0x3cec53d43cec53d4
-	dq 0x79d8a7a879d8a7a8,0x79d8a7a879d8a7a8
-	dq 0x79d8a7a879d8a7a8,0x79d8a7a879d8a7a8
-	dq 0x79d8a7a879d8a7a8,0x79d8a7a879d8a7a8
-	dq 0x79d8a7a879d8a7a8,0x79d8a7a879d8a7a8
-	dq 0xf3b14f50f3b14f50,0xf3b14f50f3b14f50
-	dq 0xf3b14f50f3b14f50,0xf3b14f50f3b14f50
-	dq 0xf3b14f50f3b14f50,0xf3b14f50f3b14f50
-	dq 0xf3b14f50f3b14f50,0xf3b14f50f3b14f50
-	dq 0xe7629ea1e7629ea1,0xe7629ea1e7629ea1
-	dq 0xe7629ea1e7629ea1,0xe7629ea1e7629ea1
-	dq 0xe7629ea1e7629ea1,0xe7629ea1e7629ea1
-	dq 0xe7629ea1e7629ea1,0xe7629ea1e7629ea1
-	dq 0xcec53d43cec53d43,0xcec53d43cec53d43
-	dq 0xcec53d43cec53d43,0xcec53d43cec53d43
-	dq 0xcec53d43cec53d43,0xcec53d43cec53d43
-	dq 0xcec53d43cec53d43,0xcec53d43cec53d43
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x9d8a7a879d8a7a87,0x9d8a7a879d8a7a87
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x3b14f50f3b14f50f,0x3b14f50f3b14f50f
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0x7629ea1e7629ea1e,0x7629ea1e7629ea1e
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xec53d43cec53d43c,0xec53d43cec53d43c
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xd8a7a879d8a7a879,0xd8a7a879d8a7a879
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0xb14f50f3b14f50f3,0xb14f50f3b14f50f3
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0x629ea1e7629ea1e7,0x629ea1e7629ea1e7
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0xc53d43cec53d43ce,0xc53d43cec53d43ce
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x8a7a879d8a7a879d,0x8a7a879d8a7a879d
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x14f50f3b14f50f3b,0x14f50f3b14f50f3b
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x29ea1e7629ea1e76,0x29ea1e7629ea1e76
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0x53d43cec53d43cec,0x53d43cec53d43cec
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0xa7a879d8a7a879d8,0xa7a879d8a7a879d8
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x4f50f3b14f50f3b1,0x4f50f3b14f50f3b1
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x9ea1e7629ea1e762,0x9ea1e7629ea1e762
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
-	dq 0x3d43cec53d43cec5,0x3d43cec53d43cec5
+	dd 0x79cc4519
+	dd 0xf3988a32
+	dd 0xe7311465
+	dd 0xce6228cb
+	dd 0x9cc45197
+	dd 0x3988a32f
+	dd 0x7311465e
+	dd 0xe6228cbc
+	dd 0xcc451979
+	dd 0x988a32f3
+	dd 0x311465e7
+	dd 0x6228cbce
+	dd 0xc451979c
+	dd 0x88a32f39
+	dd 0x11465e73
+	dd 0x228cbce6
+	dd 0x9d8a7a87
+	dd 0x3b14f50f
+	dd 0x7629ea1e
+	dd 0xec53d43c
+	dd 0xd8a7a879
+	dd 0xb14f50f3
+	dd 0x629ea1e7
+	dd 0xc53d43ce
+	dd 0x8a7a879d
+	dd 0x14f50f3b
+	dd 0x29ea1e76
+	dd 0x53d43cec
+	dd 0xa7a879d8
+	dd 0x4f50f3b1
+	dd 0x9ea1e762
+	dd 0x3d43cec5
+	dd 0x7a879d8a
+	dd 0xf50f3b14
+	dd 0xea1e7629
+	dd 0xd43cec53
+	dd 0xa879d8a7
+	dd 0x50f3b14f
+	dd 0xa1e7629e
+	dd 0x43cec53d
+	dd 0x879d8a7a
+	dd 0x0f3b14f5
+	dd 0x1e7629ea
+	dd 0x3cec53d4
+	dd 0x79d8a7a8
+	dd 0xf3b14f50
+	dd 0xe7629ea1
+	dd 0xcec53d43
+	dd 0x9d8a7a87
+	dd 0x3b14f50f
+	dd 0x7629ea1e
+	dd 0xec53d43c
+	dd 0xd8a7a879
+	dd 0xb14f50f3
+	dd 0x629ea1e7
+	dd 0xc53d43ce
+	dd 0x8a7a879d
+	dd 0x14f50f3b
+	dd 0x29ea1e76
+	dd 0x53d43cec
+	dd 0xa7a879d8
+	dd 0x4f50f3b1
+	dd 0x9ea1e762
+	dd 0x3d43cec5
 
 
 
-PSHUFFLE_TRANSPOSE16_MASK1: 	dq 0x0000000000000000
-				dq 0x0000000000000001
-				dq 0x0000000000000008
-				dq 0x0000000000000009
-				dq 0x0000000000000004
-				dq 0x0000000000000005
-				dq 0x000000000000000C
-				dq 0x000000000000000D
+PSHUFFLE_TRANSPOSE16_MASK1: 	db 0x0000000000000000
+				db 0x0000000000000001
+				db 0x0000000000000008
+				db 0x0000000000000009
+				db 0x0000000000000004
+				db 0x0000000000000005
+				db 0x000000000000000C
+				db 0x000000000000000D
 
-PSHUFFLE_TRANSPOSE16_MASK2: 	dq 0x0000000000000002
-				dq 0x0000000000000003
-				dq 0x000000000000000A
-				dq 0x000000000000000B
-				dq 0x0000000000000006
-				dq 0x0000000000000007
-				dq 0x000000000000000E
-				dq 0x000000000000000F
+PSHUFFLE_TRANSPOSE16_MASK2: 	db 0x0000000000000002
+				db 0x0000000000000003
+				db 0x000000000000000A
+				db 0x000000000000000B
+				db 0x0000000000000006
+				db 0x0000000000000007
+				db 0x000000000000000E
+				db 0x000000000000000F
 
 SHUF_MASK:			dq 0x0405060700010203,0x0c0d0e0f08090a0b
-				dq 0x0405060700010203,0x0c0d0e0f08090a0b
-				dq 0x0405060700010203,0x0c0d0e0f08090a0b
-				dq 0x0405060700010203,0x0c0d0e0f08090a0b
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64

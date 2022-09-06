@@ -30,6 +30,8 @@
 %include "sha512_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
+%use smartalign
+ALIGNMODE P6
 %ifdef HAVE_AS_KNOWS_AVX512
 
 [bits 64]
@@ -182,7 +184,7 @@ FIELD	_RSP,		8,	        8
 %define %%PERM_INDEX2 %12
 
 
-; each x(i) is 32 bits, 16 * 32 = 512 ==> a full digest length, 32 single precision quantities
+; each x(i) is 64 bits, 8 * 64 = 512 ==> a full digest length, 32 single precision quantities
 ; r0  = {a7 a6 a5 a4   a3 a2 a1 a0}
 ; r1  = {b7 b6 b5 b4   b3 b2 b1 b0}
 ; r2  = {c7 c6 c5 c4   c3 c2 c1 c0}
@@ -193,8 +195,8 @@ FIELD	_RSP,		8,	        8
 ; r7  = {h7 h6 h5 h4   h3 h2 h1 h0}
 
         ;; ;;;  will not get clobbered
-        vmovdqa32 %%PERM_INDEX1, [TRANSPOSE8_PERM_INDEX_1] ;  temp
-        vmovdqa32 %%PERM_INDEX2, [TRANSPOSE8_PERM_INDEX_2]  ; temp
+        vmovdqa32 %%PERM_INDEX1, [TBL+TRANSPOSE8_PERM_INDEX_1-TABLE] ;  temp
+        vmovdqa32 %%PERM_INDEX2, [TBL+TRANSPOSE8_PERM_INDEX_2-TABLE]  ; temp
 
         ; process top half (r0..r3) {a...d}
         vshufpd	%%t0, %%r0, %%r1, 0x00	; t0 = {b6 a6 b4 a4   b2 a2 b0 a0}
@@ -287,14 +289,14 @@ FIELD	_RSP,		8,	        8
         ;; H becomes T2, then add T1 for A
         ;; D becomes D + T1 for E
 
-        vpaddq		T1, H, TMP3		; T1 = H + Kt
+        vpaddq		T1, H, [TBL+ %%ROUND*8]{1to8}	; T1 = H + Kt
         vmovdqa32	TMP0, E
+        vpternlogq	TMP0, F, G, 0xCA	; TMP0 = CH(E,F,G)
         ;; compute BIG_SIGMA_1(E)
         vprorq		TMP1, E, BIG_SIGMA_1_0 		; ROR_14(E)
         vprorq		TMP2, E, BIG_SIGMA_1_1		; ROR_18(E)
         vprorq		TMP3, E, BIG_SIGMA_1_2		; ROR_41(E)
         vpternlogq	TMP1, TMP2, TMP3, 0x96	; TMP1 = BIG_SIGMA_1(E)
-        vpternlogq	TMP0, F, G, 0xCA	; TMP0 = CH(E,F,G)
         vpaddq		T1, T1, %%WT		; T1 = T1 + Wt
         vpaddq		T1, T1, TMP0		; T1 = T1 + CH(E,F,G)
         vpaddq		T1, T1, TMP1		; T1 = T1 + BIG_SIGMA_1(E)
@@ -307,7 +309,6 @@ FIELD	_RSP,		8,	        8
         vpternlogq	H, TMP2, TMP3, 0x96	; H(T2) = BIG_SIGMA_0(A)
         vpaddq		H, H, TMP0		; H(T2) = BIG_SIGMA_0(A) + MAJ(A,B,C)
         vpaddq		H, H, T1		; H(A) = H(T2) + T1
-        vmovdqa32	TMP3, [TBL + ((%%ROUND+1)*64)]	; Next Kt
 
         ;; Rotate the args A-H (rotation of names associated with regs)
         ROTATE_ARGS
@@ -344,10 +345,9 @@ align 64
 local_func_decl(sha512_mb_x8_avx512)
 sha512_mb_x8_avx512:
 	endbranch
-        mov	rax, rsp
-        sub     rsp, STACK_SPACE
-        and	rsp, ~63	; align stack to multiple of 64
-        mov	[rsp + _RSP], rax
+	push	rbx
+	lea	rbx, [rsp - STACK_SPACE]
+        and	rbx, ~63	; align stack to multiple of 64
 	lea	TBL,[TABLE]
 
     ;; Initialize digests
@@ -360,18 +360,20 @@ sha512_mb_x8_avx512:
     vmovups	G,    [DIGEST + 6*8*8]
     vmovups	H,    [DIGEST + 7*8*8]
 
-    xor	IDX, IDX
+    xor	DWORD(IDX), DWORD(IDX)
     ;; Read in input data address, saving them in registers because
     ;; they will serve as variables, which we shall keep incrementing
-    mov	inp0, [IN + 0*8]
-    mov	inp1, [IN + 1*8]
-    mov	inp2, [IN + 2*8]
-    mov	inp3, [IN + 3*8]
-    mov	inp4, [IN + 4*8]
-    mov	inp5, [IN + 5*8]
-    mov	inp6, [IN + 6*8]
-    mov	inp7, [IN + 7*8]
+    lea	inp7, [IN]
+    mov	inp0, [inp7 + 0*8]
+    mov	inp1, [inp7 + 1*8]
+    mov	inp2, [inp7 + 2*8]
+    mov	inp3, [inp7 + 3*8]
+    mov	inp4, [inp7 + 4*8]
+    mov	inp5, [inp7 + 5*8]
+    mov	inp6, [inp7 + 6*8]
+    mov	inp7, [inp7 + 7*8]
 
+align 32
 lloop:
 
     ;;  first half of 1024 (need to transpose before use)
@@ -385,31 +387,31 @@ lloop:
     vmovups	TMP0,[inp7 + IDX ]
     TRANSPOSE8  W0, W1, W2, W3, W4, W5, W6, TMP0,  W7, TMP1, TMP2, TMP3
     ;;  second half of 1024 (need to transpose before use)
-    vmovups     W8,[inp0  + SZ8 + IDX ]
-    vmovups	W9,[inp1  + SZ8 + IDX ]
-    vmovups	W10,[inp2 + SZ8 + IDX ]
-    vmovups	W11,[inp3 + SZ8 + IDX ]
-    vmovups	W12,[inp4 + SZ8 + IDX ]
-    vmovups	W13,[inp5 + SZ8 + IDX ]
-    vmovups	W14,[inp6 + SZ8 + IDX ]
-    vmovups	TMP0,[inp7 + SZ8 + IDX ]
+    add		IDX, 64
+    vmovups     W8,[inp0  + IDX  ]
+    vmovups	W9,[inp1  + IDX  ]
+    vmovups	W10,[inp2 + IDX  ]
+    vmovups	W11,[inp3 + IDX  ]
+    vmovups	W12,[inp4 + IDX  ]
+    vmovups	W13,[inp5 + IDX  ]
+    vmovups	W14,[inp6 + IDX  ]
+    vmovups	TMP0,[inp7 + IDX  ]
     TRANSPOSE8  W8, W9, W10, W11, W12, W13, W14, TMP0,  W15, TMP1, TMP2, TMP3
 
-    vmovdqa32	TMP2, [PSHUFFLE_BYTE_FLIP_MASK]
+    vbroadcasti64x2	TMP2, [TBL+PSHUFFLE_BYTE_FLIP_MASK-TABLE]
 
-    vmovdqa32	TMP3, [TBL]	; First K
 
         ; Save digests for later addition
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*0], A
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*1], B
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*2], C
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*3], D
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*4], E
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*5], F
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*6], G
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*7], H
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*0], A
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*1], B
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*2], C
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*3], D
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*4], E
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*5], F
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*6], G
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*7], H
 
-    add	IDX, 128  	; increment by message block length in bytes
+    add	IDX, 64  	; increment by message block length in bytes
 
 
 
@@ -421,14 +423,14 @@ lloop:
 %assign I (I+1)
 %endrep
     ; Save digests for later addition
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*0], A
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*1], B
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*2], C
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*3], D
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*4], E
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*5], F
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*6], G
-    vmovdqa32	[rsp + _DIGEST_SAVE + 64*7], H
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*0], A
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*1], B
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*2], C
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*3], D
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*4], E
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*5], F
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*6], G
+    vmovdqa32	[rbx + _DIGEST_SAVE + 64*7], H
 
         ; MSG Schedule for W0-W15 is now complete in registers
         ; Process first (max-rounds -16)
@@ -464,14 +466,14 @@ lloop:
 %assign J (J+1)
 %endrep
        ; Add old digest
-        vpaddq		A, A, [rsp + _DIGEST_SAVE + 64*0]
-        vpaddq		B, B, [rsp + _DIGEST_SAVE + 64*1]
-        vpaddq		C, C, [rsp + _DIGEST_SAVE + 64*2]
-        vpaddq		D, D, [rsp + _DIGEST_SAVE + 64*3]
-        vpaddq		E, E, [rsp + _DIGEST_SAVE + 64*4]
-        vpaddq		F, F, [rsp + _DIGEST_SAVE + 64*5]
-        vpaddq		G, G, [rsp + _DIGEST_SAVE + 64*6]
-        vpaddq		H, H, [rsp + _DIGEST_SAVE + 64*7]
+        vpaddq		A, A, [rbx + _DIGEST_SAVE + 64*0]
+        vpaddq		B, B, [rbx + _DIGEST_SAVE + 64*1]
+        vpaddq		C, C, [rbx + _DIGEST_SAVE + 64*2]
+        vpaddq		D, D, [rbx + _DIGEST_SAVE + 64*3]
+        vpaddq		E, E, [rbx + _DIGEST_SAVE + 64*4]
+        vpaddq		F, F, [rbx + _DIGEST_SAVE + 64*5]
+        vpaddq		G, G, [rbx + _DIGEST_SAVE + 64*6]
+        vpaddq		H, H, [rbx + _DIGEST_SAVE + 64*7]
 
         jmp	lloop
 
@@ -488,26 +490,29 @@ lastLoop:
 %endrep
 
         ; Add old digest
-        vpaddq		A, A, [rsp + _DIGEST_SAVE + 64*0]
-        vpaddq		B, B, [rsp + _DIGEST_SAVE + 64*1]
-        vpaddq		C, C, [rsp + _DIGEST_SAVE + 64*2]
-        vpaddq		D, D, [rsp + _DIGEST_SAVE + 64*3]
-        vpaddq		E, E, [rsp + _DIGEST_SAVE + 64*4]
-        vpaddq		F, F, [rsp + _DIGEST_SAVE + 64*5]
-        vpaddq		G, G, [rsp + _DIGEST_SAVE + 64*6]
-        vpaddq		H, H, [rsp + _DIGEST_SAVE + 64*7]
+        vpaddq		A, A, [rbx + _DIGEST_SAVE + 64*0]
+        vpaddq		B, B, [rbx + _DIGEST_SAVE + 64*1]
+        vpaddq		C, C, [rbx + _DIGEST_SAVE + 64*2]
+        vpaddq		D, D, [rbx + _DIGEST_SAVE + 64*3]
+        vpaddq		E, E, [rbx + _DIGEST_SAVE + 64*4]
+        vpaddq		F, F, [rbx + _DIGEST_SAVE + 64*5]
+        vpaddq		G, G, [rbx + _DIGEST_SAVE + 64*6]
+        vpaddq		H, H, [rbx + _DIGEST_SAVE + 64*7]
 
 ;; update into data pointers
-%assign I 0
-%rep 4
-        mov    inp0, [IN + (2*I)*8]
-        mov    inp1, [IN + (2*I +1)*8]
-        add    inp0, IDX
-        add    inp1, IDX
-        mov    [IN + (2*I)*8], inp0
-        mov    [IN + (2*I+1)*8], inp1
-%assign I (I+1)
-%endrep
+	vpbroadcastq TMP0, IDX
+	vpaddq	TMP0, TMP0, [IN]
+	vmovdqu64 [IN], TMP0
+;%assign I 0
+;%rep 4
+;        mov    inp0, [IN + (2*I)*8]
+;        mov    inp1, [IN + (2*I +1)*8]
+;        add    inp0, IDX
+;        add    inp1, IDX
+;        mov    [IN + (2*I)*8], inp0
+;        mov    [IN + (2*I+1)*8], inp1
+;%assign I (I+1)
+;%endrep
 
         VMOVDQ32	[DIGEST + 0*8*8], A
         VMOVDQ32	[DIGEST + 1*8*8], B
@@ -517,8 +522,7 @@ lastLoop:
         VMOVDQ32	[DIGEST + 5*8*8], F
         VMOVDQ32	[DIGEST + 6*8*8], G
         VMOVDQ32	[DIGEST + 7*8*8], H
-
-        mov     rsp, [rsp + _RSP]
+	pop	rbx
         ret
 
         section .data
@@ -528,94 +532,91 @@ align 64
 ; to aid in SIMD .. space tradeoff for time!
 ; local to asm file, used nowhere else
 TABLE:
-    dq 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22, 0x428a2f98d728ae22
-    dq 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd, 0x7137449123ef65cd
-    dq 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f, 0xb5c0fbcfec4d3b2f
-    dq 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc, 0xe9b5dba58189dbbc
-    dq 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538, 0x3956c25bf348b538
-    dq 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019, 0x59f111f1b605d019
-    dq 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b, 0x923f82a4af194f9b
-    dq 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118, 0xab1c5ed5da6d8118
-    dq 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242, 0xd807aa98a3030242
-    dq 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe, 0x12835b0145706fbe
-    dq 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c, 0x243185be4ee4b28c
-    dq 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2, 0x550c7dc3d5ffb4e2
-    dq 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f, 0x72be5d74f27b896f
-    dq 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1, 0x80deb1fe3b1696b1
-    dq 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235, 0x9bdc06a725c71235
-    dq 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694, 0xc19bf174cf692694
-    dq 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2, 0xe49b69c19ef14ad2
-    dq 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3, 0xefbe4786384f25e3
-    dq 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5, 0x0fc19dc68b8cd5b5
-    dq 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65, 0x240ca1cc77ac9c65
-    dq 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275, 0x2de92c6f592b0275
-    dq 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483, 0x4a7484aa6ea6e483
-    dq 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4, 0x5cb0a9dcbd41fbd4
-    dq 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5, 0x76f988da831153b5
-    dq 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab, 0x983e5152ee66dfab
-    dq 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210, 0xa831c66d2db43210
-    dq 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f, 0xb00327c898fb213f
-    dq 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4, 0xbf597fc7beef0ee4
-    dq 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2, 0xc6e00bf33da88fc2
-    dq 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725, 0xd5a79147930aa725
-    dq 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f, 0x06ca6351e003826f
-    dq 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70, 0x142929670a0e6e70
-    dq 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc, 0x27b70a8546d22ffc
-    dq 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926, 0x2e1b21385c26c926
-    dq 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed, 0x4d2c6dfc5ac42aed
-    dq 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df, 0x53380d139d95b3df
-    dq 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de, 0x650a73548baf63de
-    dq 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8, 0x766a0abb3c77b2a8
-    dq 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6, 0x81c2c92e47edaee6
-    dq 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b, 0x92722c851482353b
-    dq 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364, 0xa2bfe8a14cf10364
-    dq 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001, 0xa81a664bbc423001
-    dq 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791, 0xc24b8b70d0f89791
-    dq 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30, 0xc76c51a30654be30
-    dq 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218, 0xd192e819d6ef5218
-    dq 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910, 0xd69906245565a910
-    dq 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a, 0xf40e35855771202a
-    dq 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8, 0x106aa07032bbd1b8
-    dq 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8, 0x19a4c116b8d2d0c8
-    dq 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53, 0x1e376c085141ab53
-    dq 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99, 0x2748774cdf8eeb99
-    dq 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8, 0x34b0bcb5e19b48a8
-    dq 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63, 0x391c0cb3c5c95a63
-    dq 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb, 0x4ed8aa4ae3418acb
-    dq 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373, 0x5b9cca4f7763e373
-    dq 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3, 0x682e6ff3d6b2b8a3
-    dq 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc, 0x748f82ee5defb2fc
-    dq 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60, 0x78a5636f43172f60
-    dq 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72, 0x84c87814a1f0ab72
-    dq 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec, 0x8cc702081a6439ec
-    dq 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28, 0x90befffa23631e28
-    dq 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9, 0xa4506cebde82bde9
-    dq 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915, 0xbef9a3f7b2c67915
-    dq 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b, 0xc67178f2e372532b
-    dq 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c, 0xca273eceea26619c
-    dq 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207, 0xd186b8c721c0c207
-    dq 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e, 0xeada7dd6cde0eb1e
-    dq 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178, 0xf57d4f7fee6ed178
-    dq 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba, 0x06f067aa72176fba
-    dq 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6, 0x0a637dc5a2c898a6
-    dq 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae, 0x113f9804bef90dae
-    dq 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b, 0x1b710b35131c471b
-    dq 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84, 0x28db77f523047d84
-    dq 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493, 0x32caab7b40c72493
-    dq 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc, 0x3c9ebe0a15c9bebc
-    dq 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c, 0x431d67c49c100d4c
-    dq 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6, 0x4cc5d4becb3e42b6
-    dq 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a, 0x597f299cfc657e2a
-    dq 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec, 0x5fcb6fab3ad6faec
-    dq 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817, 0x6c44198c4a475817
+    dq 0x428a2f98d728ae22
+    dq 0x7137449123ef65cd
+    dq 0xb5c0fbcfec4d3b2f
+    dq 0xe9b5dba58189dbbc
+    dq 0x3956c25bf348b538
+    dq 0x59f111f1b605d019
+    dq 0x923f82a4af194f9b
+    dq 0xab1c5ed5da6d8118
+    dq 0xd807aa98a3030242
+    dq 0x12835b0145706fbe
+    dq 0x243185be4ee4b28c
+    dq 0x550c7dc3d5ffb4e2
+    dq 0x72be5d74f27b896f
+    dq 0x80deb1fe3b1696b1
+    dq 0x9bdc06a725c71235
+    dq 0xc19bf174cf692694
+    dq 0xe49b69c19ef14ad2
+    dq 0xefbe4786384f25e3
+    dq 0x0fc19dc68b8cd5b5
+    dq 0x240ca1cc77ac9c65
+    dq 0x2de92c6f592b0275
+    dq 0x4a7484aa6ea6e483
+    dq 0x5cb0a9dcbd41fbd4
+    dq 0x76f988da831153b5
+    dq 0x983e5152ee66dfab
+    dq 0xa831c66d2db43210
+    dq 0xb00327c898fb213f
+    dq 0xbf597fc7beef0ee4
+    dq 0xc6e00bf33da88fc2
+    dq 0xd5a79147930aa725
+    dq 0x06ca6351e003826f
+    dq 0x142929670a0e6e70
+    dq 0x27b70a8546d22ffc
+    dq 0x2e1b21385c26c926
+    dq 0x4d2c6dfc5ac42aed
+    dq 0x53380d139d95b3df
+    dq 0x650a73548baf63de
+    dq 0x766a0abb3c77b2a8
+    dq 0x81c2c92e47edaee6
+    dq 0x92722c851482353b
+    dq 0xa2bfe8a14cf10364
+    dq 0xa81a664bbc423001
+    dq 0xc24b8b70d0f89791
+    dq 0xc76c51a30654be30
+    dq 0xd192e819d6ef5218
+    dq 0xd69906245565a910
+    dq 0xf40e35855771202a
+    dq 0x106aa07032bbd1b8
+    dq 0x19a4c116b8d2d0c8
+    dq 0x1e376c085141ab53
+    dq 0x2748774cdf8eeb99
+    dq 0x34b0bcb5e19b48a8
+    dq 0x391c0cb3c5c95a63
+    dq 0x4ed8aa4ae3418acb
+    dq 0x5b9cca4f7763e373
+    dq 0x682e6ff3d6b2b8a3
+    dq 0x748f82ee5defb2fc
+    dq 0x78a5636f43172f60
+    dq 0x84c87814a1f0ab72
+    dq 0x8cc702081a6439ec
+    dq 0x90befffa23631e28
+    dq 0xa4506cebde82bde9
+    dq 0xbef9a3f7b2c67915
+    dq 0xc67178f2e372532b
+    dq 0xca273eceea26619c
+    dq 0xd186b8c721c0c207
+    dq 0xeada7dd6cde0eb1e
+    dq 0xf57d4f7fee6ed178
+    dq 0x06f067aa72176fba
+    dq 0x0a637dc5a2c898a6
+    dq 0x113f9804bef90dae
+    dq 0x1b710b35131c471b
+    dq 0x28db77f523047d84
+    dq 0x32caab7b40c72493
+    dq 0x3c9ebe0a15c9bebc
+    dq 0x431d67c49c100d4c
+    dq 0x4cc5d4becb3e42b6
+    dq 0x597f299cfc657e2a
+    dq 0x5fcb6fab3ad6faec
+    dq 0x6c44198c4a475817
 
 align 64
 ; this does the big endian to little endian conversion over a quad word .. ZMM
 ;; shuffle on ZMM is shuffle on 4 XMM size chunks, 128 bits
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0001020304050607, 0x08090a0b0c0d0e0f
-			 dq 0x1011121314151617, 0x18191a1b1c1d1e1f
-			 dq 0x2021222324252627, 0x28292a2b2c2d2e2f
-                         dq 0x3031323334353637, 0x38393a3b3c3d3e3f
 
 align 64
 TRANSPOSE8_PERM_INDEX_1: 	dq 0x0000000000000000
