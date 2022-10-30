@@ -26,21 +26,24 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
-
+#if defined(NO_SVE2)
 	.arch armv8.2-a+sve
+#else
+	.arch armv8.2-a+sve2
+#endif
 
 .macro copy_mb_16words vecs:req,dest:req
 	mov	src,\vecs
 	mov	dst,\dest
 	mov	ctr,lanes
-1:
+20:
 	ldr	tmp,[src],8
 	ldr	tmp,[tmp]
 	add	tmp,tmp,block_ctr,lsl 6
 	ld1	{TMPV0.4s,TMPV1.4s,TMPV2.4s,TMPV3.4s}, [tmp]
 	st1	{TMPV0.4s,TMPV1.4s,TMPV2.4s,TMPV3.4s}, [dst],64
 	subs	ctr,ctr,1
-	b.ne	1b
+	b.ne	20b
 .endm
 
 .macro load_words windex:req
@@ -66,7 +69,7 @@ sm3_mb_sve_max_lanes:
 	ret
 	.size sm3_mb_sve_max_lanes, .-sm3_mb_sve_max_lanes
 /*
- *  void sm3_mb_sve(int blocks, int total_lanes, SM3_JOB **job_vec)
+ *  void sm3_mb_sve/sve2(int blocks, int total_lanes, SM3_JOB **job_vec)
  */
 	num_blocks	.req	w0
 	total_lanes	.req	w1
@@ -88,10 +91,8 @@ sm3_mb_sve_max_lanes:
 	abcd_buf	.req	x14
 	sm3const_adr	.req	x15
 
-	.global sm3_mb_sve
-	.type sm3_mb_sve, %function
-sm3_mb_sve:
-	cbz	num_blocks,.return
+.macro IMPLEMENT_SM3_MB sve2_flag:req
+	cbz	num_blocks,10f
 	sm3_sve_save_stack
 	mov	savedsp,sp
 	mov	lane_offset, #0
@@ -108,13 +109,13 @@ sm3_mb_sve:
 	sub	databuf,abcd_buf,tmp
 	mov	sp,databuf
 	adr	sm3const_adr,SM3_CONSTS
-.seg_loops:
+1:
 	mov	src,job_vec
 	mov	dst,abcd_buf
 	cntp	lanes,p0,p0.s
 	add	efgh_buf,abcd_buf,lanes,lsl 4
 	mov	ctr,lanes
-.ldr_hash:
+2:
 	ldr	tmp,[src],8
 	add	tmp,tmp,64
 	ld1	{v0.16b, v1.16b},[tmp]
@@ -123,18 +124,18 @@ sm3_mb_sve:
 	st1	{v0.16b},[dst],16
 	st1	{v1.16b},[efgh_buf],16
 	subs	ctr,ctr,1
-	bne	.ldr_hash
+	bne	2b
 	ld4w	{VA.s,VB.s,VC.s,VD.s},p0/z,[abcd_buf]
 	add	tmp,abcd_buf,lanes,lsl 4
 	ld4w	{VE.s,VF.s,VG.s,VH.s},p0/z,[tmp]
 	mov	block_ctr,0
 	// always unpredicated SVE mode in current settings
 	pred_mode=0
-.block_loop:
-	sm3_single
+3:
+	sm3_single \sve2_flag
 	add	block_ctr, block_ctr, 1
 	cmp	block_ctr_w,num_blocks
-	bne	.block_loop
+	bne	3b
 	st4w	{VA.s,VB.s,VC.s,VD.s},p0,[abcd_buf]
 	add	efgh_buf,abcd_buf,lanes,lsl 4
 	st4w	{VE.s,VF.s,VG.s,VH.s},p0,[efgh_buf]
@@ -142,7 +143,7 @@ sm3_mb_sve:
 	mov	src,abcd_buf
 	add	job_vec,job_vec,lanes,lsl 3
 	mov	ctr,lanes
-.str_hash:
+4:
 	ld1	{v0.16b},[src],16
 	ld1	{v1.16b},[efgh_buf],16
 	rev32	v0.16b,v0.16b
@@ -151,12 +152,30 @@ sm3_mb_sve:
 	add	tmp,tmp,64
 	st1	{v0.16b,v1.16b},[tmp]
 	subs	ctr,ctr,1
-	bne	.str_hash
+	bne	4b
 	incw	lane_offset_x
 	whilelo	p0.s,	lane_offset, total_lanes
-	b.mi	.seg_loops
+	b.mi	1b
 	mov	sp,savedsp
 	sm3_sve_restore_stack
-.return:
+10:
 	ret
+.endm
+
+	.global sm3_mb_sve
+	.type sm3_mb_sve, %function
+sm3_mb_sve:
+.sve_entry:
+	IMPLEMENT_SM3_MB 0
 	.size sm3_mb_sve, .-sm3_mb_sve
+
+	.global sm3_mb_sve2
+	.type sm3_mb_sve2, %function
+sm3_mb_sve2:
+#if	!defined(NO_SVE2)
+	IMPLEMENT_SM3_MB 1
+#else
+#warning "SVE2 has been bypassed in the build"
+	b	.sve_entry
+#endif
+	.size sm3_mb_sve2, .-sm3_mb_sve2
