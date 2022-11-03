@@ -27,7 +27,15 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-lsrc_aarch64 += xxhash_mb/xxhash_ctx_base.c
+lsrc_aarch64 += xxhash_mb/xxhash_ctx_base.c \
+		xxhash_mb/aarch64/xxhash_ctx_aarch64_sve.c \
+		xxhash_mb/aarch64/xxhash_mb_aarch64_dispatcher.c \
+		xxhash_mb/aarch64/xxhash_mb_mgr_aarch64_sve.c \
+		xxhash_mb/aarch64/xxhash_mb_sve.S \
+		xxhash_mb/aarch64/xxhash_mb_multibinary.S
+
+lsrc_base_aliases += xxhash_mb/xxhash_ctx_base.c \
+		xxhash_mb/xxhash_ctx_base_aliases.c
 
 src_include  += -I$(srcdir)/xxhash_mb -I/usr/local/include
 extern_hdrs  += include/xxhash_mb.h \
