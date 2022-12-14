@@ -231,22 +231,20 @@ section .text
 %define PBlockLen	16*5	; length of partial block at the end of the previous update
 
 %define reg(q) xmm %+ q
-%define arg(x) [r14 + STACK_OFFSET + 8*x]
-
-
-
 
 %ifnidn __OUTPUT_FORMAT__, elf64
+    %define arg(x) [r14 + STACK_OFFSET + 8*x]
+
     %xdefine arg1 rcx
     %xdefine arg2 rdx
     %xdefine arg3 r8
     %xdefine arg4 r9
     %xdefine arg5 rsi ;[r14 + STACK_OFFSET + 8*5] - need push and load
-    %xdefine arg6 [r14 + STACK_OFFSET + 8*6]
-    %xdefine arg7 [r14 + STACK_OFFSET + 8*7]
-    %xdefine arg8 [r14 + STACK_OFFSET + 8*8]
-    %xdefine arg9 [r14 + STACK_OFFSET + 8*9]
-    %xdefine arg10 [r14 + STACK_OFFSET + 8*10]
+    %xdefine arg6 qword [r14 + STACK_OFFSET + 8*6]
+    %xdefine arg7 qword [r14 + STACK_OFFSET + 8*7]
+    %xdefine arg8 qword [r14 + STACK_OFFSET + 8*8]
+    %xdefine arg9 qword [r14 + STACK_OFFSET + 8*9]
+    %xdefine arg10 qword [r14 + STACK_OFFSET + 8*10]
 
 %else
     %xdefine arg1 rdi
@@ -255,10 +253,10 @@ section .text
     %xdefine arg4 rcx
     %xdefine arg5 r8
     %xdefine arg6 r9
-    %xdefine arg7 [r14 + STACK_OFFSET + 8*1]
-    %xdefine arg8 [r14 + STACK_OFFSET + 8*2]
-    %xdefine arg9 [r14 + STACK_OFFSET + 8*3]
-    %xdefine arg10 [r14 + STACK_OFFSET + 8*4]
+    %xdefine arg7 qword [r14 + STACK_OFFSET + 8*1]
+    %xdefine arg8 qword [r14 + STACK_OFFSET + 8*2]
+    %xdefine arg9 qword [r14 + STACK_OFFSET + 8*3]
+    %xdefine arg10 qword [r14 + STACK_OFFSET + 8*4]
 %endif
 
 %ifdef NT_LDST
