@@ -1,0 +1,32 @@
+[
+  {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+      "NA"
+    ]
+  },
+  {
+    "vsId": 0,
+    "algorithm": "ACVP-AES-CBC",
+    "revision": "1.0",
+    "isSample": false,
+    "testGroups": [
+      {
+        "tgId": 1,
+        "testType": "AFT",
+        "direction": "encrypt",
+        "keyLen": 128,
+        "tests": [
+          {
+            "tcId": 1,
+            "iv": "562e17996d093d28ddb3ba695a2e6f58",
+            "pt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+            "key": "c286696d887c9aa0611bbb3e2025a45a"
+          }
+        ]
+      }
+    ]
+  }
+]

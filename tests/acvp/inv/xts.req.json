@@ -1,0 +1,35 @@
+[
+  {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+      "NA"
+    ]
+  },
+  {
+    "vsId": 0,
+    "algorithm": "ACVP-AES-XTS",
+    "revision": "2.0",
+    "isSample": true,
+    "testGroups": [
+      {
+        "tgId": 1,
+        "testType": "AFT",
+        "direction": "encrypt",
+        "keyLen": 128,
+        "tweakMode": "hex",
+        "tests": [
+          {
+            "tcId": 1,
+            "key": "fffefdfcfbfaf9f8f7f6f5f4f3f2f1f022222222222222222222222222222222",
+            "dataUnitLen": 777,
+            "payloadLen": 777,
+            "pt": "4444444444444444444444444444444444444444444444444444444444444444",
+            "tweakValue": "33333333330000000000000000000000"
+          }
+        ]
+      }
+    ]
+  }
+]

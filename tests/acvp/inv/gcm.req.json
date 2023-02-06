@@ -1,0 +1,39 @@
+[
+  {
+    "jwt": "NA",
+    "url": "NA",
+    "isSample": false,
+    "vectorSetUrls": [
+      "NA"
+    ]
+  },
+  {
+    "vsId": 0,
+    "algorithm": "ACVP-AES-GCM",
+    "revision": "1.0",
+    "isSample": false,
+    "testGroups": [
+      {
+        "tgId": 1,
+        "testType": "AFT",
+        "direction": "encrypt",
+        "keyLen": 128,
+        "ivLen": 120,
+        "ivGen": "external",
+        "ivGenMode": "8.2.2",
+        "payloadLen": 384,
+        "aadLen": 244,
+        "tagLen": 128,
+        "tests": [
+          {
+            "tcId": 2,
+            "pt": "08000F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A0002",
+            "key": "AD7A2BD03EAC835A6F620FDCB506B345",
+            "aad": "D609B1F056637A0D46DF998D88E52E00B2C2846512153524C0895E81",
+            "iv": "12153524C0895E81B2C28465"
+          }
+        ]
+      }
+    ]
+  }
+]
