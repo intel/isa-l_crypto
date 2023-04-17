@@ -106,8 +106,8 @@ sha1_mb_mgr_submit_sse_ni:
 	sub     rsp, STACK_SPACE
 	mov     [rsp + 8*0], rbx
 	mov     [rsp + 8*3], rbp
-	mov     [rsp + 8*4], r12
-	mov     [rsp + 8*5], r13
+	mov     [rsp + 8*4], r12 ; Clobbered by sha1_ni_x2
+	mov     [rsp + 8*5], r13 ; Clobbered by sha1_ni_x2
 %ifidn __OUTPUT_FORMAT__, win64
 	mov     [rsp + 8*1], rsi
 	mov     [rsp + 8*2], rdi
