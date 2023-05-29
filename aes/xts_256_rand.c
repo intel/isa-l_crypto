@@ -94,7 +94,7 @@ int main(void)
 	}
 	putchar('.');
 
-	// Do tests with random data, keys and message size
+	// Do tests with random data, keys and message size (out-of-place)
 	for (t = 0; t < RANDOMS; t++) {
 		n = rand() % (TEST_LEN);
 		if (n < 17)
@@ -103,6 +103,25 @@ int main(void)
 		xts256_mk_rand_data(key1, key2, tinit, pt, n);
 		XTS_AES_256_enc(key2, key1, tinit, n, pt, ct);
 		XTS_AES_256_dec(key2, key1, tinit, n, ct, dt);
+
+		if (memcmp(pt, dt, n)) {
+			printf("fail rand %d, size %d\n", t, n);
+			return -1;
+		}
+		putchar('.');
+		fflush(0);
+	}
+
+	// Do tests with random data, keys and message size (in-place)
+	for (t = 0; t < RANDOMS; t++) {
+		n = rand() % (TEST_LEN);
+		if (n < 17)
+			continue;
+
+		xts256_mk_rand_data(key1, key2, tinit, pt, n);
+		memcpy(dt, pt, n);
+		XTS_AES_256_enc(key2, key1, tinit, n, dt, dt);
+		XTS_AES_256_dec(key2, key1, tinit, n, dt, dt);
 
 		if (memcmp(pt, dt, n)) {
 			printf("fail rand %d, size %d\n", t, n);

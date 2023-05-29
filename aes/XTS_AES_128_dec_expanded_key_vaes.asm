@@ -973,15 +973,14 @@ XTS_AES_128_dec_expanded_key_vaes:
 %endif
 
 	cmp		N_val, 128
-	jl              _less_than_128_bytes
+	jb              _less_than_128_bytes
 
 	vpbroadcastq	zpoly, ghash_poly_8b
 
 	cmp		N_val, 256
 	jge		_start_by16
 
-	cmp		N_val, 128
-	jge		_start_by8
+	jmp		_start_by8
 
 _do_n_blocks:
 	cmp		N_val, 0
@@ -1009,7 +1008,7 @@ _do_n_blocks:
 	jge		_remaining_num_blocks_is_1
 
 ;; _remaining_num_blocks_is_0:
-	vmovdqu		xmm1, [ptr_plaintext - 16] ; Re-due last block with next tweak
+	vmovdqu		xmm1, xmm5 ; xmm5 contains last full block to decrypt with next teawk
 	decrypt_initial xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, na, na, na, na, na, na, xmm0, 1, 1
 	vmovdqu		[ptr_ciphertext - 16], xmm1
 	vmovdqa		xmm8, xmm1
@@ -1219,6 +1218,7 @@ _main_loop_run_16:
 	vmovdqu8	zmm2, [ptr_plaintext+16*4]
 	vmovdqu8	zmm3, [ptr_plaintext+16*8]
 	vmovdqu8	zmm4, [ptr_plaintext+16*12]
+	vmovdqu8	xmm5, [ptr_plaintext+16*15] 	; Save last full block in case this is the last iteration
 	add		ptr_plaintext, 256
 
 	decrypt_by_16_zmm  zmm1, zmm2, zmm3, zmm4, zmm9, zmm10, zmm11, zmm12, zmm0, 0
@@ -1262,6 +1262,7 @@ _start_by8:
 _main_loop_run_8:
 	vmovdqu8	zmm1, [ptr_plaintext+16*0]
 	vmovdqu8	zmm2, [ptr_plaintext+16*4]
+	vmovdqu8	xmm5, [ptr_plaintext+16*7] 	; Save last full block in case this is the last iteration
 	add		ptr_plaintext, 128
 
 	decrypt_by_eight_zmm  zmm1, zmm2, zmm9, zmm10, zmm0, 0
