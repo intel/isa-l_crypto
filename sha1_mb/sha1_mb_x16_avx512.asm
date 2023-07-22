@@ -89,6 +89,8 @@ section .text
 %define TMP0	zmm11
 %define TMP1	zmm12
 %define TMP2	zmm13
+%define TMP3	zmm14
+%define TMP4	zmm15
 
 %define W0	zmm16
 %define W1	zmm17
@@ -219,44 +221,44 @@ section .text
 ;; t0, r3, r1, r0, r2, r7, r5, r4, r6, r11, r9, r8, r10, r15, r13, r12
 ;; Can use t1 and r14 as scratch registers
 
-	vmovdqa32 %%r14, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r14, TMP3
 	vpermi2q  %%r14, %%t0, %%r2		; r14 = {h8  g8  f8  e8   d8  c8  b8  a8   h0 g0 f0 e0	 d0 c0 b0 a0}
-	vmovdqa32 %%t1,  [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%t1,  TMP4
 	vpermi2q  %%t1,  %%t0, %%r2		; t1  = {h12 g12 f12 e12  d12 c12 b12 a12  h4 g4 f4 e4	 d4 c4 b4 a4}
 
-	vmovdqa32 %%r2, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r2, TMP3
 	vpermi2q  %%r2, %%r3, %%r7		; r2  = {h9  g9  f9  e9   d9  c9  b9  a9   h1 g1 f1 e1	 d1 c1 b1 a1}
-	vmovdqa32 %%t0, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%t0, TMP4
 	vpermi2q  %%t0, %%r3, %%r7		; t0  = {h13 g13 f13 e13  d13 c13 b13 a13  h5 g5 f5 e5	 d5 c5 b5 a5}
 
-	vmovdqa32 %%r3, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r3, TMP3
 	vpermi2q  %%r3, %%r1, %%r5		; r3  = {h10 g10 f10 e10  d10 c10 b10 a10  h2 g2 f2 e2	 d2 c2 b2 a2}
-	vmovdqa32 %%r7, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r7, TMP4
 	vpermi2q  %%r7, %%r1, %%r5		; r7  = {h14 g14 f14 e14  d14 c14 b14 a14  h6 g6 f6 e6	 d6 c6 b6 a6}
 
-	vmovdqa32 %%r1, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r1, TMP3
 	vpermi2q  %%r1, %%r0, %%r4		; r1  = {h11 g11 f11 e11  d11 c11 b11 a11  h3 g3 f3 e3	 d3 c3 b3 a3}
-	vmovdqa32 %%r5, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r5, TMP4
 	vpermi2q  %%r5, %%r0, %%r4		; r5  = {h15 g15 f15 e15  d15 c15 b15 a15  h7 g7 f7 e7	 d7 c7 b7 a7}
 
-	vmovdqa32 %%r0, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r0, TMP3
 	vpermi2q  %%r0, %%r6, %%r10		; r0 = {p8  o8  n8  m8   l8  k8  j8  i8   p0 o0 n0 m0	 l0 k0 j0 i0}
-	vmovdqa32 %%r4,  [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r4,  TMP4
 	vpermi2q  %%r4, %%r6, %%r10		; r4  = {p12 o12 n12 m12  l12 k12 j12 i12  p4 o4 n4 m4	 l4 k4 j4 i4}
 
-	vmovdqa32 %%r6, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r6, TMP3
 	vpermi2q  %%r6, %%r11, %%r15		; r6  = {p9  o9  n9  m9   l9  k9  j9  i9   p1 o1 n1 m1	 l1 k1 j1 i1}
-	vmovdqa32 %%r10, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r10, TMP4
 	vpermi2q  %%r10, %%r11, %%r15		; r10 = {p13 o13 n13 m13  l13 k13 j13 i13  p5 o5 n5 m5	 l5 k5 j5 i5}
 
-	vmovdqa32 %%r11, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r11, TMP3
 	vpermi2q  %%r11, %%r9, %%r13		; r11 = {p10 o10 n10 m10  l10 k10 j10 i10  p2 o2 n2 m2	 l2 k2 j2 i2}
-	vmovdqa32 %%r15, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r15, TMP4
 	vpermi2q  %%r15, %%r9, %%r13		; r15 = {p14 o14 n14 m14  l14 k14 j14 i14  p6 o6 n6 m6	 l6 k6 j6 i6}
 
-	vmovdqa32 %%r9, [PSHUFFLE_TRANSPOSE16_MASK1]
+	vmovdqa32 %%r9, TMP3
 	vpermi2q  %%r9, %%r8, %%r12		; r9  = {p11 o11 n11 m11  l11 k11 j11 i11  p3 o3 n3 m3	 l3 k3 j3 i3}
-	vmovdqa32 %%r13, [PSHUFFLE_TRANSPOSE16_MASK2]
+	vmovdqa32 %%r13, TMP4
 	vpermi2q  %%r13, %%r8, %%r12		; r13 = {p15 o15 n15 m15  l15 k15 j15 i15  p7 o7 n7 m7	 l7 k7 j7 i7}
 
 ;; At this point r8 and r12 can be used as scratch registers
@@ -341,7 +343,7 @@ section .text
 %define %%WT	 %1
 %define %%OFFSET %2
 	mov		inp0, [IN + (%%OFFSET*8)]
-	vmovups		%%WT, [inp0+IDX]
+	vmovdqu32	%%WT, [inp0+IDX]
 %endmacro
 
 align 64
@@ -360,47 +362,53 @@ sha1_mb_x16_avx512:
 	vmovups	D, [DIGEST + 3*64]
 	vmovups	E, [DIGEST + 4*64]
 
+
+	
+	;; transpose input onto stack
+	lea	IDX, [IN]
+	mov	inp0, [IDX + 0*8]
+	mov	inp1, [IDX + 1*8]
+	mov	inp2, [IDX + 2*8]
+	mov	inp3, [IDX + 3*8]
+	mov	inp4, [IDX + 4*8]
+	mov	inp5, [IDX + 5*8]
+	mov	inp6, [IDX + 6*8]
+	mov	inp7, [IDX + 7*8]
+
+	vmovups	W0,[inp0]
+	vmovups	W1,[inp1]
+	vmovups	W2,[inp2]
+	vmovups	W3,[inp3]
+	vmovups	W4,[inp4]
+	vmovups	W5,[inp5]
+	vmovups	W6,[inp6]
+	vmovups	W7,[inp7]
+
+	mov	inp0, [IDX + 8*8]
+	mov	inp1, [IDX + 9*8]
+	mov	inp2, [IDX +10*8]
+	mov	inp3, [IDX +11*8]
+	mov	inp4, [IDX +12*8]
+	mov	inp5, [IDX +13*8]
+	mov	inp6, [IDX +14*8]
+	mov	inp7, [IDX +15*8]
+
+	vmovups	W8, [inp0]
+	vmovups	W9, [inp1]
+	vmovups	W10,[inp2]
+	vmovups	W11,[inp3]
+	vmovups	W12,[inp4]
+	vmovups	W13,[inp5]
+	vmovups	W14,[inp6]
+	vmovups	W15,[inp7]
+	lea	IDX, [PSHUFFLE_BYTE_FLIP_MASK]
+	vbroadcasti32x4	TMP2, [IDX]
+	vpmovzxbq TMP3, [IDX+16]	; MASK 1
+	vpmovzxbq TMP4, [IDX+16+8]	; MASK 2
 	xor IDX, IDX
 
-	;; transpose input onto stack
-	mov	inp0, [IN + 0*8]
-	mov	inp1, [IN + 1*8]
-	mov	inp2, [IN + 2*8]
-	mov	inp3, [IN + 3*8]
-	mov	inp4, [IN + 4*8]
-	mov	inp5, [IN + 5*8]
-	mov	inp6, [IN + 6*8]
-	mov	inp7, [IN + 7*8]
-
-	vmovups	W0,[inp0+IDX]
-	vmovups	W1,[inp1+IDX]
-	vmovups	W2,[inp2+IDX]
-	vmovups	W3,[inp3+IDX]
-	vmovups	W4,[inp4+IDX]
-	vmovups	W5,[inp5+IDX]
-	vmovups	W6,[inp6+IDX]
-	vmovups	W7,[inp7+IDX]
-
-	mov	inp0, [IN + 8*8]
-	mov	inp1, [IN + 9*8]
-	mov	inp2, [IN +10*8]
-	mov	inp3, [IN +11*8]
-	mov	inp4, [IN +12*8]
-	mov	inp5, [IN +13*8]
-	mov	inp6, [IN +14*8]
-	mov	inp7, [IN +15*8]
-
-	vmovups	W8, [inp0+IDX]
-	vmovups	W9, [inp1+IDX]
-	vmovups	W10,[inp2+IDX]
-	vmovups	W11,[inp3+IDX]
-	vmovups	W12,[inp4+IDX]
-	vmovups	W13,[inp5+IDX]
-	vmovups	W14,[inp6+IDX]
-	vmovups	W15,[inp7+IDX]
-
+align 32
 lloop:
-	vmovdqa32	TMP2, [PSHUFFLE_BYTE_FLIP_MASK]
 
 	add	IDX, 64
 
@@ -419,7 +427,7 @@ lloop:
 	vmovdqa32	DD, D
 	vmovdqa32	EE, E
 
-	vmovdqa32	KT, [K00_19]
+	vpbroadcastd	KT, [K00_19]
 %assign I 0xCA
 %assign J 0
 %assign K 2
@@ -430,13 +438,13 @@ lloop:
 	PROCESS_LOOP  APPEND(W,J),  I
 	MSG_SCHED_ROUND_16_79  APPEND(W,J), APPEND(W,K), APPEND(W,L), APPEND(W,M)
 	%if N = 19
-		vmovdqa32	KT, [K20_39]
+		vpbroadcastd	KT, [K20_39]
 		%assign I 0x96
 	%elif N = 39
-		vmovdqa32	KT, [K40_59]
+		vpbroadcastd	KT, [K40_59]
 		%assign I 0xE8
 	%elif N = 59
-		vmovdqa32	KT, [K60_79]
+		vpbroadcastd	KT, [K60_79]
 		%assign I 0x96
 	%endif
 %assign J ((J+1)% 16)
@@ -492,16 +500,11 @@ lastLoop:
 	vpaddd		E,E,EE
 
         ;; update into data pointers
-%assign I 0
-%rep 8
-        mov    inp0, [IN + (2*I)*8]
-        mov    inp1, [IN + (2*I +1)*8]
-        add    inp0, IDX
-        add    inp1, IDX
-        mov    [IN + (2*I)*8], inp0
-        mov    [IN + (2*I+1)*8], inp1
-%assign I (I+1)
-%endrep
+	vpbroadcastq TMP1, IDX
+	vpaddq TMP0, TMP1, [IN]
+	vpaddq TMP1, TMP1, [IN+64]
+	vmovdqu32 [IN], TMP0
+	vmovdqu32 [IN+64], TMP1
 
 	; Write out digest
 	; Do we need to untranspose digests???
@@ -515,45 +518,30 @@ lastLoop:
 
 section .data
 align 64
-K00_19:			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
+K00_19:			dd 0x5A827999
+K20_39:                 dd 0x6ED9EBA1
+K40_59:                 dd 0x8F1BBCDC
+K60_79:                 dd 0xCA62C1D6
 
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 
-PSHUFFLE_TRANSPOSE16_MASK1: 	dq 0x0000000000000000
-				dq 0x0000000000000001
-				dq 0x0000000000000008
-				dq 0x0000000000000009
-				dq 0x0000000000000004
-				dq 0x0000000000000005
-				dq 0x000000000000000C
-				dq 0x000000000000000D
+PSHUFFLE_TRANSPOSE16_MASK1: 	db 0x0
+				db 0x1
+				db 0x8
+				db 0x9
+				db 0x4
+				db 0x5
+				db 0xC
+				db 0xD
 
-PSHUFFLE_TRANSPOSE16_MASK2: 	dq 0x0000000000000002
-				dq 0x0000000000000003
-				dq 0x000000000000000A
-				dq 0x000000000000000B
-				dq 0x0000000000000006
-				dq 0x0000000000000007
-				dq 0x000000000000000E
-				dq 0x000000000000000F
+PSHUFFLE_TRANSPOSE16_MASK2: 	db 0x2
+				db 0x3
+				db 0xA
+				db 0xB
+				db 0x6
+				db 0x7
+				db 0xE
+				db 0xF
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64
