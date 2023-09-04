@@ -157,7 +157,7 @@ typedef struct {
 
 typedef struct {
 	SHA1_MB_ARGS_X16 args;
-	uint32_t lens[SHA1_MAX_LANES];
+	DECLARE_ALIGNED(uint32_t lens[SHA1_MAX_LANES], 16);
 	uint64_t unused_lanes; //!< each nibble is index (0...3 or 0...7 or 0...15) of unused lanes, nibble 4 or 8 is set to F as a flag
 	SHA1_LANE_DATA ldata[SHA1_MAX_LANES];
 	uint32_t num_lanes_inuse;
@@ -169,7 +169,8 @@ typedef struct {
 	SHA1_MB_JOB_MGR mgr;
 } SHA1_HASH_CTX_MGR;
 
-/** @brief Context layer - Holds info describing a single SHA1 job for the multi-buffer CTX manager */
+/** @brief Context layer - Holds info describing a single SHA1 job for the multi-buffer CTX manager.
+  * This structure must be allocated to 16-byte aligned memory */
 
 typedef struct {
 	SHA1_JOB       job;		// Must be at struct offset 0.

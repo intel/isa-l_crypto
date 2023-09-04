@@ -61,7 +61,7 @@ END_FIELDS
 START_FIELDS    ; MB_MGR
 ;;;     name            size    align
 FIELD   _args,          _SHA256_ARGS_X4_size, _SHA256_ARGS_X4_align
-FIELD   _lens,          4*16,    8
+FIELD   _lens,          4*16,    16
 FIELD   _unused_lanes,  8,      8
 FIELD   _ldata,         _LANE_DATA_size*16, _LANE_DATA_align
 FIELD   _num_lanes_inuse, 4,    4

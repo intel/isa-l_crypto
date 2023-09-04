@@ -106,21 +106,21 @@ sha1_mb_mgr_submit_sse_ni:
 	sub     rsp, STACK_SPACE
 	mov     [rsp + 8*0], rbx
 	mov     [rsp + 8*3], rbp
-	mov     [rsp + 8*4], r12
-	mov     [rsp + 8*5], r13
+	mov     [rsp + 8*4], r12 ; Clobbered by sha1_ni_x2
+	mov     [rsp + 8*5], r13 ; Clobbered by sha1_ni_x2
 %ifidn __OUTPUT_FORMAT__, win64
 	mov     [rsp + 8*1], rsi
 	mov     [rsp + 8*2], rdi
-	movdqa  [rsp + 8*4 + 16*0], xmm6
-	movdqa  [rsp + 8*4 + 16*1], xmm7
-	movdqa  [rsp + 8*4 + 16*2], xmm8
-	movdqa  [rsp + 8*4 + 16*3], xmm9
-	movdqa  [rsp + 8*4 + 16*4], xmm10
-	movdqa  [rsp + 8*4 + 16*5], xmm11
-	movdqa  [rsp + 8*4 + 16*6], xmm12
-	movdqa  [rsp + 8*4 + 16*7], xmm13
-	movdqa  [rsp + 8*4 + 16*8], xmm14
-	movdqa  [rsp + 8*4 + 16*9], xmm15
+	movdqa  [rsp + 8*6 + 16*0], xmm6
+	movdqa  [rsp + 8*6 + 16*1], xmm7
+	movdqa  [rsp + 8*6 + 16*2], xmm8
+	movdqa  [rsp + 8*6 + 16*3], xmm9
+	movdqa  [rsp + 8*6 + 16*4], xmm10
+	movdqa  [rsp + 8*6 + 16*5], xmm11
+	movdqa  [rsp + 8*6 + 16*6], xmm12
+	movdqa  [rsp + 8*6 + 16*7], xmm13
+	movdqa  [rsp + 8*6 + 16*8], xmm14
+	movdqa  [rsp + 8*6 + 16*9], xmm15
 %endif
 
 	mov     unused_lanes, [state + _unused_lanes]
@@ -248,16 +248,16 @@ len_is_0:
 return:
 
 %ifidn __OUTPUT_FORMAT__, win64
-	movdqa  xmm6, [rsp + 8*4 + 16*0]
-	movdqa  xmm7, [rsp + 8*4 + 16*1]
-	movdqa  xmm8, [rsp + 8*4 + 16*2]
-	movdqa  xmm9, [rsp + 8*4 + 16*3]
-	movdqa  xmm10, [rsp + 8*4 + 16*4]
-	movdqa  xmm11, [rsp + 8*4 + 16*5]
-	movdqa  xmm12, [rsp + 8*4 + 16*6]
-	movdqa  xmm13, [rsp + 8*4 + 16*7]
-	movdqa  xmm14, [rsp + 8*4 + 16*8]
-	movdqa  xmm15, [rsp + 8*4 + 16*9]
+	movdqa  xmm6, [rsp + 8*6 + 16*0]
+	movdqa  xmm7, [rsp + 8*6 + 16*1]
+	movdqa  xmm8, [rsp + 8*6 + 16*2]
+	movdqa  xmm9, [rsp + 8*6 + 16*3]
+	movdqa  xmm10, [rsp + 8*6 + 16*4]
+	movdqa  xmm11, [rsp + 8*6 + 16*5]
+	movdqa  xmm12, [rsp + 8*6 + 16*6]
+	movdqa  xmm13, [rsp + 8*6 + 16*7]
+	movdqa  xmm14, [rsp + 8*6 + 16*8]
+	movdqa  xmm15, [rsp + 8*6 + 16*9]
 	mov     rsi, [rsp + 8*1]
 	mov     rdi, [rsp + 8*2]
 %endif

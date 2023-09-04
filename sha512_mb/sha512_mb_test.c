@@ -196,11 +196,19 @@ int main(void)
 	uint64_t *good;
 	int ret;
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
+#if defined(_WIN32) || defined(_WIN64)
+        mgr = (SHA512_HASH_CTX_MGR *) _aligned_malloc(sizeof(SHA512_HASH_CTX_MGR), 16);
+        if (mgr == NULL) {
+		printf("aligned_malloc failed, test aborted\n");
 		return 1;
 	}
+#else
+	ret = posix_memalign((void *)&mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+	if ((ret != 0) || (mgr == NULL)) {
+		printf("posix_memalign failed, test aborted\n");
+		return 1;
+	}
+#endif
 
 	sha512_ctx_mgr_init(mgr);
 
@@ -334,7 +342,11 @@ int main(void)
 		return -1;
 	}
 	int rc = non_blocksize_updates_test(mgr);
-	free(mgr);
+#if defined(_WIN32) || defined(_WIN64)
+        _aligned_free(mgr);
+#else
+        free(mgr);
+#endif
 	if (rc) {
 		printf("multi updates test fail %d\n", rc);
 		return rc;
