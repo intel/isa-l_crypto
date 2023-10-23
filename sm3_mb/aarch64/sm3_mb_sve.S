@@ -58,6 +58,7 @@
 .endm
 
 #include "sm3_sve_common.S"
+.text
 
 /* int sm3_mb_sve_max_lanes()
  * return : max lanes of SVE vector

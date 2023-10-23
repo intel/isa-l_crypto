@@ -66,6 +66,7 @@
 .endm
 
 #include "md5_sve_common.S"
+.text
 
 /* int md5_mb_sve_max_lanes()
  */
