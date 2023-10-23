@@ -34,6 +34,7 @@
 #endif
 
 #include "sha1_sve_common.S"
+.text
 
 .macro load_init
 .endm
