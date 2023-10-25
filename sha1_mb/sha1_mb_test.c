@@ -184,7 +184,7 @@ int main(void)
 					  strlen((char *)msgs[i]), HASH_ENTIRE);
 
 		if (ctx) {
-			t = (uint32_t)((uintptr_t)(ctx->user_data));
+			t = (uint32_t) ((uintptr_t) (ctx->user_data));
 			good = expResultDigest[t];
 			checked++;
 			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
@@ -208,7 +208,7 @@ int main(void)
 		ctx = sha1_ctx_mgr_flush(mgr);
 
 		if (ctx) {
-			t = (uint32_t)((uintptr_t)(ctx->user_data));
+			t = (uint32_t) ((uintptr_t) (ctx->user_data));
 			good = expResultDigest[t];
 			checked++;
 			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
@@ -244,7 +244,7 @@ int main(void)
 					  &ctxpool[i],
 					  msgs[j], strlen((char *)msgs[j]), HASH_ENTIRE);
 		if (ctx) {
-			t = (uint32_t)((uintptr_t)(ctx->user_data));
+			t = (uint32_t) ((uintptr_t) (ctx->user_data));
 			k = PSEUDO_RANDOM_NUM(t);
 			good = expResultDigest[k];
 			checked++;
@@ -262,7 +262,7 @@ int main(void)
 				return -1;
 			}
 
-			t = (uint32_t)((uintptr_t)(ctx->user_data));
+			t = (uint32_t) ((uintptr_t) (ctx->user_data));
 			k = PSEUDO_RANDOM_NUM(t);
 		}
 	}
@@ -270,7 +270,7 @@ int main(void)
 		ctx = sha1_ctx_mgr_flush(mgr);
 
 		if (ctx) {
-			t = (uint32_t)((uintptr_t)(ctx->user_data));
+			t = (uint32_t) ((uintptr_t) (ctx->user_data));
 			k = PSEUDO_RANDOM_NUM(t);
 			good = expResultDigest[k];
 			checked++;
