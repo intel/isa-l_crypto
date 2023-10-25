@@ -197,8 +197,8 @@ int main(void)
 	int ret;
 
 #if defined(_WIN32) || defined(_WIN64)
-        mgr = (SHA512_HASH_CTX_MGR *) _aligned_malloc(sizeof(SHA512_HASH_CTX_MGR), 16);
-        if (mgr == NULL) {
+	mgr = (SHA512_HASH_CTX_MGR *) _aligned_malloc(sizeof(SHA512_HASH_CTX_MGR), 16);
+	if (mgr == NULL) {
 		printf("aligned_malloc failed, test aborted\n");
 		return 1;
 	}
@@ -343,9 +343,9 @@ int main(void)
 	}
 	int rc = non_blocksize_updates_test(mgr);
 #if defined(_WIN32) || defined(_WIN64)
-        _aligned_free(mgr);
+	_aligned_free(mgr);
 #else
-        free(mgr);
+	free(mgr);
 #endif
 	if (rc) {
 		printf("multi updates test fail %d\n", rc);
