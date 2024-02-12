@@ -36,7 +36,7 @@
         aesimc   v\block\().16b,v\block\().16b
     .endif
     .if \key > 13
-        .error "erro her"
+        .error "error here"
     .endif
 .endm
 

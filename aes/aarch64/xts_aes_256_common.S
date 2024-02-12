@@ -56,7 +56,7 @@
 	.endif
 .endm
 
-/* when loadin key = 0
+/* when loading key = 0
  *     arg1 = input key
  *     arg2 = rcon ctx register (optional)
  * when loading key > 0
@@ -197,7 +197,7 @@
 .endm
 
 /* load k1/k2 from memory and encrypt the tweak by k2
- * boths keys will share the same set of registers
+ * both keys will share the same set of registers
  * but will never overlap (k2 is used only once and discarded)
  */
 .macro keyload_and_encrypt_tweak iv:req,k2:req,k1:req

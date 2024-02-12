@@ -54,7 +54,7 @@ mbin_interface sm3_ctx_mgr_init
 mbin_interface sm3_ctx_mgr_submit
 mbin_interface sm3_ctx_mgr_flush
 
-;; have not imlement see/avx yet
+;; have not implement see/avx yet
 %ifdef HAVE_AS_KNOWS_AVX512
   mbin_dispatch_init6 sm3_ctx_mgr_init, sm3_ctx_mgr_init_base, \
 	sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_base, sm3_ctx_mgr_init_avx2, \

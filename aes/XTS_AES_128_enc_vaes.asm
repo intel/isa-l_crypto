@@ -1204,7 +1204,7 @@ _main_loop_run_16:
 	cmp		N_val, 128
 	jge		_main_loop_run_8
 
-	vextracti32x4	xmm0, zmm4, 0x3 ; keep last crypted block
+	vextracti32x4	xmm0, zmm4, 0x3 ; keep last encrypted block
 	jmp		_do_n_blocks
 
 _start_by8:
@@ -1246,7 +1246,7 @@ _main_loop_run_8:
 	cmp		N_val, 128
 	jge		_main_loop_run_8
 
-	vextracti32x4	xmm0, zmm2, 0x3 ; keep last crypted block
+	vextracti32x4	xmm0, zmm2, 0x3 ; keep last encrypted block
 	jmp		_do_n_blocks
 
 _steal_cipher_next:

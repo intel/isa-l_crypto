@@ -78,7 +78,7 @@
 	aes_key_expand	9,rcon2
 	aes_key_expand	10,rcon2
 
-	// transform encryption key into decrption key
+	// transform encryption key into decryption key
 	aesimc	 vKey1.16b,vKey1.16b
 	vswap	vKey0,vKey10
 	aesimc	vKey9.16b,vKey9.16b

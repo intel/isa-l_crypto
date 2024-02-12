@@ -135,7 +135,7 @@ maros for round 4-67
 	      uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
 */
 /*
-Arguements list
+Arguments list
 */
 	input_data 	.req	x0
 	digests		.req	x1

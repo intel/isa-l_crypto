@@ -311,8 +311,8 @@ STACK_SPACE	equ _GPR_SAVE + _GPR_SAVE_SIZE
 ; void sha1_opt_x1(SHA1_MB_ARGS_Xn *args, uint32_t size_in_blocks);
 ; arg 0 : MGR : pointer to args (only 4 of the 16 lanes used)
 ; arg 1 : NBLK : size (in blocks) ;; assumed to be >= 1
-; invisibile arg 2 : IDX : hash on which lane
-; invisibile arg 3 : NLANX4 : max lanes*4 for this arch (digest is placed by it)
+; invisible arg 2 : IDX : hash on which lane
+; invisible arg 3 : NLANX4 : max lanes*4 for this arch (digest is placed by it)
 ; 		 (sse/avx is 4, avx2 is 8, avx512 is 16)
 ;
 ; Clobbers registers: all general regs (except r15), xmm0-xmm10

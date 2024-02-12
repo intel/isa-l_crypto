@@ -147,7 +147,7 @@ v2.14
 * The AES key expand functions that were used for AES-XTS with pre-expanded keys
   now expand the decrypt keys in a different order. The order that decrypt keys
   are stored and used by XTS_AES_128_dec_expanded_key() is reversed from
-  previous versions to be compatable with CBC and GCM key expansion. The
+  previous versions to be compatible with CBC and GCM key expansion. The
   aes_keyexp_*() and XTS_AES_128_dec_expanded_key() functions should work the
   same when paired together.
 

@@ -100,7 +100,7 @@
 %endmacro
 %endif
 
-; configuration paramaters for AES-CBC
+; configuration parameters for AES-CBC
 %define KEY_ROUNDS 15
 %define XMM_USAGE    (16)
 %define EARLY_BLOCKS (4)

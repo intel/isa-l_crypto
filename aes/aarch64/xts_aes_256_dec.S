@@ -76,7 +76,7 @@
 	aes_enc_round	\iv,14
 	aes_key_expand	14,rcon2
 
-	// transform encryption key into decrption key
+	// transform encryption key into decryption key
 	aesimc	vKey1.16b,vKey1.16b
 	vswap	vKey0,vKey14
 	aesimc	vKey13.16b,vKey13.16b

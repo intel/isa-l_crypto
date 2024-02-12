@@ -89,7 +89,7 @@ int main(void)
 	sha512_ctx_mgr_init(mgr);
 
 	for (i = 0; i < TEST_BUFS; i++) {
-		// Allocte and fill buffer
+		// Allocate and fill buffer
 		bufs[i] = (unsigned char *)malloc(TEST_LEN);
 		buf_ptr[i] = bufs[i];
 		if (bufs[i] == NULL) {

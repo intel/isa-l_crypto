@@ -4,10 +4,10 @@
  */
 
 This tool is used to judge the saturation performance of ISA-L's multi-buffer hash and other algorithms.
-It can be used to give a comparision between multi-buffer hash and OpenSSL's single buffer hash.
+It can be used to give a comparison between multi-buffer hash and OpenSSL's single buffer hash.
 
 Compilation:
-(Make sure isa-l_crypto library is already installed. Other libs requried are openssl and pthread.)
+(Make sure isa-l_crypto library is already installed. Other libs required are openssl and pthread.)
 make
 
 Usage: ./isal_multithread_perf -n num_threads

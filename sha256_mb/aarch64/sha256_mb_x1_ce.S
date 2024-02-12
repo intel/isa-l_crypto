@@ -77,7 +77,7 @@ digest variables
 	declare_var_vector_reg	l0_abcd_saved,5
 	declare_var_vector_reg	l0_efgh_saved,6
 /*
-Temporay variables
+Temporary variables
 */
 	declare_var_vector_reg	l0_tmp0,2
 	declare_var_vector_reg	l0_tmp1,3
@@ -96,7 +96,7 @@ Message variables
 	void sha256_mb_ce_x1(SHA1_JOB * l0_job, int len);
 */
 /*
-Arguements list
+Arguments list
 */
 	l0_job 	.req	x0
 	len	.req	w1

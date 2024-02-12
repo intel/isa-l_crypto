@@ -94,7 +94,7 @@ section .text
 %macro CBC_DECRYPT_BLOCKS 17
 %define %%TOT_ROUNDS	%1
 %define %%num_blocks    %2      ; can be 0..13
-%define %%EARLY_LOADS   %3	; number of data blocks to laod before processing
+%define %%EARLY_LOADS   %3	; number of data blocks to load before processing
 %define %%MOVDQ		%4
 %define %%PXOR          %5
 %define %%AES_DEC       %6
@@ -153,7 +153,7 @@ section .text
 ; subloops
 ; if data > 16 load next block into a next XDATA reg (XDATA(p_next))
 ; load first uncached key into TMP0 (if any)
-; AES block encript XDATA(P_FIRST)
+; AES block encrypt XDATA(P_FIRST)
 ; if data > 16 XOR next2 block (XDATA(p_next)) with current (XDATA(P_FIRST))
 ; save current (XDATA(P_FIRST))
 ; update indexes for P_FIRST
@@ -390,7 +390,7 @@ section .text
 ;
 ;	AES_ENC_BLOCKS
 ; load first uncached key into TMP0 (if any)
-; AES block encript XDATA(p_first)
+; AES block encrypt XDATA(p_first)
 ;   before using uncached key in TMP0, load next key in TMP1
 ;   before using uncached key in TMP1, load next key in TMP0
 %macro AES_ENC_BLOCKS 11

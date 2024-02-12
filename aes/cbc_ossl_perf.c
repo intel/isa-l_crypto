@@ -59,8 +59,8 @@ static unsigned char const ic[] = {
 	0x0e, 0x0f
 };
 
-static unsigned char *plaintext, *cbc_plaintext, *cyphertext, *ossl_plaintext,
-    *ossl_cyphertext;
+static unsigned char *plaintext, *cbc_plaintext, *ciphertext, *ossl_plaintext,
+    *ossl_ciphertext;
 static uint8_t test_key[CBC_256_BITS];
 
 void mk_rand_data(uint8_t * data, uint32_t size)
@@ -95,8 +95,8 @@ int aes_128_perf(uint8_t * key)
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
 
 	aes_cbc_precomp(key, 128, key_data);
-	aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, cyphertext, TEST_LEN);
-	openssl_aes_128_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_cyphertext);
+	aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+	openssl_aes_128_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
 	{
 		struct perf start, stop;
@@ -129,7 +129,7 @@ int aes_128_perf(uint8_t * key)
 
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
-			aes_cbc_dec_128(cyphertext, iv, key_data->dec_keys,
+			aes_cbc_dec_128(ciphertext, iv, key_data->dec_keys,
 					cbc_plaintext, TEST_LEN);
 		}
 
@@ -143,7 +143,7 @@ int aes_128_perf(uint8_t * key)
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
 			openssl_aes_128_cbc_dec(key, iv, TEST_LEN,
-						ossl_cyphertext, ossl_plaintext);
+						ossl_ciphertext, ossl_plaintext);
 		}
 
 		perf_stop(&stop);
@@ -175,8 +175,8 @@ int aes_192_perf(uint8_t * key)
 
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
 	aes_cbc_precomp(key, 192, key_data);
-	aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, cyphertext, TEST_LEN);
-	openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_cyphertext);
+	aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+	openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
 	{
 		struct perf start, stop;
@@ -184,7 +184,7 @@ int aes_192_perf(uint8_t * key)
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
 			aes_cbc_enc_192(plaintext, iv, key_data->enc_keys,
-					cyphertext, TEST_LEN);
+					ciphertext, TEST_LEN);
 		}
 
 		perf_stop(&stop);
@@ -196,7 +196,7 @@ int aes_192_perf(uint8_t * key)
 
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
-			openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_cyphertext);
+			openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 		}
 
 		perf_stop(&stop);
@@ -209,7 +209,7 @@ int aes_192_perf(uint8_t * key)
 
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
-			aes_cbc_dec_192(cyphertext, iv, key_data->dec_keys,
+			aes_cbc_dec_192(ciphertext, iv, key_data->dec_keys,
 					cbc_plaintext, TEST_LEN);
 		}
 
@@ -223,7 +223,7 @@ int aes_192_perf(uint8_t * key)
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
 			openssl_aes_192_cbc_dec(key, iv, TEST_LEN,
-						ossl_cyphertext, ossl_plaintext);
+						ossl_ciphertext, ossl_plaintext);
 		}
 
 		perf_stop(&stop);
@@ -255,8 +255,8 @@ int aes_256_perf(uint8_t * key)
 
 	aes_cbc_precomp(key, 256, key_data);
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
-	aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, cyphertext, TEST_LEN);
-	openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_cyphertext);
+	aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+	openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
 	{
 		struct perf start, stop;
@@ -264,7 +264,7 @@ int aes_256_perf(uint8_t * key)
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
 			aes_cbc_enc_256(plaintext, iv, key_data->enc_keys,
-					cyphertext, TEST_LEN);
+					ciphertext, TEST_LEN);
 		}
 
 		perf_stop(&stop);
@@ -276,7 +276,7 @@ int aes_256_perf(uint8_t * key)
 
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
-			openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_cyphertext);
+			openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 		}
 
 		perf_stop(&stop);
@@ -289,7 +289,7 @@ int aes_256_perf(uint8_t * key)
 
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
-			aes_cbc_dec_256(cyphertext, iv, key_data->dec_keys,
+			aes_cbc_dec_256(ciphertext, iv, key_data->dec_keys,
 					cbc_plaintext, TEST_LEN);
 		}
 
@@ -303,7 +303,7 @@ int aes_256_perf(uint8_t * key)
 		perf_start(&start);
 		for (i = 0; i < TEST_LOOPS; i++) {
 			openssl_aes_256_cbc_dec(key, iv, TEST_LEN,
-						ossl_cyphertext, ossl_plaintext);
+						ossl_ciphertext, ossl_plaintext);
 		}
 
 		perf_stop(&stop);
@@ -322,11 +322,11 @@ int main(void)
 
 	plaintext = malloc(TEST_LEN);
 	cbc_plaintext = malloc(TEST_LEN);
-	cyphertext = malloc(TEST_LEN);
+	ciphertext = malloc(TEST_LEN);
 	ossl_plaintext = malloc(TEST_LEN);
-	ossl_cyphertext = malloc(TEST_LEN);
-	if (NULL == plaintext || NULL == cyphertext || NULL == cbc_plaintext
-	    || NULL == ossl_plaintext || NULL == ossl_cyphertext) {
+	ossl_ciphertext = malloc(TEST_LEN);
+	if (NULL == plaintext || NULL == ciphertext || NULL == cbc_plaintext
+	    || NULL == ossl_plaintext || NULL == ossl_ciphertext) {
 		printf("malloc of testsize:0x%x failed\n", TEST_LEN);
 		return 1;
 	}

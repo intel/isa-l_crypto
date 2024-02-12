@@ -185,7 +185,7 @@
 
 	.if \windex == 79
 		// after 80 steps, the registers ABCDET has shifted from
-		// its orignal order of 012345 to 341520
+		// its original order of 012345 to 341520
 		// have to swap back for both compile- and run-time correctness
 		mov	v0.16b,v3.16b
 		.unreq VA

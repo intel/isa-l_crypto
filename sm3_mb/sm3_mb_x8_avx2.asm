@@ -117,7 +117,7 @@ section .text
 %define TMP2	ymm10
 
 ; W(j) = WB(j) + WB(j+4)
-; Keep WB(j) - W(j+4) to reduce momory read
+; Keep WB(j) - W(j+4) to reduce memory read
 %define Wj0	ymm11
 %define Wj1	ymm12
 %define Wj2	ymm13
@@ -440,7 +440,7 @@ lloop:
 	ROLD B,9,TMP0
 
 	; Rotate a,b,c,d first
-	; after P0(TT2) , Wj0 will be relase
+	; after P0(TT2) , Wj0 will be released
 	ROTATE_ARGS_AD
 
 	; P0(TT2)

@@ -136,7 +136,7 @@ START_FUNC(enc,KEY_LEN,_nt_)
 1:
     cbnz            aad_len,1f         /* aad_len >16,skip */
     rbit            vAadHash.16b,vLeftDat.16b
-    b               24f                 /* aad_len <=16, skip aadhash caculate */
+    b               24f                 /* aad_len <=16, skip aadhash calculate */
 1:
     /* aad_len > 16 */
     ldr             qAadHash,[aad],16
@@ -379,7 +379,7 @@ START_FUNC(dec,KEY_LEN,_nt_)
 1:
     cbnz            aad_len,1f         /* aad_len >16,skip */
     rbit            vAadHash.16b,vLeftDat.16b
-    b               24f                 /* aad_len <=16, skip aadhash caculate */
+    b               24f                 /* aad_len <=16, skip aadhash calculate */
 1:
     /* aad_len > 16 */
     ldr             qAadHash,[aad],16

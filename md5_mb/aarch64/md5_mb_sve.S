@@ -34,7 +34,7 @@
 #endif
 
 
-// copying data from sparse memory unto continous stack space
+// copying data from sparse memory unto continuous stack space
 // in oroder to gather-load into SVE registers
 .macro copy_mb_16words vecs:req,dest:req
 	mov	src,\vecs

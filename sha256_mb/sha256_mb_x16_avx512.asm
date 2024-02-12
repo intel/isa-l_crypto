@@ -364,7 +364,7 @@ FIELD	_rsp,		8,	8
 ; However, vprord is only working on port 8
 ;
 ; Main processing loop per round
-; Get the msg schedule word 16 from the current, now unneccessary word
+; Get the msg schedule word 16 from the current, now unnecessary word
 %macro PROCESS_LOOP_00_47 5
 %define %%WT	%1
 %define %%ROUND	%2

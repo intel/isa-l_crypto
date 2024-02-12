@@ -79,7 +79,7 @@ Message variables
 	declare_var_vector_reg	msg_2,18
 	declare_var_vector_reg	msg_3,19
 /*
-Temporay variables
+Temporary variables
 */
 	declare_var_vector_reg	tmp_0,5
 	declare_var_vector_reg	tmp_1,6
@@ -88,7 +88,7 @@ Temporay variables
 	void sha1_mb_ce_x1(SHA1_JOB * job, int len);
 */
 /*
-Arguements list
+Arguments list
 */
 	job 	.req	x0
 	len	.req	w1
