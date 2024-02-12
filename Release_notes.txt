@@ -17,9 +17,33 @@ RELEASE NOTE CONTENTS
 
 * 32-bit lib is not supported in Windows.
 
+* 32-bit lib is not validated.
+
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
+Unreleased
+
+* Fixed build with gcc 11.1.
+
+* Fixed SHA512 internal reference function parameters.
+
+* Fixed SM3 lane handling for aarch64.
+
+* Replaced non-VEX encoded with VEX-encoded instructions in AES-XTS implementation.
+
+* Fixed clang compilation with older assemblers.
+
+* Fixed SHA512 calculation error on aarch64.
+
+* Fixed MD5/SHA1/SHA256/SHA512 base functions for small inputs (less than block size).
+
+* Fixed AES-XTS OpenSSL calls, limiting the input size, as per restrictions in 3.0 version.
+
+* Fixed Windows build on test applications.
+
+* Fixed SHA1 context structure to force alignment for lengths array.
+
 v2.21
 
 * Put correct vec instruction versions in aes_cbc_enc_{128,192,256}().  May help
@@ -55,6 +79,20 @@ v2.7
 ================================================================================
 3. CHANGE LOG & FEATURES ADDED
 ================================================================================
+Unreleased
+
+* Optimized AES-GCM for AVX512-VAES x86 implementation.
+
+* Optimized MD5 and SM3 for aarch64.
+
+* New optimized version of AES-CBC and AES-XTS for aarch64.
+
+* Optimized multi-hash SHA1-Murmur for aarch64.
+
+* Optimized multi-hash SHA1 for aarch64.
+
+* Added ACVP test applications for AES-CBC, AES-GCM, AES-XTS and SHA1/256/512.
+
 v2.24
 
 * New optimized version of AES-CBC decode
