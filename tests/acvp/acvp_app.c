@@ -47,9 +47,14 @@ int enable_sha(ACVP_CTX * ctx) ATTRIBUTE(weak);
 
 uint8_t verbose = 0;
 
-static ACVP_RESULT logger(char *msg)
+static ACVP_RESULT logger(char *msg, ACVP_LOG_LVL level)
 {
-	printf("%s", msg);
+	if (level == ACVP_LOG_LVL_ERR)
+		printf("[ERROR] ");
+	else if (level == ACVP_LOG_LVL_WARN)
+		printf("[WARNING] ");
+
+	printf("%s\n", msg);
 	return ACVP_SUCCESS;
 }
 
@@ -60,7 +65,6 @@ static void usage(void)
 		"Options:\n"
 		"  -r, --req <file>     request file in JSON format\n"
 		"  -p, --rsp <file>     response file in JSON format\n"
-		"  -k, --kat <file>     kat vector file in JSON format\n"
 		"  -s, --server <name>  server name or ip address\n"
 		"  -P, --port <num>     server port number\n"
 		"  -h, --help           help, print this message\n"
@@ -77,7 +81,6 @@ int main(int argc, char **argv)
 	ACVP_LOG_LVL log_level = ACVP_LOG_LVL_WARN;
 	char *req_filename = NULL;
 	char *rsp_filename = NULL;
-	char *kat_filename = NULL;
 	char *server = "127.0.0.1";
 	int port = 443;
 	char c;
@@ -88,7 +91,6 @@ int main(int argc, char **argv)
 		{"verbose", no_argument, NULL, 'v'},
 		{"req", required_argument, NULL, 'r'},
 		{"rsp", required_argument, NULL, 'p'},
-		{"kat", required_argument, NULL, 'k'},
 		{"server", required_argument, NULL, 's'},
 		{"port", required_argument, NULL, 'P'},
 		{0, 0, 0, 0}
@@ -107,9 +109,6 @@ int main(int argc, char **argv)
 			break;
 		case 'p':
 			rsp_filename = optarg;
-			break;
-		case 'k':
-			kat_filename = optarg;
 			break;
 		case 's':
 			server = optarg;
@@ -159,11 +158,6 @@ int main(int argc, char **argv)
 	if (enable_sha && enable_sha(ctx))
 		goto exit;
 
-	// Parse kat vector file if specified and quit
-	if (kat_filename != NULL) {
-		ret = acvp_load_kat_filename(ctx, kat_filename);
-		goto exit;
-	}
 	// Parse request file, run crypto tests and write out response file
 	if (req_filename != NULL && rsp_filename != NULL) {
 		ret = acvp_run_vectors_from_file(ctx, req_filename, rsp_filename);
