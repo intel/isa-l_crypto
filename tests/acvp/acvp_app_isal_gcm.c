@@ -42,6 +42,7 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 
 	static struct gcm_key_data key;
 	static struct gcm_context_data gctx;
+	uint8_t res_tag[16] = { 0 };
 
 	if (verbose > 2)
 		printf("aes gcm case\n");
@@ -82,7 +83,7 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 					aes_gcm_enc_128_finalize(&key, &gctx, tc->tag,
 								 tc->tag_len);
 				else
-					aes_gcm_dec_128_finalize(&key, &gctx, tc->tag,
+					aes_gcm_dec_128_finalize(&key, &gctx, res_tag,
 								 tc->tag_len);
 			}
 		} else {
@@ -95,7 +96,7 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 						tc->tag_len);
 			else
 				aes_gcm_dec_128(&key, &gctx, tc->pt, tc->ct, tc->pt_len,
-						tc->iv, tc->aad, tc->aad_len, tc->tag,
+						tc->iv, tc->aad, tc->aad_len, res_tag,
 						tc->tag_len);
 
 		}
@@ -119,7 +120,7 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 					aes_gcm_enc_256_finalize(&key, &gctx, tc->tag,
 								 tc->tag_len);
 				else
-					aes_gcm_dec_256_finalize(&key, &gctx, tc->tag,
+					aes_gcm_dec_256_finalize(&key, &gctx, res_tag,
 								 tc->tag_len);
 			}
 		} else {
@@ -132,7 +133,7 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 						tc->tag_len);
 			else
 				aes_gcm_dec_256(&key, &gctx, tc->pt, tc->ct, tc->pt_len,
-						tc->iv, tc->aad, tc->aad_len, tc->tag,
+						tc->iv, tc->aad, tc->aad_len, res_tag,
 						tc->tag_len);
 		}
 		break;
@@ -144,8 +145,11 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 
 	if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
 		tc->ct_len = tc->pt_len;
-	else
+	else {
 		tc->pt_len = tc->ct_len;
+		if (memcmp(res_tag, tc->tag, tc->tag_len) != 0)
+			return ACVP_CRYPTO_MODULE_FAIL;
+	}
 
       end:
 	return ret;
