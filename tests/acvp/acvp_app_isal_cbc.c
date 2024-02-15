@@ -28,6 +28,8 @@
 **********************************************************************/
 
 #include <stdio.h>
+#include <string.h>
+
 #include <stdlib.h>
 #include <acvp/acvp.h>
 #include <isa-l_crypto.h>
@@ -39,6 +41,8 @@ static int aes_cbc_handler(ACVP_TEST_CASE * test_case)
 	ACVP_RESULT ret = ACVP_SUCCESS;
 	ACVP_SYM_CIPHER_TC *tc;
 	struct cbc_key_data keys;
+	static uint8_t next_iv[16];
+	void *iv = NULL;
 
 	if (verbose > 2)
 		printf("aes cbc case\n");
@@ -54,36 +58,40 @@ static int aes_cbc_handler(ACVP_TEST_CASE * test_case)
 		ret = EXIT_FAILURE;
 		goto err;
 	}
-	if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT) {
-		fprintf(stderr, "Unsupported test type MCT\n");
-		ret = EXIT_FAILURE;
-		goto err;
-	}
+
+	/*
+	 * If Monte-carlo test, use the IV from the ciphertext of
+	 * the previous iteration
+	 */
+	if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT && tc->mct_index != 0)
+		iv = next_iv;
+	else
+		iv = tc->iv;
 
 	switch (tc->key_len) {
 	case 128:
 		aes_keyexp_128(tc->key, keys.enc_keys, keys.dec_keys);
 
 		if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-			aes_cbc_enc_128(tc->pt, tc->iv, keys.enc_keys, tc->ct, tc->pt_len);
+			aes_cbc_enc_128(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);
 		else
-			aes_cbc_dec_128(tc->ct, tc->iv, keys.dec_keys, tc->pt, tc->ct_len);
+			aes_cbc_dec_128(tc->ct, iv, keys.dec_keys, tc->pt, tc->ct_len);
 		break;
 	case 192:
 		aes_keyexp_192(tc->key, keys.enc_keys, keys.dec_keys);
 
 		if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-			aes_cbc_enc_192(tc->pt, tc->iv, keys.enc_keys, tc->ct, tc->pt_len);
+			aes_cbc_enc_192(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);
 		else
-			aes_cbc_dec_192(tc->ct, tc->iv, keys.dec_keys, tc->pt, tc->ct_len);
+			aes_cbc_dec_192(tc->ct, iv, keys.dec_keys, tc->pt, tc->ct_len);
 		break;
 	case 256:
 		aes_keyexp_256(tc->key, keys.enc_keys, keys.dec_keys);
 
 		if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-			aes_cbc_enc_256(tc->pt, tc->iv, keys.enc_keys, tc->ct, tc->pt_len);
+			aes_cbc_enc_256(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);
 		else
-			aes_cbc_dec_256(tc->ct, tc->iv, keys.dec_keys, tc->pt, tc->ct_len);
+			aes_cbc_dec_256(tc->ct, iv, keys.dec_keys, tc->pt, tc->ct_len);
 		break;
 	default:
 		fprintf(stderr, "Unsupported AES key length\n");
@@ -95,6 +103,13 @@ static int aes_cbc_handler(ACVP_TEST_CASE * test_case)
 		tc->ct_len = tc->pt_len;
 	else
 		tc->pt_len = tc->ct_len;
+
+	/*
+	 * If Monte-carlo test, copy the ciphertext for
+	 * the IV of the next iteration
+	 */
+	if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT)
+		memcpy(next_iv, tc->ct, 16);
 
       err:
 	return ret;
