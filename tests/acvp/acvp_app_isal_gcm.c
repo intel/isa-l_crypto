@@ -57,6 +57,11 @@ static int aes_gcm_handler(ACVP_TEST_CASE * test_case)
 		return EXIT_FAILURE;
 	}
 
+	if (tc->iv_len != 12) {
+		fprintf(stderr, "Unsupported IV\n");
+		return EXIT_FAILURE;
+	}
+
 	switch (tc->key_len) {
 	case 128:
 		if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT) {
