@@ -45,6 +45,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 %ifidn __OUTPUT_FORMAT__, elf64
 %define IN0		rdi
@@ -142,6 +143,9 @@ main_loop:
 	jne	main_loop
 
 done:
+%ifdef SAFE_DATA
+        clear_all_xmms_avx_asm
+%endif ;; SAFE_DATA
 	FUNC_RESTORE
 	ret
 

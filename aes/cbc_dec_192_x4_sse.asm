@@ -44,6 +44,7 @@
 ;
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 %define MOVDQ	movdqu
 
@@ -158,6 +159,9 @@ initial_4:
         CBC_DECRYPT_BLOCKS KEY_ROUNDS, 4, EARLY_BLOCKS, MOVDQ, PXOR, AES_DEC, AES_DEC_LAST, CKEY_CNT, TMP, TMP_CNT, FIRST_CKEY, KEYS, FIRST_XDATA, IN, OUT, IDX, LEN
 	jnz	partials
 done:
+%ifdef SAFE_DATA
+        clear_all_xmms_sse_asm
+%endif
 	FUNC_RESTORE
 	ret
 

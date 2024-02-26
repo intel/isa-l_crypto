@@ -29,6 +29,7 @@
 
 %include "aes_common.asm"
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 %if (AS_FEATURE_LEVEL) >= 10
 
@@ -453,6 +454,12 @@ default rel
                      %%TMP, %%NROUNDS
 
 %%cbc_dec_done:
+
+%ifdef SAFE_DATA
+        clear_all_zmms_asm
+%else
+        vzeroupper
+%endif ;; SAFE_DATA
 
         FUNC_RESTORE
 %endmacro

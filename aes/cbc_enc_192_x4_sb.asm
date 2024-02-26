@@ -33,6 +33,7 @@
 ;include "mb_mgr_datastruct.asm"
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 %define	MOVDQ movdqu ;; assume buffers not aligned
 %macro pxor2 2
@@ -143,6 +144,9 @@ main_loop:
 	jne	main_loop
 
 done:
+%ifdef SAFE_DATA
+        clear_all_xmms_sse_asm
+%endif
 	FUNC_RESTORE
 	ret
 
