@@ -67,12 +67,29 @@ default rel
 %define p_keys     rdx
 %define p_out      rcx
 %define num_bytes  r8
-%else
+%define FUNC_SAVE
+%define FUNC_RESTORE
+%else ; Win64
 %define p_in       rcx
 %define p_IV       rdx
 %define p_keys     r8
 %define p_out      r9
 %define num_bytes  rax
+%define stack_size	3*16 + 1*8	; must be an odd multiple of 8
+
+%macro FUNC_SAVE 0
+	mov             rsp, stack_size
+	vmovdqa64	[rsp + 0*16], xmm6
+	vmovdqa64	[rsp + 1*16], xmm7
+	vmovdqa64	[rsp + 2*16], xmm8
+%endmacro
+
+%macro FUNC_RESTORE 0
+	vmovdqa64       xmm6, [rsp + 0*16]
+	vmovdqa64       xmm7, [rsp + 1*16]
+	vmovdqa64       xmm8, [rsp + 2*16]
+	add	        rsp, stack_size
+%endmacro
 %endif
 
 %define tmp        r10
@@ -278,6 +295,8 @@ default rel
         cmp     %%LENGTH, 0
         je      %%cbc_dec_done
 
+        FUNC_SAVE
+
         vinserti64x2 zIV, zIV, [%%IV], 3
 
         ;; preload keys
@@ -434,6 +453,8 @@ default rel
                      %%TMP, %%NROUNDS
 
 %%cbc_dec_done:
+
+        FUNC_RESTORE
 %endmacro
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
