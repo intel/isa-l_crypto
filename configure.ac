@@ -63,6 +63,13 @@ AS_IF([test "x$enable_debug" = "xyes"], [
         AC_DEFINE(ENABLE_DEBUG, [1], [Debug messages.])
 ])
 
+AC_ARG_ENABLE([safe-data],
+        AS_HELP_STRING([--disable-safe-data], [clear sensitive data @<:@default=enabled@:>@]),
+        [safe_data=no], [safe_data=yes])
+AS_IF([test "x$safe_data" = "xyes"], [
+        AC_DEFINE(SAFE_DATA, [1], [Clear sensitive data.])
+])
+
 if test x"$CPU" = x"aarch64"; then
    AC_ARG_ENABLE([sve2],
         AS_HELP_STRING([--disable-sve2], [disable usage of SVE2]),
@@ -304,6 +311,7 @@ AS_IF([test "x$intel_cet_enabled" = "xyes"], [
     AC_MSG_RESULT([Assembler does not understand AVX512 opcodes.  Consider upgrading for best performance.])
   fi
 
+  AM_CONDITIONAL(SAFE_DATA, test x"$SAFE_DATA" = x"yes")
   AM_CONDITIONAL(USE_YASM, test x"$AS" = x"yasm")
   AM_CONDITIONAL(USE_NASM, test x"$AS" = x"nasm")
   AM_CONDITIONAL(WITH_AVX512, test x"$have_as_knows_avx512" = x"yes")
@@ -367,4 +375,5 @@ AC_MSG_RESULT([
         ldflags:                ${LDFLAGS}
 
         debug:                  ${enable_debug}
+        safe_data:              ${safe_data}
 ])

@@ -261,6 +261,11 @@ CC         = cl
 # or CC    = icl -Qstd=c99
 AS         = nasm
 
+!if "$(SAFE_DATA)" != "n"
+CFLAGS = $(CFLAGS) /DSAFE_DATA
+AFLAGS = $(AFLAGS) -DSAFE_DATA
+!endif
+
 lib: bin static dll
 static: bin isa-l_crypto_static.lib
 dll: bin isa-l_crypto.dll
