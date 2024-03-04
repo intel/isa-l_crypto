@@ -106,6 +106,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 #include "multi_buffer.h"
 #include "types.h"
 

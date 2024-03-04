@@ -33,6 +33,7 @@ void sha512_mb_mgr_init_avx512(SHA512_MB_JOB_MGR * state)
 {
 	unsigned int j;
 
+	memset(state, 0, sizeof(*state));
 	state->unused_lanes = 0x0706050403020100;
 	state->num_lanes_inuse = 0;
 	for (j = 0; j < SHA512_MAX_LANES; j++) {

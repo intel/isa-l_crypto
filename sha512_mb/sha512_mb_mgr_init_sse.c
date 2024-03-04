@@ -33,6 +33,7 @@ void sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR * state)
 {
 	unsigned int j;
 
+	memset(state, 0, sizeof(*state));
 	state->lens[0] = 0;
 	state->lens[1] = 1;
 	state->unused_lanes = 0xFF0100;

@@ -32,6 +32,8 @@
 void md5_mb_mgr_init_sse(MD5_MB_JOB_MGR * state)
 {
 	unsigned int j;
+
+	memset(state, 0, sizeof(*state));
 	state->unused_lanes[0] = 0xF76543210;
 	state->num_lanes_inuse = 0;
 	for (j = 0; j < 8; j++) {

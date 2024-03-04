@@ -32,6 +32,8 @@
 void md5_mb_mgr_init_avx512(MD5_MB_JOB_MGR * state)
 {
 	unsigned int j;
+
+	memset(state, 0, sizeof(*state));
 	state->unused_lanes[0] = 0x0706050403020100;
 	state->unused_lanes[1] = 0x0f0e0d0c0b0a0908;
 	state->unused_lanes[2] = 0x1716151413121110;
