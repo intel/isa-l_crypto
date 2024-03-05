@@ -34,9 +34,6 @@
 /**
  *  @file sm3_mb.h
  *  @brief Multi-buffer CTX API SM3 function prototypes and structures
- *
- *  \warning Experimental interface with only base functions available at this
- *           time.
  */
 
 #include <stdint.h>
