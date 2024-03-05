@@ -34,6 +34,7 @@
 ; first key is required only once, no need for storage of this key
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 %if (AS_FEATURE_LEVEL) >= 10
 
@@ -1304,6 +1305,11 @@ _steal_cipher:
 	vmovdqu		[ptr_ciphertext - 16], xmm8
 
 _ret_:
+%ifdef SAFE_DATA
+        clear_all_zmms_asm
+%else
+        vzeroupper
+%endif
 	mov		rbx, [_gpr + 8*0]
 
 %ifidn __OUTPUT_FORMAT__, win64

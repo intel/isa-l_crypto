@@ -34,6 +34,7 @@
 ; first key is required only once, no need for storage of this key
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 default rel
 %define TW              rsp     ; store 8 tweak values
@@ -1523,6 +1524,9 @@ _done:
 	vmovdqu  [ptr_ciphertext+16*7], xmm8
 
 _ret_:
+%ifdef SAFE_DATA
+        clear_all_xmms_avx_asm
+%endif
 
 	mov     rbx, [_gpr + 8*0]
 %ifidn __OUTPUT_FORMAT__, win64
