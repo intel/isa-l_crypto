@@ -33,6 +33,7 @@
 /**
  *  @file sha1_mb.h
  *  @brief Multi-buffer CTX API SHA1 function prototypes and structures
+ *  @warning: SHA1 is considered unsafe, so it is recommended to use SHA256 instead.
  *
  * Interface for multi-buffer SHA1 functions
  *

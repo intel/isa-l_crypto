@@ -33,6 +33,7 @@
 /**
  *  @file md5_mb.h
  *  @brief Multi-buffer CTX API MD5 function prototypes and structures
+ *  @warning: MD5 is considered unsafe, so it is recommended to use SHA256 instead.
  *
  * Interface for multi-buffer MD5 functions
  *

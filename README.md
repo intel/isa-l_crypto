@@ -70,3 +70,26 @@ Other targets include:
 * `make perfs` : create included performance tests
 * `make ex`    : build examples
 * `make doc`   : build API manual
+
+Algorithm recommendations
+-------------------------
+
+Legacy or to be avoided algorithms listed in the table below are implemented
+in the library in order to support legacy applications. Please use corresponding
+alternative algorithms instead.
+```
++----------------------------------------------------+
+| # | Algorithm      | Recommendation | Alternative  |
+|---+----------------+----------------+--------------|
+| 1 | MD5 integrity  | Legacy         | SHA256       |
+|---+----------------+----------------+--------------|
+| 2 | SHA1 integrity | Avoid          | SHA256       |
++----------------------------------------------------+
+```
+Intel(R) Intelligent Storage Acceleration for Crypto Library depends on C library and
+it is recommended to use its latest version.
+
+Applications using the Intel(R) Intelligent Storage Acceleration for Crypto Library rely on
+Operating System to provide process isolation.
+As the result, it is recommended to use latest Operating System patches and
+security updates.
