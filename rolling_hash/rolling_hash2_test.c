@@ -29,7 +29,6 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 #include "rolling_hashx.h"
@@ -186,7 +185,7 @@ int main(void)
 		printf("  case 2: stop fut at offset=%d\n", offset_fut);
 		printf("  case 2: stop ref at offset=%d\n", offset);
 		errors++;
-		return errors;
+		goto end;
 	}
 	putchar('.');		// Finished test 2
 
@@ -221,7 +220,7 @@ int main(void)
 			printf("  case 2r: stop fut at offset=%d\n", offset_fut);
 			printf("  case 2r: stop ref at offset=%d\n", offset);
 			errors++;
-			return errors;
+			goto end;
 		}
 		putchar('.');
 	}
@@ -257,7 +256,7 @@ int main(void)
 			printf("  case 3: stop ref at offset=%d\n", offset);
 			printf("  case 3: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
 			errors++;
-			return errors;
+			goto end;
 		}
 		putchar('.');	// Finished test 3
 	}
@@ -297,7 +296,7 @@ int main(void)
 			printf("  case 4: stop ref at offset=%d\n", offset);
 			printf("  case 4: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
 			errors++;
-			return errors;
+			goto end;
 		}
 		putchar('.');	// Finished test 4
 
@@ -305,6 +304,10 @@ int main(void)
 			p[-1] = rand();	// Keep hits from repeating
 		}
 	}
+
+      end:
+	if (buffer != NULL)
+		free(buffer);
 
 	if (errors > 0)
 		printf(" Fail: %d\n", errors);
