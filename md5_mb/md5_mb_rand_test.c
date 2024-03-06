@@ -58,10 +58,10 @@ int main(void)
 	MD5_HASH_CTX_MGR *mgr = NULL;
 	MD5_HASH_CTX ctxpool[TEST_BUFS];
 	uint32_t i, j, fail = 0;
-	unsigned char *bufs[TEST_BUFS];
+	unsigned char *bufs[TEST_BUFS] = { 0 };
 	uint32_t lens[TEST_BUFS];
 	unsigned int jobs, t;
-	uint8_t *tmp_buf;
+	uint8_t *tmp_buf = NULL;
 	int ret;
 
 	printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
@@ -81,7 +81,8 @@ int main(void)
 		bufs[i] = (unsigned char *)malloc(TEST_LEN);
 		if (bufs[i] == NULL) {
 			printf("malloc failed test aborted\n");
-			return 1;
+			fail++;
+			goto end;
 		}
 		rand_buffer(bufs[i], TEST_LEN);
 
@@ -112,7 +113,7 @@ int main(void)
 
 	if (fail) {
 		printf("Test failed function check %d\n", fail);
-		return fail;
+		goto end;
 	}
 	// Run tests with random size and number of jobs
 	for (t = 0; t < RANDOMS; t++) {
@@ -147,7 +148,7 @@ int main(void)
 		}
 		if (fail) {
 			printf("Test failed function check %d\n", fail);
-			return fail;
+			goto end;
 		}
 
 		putchar('.');
@@ -159,12 +160,15 @@ int main(void)
 	tmp_buf = (uint8_t *) malloc(sizeof(uint8_t) * jobs);
 	if (!tmp_buf) {
 		printf("malloc failed, end test aborted.\n");
-		return 1;
+		goto end;
 	}
 
 	rand_buffer(tmp_buf, jobs);
 
 	md5_ctx_mgr_init(mgr);
+
+	for (i = 0; i < TEST_BUFS; i++)
+		free(bufs[i]);
 
 	// Extend to the end of allocated buffer to construct jobs
 	for (i = 0; i < jobs; i++) {
@@ -177,6 +181,8 @@ int main(void)
 		// sb_md5 test
 		md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
 	}
+	// Clear bufs
+	memset(bufs, 0, sizeof(bufs));
 
 	while (md5_ctx_mgr_flush(mgr)) ;
 
@@ -190,8 +196,13 @@ int main(void)
 			}
 		}
 	}
-
 	putchar('.');
+
+      end:
+	for (i = 0; i < TEST_BUFS; i++)
+		free(bufs[i]);
+	free(tmp_buf);
+	aligned_free(mgr);
 
 	if (fail)
 		printf("Test failed function check %d\n", fail);
