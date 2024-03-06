@@ -98,7 +98,8 @@ int main(void)
 		bufs[i] = (unsigned char *)malloc(lens[i]);
 		if (bufs[i] == NULL) {
 			printf("malloc failed test aborted\n");
-			return 1;
+			fail++;
+			goto end;
 		}
 		rand_buffer(bufs[i], lens[i]);
 	}
@@ -140,6 +141,11 @@ int main(void)
 		printf("Test failed function check %d\n", fail);
 	else
 		printf("Pass\n");
+
+      end:
+	for (i = 0; i < TEST_BUFS; i++)
+		free(bufs[i]);
+	aligned_free(mgr);
 
 	return fail;
 }
