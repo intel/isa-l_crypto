@@ -162,10 +162,10 @@ int main(void)
 	SHA1_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
 	uint32_t i, j, k, t, checked = 0;
 	uint32_t *good;
-	int ret;
+	int rc, ret = -1;
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
+	rc = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+	if ((rc != 0) || (mgr == NULL)) {
 		printf("posix_memalign failed test aborted\n");
 		return 1;
 	}
@@ -191,14 +191,14 @@ int main(void)
 				if (good[j] != ctxpool[t].job.result_digest[j]) {
 					printf("Test %d, digest %d is %08X, should be %08X\n",
 					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					return -1;
+					goto end;
 				}
 			}
 
 			if (ctx->error) {
 				printf("Something bad happened during the submit."
 				       " Error code: %d", ctx->error);
-				return -1;
+				goto end;
 			}
 
 		}
@@ -215,14 +215,14 @@ int main(void)
 				if (good[j] != ctxpool[t].job.result_digest[j]) {
 					printf("Test %d, digest %d is %08X, should be %08X\n",
 					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					return -1;
+					goto end;
 				}
 			}
 
 			if (ctx->error) {
 				printf("Something bad happened during the submit."
 				       " Error code: %d", ctx->error);
-				return -1;
+				goto end;
 			}
 		} else {
 			break;
@@ -252,14 +252,14 @@ int main(void)
 				if (good[j] != ctxpool[t].job.result_digest[j]) {
 					printf("Test %d, digest %d is %08X, should be %08X\n",
 					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					return -1;
+					goto end;
 				}
 			}
 
 			if (ctx->error) {
 				printf("Something bad happened during the"
 				       " submit. Error code: %d", ctx->error);
-				return -1;
+				goto end;
 			}
 
 			t = (uint32_t) ((uintptr_t) (ctx->user_data));
@@ -278,14 +278,14 @@ int main(void)
 				if (good[j] != ctxpool[t].job.result_digest[j]) {
 					printf("Test %d, digest %d is %08X, should be %08X\n",
 					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					return -1;
+					goto end;
 				}
 			}
 
 			if (ctx->error) {
 				printf("Something bad happened during the submit."
 				       " Error code: %d", ctx->error);
-				return -1;
+				goto end;
 			}
 		} else {
 			break;
@@ -294,16 +294,19 @@ int main(void)
 
 	if (checked != NUM_JOBS) {
 		printf("only tested %d rather than %d\n", checked, NUM_JOBS);
-		return -1;
+		goto end;
 	}
 
-	int rc = non_blocksize_updates_test(mgr);
+	rc = non_blocksize_updates_test(mgr);
 	if (rc) {
 		printf("multi updates test fail %d\n", rc);
-		return rc;
+		goto end;
 	}
+	ret = 0;
 
 	printf(" multibinary_sha1 test: Pass\n");
+      end:
+	aligned_free(mgr);
 
-	return 0;
+	return ret;
 }

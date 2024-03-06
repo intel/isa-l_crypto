@@ -74,7 +74,7 @@ int main(void)
 	SHA1_HASH_CTX_MGR *mgr = NULL;
 	SHA1_HASH_CTX ctxpool[TEST_BUFS];
 	uint32_t i, j, fail = 0;
-	unsigned char *bufs[TEST_BUFS];
+	unsigned char *bufs[TEST_BUFS] = { 0 };
 	uint32_t lens[TEST_BUFS];
 	uint8_t num_ret, num_unchanged = 0;
 	int ret;
@@ -97,7 +97,8 @@ int main(void)
 		bufs[i] = (unsigned char *)malloc(lens[i]);
 		if (bufs[i] == NULL) {
 			printf("malloc failed test aborted\n");
-			return 1;
+			fail++;
+			goto end;
 		}
 		rand_buffer(bufs[i], lens[i]);
 	}
@@ -141,6 +142,11 @@ int main(void)
 		       num_unchanged, num_unchanged + 1);
 	else
 		printf("SHA-NI is not used, or used for last job\n");
+
+      end:
+	for (i = 0; i < TEST_BUFS; i++)
+		free(bufs[i]);
+	aligned_free(mgr);
 
 	return fail;
 }
