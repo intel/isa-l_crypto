@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
 	if (buff == NULL || update_ctx == NULL) {
 		printf("malloc failed test aborted\n");
-		return -1;
+		goto end_ctx;
 	}
 	// Rand test1
 	rand_buffer(buff, TEST_LEN);
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 
 	if (fail) {
 		printf("fail rand1 test\n");
-		return -1;
+		goto end_ctx;
 	} else
 		putchar('.');
 
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail size1=%d\n", size1);
-			return -1;
+			goto end_ctx;
 		}
 
 		if ((size2 & 0xff) == 0) {
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail size1=%d\n", size1);
-			return -1;
+			goto end_ctx;
 		}
 
 		if ((size2 & 0xff) == 0) {
@@ -203,10 +203,17 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	free(update_ctx);
+	update_ctx = NULL;
+
 	// test various start address of ctx.
 	printf("\n various start address of ctx test");
-	free(update_ctx);
 	mem_addr = (uint8_t *) malloc(sizeof(*update_ctx) + AVX512_ALIGNED * 10);
+	if (mem_addr == NULL) {
+		fail++;
+		goto end;
+	}
+
 	for (addr_offset = AVX512_ALIGNED * 10; addr_offset >= 0; addr_offset--) {
 
 		// Fill with rand data
@@ -224,7 +231,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail addr_offset=%d\n", addr_offset);
-			return -1;
+			goto end;
 		}
 
 		if ((addr_offset & 0xf) == 0) {
@@ -233,8 +240,18 @@ int main(int argc, char *argv[])
 		}
 	}
 
+      end:
+	if (mem_addr != NULL)
+		free(mem_addr);
+	if (buff != NULL)
+		free(buff);
+
 	printf("\n" xstr(TEST_UPDATE_FUNCTION) "_test: %s\n", fail == 0 ? "Pass" : "Fail");
 
 	return fail;
 
+      end_ctx:
+	if (update_ctx != NULL)
+		free(update_ctx);
+	goto end;
 }
