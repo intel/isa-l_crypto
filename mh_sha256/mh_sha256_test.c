@@ -120,7 +120,8 @@ int main(int argc, char *argv[])
 
 	if (buff == NULL || update_ctx == NULL) {
 		printf("malloc failed test aborted\n");
-		return -1;
+		fail++;
+		goto end;
 	}
 	// Rand test1
 	rand_buffer(buff, TEST_LEN);
@@ -134,7 +135,7 @@ int main(int argc, char *argv[])
 
 	if (fail) {
 		printf("fail rand1 test\n");
-		return -1;
+		goto end;
 	} else
 		putchar('.');
 
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail size=%d\n", size);
-			return -1;
+			goto end;
 		}
 
 		if ((size & 0xff) == 0) {
@@ -176,7 +177,7 @@ int main(int argc, char *argv[])
 
 			if (fail) {
 				printf("Fail size=%d\n", size);
-				return -1;
+				goto end;
 			}
 
 		}
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail size=%d\n", size);
-			return -1;
+			goto end;
 		}
 
 		if ((size & 0xf) == 0) {
@@ -209,6 +210,12 @@ int main(int argc, char *argv[])
 			fflush(0);
 		}
 	}
+
+      end:
+	if (buff != NULL)
+		free(buff);
+	if (update_ctx != NULL)
+		free(update_ctx);
 
 	printf(xstr(TEST_UPDATE_FUNCTION) "_test:");
 	printf(" %s\n", fail == 0 ? "Pass" : "Fail");
