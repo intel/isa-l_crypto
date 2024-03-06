@@ -35,10 +35,10 @@ int main(void)
 {
 
 	// Temporary array for the calculated vectors
-	uint8_t *ct_test;
-	uint8_t *pt_test;
+	uint8_t *ct_test = NULL;
+	uint8_t *pt_test = NULL;
 
-	int i, j;
+	int i, j, ret = -1;
 
 	// --- Encryption test ---
 
@@ -49,7 +49,7 @@ int main(void)
 		ct_test = malloc(vlist[i].ptlen);
 		if (ct_test == NULL) {
 			fprintf(stderr, "Can't allocate ciphertext memory\n");
-			return -1;
+			goto end;
 		}
 
 		XTS_AES_128_enc(vlist[i].key2, vlist[i].key1, vlist[i].TW,
@@ -65,10 +65,13 @@ int main(void)
 				       i < 9 ? i + 1 : i + 6);
 
 				printf("failed at byte %d! \n", j);
-				return -1;
+				goto end;
 			}
 		}
 		printf(".");
+
+		free(ct_test);
+		ct_test = NULL;
 	}
 
 	// --- Decryption test ---
@@ -80,7 +83,7 @@ int main(void)
 		pt_test = malloc(vlist[i].ptlen);
 		if (pt_test == NULL) {
 			fprintf(stderr, "Can't allocate plaintext memory\n");
-			return -1;
+			goto end;
 		}
 
 		XTS_AES_128_dec(vlist[i].key2, vlist[i].key1, vlist[i].TW,
@@ -95,12 +98,22 @@ int main(void)
 				       i < 9 ? i + 1 : i + 6);
 
 				printf(" failed at byte %d! \n", j);
-				return -1;
+				goto end;
 			}
 		}
 		printf(".");
+
+		free(pt_test);
+		pt_test = NULL;
 	}
+	ret = 0;
 	printf("Pass\n");
 
-	return 0;
+      end:
+	if (ct_test != NULL)
+		free(ct_test);
+	if (pt_test != NULL)
+		free(pt_test);
+
+	return ret;
 }
