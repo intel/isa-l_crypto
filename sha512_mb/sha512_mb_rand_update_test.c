@@ -94,7 +94,8 @@ int main(void)
 		buf_ptr[i] = bufs[i];
 		if (bufs[i] == NULL) {
 			printf("malloc failed test aborted\n");
-			return 1;
+			fail++;
+			goto end;
 		}
 		rand_buffer(bufs[i], TEST_LEN);
 
@@ -284,12 +285,17 @@ int main(void)
 		}
 		if (fail) {
 			printf("Test failed function check %d\n", fail);
-			return fail;
+			goto end;
 		}
 
 		putchar('.');
 		fflush(0);
 	}			// random test t
+
+      end:
+	for (i = 0; i < TEST_BUFS; i++)
+		free(bufs[i]);
+	aligned_free(mgr);
 
 	if (fail)
 		printf("Test failed function check %d\n", fail);
