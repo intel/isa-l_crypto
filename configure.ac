@@ -321,6 +321,7 @@ AS_IF([test "x$intel_cet_enabled" = "xyes"], [
   AC_MSG_RESULT([Using $AS args target "$arch" "$yasm_args"])
 else
   # Disable below conditionals if not x86
+  AM_CONDITIONAL(SAFE_DATA, test "x" = "y")
   AM_CONDITIONAL(USE_YASM, test "x" = "y")
   AM_CONDITIONAL(USE_NASM, test "x" = "y")
   AM_CONDITIONAL(WITH_AVX512, test "x" = "y")
