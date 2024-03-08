@@ -104,6 +104,22 @@ AS_IF([test "x$intel_cet_enabled" = "xyes"], [
         AC_DEFINE(INTEL_CET_ENABLED, [1], [Intel CET enabled.])
 ])
 
+# check if LD -z options are supported
+LDFLAGS="\
+-Wl,-z,noexecstack \
+-Wl,-z,relro \
+-Wl,-z,now \
+"
+AC_MSG_CHECKING([if $LD supports $LDFLAGS])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[
+int main(int argc, char **argv)
+{
+       return 0;
+}]])],
+       [AC_MSG_RESULT([yes])],
+       [AC_MSG_RESULT([no])
+               LDFLAGS=""]
+)
 
   # Pick an assembler yasm or nasm
   if test x"$AS" = x""; then

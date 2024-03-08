@@ -71,7 +71,7 @@ ARFLAGS_win64 = -out:$@
 ASFLAGS_mingw = -f win64
 ARFLAGS_mingw = cr $@
 
-LDFLAGS_so = -Wl,-soname,$(soname)
+LDFLAGS_so = -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,-soname,$(soname)
 
 ifeq ($(arch),mingw)
   CC=x86_64-w64-mingw32-gcc
