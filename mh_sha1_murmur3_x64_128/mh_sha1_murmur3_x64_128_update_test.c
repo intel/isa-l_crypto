@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
 
 		if (fail) {
 			printf("Fail addr_offset=%d\n", addr_offset);
-			return -1;
+			break;
 		}
 
 		if ((addr_offset & 0xf) == 0) {
