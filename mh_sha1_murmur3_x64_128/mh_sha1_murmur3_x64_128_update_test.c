@@ -254,10 +254,8 @@ int main(int argc, char *argv[])
 
 		fail = compare_digests(hash_base, hash_test, murmur3_base, murmur3_test);
 
-		if (fail) {
+		if (fail)
 			printf("Fail addr_offset=%d\n", addr_offset);
-			return -1;
-		}
 
 		if ((addr_offset & 0xf) == 0) {
 			putchar('.');

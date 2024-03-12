@@ -197,12 +197,8 @@ int main(int argc, char *argv[])
 
 	if (fail) {
 		printf("Fail size=%d\n", TEST_LEN);
-		return -1;
-	}
-
-	if (fail)
 		printf("Test failed function test%d\n", fail);
-	else
+	} else
 		printf("Pass func check\n");
 
 	return fail;
