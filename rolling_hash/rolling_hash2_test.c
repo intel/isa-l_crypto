@@ -170,7 +170,7 @@ int main(void)
 	// Function under test
 	FUT_init(&state, w);
 	FUT_reset(&state, p);
-	ret = FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
+	FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
 	offset_fut += w;
 
 	// Reference
@@ -203,7 +203,7 @@ int main(void)
 		// Function under test
 		FUT_init(&state, w);
 		FUT_reset(&state, p);
-		ret = FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
+		FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
 		offset_fut += w;
 
 		// Reference
