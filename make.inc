@@ -43,7 +43,7 @@ version ?= 2.24.0
 
 
 
-CC  = gcc
+CC  ?= gcc
 AS  = nasm
 AWK = awk
 
