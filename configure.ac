@@ -369,6 +369,8 @@ my_CFLAGS="\
 -Wshadow \
 -Wstrict-prototypes \
 -Wtype-limits \
+-fstack-protector \
+-D_FORTIFY_SOURCE=2
 "
 AC_SUBST([my_CFLAGS])
 
