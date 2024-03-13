@@ -123,15 +123,15 @@ void mk_rand_data(uint8_t * data, uint32_t size)
 int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
 {
 	int mismatch;
-	int OK = 0;
+	int fail = 0;
 	uint64_t a;
 
 	mismatch = memcmp(test, expected, len);
 	if (!mismatch) {
-		return OK;
+		return fail;
 
 	} else {
-		OK = 1;
+		fail = 1;
 		printf("  failed %s \t\t", data_name);
 		for (a = 0; a < len; a++) {
 			if (test[a] != expected[a]) {
@@ -141,14 +141,14 @@ int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name
 			}
 		}
 	}
-	return OK;
+	return fail;
 }
 
 int check_vector(struct cbc_vector *vector)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *o_ct_test = NULL;
-	int OK = 0;
+	int fail = 0;
 	aes_cbc_generic enc;
 	aes_cbc_generic dec;
 
@@ -191,7 +191,8 @@ int check_vector(struct cbc_vector *vector)
 	o_ct_test = malloc(vector->P_LEN);
 	if ((pt_test == NULL) || (o_ct_test == NULL)) {
 		fprintf(stderr, "Can't allocate ciphertext memory\n");
-		return 1;
+		fail = 1;
+		goto exit;
 	}
 
 	aes_cbc_precomp(vector->K, vector->K_LEN, vector->KEYS);
@@ -204,12 +205,12 @@ int check_vector(struct cbc_vector *vector)
 	////
 	enc(vector->P, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
 	if (NULL != vector->EXP_C) {	//when the encrypted text is know verify correct
-		OK |=
+		fail |=
 		    check_data(vector->EXP_C, vector->C, vector->P_LEN,
 			       "ISA-L expected cypher text (C)");
 	}
 	OpenSslEnc(vector->K_LEN, vector->K, vector->P, vector->IV, o_ct_test, vector->P_LEN);
-	OK |=
+	fail |=
 	    check_data(vector->C, o_ct_test, vector->P_LEN,
 		       "OpenSSL vs ISA-L cypher text (C)");
 
@@ -223,15 +224,21 @@ int check_vector(struct cbc_vector *vector)
 	// ISA-l Decrypt
 	////
 	dec(vector->C, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
-	OK |= check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted plain text (P)");
+	fail |=
+	    check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted plain text (P)");
 	memset(vector->P, 0, vector->P_LEN);
 	dec(o_ct_test, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
-	OK |= check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted OpenSSL (P)");
+	fail |= check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted OpenSSL (P)");
 	memset(vector->P, 0, vector->P_LEN);
 	OpenSslDec(vector->K_LEN, vector->K, vector->C, vector->IV, vector->P, vector->P_LEN);
-	OK |= check_data(vector->P, pt_test, vector->P_LEN, "OpenSSL decrypted ISA-L (P)");
+	fail |= check_data(vector->P, pt_test, vector->P_LEN, "OpenSSL decrypted ISA-L (P)");
+
+      exit:
+	free(pt_test);
+	free(o_ct_test);
+
 #ifdef CBC_VECTORS_VERBOSE
-	if (OK)
+	if (fail)
 		printf("Failed");
 	else
 		printf("Passed");
@@ -239,7 +246,7 @@ int check_vector(struct cbc_vector *vector)
 	printf("\n");
 #endif
 
-	return OK;
+	return fail;
 }
 
 int test_std_combinations(void)
@@ -267,8 +274,11 @@ int test_std_combinations(void)
 		vect.IV = iv;
 		vect.C = NULL;
 		vect.C = malloc(vect.P_LEN);
-		if ((NULL == vect.C))
-			return 1;
+		if ((NULL == vect.C)) {
+			aligned_free(vect.KEYS);
+			ret = 1;
+			break;
+		}
 #ifdef CBC_VECTORS_VERBOSE
 		printf("vector[%d of %d] ", i, vectors_cnt);
 #endif
@@ -277,8 +287,12 @@ int test_std_combinations(void)
 		if (0 == (i % 10))
 			fflush(0);
 
-		if (0 != check_vector(&vect))
-			return 1;
+		if (0 != check_vector(&vect)) {
+			aligned_free(vect.KEYS);
+			free(vect.C);
+			ret = 1;
+			break;
+		}
 
 		aligned_free(vect.KEYS);
 		free(vect.C);
@@ -286,7 +300,7 @@ int test_std_combinations(void)
 
 	aligned_free(iv);
 	printf("\n");
-	return 0;
+	return ret;
 }
 
 int test_random_combinations(void)
@@ -304,8 +318,10 @@ int test_random_combinations(void)
 		return 1;
 	test.KEYS = NULL;
 	ret = posix_memalign((void **)&test.KEYS, 16, (sizeof(*test.KEYS)));
-	if ((0 != ret) || (NULL == test.KEYS))
-		return 1;
+	if ((0 != ret) || (NULL == test.KEYS)) {
+		ret = 1;
+		goto exit;
+	}
 
 	for (t = 0; RANDOMS > t; t++) {
 		int Plen = 16 + ((rand() % TEST_LEN) & ~0xf);	//must be a 16byte multiple
@@ -329,7 +345,11 @@ int test_random_combinations(void)
 		test.K = malloc(test.K_LEN + offset);
 		if ((NULL == test.P) || (NULL == test.C) || (NULL == test.K)) {
 			printf("malloc of testsize:0x%x failed\n", Plen);
-			return -1;
+			free(test.P);
+			free(test.C);
+			free(test.K);
+			ret = -1;
+			break;
 		}
 		test.P += offset;
 		test.C += offset;
@@ -343,7 +363,7 @@ int test_random_combinations(void)
 		printf(" Offset:0x%x ", offset);
 #endif
 		if (0 != check_vector(&test))
-			return 1;
+			ret = 1;
 
 		test.C -= offset;
 		free(test.C);
@@ -351,12 +371,16 @@ int test_random_combinations(void)
 		free(test.K);
 		test.P -= offset;
 		free(test.P);
+
+		if (ret != 0)
+			break;
 	}
 
+      exit:
 	aligned_free(test.IV);
 	aligned_free(test.KEYS);
 	printf("\n");
-	return 0;
+	return ret;
 }
 
 int test_efence_combinations(void)
@@ -366,6 +390,7 @@ int test_efence_combinations(void)
 	int key_idx;
 	uint8_t *P = NULL, *C = NULL, *K = NULL, *IV = NULL;
 	uint8_t *key_data = NULL;
+	int ret = 1;
 
 	P = malloc(PAGE_LEN);
 	C = malloc(PAGE_LEN);
@@ -377,7 +402,7 @@ int test_efence_combinations(void)
 	    || (NULL == key_data)
 	    ) {
 		printf("malloc of testsize:0x%x failed\n", PAGE_LEN);
-		return -1;
+		goto exit;
 	}
 	// place buffers to end at page boundary
 	test.P_LEN = PAGE_LEN / 2;
@@ -412,32 +437,35 @@ int test_efence_combinations(void)
 			printf(" Offset:0x%x ", offset);
 #endif
 			if (0 != check_vector(&test))
-				return 1;
+				goto exit;
 		}
 
 	}
 
+	ret = 0;
+
+      exit:
 	free(P);
 	free(C);
 	free(K);
 	free(IV);
 	free(key_data);
 	printf("\n");
-	return 0;
+	return ret;
 }
 
 int main(void)
 {
-	uint32_t OK = 0;
+	uint32_t fail = 0;
 
 	srand(TEST_SEED);
-	OK |= test_std_combinations();
-	OK |= test_random_combinations();
-	OK |= test_efence_combinations();
-	if (0 == OK) {
+	fail |= test_std_combinations();
+	fail |= test_random_combinations();
+	fail |= test_efence_combinations();
+	if (0 == fail) {
 		printf("...Pass\n");
 	} else {
 		printf("...Fail\n");
 	}
-	return OK;
+	return fail;
 }

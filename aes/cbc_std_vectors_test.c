@@ -148,28 +148,38 @@ int test_std_combinations(void)
 		struct cbc_vector vect = cbc_vectors[i];
 
 		ret = posix_memalign((void **)&(vect.KEYS), 16, sizeof(*vect.KEYS));
-		if ((0 != ret) || (NULL == vect.KEYS))
-			return 1;
-
+		if ((0 != ret) || (NULL == vect.KEYS)) {
+			ret = 1;
+			break;
+		}
 		// IV data must be aligned to 16 byte boundary so move data in
 		// aligned buffer and change out the pointer
 		memcpy(iv, vect.IV, CBC_IV_DATA_LEN);
 		vect.IV = iv;
 		vect.C = malloc(vect.P_LEN);
-		if (NULL == vect.C)
-			return 1;
+		if (NULL == vect.C) {
+			ret = 1;
+			aligned_free(vect.KEYS);
+			vect.KEYS = NULL;
+			break;
+		}
 
 		DEBUG_PRINT(("vector[%d of %d] ", i, vectors_cnt));
 
 		if (0 != check_vector(&vect))
-			return 1;
+			ret = 1;
 
 		aligned_free(vect.KEYS);
+		vect.KEYS = NULL;
 		free(vect.C);
+		vect.C = NULL;
+
+		if (ret != 0)
+			break;
 	}
 
 	aligned_free(iv);
-	return 0;
+	return ret;
 }
 
 int main(void)

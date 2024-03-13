@@ -33,6 +33,7 @@
 #include <aes_cbc.h>
 #include <test.h>
 #include "ossl_helper.h"
+#include "types.h"
 
 #ifndef GT_L3_CACHE
 # define GT_L3_CACHE  32*1024*1024	/* some number > last level cache */
@@ -59,8 +60,12 @@ static unsigned char const ic[] = {
 	0x0e, 0x0f
 };
 
-static unsigned char *plaintext, *cbc_plaintext, *ciphertext, *ossl_plaintext,
-    *ossl_ciphertext;
+static unsigned char *plaintext = NULL;
+static unsigned char *cbc_plaintext = NULL;
+static unsigned char *ciphertext = NULL;
+static unsigned char *ossl_plaintext = NULL;
+static unsigned char *ossl_ciphertext = NULL;
+
 static uint8_t test_key[CBC_256_BITS];
 
 void mk_rand_data(uint8_t * data, uint32_t size)
@@ -87,10 +92,9 @@ int aes_128_perf(uint8_t * key)
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return 1;
+		ret = 1;
+		goto exit;
 	}
-	if ((NULL == iv) || (NULL == key_data))
-		return 1;
 
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
 
@@ -151,7 +155,13 @@ int aes_128_perf(uint8_t * key)
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 	printf("\n");
-	return 0;
+
+	ret = 0;
+      exit:
+	aligned_free(iv);
+	aligned_free(key_data);
+
+	return ret;
 }
 
 int aes_192_perf(uint8_t * key)
@@ -168,10 +178,9 @@ int aes_192_perf(uint8_t * key)
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return 1;
+		ret = 1;
+		goto exit;
 	}
-	if ((NULL == iv) || (NULL == key_data))
-		return 1;
 
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
 	aes_cbc_precomp(key, 192, key_data);
@@ -231,7 +240,13 @@ int aes_192_perf(uint8_t * key)
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 	printf("\n");
-	return 0;
+
+	ret = 0;
+      exit:
+	aligned_free(iv);
+	aligned_free(key_data);
+
+	return ret;
 }
 
 int aes_256_perf(uint8_t * key)
@@ -248,10 +263,9 @@ int aes_256_perf(uint8_t * key)
 	ret = posix_memalign((void **)&key_data, 16, (sizeof(*key_data)));
 	if (ret) {
 		printf("alloc error: Fail");
-		return 1;
+		ret = 1;
+		goto exit;
 	}
-	if ((NULL == iv) || (NULL == key_data))
-		return 1;
 
 	aes_cbc_precomp(key, 256, key_data);
 	memcpy(iv, ic, CBC_IV_DATA_LEN);
@@ -311,12 +325,18 @@ int aes_256_perf(uint8_t * key)
 		perf_print(stop, start, (long long)TEST_LEN * i);
 	}
 	printf("\n");
-	return 0;
+
+	ret = 0;
+      exit:
+	aligned_free(iv);
+	aligned_free(key_data);
+
+	return ret;
 }
 
 int main(void)
 {
-	uint32_t OK = 0;
+	int fail = 0;
 
 	srand(TEST_SEED);
 
@@ -328,15 +348,23 @@ int main(void)
 	if (NULL == plaintext || NULL == ciphertext || NULL == cbc_plaintext
 	    || NULL == ossl_plaintext || NULL == ossl_ciphertext) {
 		printf("malloc of testsize:0x%x failed\n", TEST_LEN);
-		return 1;
+		fail = 1;
+		goto exit;
 	}
 
 	mk_rand_data(plaintext, TEST_LEN);
 	mk_rand_data(test_key, sizeof(test_key));
 	printf("AES CBC ISA-L vs OpenSSL performance:\n");
-	OK += aes_128_perf(test_key);
-	OK += aes_192_perf(test_key);
-	OK += aes_256_perf(test_key);
+	fail += aes_128_perf(test_key);
+	fail += aes_192_perf(test_key);
+	fail += aes_256_perf(test_key);
 
-	return OK;
+      exit:
+	free(plaintext);
+	free(cbc_plaintext);
+	free(ciphertext);
+	free(ossl_plaintext);
+	free(ossl_ciphertext);
+
+	return fail;
 }
