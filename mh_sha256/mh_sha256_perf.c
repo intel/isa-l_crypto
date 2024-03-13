@@ -69,7 +69,7 @@
 #define CHECK_RETURN(state)		do{ \
 					  if((state) != MH_SHA256_CTX_ERROR_NONE){ \
 					    printf("The mh_sha256 function is failed.\n"); \
-					    return 1; \
+					    goto exit; \
 					  } \
 					}while(0)
 
@@ -117,7 +117,7 @@ int compare_digests(uint32_t hash_base[SHA256_DIGEST_WORDS],
 
 int main(int argc, char *argv[])
 {
-	int i, fail = 0;
+	int i, fail = -1;
 	uint32_t hash_test[SHA256_DIGEST_WORDS], hash_base[SHA256_DIGEST_WORDS];
 	uint8_t *buff = NULL;
 	struct mh_sha256_ctx *update_ctx_test = NULL, *update_ctx_base = NULL;
@@ -131,15 +131,15 @@ int main(int argc, char *argv[])
 
 	if (buff == NULL || update_ctx_base == NULL || update_ctx_test == NULL) {
 		printf("malloc failed test aborted\n");
-		return -1;
+		goto exit;
 	}
 	// Rand test1
 	rand_buffer(buff, TEST_LEN);
 
 	// mh_sha256 base version
-	mh_sha256_init(update_ctx_base);
-	mh_sha256_update_base(update_ctx_base, buff, TEST_LEN);
-	mh_sha256_finalize_base(update_ctx_base, hash_base);
+	CHECK_RETURN(mh_sha256_init(update_ctx_base));
+	CHECK_RETURN(mh_sha256_update_base(update_ctx_base, buff, TEST_LEN));
+	CHECK_RETURN(mh_sha256_finalize_base(update_ctx_base, hash_base));
 
 	perf_start(&start);
 	for (i = 0; i < TEST_LOOPS / 10; i++) {
@@ -158,9 +158,9 @@ int main(int argc, char *argv[])
 
 	perf_start(&start);
 	for (i = 0; i < TEST_LOOPS; i++) {
-		CHECK_RETURN(mh_sha256_init(update_ctx_test));
-		CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx_test, buff, TEST_LEN));
-		CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx_test, hash_test));
+		mh_sha256_init(update_ctx_test);
+		TEST_UPDATE_FUNCTION(update_ctx_test, buff, TEST_LEN);
+		TEST_FINAL_FUNCTION(update_ctx_test, hash_test);
 	}
 	perf_stop(&stop);
 	printf(xstr(TEST_UPDATE_FUNCTION) TEST_TYPE_STR ": ");
@@ -174,6 +174,11 @@ int main(int argc, char *argv[])
 		printf("Test failed function test%d\n", fail);
 	} else
 		printf("Pass func check\n");
+
+      exit:
+	free(buff);
+	free(update_ctx_test);
+	free(update_ctx_base);
 
 	return fail;
 }
