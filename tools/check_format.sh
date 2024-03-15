@@ -78,7 +78,8 @@ done <<< $(git ls-files -s '*.sh')
 
 echo "Checking for signoff in commit message..."
 if ! git log -n 1 --format=%B | grep -q "^Signed-off-by:" ; then
-    echo "  Commit not signed off. Please read src/CONTRIBUTING.md"
+    hash=`git rev-parse --short HEAD`
+    echo "  Commit $hash not signed off. Please read src/CONTRIBUTING.md"
     rc=1
 fi
 
