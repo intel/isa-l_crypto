@@ -1,6 +1,10 @@
 Intel(R) Intelligent Storage Acceleration Library Crypto Version
 ================================================================
 
+![Continuous Integration](https://github.com/intel/isa-l_crypto/actions/workflows/ci.yml/badge.svg)
+[![Coverity Status](https://scan.coverity.com/projects/29481/badge.svg)](https://scan.coverity.com/projects/intel-isa-l-crypto)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/intel/isa-l_crypto/badge)](https://securityscorecards.dev/viewer/?uri=github.com/intel/isa-l_crypto)
+
 ISA-L_crypto is a collection of optimized low-level functions targeting storage
 applications.  ISA-L_crypto includes:
 
