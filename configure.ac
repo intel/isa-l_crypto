@@ -35,6 +35,7 @@ AM_CONDITIONAL([CPU_X86_64], [test "$CPU" = "x86_64"])
 AM_CONDITIONAL([CPU_X86_32], [test "$CPU" = "x86_32"])
 AM_CONDITIONAL([CPU_AARCH64], [test "$CPU" = "aarch64"])
 AM_CONDITIONAL([CPU_UNDEFINED], [test "x$CPU" = "x"])
+AM_CONDITIONAL([SAFE_PARAM], [test x"$SAFE_PARAM" = x"yes"])
 
 if test "$CPU" = "x86_64"; then
    is_x86=yes
@@ -68,6 +69,13 @@ AC_ARG_ENABLE([safe-data],
         [safe_data=no], [safe_data=yes])
 AS_IF([test "x$safe_data" = "xyes"], [
         AC_DEFINE(SAFE_DATA, [1], [Clear sensitive data.])
+])
+
+AC_ARG_ENABLE([safe-param],
+        AS_HELP_STRING([--disable-safe-param], [enable parameter checking @<:@default=enabled@:>@]),
+        [safe_param=no], [safe_param=yes])
+AS_IF([test "x$safe_param" = "xyes"], [
+        AC_DEFINE(SAFE_PARAM, [1], [Enable parameter checking.])
 ])
 
 if test x"$CPU" = x"aarch64"; then
@@ -395,4 +403,5 @@ AC_MSG_RESULT([
 
         debug:                  ${enable_debug}
         safe_data:              ${safe_data}
+        safe_param:             ${safe_param}
 ])

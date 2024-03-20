@@ -127,6 +127,11 @@ CFLAGS += -DSAFE_DATA
 ASFLAGS += -DSAFE_DATA
 endif
 
+ifneq ($(SAFE_PARAM),n)
+CFLAGS += -DSAFE_PARAM
+ASFLAGS += -DSAFE_PARAM
+endif
+
 ifeq ($(filter aarch64 x86_%,$(host_cpu)),)
   host_cpu=base_aliases
 endif

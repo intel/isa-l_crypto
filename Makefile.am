@@ -122,13 +122,16 @@ CCAS = $(as_filter)
 EXTRA_DIST += tools/yasm-filter.sh tools/nasm-filter.sh
 EXTRA_DIST += tools/yasm-cet-filter.sh tools/nasm-cet-filter.sh
 
-if SAFE_DATA
-SAFE_OPTS = -DSAFE_DATA
-else
 SAFE_OPTS =
+
+if SAFE_DATA
+SAFE_OPTS += -DSAFE_DATA
+endif
+if SAFE_PARAM
+SAFE_OPTS += -DSAFE_PARAM
 endif
 
-AM_CFLAGS = ${my_CFLAGS} ${INCLUDE} $(src_include) ${D}
+AM_CFLAGS = ${my_CFLAGS} ${INCLUDE} $(src_include) ${D} ${SAFE_OPTS}
 if CPU_AARCH64
 AM_CCASFLAGS = ${yasm_args} ${INCLUDE} $(src_include) ${D}
 else

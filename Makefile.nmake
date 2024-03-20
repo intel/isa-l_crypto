@@ -266,6 +266,11 @@ CFLAGS = $(CFLAGS) /DSAFE_DATA
 AFLAGS = $(AFLAGS) -DSAFE_DATA
 !endif
 
+!if "$(SAFE_PARAM)" != "n"
+CFLAGS = $(CFLAGS) /DSAFE_PARAM
+AFLAGS = $(AFLAGS) -DSAFE_PARAM
+!endif
+
 lib: bin static dll
 static: bin isa-l_crypto_static.lib
 dll: bin isa-l_crypto.dll
