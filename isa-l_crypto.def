@@ -78,3 +78,6 @@ aes_gcm_dec_256_update_nt              @73
 sm3_ctx_mgr_init		       @74
 sm3_ctx_mgr_submit		       @75
 sm3_ctx_mgr_flush		       @76
+isal_aes_keyexp_128                    @77
+isal_aes_keyexp_192                    @78
+isal_aes_keyexp_256                    @79

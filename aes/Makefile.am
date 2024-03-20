@@ -71,10 +71,12 @@ lsrc_x86_64     += aes/XTS_AES_256_dec_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_256_dec_expanded_key_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_expanded_key_vaes.asm
+lsrc_x86_64     += aes/aes_keyexp.c
 
 lsrc_x86_32 	+= $(lsrc_x86_64)
 
 lsrc_aarch64 +=  aes/gcm_pre.c \
+                aes/aes_keyexp.c                            \
                 aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/keyexp_multibinary_aarch64.S    \
                 aes/aarch64/gcm_aarch64_dispatcher.c        \
@@ -130,6 +132,7 @@ check_tests += aes/xts_128_test
 check_tests += aes/xts_256_test
 check_tests += aes/xts_128_expanded_key_test
 check_tests += aes/xts_256_expanded_key_test
+check_tests += aes/aes_param_test
 
 unit_tests  += aes/cbc_std_vectors_random_test
 unit_tests  += aes/gcm_std_vectors_random_test

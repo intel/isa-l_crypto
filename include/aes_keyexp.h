@@ -70,6 +70,45 @@ void aes_keyexp_256(
 	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*15 bytes
 	);
 
+/**
+ * @brief AES key expansion 128 bit
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+*/
+int isal_aes_keyexp_128(
+	const uint8_t *key,  		//!< input key for AES-128, 16 bytes
+	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*11 bytes
+	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*11 bytes
+	);
+
+/**
+ * @brief AES key expansion 192 bit
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_keyexp_192(
+	const uint8_t *key,	//!< input key for AES-192, 24 bytes
+	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*13 bytes
+	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*13 bytes
+	);
+
+/**
+ * @brief AES key expansion 256 bit
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+*/
+int isal_aes_keyexp_256(
+	const uint8_t *key,	//!< input key for AES-256, 32 bytes
+	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*15 bytes
+	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*15 bytes
+	);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

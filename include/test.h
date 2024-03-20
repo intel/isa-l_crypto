@@ -36,6 +36,8 @@ extern "C" {
 
 #include "endian_helper.h"
 
+#define DIM(_x) (sizeof(_x)/sizeof(_x[0]))
+
 // Use sys/time.h functions for time
 #if defined (__unix__) || (__APPLE__) || (__MINGW32__)
 # include <sys/time.h>
