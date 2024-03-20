@@ -392,7 +392,7 @@ section .text
 %define pref		tmp8
 %macro PREFETCH_X 1
 %define %%mem  %1
-	prefetchnta %%mem
+	prefetcht1  %%mem
 %endmacro
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 %define VMOVPS	vmovups
