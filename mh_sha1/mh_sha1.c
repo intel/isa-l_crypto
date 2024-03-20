@@ -28,6 +28,7 @@
 **********************************************************************/
 
 #include <string.h>
+#include "isal_crypto_api.h"
 #include "mh_sha1_internal.h"
 
 int mh_sha1_init(struct mh_sha1_ctx *ctx)
@@ -52,8 +53,40 @@ int mh_sha1_init(struct mh_sha1_ctx *ctx)
 	return MH_SHA1_CTX_ERROR_NONE;
 }
 
+int isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+	return mh_sha1_init(ctx);
+}
+
+int isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+	if (buffer == NULL)
+		return ISAL_CRYPTO_ERR_NULL_SRC;
+#endif
+	return mh_sha1_update(ctx, buffer, len);
+}
+
+int isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+	if (mh_sha1_digest == NULL)
+		return ISAL_CRYPTO_ERR_NULL_AUTH;
+#endif
+	return mh_sha1_finalize(ctx, mh_sha1_digest);
+}
+
 #if (!defined(NOARCH)) && (defined(__i386__) || defined(__x86_64__) \
 	|| defined( _M_X64) || defined(_M_IX86))
+
 /***************mh_sha1_update***********/
 // mh_sha1_update_sse.c
 #define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_sse

@@ -307,6 +307,48 @@ int mh_sha1_finalize_avx2 (struct mh_sha1_ctx* ctx,
 int mh_sha1_finalize_avx512 (struct mh_sha1_ctx* ctx,
 						void* mh_sha1_digest);
 
+/**
+ * @brief Initialize the mh_sha1_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha1 info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha1_init (struct mh_sha1_ctx* ctx);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha1_update (struct mh_sha1_ctx * ctx, const void* buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for multi-hash sha1.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha1_finalize (struct mh_sha1_ctx* ctx, void* mh_sha1_digest);
+
 #ifdef __cplusplus
 }
 #endif

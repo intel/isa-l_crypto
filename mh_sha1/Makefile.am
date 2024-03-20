@@ -72,6 +72,8 @@ src_include += -I $(srcdir)/mh_sha1
 extern_hdrs +=	include/mh_sha1.h
 
 check_tests += 	mh_sha1/mh_sha1_test
+check_tests += 	mh_sha1/mh_sha1_param_test
+
 unit_tests  += 	mh_sha1/mh_sha1_update_test
 
 perf_tests  += 	mh_sha1/mh_sha1_perf

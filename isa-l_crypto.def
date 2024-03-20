@@ -81,3 +81,6 @@ sm3_ctx_mgr_flush		       @76
 isal_aes_keyexp_128                    @77
 isal_aes_keyexp_192                    @78
 isal_aes_keyexp_256                    @79
+isal_mh_sha1_init                      @80
+isal_mh_sha1_update                    @81
+isal_mh_sha1_finalize                  @82

@@ -379,6 +379,8 @@ checks = \
 	xts_128_expanded_key_test.exe \
 	xts_256_expanded_key_test.exe \
 	aes_param_test.exe \
+	mh_sha1_param_test.exe
+
 
 checks: lib $(checks)
 $(checks): $(@B).obj
