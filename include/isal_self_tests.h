@@ -27,40 +27,29 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#ifndef _ISAL_CRYPTO_API_H
-#define _ISAL_CRYPTO_API_H
+/**
+ *  @file  isal_self_test.h
+ *  @brief Declares self tests functions for NIST approved algorithms
+ *
+ */
+
+#ifndef _ISAL_SELF_TESTS_H_
+#define _ISAL_SELF_TESTS_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef enum {
-        ISAL_CRYPTO_ERR_NONE = 0,
-        ISAL_CRYPTO_ERR_NULL_SRC = 2000,
-        ISAL_CRYPTO_ERR_NULL_DST,
-        ISAL_CRYPTO_ERR_NULL_CTX,
-        ISAL_CRYPTO_ERR_NULL_MGR,
-        ISAL_CRYPTO_ERR_NULL_KEY,
-        ISAL_CRYPTO_ERR_NULL_EXP_KEY,
-        ISAL_CRYPTO_ERR_NULL_IV,
-        ISAL_CRYPTO_ERR_NULL_AUTH,
-        ISAL_CRYPTO_ERR_NULL_AAD,
-        ISAL_CRYPTO_ERR_CIPH_LEN,
-        ISAL_CRYPTO_ERR_AUTH_LEN,
-        ISAL_CRYPTO_ERR_IV_LEN,
-        ISAL_CRYPTO_ERR_KEY_LEN,
-        ISAL_CRYPTO_ERR_AUTH_TAG_LEN,
-        ISAL_CRYPTO_ERR_AAD_LEN,
-        ISAL_CRYPTO_ERR_INVALID_FLAGS,
-        ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
-        ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
-        ISAL_CRYPTO_ERR_XTS_NULL_TWEAK,
-        ISAL_CRYPTO_ERR_SELF_TEST,
-        /* add new error types above this comment */
-        ISAL_CRYPTO_ERR_MAX /* don't move this one */
-} ISAL_CRYPTO_ERROR;
+/**
+ * @brief Run AES-CBC self tests
+ * @return  Self test result
+ * @retval  0 on success, 1 on failure
+ */
+int
+_aes_cbc_self_test(void);
 
 #ifdef __cplusplus
 }
-#endif //__cplusplus
-#endif // ifndef _ISAL_CRYPTO_API_H
+#endif
+
+#endif // _ISAL_SELF_TESTS_H_
