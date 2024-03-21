@@ -54,11 +54,11 @@ void sha1_mb_ce_x1(SHA1_JOB *, int);
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
 void sha1_mb_mgr_init_ce(SHA1_MB_JOB_MGR * state)
 {
-	unsigned int i;
+	int i;
 
 	state->unused_lanes = 0xf;
 	state->num_lanes_inuse = 0;
-	for (i = 0; i < SHA1_MB_CE_MAX_LANES; i++) {
+	for (i = SHA1_MB_CE_MAX_LANES - 1; i >= 0; i--) {
 		state->unused_lanes <<= 4;
 		state->unused_lanes |= i;
 		state->lens[i] = i;
@@ -66,7 +66,7 @@ void sha1_mb_mgr_init_ce(SHA1_MB_JOB_MGR * state)
 	}
 
 	//lanes > SHA1_MB_CE_MAX_LANES is invalid lane
-	for (; i < SHA1_MAX_LANES; i++) {
+	for (i = SHA1_MB_CE_MAX_LANES; i < SHA1_MAX_LANES; i++) {
 		state->lens[i] = 0xf;
 		state->ldata[i].job_in_lane = 0;
 	}
