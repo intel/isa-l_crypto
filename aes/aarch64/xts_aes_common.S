@@ -209,10 +209,10 @@
 	sub	lastblk,outp,#16
 .copytail:
 	subs	tailcnt,tailcnt,#1
-	ldrb	tmpw,[lastblk,tailcnt]
-	strb	tmpw,[outp,tailcnt]
 	ldrb	tmpw,[inp,tailcnt]
 	strb	tmpw,[tmpbuf,tailcnt]
+	ldrb	tmpw,[lastblk,tailcnt]
+	strb	tmpw,[outp,tailcnt]
 	b.gt	.copytail
 	and	tailcnt,bytes,#0x0F
 .steal:
