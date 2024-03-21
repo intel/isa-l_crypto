@@ -72,10 +72,12 @@ lsrc_x86_64     += aes/XTS_AES_128_dec_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_256_dec_expanded_key_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_expanded_key_vaes.asm
 lsrc_x86_64     += aes/aes_keyexp.c
+lsrc_x86_64     += aes/aes_cbc.c
 
 lsrc_x86_32 	+= $(lsrc_x86_64)
 
 lsrc_aarch64 +=  aes/gcm_pre.c \
+                aes/aes_cbc.c                               \
                 aes/aes_keyexp.c                            \
                 aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/keyexp_multibinary_aarch64.S    \

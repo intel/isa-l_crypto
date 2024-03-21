@@ -93,3 +93,9 @@ isal_md5_ctx_mgr_flush                 @88
 isal_sha1_ctx_mgr_init                 @89
 isal_sha1_ctx_mgr_submit               @90
 isal_sha1_ctx_mgr_flush                @91
+isal_aes_cbc_enc_128                   @92
+isal_aes_cbc_dec_128                   @93
+isal_aes_cbc_enc_192                   @94
+isal_aes_cbc_dec_192                   @95
+isal_aes_cbc_enc_256                   @96
+isal_aes_cbc_dec_256                   @97

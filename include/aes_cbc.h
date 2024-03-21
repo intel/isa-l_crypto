@@ -159,6 +159,97 @@ int aes_cbc_enc_256(
 	uint64_t len_bytes   //!< Must be a multiple of 16 bytes
 	);
 
+/** @brief CBC-AES 128 bit key Decryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_dec_128(
+	const void     *in,      //!< Input ciphertext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output plaintext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+
+/** @brief CBC-AES 192 bit key Decryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_dec_192(
+	const void     *in,      //!< Input ciphertext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output plaintext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+
+/** @brief CBC-AES 256 bit key Decryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_dec_256(
+	const void     *in,      //!< Input ciphertext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output plaintext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+
+/** @brief CBC-AES 128 bit key Encryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_enc_128(
+	const void     *in,      //!< Input plaintext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output ciphertext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+/** @brief CBC-AES 192 bit key Encryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_enc_192(
+	const void     *in,      //!< Input plaintext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output ciphertext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+
+/** @brief CBC-AES 256 bit key Encryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_aes_cbc_enc_256(
+	const void     *in,      //!< Input plaintext
+	const uint8_t  *iv,      //!< Initialization vector. Must be 16 bytes aligned.
+	const uint8_t  *keys,    //!< Expanded decryption keys. Must be on a 16 byte boundary.
+	void           *out,     //!< Output ciphertext
+	const uint64_t len_bytes //!< Input length. Must be a multiple of 16 bytes
+	);
+
 #ifdef __cplusplus
 }
 #endif				//__cplusplus
