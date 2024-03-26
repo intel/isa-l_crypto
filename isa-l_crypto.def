@@ -84,3 +84,6 @@ isal_aes_keyexp_256                    @79
 isal_mh_sha1_init                      @80
 isal_mh_sha1_update                    @81
 isal_mh_sha1_finalize                  @82
+isal_mh_sha256_init                    @83
+isal_mh_sha256_update                  @84
+isal_mh_sha256_finalize                @85

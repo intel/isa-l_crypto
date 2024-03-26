@@ -29,6 +29,7 @@
 
 #include <string.h>
 #include "mh_sha256_internal.h"
+#include "isal_crypto_api.h"
 
 int mh_sha256_init(struct mh_sha256_ctx *ctx)
 {
@@ -53,6 +54,37 @@ int mh_sha256_init(struct mh_sha256_ctx *ctx)
 	}
 
 	return MH_SHA256_CTX_ERROR_NONE;
+}
+
+int isal_mh_sha256_init(struct mh_sha256_ctx *ctx)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+	return mh_sha256_init(ctx);
+}
+
+int isal_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+	if (buffer == NULL)
+		return ISAL_CRYPTO_ERR_NULL_SRC;
+#endif
+	return mh_sha256_update(ctx, buffer, len);
+}
+
+int isal_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+{
+#ifdef SAFE_PARAM
+	if (ctx == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+	if (mh_sha256_digest == NULL)
+		return ISAL_CRYPTO_ERR_NULL_AUTH;
+#endif
+	return mh_sha256_finalize(ctx, mh_sha256_digest);
 }
 
 #if (!defined(NOARCH)) && (defined(__i386__) || defined(__x86_64__) \

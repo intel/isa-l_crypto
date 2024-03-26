@@ -307,6 +307,48 @@ int mh_sha256_finalize_avx2 (struct mh_sha256_ctx* ctx,
 int mh_sha256_finalize_avx512 (struct mh_sha256_ctx* ctx,
 						void* mh_sha256_digest);
 
+/**
+ * @brief Initialize the mh_sha256_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha256 info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha256_init (struct mh_sha256_ctx* ctx);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha256 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha256_update (struct mh_sha256_ctx * ctx, const void* buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for multi-hash sha256.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_mh_sha256_finalize (struct mh_sha256_ctx* ctx, void* mh_sha256_digest);
+
 #ifdef __cplusplus
 }
 #endif
