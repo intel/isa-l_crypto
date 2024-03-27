@@ -54,7 +54,7 @@
 
 #define TEST_MEM TEST_LEN * TEST_BUFS * TEST_LOOPS
 
-unsigned char md5_ossl(const uint8_t * d, unsigned long n, uint8_t * md)
+unsigned char md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
 {
 	unsigned int tmplen;
 	EVP_MD_CTX *c;

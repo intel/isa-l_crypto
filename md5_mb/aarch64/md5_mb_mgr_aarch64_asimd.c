@@ -50,7 +50,7 @@ void md5_mb_asimd_x1(MD5_JOB *, int);
 	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR * state)
+void md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR *state)
 {
 	unsigned int i;
 
@@ -70,7 +70,7 @@ void md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR * state)
 	}
 }
 
-static int md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR * state)
+static int md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR *state)
 {
 	int lane_idx, len, i;
 
@@ -112,7 +112,7 @@ static int md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR * state)
 
 }
 
-static MD5_JOB *md5_mb_mgr_free_lane(MD5_MB_JOB_MGR * state)
+static MD5_JOB *md5_mb_mgr_free_lane(MD5_MB_JOB_MGR *state)
 {
 	int i;
 	MD5_JOB *ret = NULL;
@@ -132,7 +132,7 @@ static MD5_JOB *md5_mb_mgr_free_lane(MD5_MB_JOB_MGR * state)
 	return ret;
 }
 
-static void md5_mb_mgr_insert_job(MD5_MB_JOB_MGR * state, MD5_JOB * job)
+static void md5_mb_mgr_insert_job(MD5_MB_JOB_MGR *state, MD5_JOB *job)
 {
 	int lane_idx;
 	//add job into lanes
@@ -145,7 +145,7 @@ static void md5_mb_mgr_insert_job(MD5_MB_JOB_MGR * state, MD5_JOB * job)
 	state->num_lanes_inuse++;
 }
 
-MD5_JOB *md5_mb_mgr_submit_asimd(MD5_MB_JOB_MGR * state, MD5_JOB * job)
+MD5_JOB *md5_mb_mgr_submit_asimd(MD5_MB_JOB_MGR *state, MD5_JOB *job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -173,7 +173,7 @@ MD5_JOB *md5_mb_mgr_submit_asimd(MD5_MB_JOB_MGR * state, MD5_JOB * job)
 	return ret;
 }
 
-MD5_JOB *md5_mb_mgr_flush_asimd(MD5_MB_JOB_MGR * state)
+MD5_JOB *md5_mb_mgr_flush_asimd(MD5_MB_JOB_MGR *state)
 {
 	MD5_JOB *ret;
 	ret = md5_mb_mgr_free_lane(state);

@@ -53,7 +53,7 @@ void rand_buffer(unsigned char *buf, const long buffer_size)
 		buf[i] = rand();
 }
 
-unsigned char md5_ossl(const uint8_t * d, unsigned long n, uint8_t * md)
+unsigned char md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
 {
 	unsigned int tmplen;
 	EVP_MD_CTX *c;

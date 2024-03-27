@@ -29,7 +29,7 @@
 
 #include "md5_mb.h"
 
-void md5_mb_mgr_init_sse(MD5_MB_JOB_MGR * state)
+void md5_mb_mgr_init_sse(MD5_MB_JOB_MGR *state)
 {
 	unsigned int j;
 

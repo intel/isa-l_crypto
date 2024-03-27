@@ -50,7 +50,7 @@ static void OPT_FIX md5_single(const uint8_t * data, uint32_t digest[4]);
 #define H2 0x98badcfe
 #define H3 0x10325476
 
-void md5_ref(uint8_t * input_data, uint32_t * digest, uint32_t len)
+void md5_ref(uint8_t *input_data, uint32_t *digest, uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[128];
@@ -100,7 +100,7 @@ void md5_ref(uint8_t * input_data, uint32_t * digest, uint32_t len)
 	f = a + f + k + to_le32(w); \
 	a = b + rol32(f, r);
 
-void md5_single(const uint8_t * data, uint32_t digest[4])
+void md5_single(const uint8_t *data, uint32_t digest[4])
 {
 	uint32_t a, b, c, d;
 	uint32_t f;

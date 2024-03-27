@@ -37,12 +37,12 @@ static inline void hash_init_digest(MD5_WORD_T * digest);
 static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len);
 static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx);
 
-void md5_ctx_mgr_init_sve(MD5_HASH_CTX_MGR * mgr)
+void md5_ctx_mgr_init_sve(MD5_HASH_CTX_MGR *mgr)
 {
 	md5_mb_mgr_init_sve(&mgr->mgr);
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx,
+MD5_HASH_CTX *md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx,
 				     const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 	if (flags & (~HASH_ENTIRE)) {
@@ -120,7 +120,7 @@ MD5_HASH_CTX *md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx,
 	return md5_ctx_mgr_resubmit(mgr, ctx);
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_flush_sve(MD5_HASH_CTX_MGR * mgr)
+MD5_HASH_CTX *md5_ctx_mgr_flush_sve(MD5_HASH_CTX_MGR *mgr)
 {
 	MD5_HASH_CTX *ctx;
 
@@ -143,7 +143,7 @@ MD5_HASH_CTX *md5_ctx_mgr_flush_sve(MD5_HASH_CTX_MGR * mgr)
 	}
 }
 
-static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx)
+static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
 {
 	while (ctx) {
 
@@ -206,14 +206,14 @@ static MD5_HASH_CTX *md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX *
 	return NULL;
 }
 
-static inline void hash_init_digest(MD5_WORD_T * digest)
+static inline void hash_init_digest(MD5_WORD_T *digest)
 {
 	static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] =
 	    { MD5_INITIAL_DIGEST };
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[MD5_BLOCK_SIZE *2], uint64_t total_len)
 {
 	uint32_t i = (uint32_t) (total_len & (MD5_BLOCK_SIZE - 1));
 
