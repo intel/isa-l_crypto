@@ -40,10 +40,10 @@
 # define ATTRIBUTE(x)
 #endif
 
-int enable_gcm(ACVP_CTX * ctx) ATTRIBUTE(weak);
-int enable_xts(ACVP_CTX * ctx) ATTRIBUTE(weak);
-int enable_cbc(ACVP_CTX * ctx) ATTRIBUTE(weak);
-int enable_sha(ACVP_CTX * ctx) ATTRIBUTE(weak);
+int enable_gcm(ACVP_CTX *ctx) ATTRIBUTE(weak);
+int enable_xts(ACVP_CTX *ctx) ATTRIBUTE(weak);
+int enable_cbc(ACVP_CTX *ctx) ATTRIBUTE(weak);
+int enable_sha(ACVP_CTX *ctx) ATTRIBUTE(weak);
 
 uint8_t verbose = 0;
 
