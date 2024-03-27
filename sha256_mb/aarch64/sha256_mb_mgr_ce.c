@@ -59,7 +59,7 @@ void sha256_mb_ce_x1(SHA256_JOB *, int);
 	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void sha256_mb_mgr_init_ce(SHA256_MB_JOB_MGR * state)
+void sha256_mb_mgr_init_ce(SHA256_MB_JOB_MGR *state)
 {
 	int i;
 
@@ -79,7 +79,7 @@ void sha256_mb_mgr_init_ce(SHA256_MB_JOB_MGR * state)
 	}
 }
 
-static int sha256_mb_mgr_do_jobs(SHA256_MB_JOB_MGR * state)
+static int sha256_mb_mgr_do_jobs(SHA256_MB_JOB_MGR *state)
 {
 	int lane_idx, len, i, lanes;
 
@@ -178,7 +178,7 @@ static int sha256_mb_mgr_do_jobs(SHA256_MB_JOB_MGR * state)
 
 }
 
-static SHA256_JOB *sha256_mb_mgr_free_lane(SHA256_MB_JOB_MGR * state)
+static SHA256_JOB *sha256_mb_mgr_free_lane(SHA256_MB_JOB_MGR *state)
 {
 	int i;
 	SHA256_JOB *ret = NULL;
@@ -198,7 +198,7 @@ static SHA256_JOB *sha256_mb_mgr_free_lane(SHA256_MB_JOB_MGR * state)
 	return ret;
 }
 
-static void sha256_mb_mgr_insert_job(SHA256_MB_JOB_MGR * state, SHA256_JOB * job)
+static void sha256_mb_mgr_insert_job(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 {
 	int lane_idx;
 	//add job into lanes
@@ -211,7 +211,7 @@ static void sha256_mb_mgr_insert_job(SHA256_MB_JOB_MGR * state, SHA256_JOB * job
 	state->num_lanes_inuse++;
 }
 
-SHA256_JOB *sha256_mb_mgr_submit_ce(SHA256_MB_JOB_MGR * state, SHA256_JOB * job)
+SHA256_JOB *sha256_mb_mgr_submit_ce(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -240,7 +240,7 @@ SHA256_JOB *sha256_mb_mgr_submit_ce(SHA256_MB_JOB_MGR * state, SHA256_JOB * job)
 	return ret;
 }
 
-SHA256_JOB *sha256_mb_mgr_flush_ce(SHA256_MB_JOB_MGR * state)
+SHA256_JOB *sha256_mb_mgr_flush_ce(SHA256_MB_JOB_MGR *state)
 {
 	SHA256_JOB *ret;
 	ret = sha256_mb_mgr_free_lane(state);
