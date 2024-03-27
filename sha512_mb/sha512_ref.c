@@ -48,7 +48,7 @@
 
 void sha512_single(const uint8_t * data, uint64_t digest[]);
 
-void sha512_ref(uint8_t * input_data, uint64_t * digest, uint32_t len)
+void sha512_ref(uint8_t *input_data, uint64_t *digest, uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[2 * SHA512_BLOCK_SIZE];
@@ -126,7 +126,7 @@ void sha512_ref(uint8_t * input_data, uint64_t * digest, uint32_t len)
 	d += t1; \
 	h = t1 + t2;
 
-void sha512_single(const uint8_t * data, uint64_t digest[])
+void sha512_single(const uint8_t *data, uint64_t digest[])
 {
 	/* Check these are all uint64_t */
 	uint64_t a, b, c, d, e, f, g, h, t1, t2;

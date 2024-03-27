@@ -54,7 +54,7 @@ void sha512_mb_ce_x1(SHA512_JOB *, int);
 	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void sha512_mb_mgr_init_ce(SHA512_MB_JOB_MGR * state)
+void sha512_mb_mgr_init_ce(SHA512_MB_JOB_MGR *state)
 {
 	int i;
 	//~ state->unused_lanes = 0xf3210;
@@ -74,7 +74,7 @@ void sha512_mb_mgr_init_ce(SHA512_MB_JOB_MGR * state)
 	}
 }
 
-static int sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR * state)
+static int sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR *state)
 {
 	int lane_idx, len, i, lanes;
 
@@ -134,7 +134,7 @@ static int sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR * state)
 
 }
 
-static SHA512_JOB *sha512_mb_mgr_free_lane(SHA512_MB_JOB_MGR * state)
+static SHA512_JOB *sha512_mb_mgr_free_lane(SHA512_MB_JOB_MGR *state)
 {
 	int i;
 	SHA512_JOB *ret = NULL;
@@ -154,7 +154,7 @@ static SHA512_JOB *sha512_mb_mgr_free_lane(SHA512_MB_JOB_MGR * state)
 	return ret;
 }
 
-static void sha512_mb_mgr_insert_job(SHA512_MB_JOB_MGR * state, SHA512_JOB * job)
+static void sha512_mb_mgr_insert_job(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 {
 	int lane_idx;
 	//add job into lanes
@@ -167,7 +167,7 @@ static void sha512_mb_mgr_insert_job(SHA512_MB_JOB_MGR * state, SHA512_JOB * job
 	state->num_lanes_inuse++;
 }
 
-SHA512_JOB *sha512_mb_mgr_submit_ce(SHA512_MB_JOB_MGR * state, SHA512_JOB * job)
+SHA512_JOB *sha512_mb_mgr_submit_ce(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -196,7 +196,7 @@ SHA512_JOB *sha512_mb_mgr_submit_ce(SHA512_MB_JOB_MGR * state, SHA512_JOB * job)
 	return ret;
 }
 
-SHA512_JOB *sha512_mb_mgr_flush_ce(SHA512_MB_JOB_MGR * state)
+SHA512_JOB *sha512_mb_mgr_flush_ce(SHA512_MB_JOB_MGR *state)
 {
 	SHA512_JOB *ret;
 	ret = sha512_mb_mgr_free_lane(state);

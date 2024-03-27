@@ -29,7 +29,7 @@
 
 #include "sha512_mb.h"
 
-void sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR * state)
+void sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR *state)
 {
 	unsigned int j;
 

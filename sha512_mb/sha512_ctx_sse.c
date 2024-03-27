@@ -41,12 +41,12 @@ static inline uint32_t hash_pad(uint8_t padblock[SHA512_BLOCK_SIZE * 2], uint64_
 static SHA512_HASH_CTX *sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR * mgr,
 						SHA512_HASH_CTX * ctx);
 
-void sha512_ctx_mgr_init_sse(SHA512_HASH_CTX_MGR * mgr)
+void sha512_ctx_mgr_init_sse(SHA512_HASH_CTX_MGR *mgr)
 {
 	sha512_mb_mgr_init_sse(&mgr->mgr);
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR * mgr, SHA512_HASH_CTX * ctx,
+SHA512_HASH_CTX *sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx,
 					   const void *buffer, uint32_t len,
 					   HASH_CTX_FLAG flags)
 {
@@ -128,7 +128,7 @@ SHA512_HASH_CTX *sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR * mgr, SHA512_HAS
 	return sha512_ctx_mgr_resubmit(mgr, ctx);
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR * mgr)
+SHA512_HASH_CTX *sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR *mgr)
 {
 	SHA512_HASH_CTX *ctx;
 
@@ -151,8 +151,7 @@ SHA512_HASH_CTX *sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR * mgr)
 	}
 }
 
-static SHA512_HASH_CTX *sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR * mgr,
-						SHA512_HASH_CTX * ctx)
+static SHA512_HASH_CTX *sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx)
 {
 	while (ctx) {
 		if (ctx->status & HASH_CTX_STS_COMPLETE) {
@@ -213,14 +212,14 @@ static SHA512_HASH_CTX *sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR * mgr,
 	return NULL;
 }
 
-static inline void hash_init_digest(SHA512_WORD_T * digest)
+static inline void hash_init_digest(SHA512_WORD_T *digest)
 {
 	static const SHA512_WORD_T hash_initial_digest[SHA512_DIGEST_NWORDS] =
 	    { SHA512_INITIAL_DIGEST };
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[SHA512_BLOCK_SIZE * 2], uint64_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SHA512_BLOCK_SIZE *2], uint64_t total_len)
 {
 	uint32_t i = (uint32_t) (total_len & (SHA512_BLOCK_SIZE - 1));
 

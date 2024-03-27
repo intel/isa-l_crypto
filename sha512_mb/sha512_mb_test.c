@@ -120,7 +120,7 @@ static uint64_t *expResultDigest[MSGS] = { expResultDigest1, expResultDigest2,
 
 #define NUM_CHUNKS	4
 #define DATA_BUF_LEN	4096
-int non_blocksize_updates_test(SHA512_HASH_CTX_MGR * mgr)
+int non_blocksize_updates_test(SHA512_HASH_CTX_MGR *mgr)
 {
 	SHA512_HASH_CTX ctx_refer;
 	SHA512_HASH_CTX ctx_pool[NUM_CHUNKS];
