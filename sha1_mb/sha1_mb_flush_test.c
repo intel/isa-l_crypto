@@ -50,7 +50,7 @@ void rand_buffer(unsigned char *buf, const long buffer_size)
 		buf[i] = rand();
 }
 
-uint8_t lens_print_and_check(SHA1_HASH_CTX_MGR * mgr)
+uint8_t lens_print_and_check(SHA1_HASH_CTX_MGR *mgr)
 {
 	static int32_t last_lens[SHA1_MAX_LANES] = { 0 };
 	int32_t len;

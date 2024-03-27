@@ -32,7 +32,7 @@
 #include "endian_helper.h"
 
 extern void sha1_aarch64_x1(const uint8_t * data, int num_blocks, uint32_t digest[]);
-static inline void sha1_job_x1(SHA1_JOB * job, int blocks)
+static inline void sha1_job_x1(SHA1_JOB *job, int blocks)
 {
 	sha1_aarch64_x1(job->buffer, blocks, job->result_digest);
 }
@@ -53,7 +53,7 @@ void sha1_mb_asimd_x4(SHA1_JOB *, SHA1_JOB *, SHA1_JOB *, SHA1_JOB *, int);
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
 
-void sha1_mb_mgr_init_asimd(SHA1_MB_JOB_MGR * state)
+void sha1_mb_mgr_init_asimd(SHA1_MB_JOB_MGR *state)
 {
 	unsigned int i;
 
@@ -73,7 +73,7 @@ void sha1_mb_mgr_init_asimd(SHA1_MB_JOB_MGR * state)
 	}
 }
 
-static int sha1_mb_mgr_do_jobs(SHA1_MB_JOB_MGR * state)
+static int sha1_mb_mgr_do_jobs(SHA1_MB_JOB_MGR *state)
 {
 	int lane_idx, len, i, lanes, blocks;
 	int lane_idx_array[SHA1_MAX_LANES];
@@ -142,7 +142,7 @@ static int sha1_mb_mgr_do_jobs(SHA1_MB_JOB_MGR * state)
 
 }
 
-static SHA1_JOB *sha1_mb_mgr_free_lane(SHA1_MB_JOB_MGR * state)
+static SHA1_JOB *sha1_mb_mgr_free_lane(SHA1_MB_JOB_MGR *state)
 {
 	int i;
 	SHA1_JOB *ret = NULL;
@@ -161,7 +161,7 @@ static SHA1_JOB *sha1_mb_mgr_free_lane(SHA1_MB_JOB_MGR * state)
 	return ret;
 }
 
-static void sha1_mb_mgr_insert_job(SHA1_MB_JOB_MGR * state, SHA1_JOB * job)
+static void sha1_mb_mgr_insert_job(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
 {
 	int lane_idx;
 	// add job into lanes
@@ -174,7 +174,7 @@ static void sha1_mb_mgr_insert_job(SHA1_MB_JOB_MGR * state, SHA1_JOB * job)
 	state->num_lanes_inuse++;
 }
 
-SHA1_JOB *sha1_mb_mgr_submit_asimd(SHA1_MB_JOB_MGR * state, SHA1_JOB * job)
+SHA1_JOB *sha1_mb_mgr_submit_asimd(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -203,7 +203,7 @@ SHA1_JOB *sha1_mb_mgr_submit_asimd(SHA1_MB_JOB_MGR * state, SHA1_JOB * job)
 	return ret;
 }
 
-SHA1_JOB *sha1_mb_mgr_flush_asimd(SHA1_MB_JOB_MGR * state)
+SHA1_JOB *sha1_mb_mgr_flush_asimd(SHA1_MB_JOB_MGR *state)
 {
 	SHA1_JOB *ret;
 	ret = sha1_mb_mgr_free_lane(state);

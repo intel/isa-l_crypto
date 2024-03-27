@@ -45,9 +45,9 @@
 #define MH_SHA256_FINALIZE_SLVER
 #endif
 
-void MH_SHA256_TAIL_FUNCTION(uint8_t * partial_buffer, uint32_t total_len,
+void MH_SHA256_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
 			     uint32_t(*mh_sha256_segs_digests)[HASH_SEGS],
-			     uint8_t * frame_buffer, uint32_t digests[SHA256_DIGEST_WORDS])
+			     uint8_t *frame_buffer, uint32_t digests[SHA256_DIGEST_WORDS])
 {
 	uint64_t partial_buffer_len, len_in_bit;
 

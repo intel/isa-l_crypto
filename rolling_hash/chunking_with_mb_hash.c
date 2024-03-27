@@ -59,7 +59,7 @@ unsigned long filter_hits = 0;
 
 // Example function to run on each chunk
 
-void run_fragment(SHA256_HASH_CTX * ctx)
+void run_fragment(SHA256_HASH_CTX *ctx)
 {
 	uint64_t lookup, set_hash;
 	unsigned int lookup_hash;
@@ -112,7 +112,7 @@ SHA256_HASH_CTX *get_next_job_ctx(void)
 	return ctx;
 }
 
-void put_next_job_ctx(SHA256_HASH_CTX * ctx)
+void put_next_job_ctx(SHA256_HASH_CTX *ctx)
 {
 	if (ctx && hash_ctx_complete(ctx))
 		last_ctx = ctx;
@@ -120,7 +120,7 @@ void put_next_job_ctx(SHA256_HASH_CTX * ctx)
 	run_fragment(ctx);
 }
 
-void process_chunk(uint8_t * buff, int len)
+void process_chunk(uint8_t *buff, int len)
 {
 	SHA256_HASH_CTX *ctx;
 

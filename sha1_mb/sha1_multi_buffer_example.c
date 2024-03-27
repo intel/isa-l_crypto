@@ -56,7 +56,7 @@ uint32_t dgst7[] = { 0xDA39A3EE, 0x5E6B4B0D, 0x3255BFEF, 0x95601890, 0xAFD80709 
 uint8_t *msgs[] = { msg1, msg2, msg3, msg4, msg5, msg6, msg7 };
 uint32_t *expected_digest[] = { dgst1, dgst2, dgst3, dgst4, dgst5, dgst6, dgst7 };
 
-int check_job(uint32_t * ref, uint32_t * good, int words)
+int check_job(uint32_t *ref, uint32_t *good, int words)
 {
 	int i;
 	for (i = 0; i < words; i++)

@@ -36,7 +36,7 @@
 
 extern uint8_t verbose;
 
-static int aes_cbc_handler(ACVP_TEST_CASE * test_case)
+static int aes_cbc_handler(ACVP_TEST_CASE *test_case)
 {
 	ACVP_RESULT ret = ACVP_SUCCESS;
 	ACVP_SYM_CIPHER_TC *tc;
@@ -115,7 +115,7 @@ static int aes_cbc_handler(ACVP_TEST_CASE * test_case)
 	return ret;
 }
 
-int enable_cbc(ACVP_CTX * ctx)
+int enable_cbc(ACVP_CTX *ctx)
 {
 	ACVP_RESULT ret = ACVP_SUCCESS;
 

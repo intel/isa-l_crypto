@@ -57,7 +57,7 @@ extern uint8_t verbose;
 
 #endif
 
-inline void static md_dcpy(void *bdst, uint32_t * dsrc, int dwords)
+inline void static md_dcpy(void *bdst, uint32_t *dsrc, int dwords)
 {
 	int i;
 	uint32_t *ddst = (uint32_t *) bdst;
@@ -65,7 +65,7 @@ inline void static md_dcpy(void *bdst, uint32_t * dsrc, int dwords)
 		ddst[i] = to_be32(dsrc[i]);
 }
 
-inline void static md_qcpy(void *bdst, uint64_t * qsrc, int qwords)
+inline void static md_qcpy(void *bdst, uint64_t *qsrc, int qwords)
 {
 	int i;
 	uint64_t *qdst = (uint64_t *) bdst;
@@ -73,7 +73,7 @@ inline void static md_qcpy(void *bdst, uint64_t * qsrc, int qwords)
 		qdst[i] = to_be64(qsrc[i]);
 }
 
-static int sha_handler(ACVP_TEST_CASE * test_case)
+static int sha_handler(ACVP_TEST_CASE *test_case)
 {
 	ACVP_RESULT ret = ACVP_SUCCESS;
 	ACVP_HASH_TC *tc;
@@ -186,7 +186,7 @@ static int sha_handler(ACVP_TEST_CASE * test_case)
 	return ret;
 }
 
-int enable_sha(ACVP_CTX * ctx)
+int enable_sha(ACVP_CTX *ctx)
 {
 	ACVP_RESULT ret = ACVP_SUCCESS;
 

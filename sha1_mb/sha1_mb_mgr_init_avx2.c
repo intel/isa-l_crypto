@@ -29,7 +29,7 @@
 
 #include "sha1_mb.h"
 
-void sha1_mb_mgr_init_avx2(SHA1_MB_JOB_MGR * state)
+void sha1_mb_mgr_init_avx2(SHA1_MB_JOB_MGR *state)
 {
 	unsigned int j;
 

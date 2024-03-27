@@ -65,11 +65,11 @@ static void md5_final(MD5_HASH_CTX * ctx);
 static void OPT_FIX md5_single(const void *data, uint32_t digest[4]);
 static inline void hash_init_digest(MD5_WORD_T * digest);
 
-void md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR * mgr)
+void md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
 {
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx,
+MD5_HASH_CTX *md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx,
 				      const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 
@@ -115,12 +115,12 @@ MD5_HASH_CTX *md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx
 	return ctx;
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR * mgr)
+MD5_HASH_CTX *md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr)
 {
 	return NULL;
 }
 
-static void md5_init(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	// Init digest
 	hash_init_digest(ctx->job.result_digest);
@@ -138,7 +138,7 @@ static void md5_init(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void md5_update(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	uint32_t remain_len = len;
 	uint32_t *digest = ctx->job.result_digest;
@@ -192,7 +192,7 @@ static void md5_update(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	return;
 }
 
-static void md5_final(MD5_HASH_CTX * ctx)
+static void md5_final(MD5_HASH_CTX *ctx)
 {
 	const void *buffer = ctx->partial_block_buffer;
 	uint32_t i = ctx->partial_block_buffer_length;
@@ -307,7 +307,7 @@ static void md5_single(const void *data, uint32_t digest[4])
 	digest[3] += d;
 }
 
-static inline void hash_init_digest(MD5_WORD_T * digest)
+static inline void hash_init_digest(MD5_WORD_T *digest)
 {
 	static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] =
 	    { MD5_INITIAL_DIGEST };

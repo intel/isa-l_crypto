@@ -37,18 +37,18 @@ extern SHA512_HASH_CTX *sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR * mgr,
 						   uint32_t len, HASH_CTX_FLAG flags);
 extern SHA512_HASH_CTX *sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR * mgr);
 
-void sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR * mgr)
+void sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR *mgr)
 {
 	return sha512_ctx_mgr_init_base(mgr);
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR * mgr, SHA512_HASH_CTX * ctx,
+SHA512_HASH_CTX *sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx,
 				       const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 	return sha512_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR * mgr)
+SHA512_HASH_CTX *sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR *mgr)
 {
 	return sha512_ctx_mgr_flush_base(mgr);
 }

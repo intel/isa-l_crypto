@@ -75,11 +75,11 @@ static void sha512_final(SHA512_HASH_CTX * ctx);
 static void sha512_single(const void *data, uint64_t digest[]);
 static inline void hash_init_digest(SHA512_WORD_T * digest);
 
-void sha512_ctx_mgr_init_base(SHA512_HASH_CTX_MGR * mgr)
+void sha512_ctx_mgr_init_base(SHA512_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR * mgr, SHA512_HASH_CTX * ctx,
+SHA512_HASH_CTX *sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx,
 					    const void *buffer, uint32_t len,
 					    HASH_CTX_FLAG flags)
 {
@@ -125,12 +125,12 @@ SHA512_HASH_CTX *sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR * mgr, SHA512_HA
 	return ctx;
 }
 
-SHA512_HASH_CTX *sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR * mgr)
+SHA512_HASH_CTX *sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR *mgr)
 {
 	return NULL;
 }
 
-static void sha512_init(SHA512_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha512_init(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	// Init digest
 	hash_init_digest(ctx->job.result_digest);
@@ -148,7 +148,7 @@ static void sha512_init(SHA512_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void sha512_update(SHA512_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	uint32_t remain_len = len;
 	uint64_t *digest = ctx->job.result_digest;
@@ -202,7 +202,7 @@ static void sha512_update(SHA512_HASH_CTX * ctx, const void *buffer, uint32_t le
 	return;
 }
 
-static void sha512_final(SHA512_HASH_CTX * ctx)
+static void sha512_final(SHA512_HASH_CTX *ctx)
 {
 	const void *buffer = ctx->partial_block_buffer;
 	uint32_t i = ctx->partial_block_buffer_length;
@@ -338,7 +338,7 @@ void sha512_single(const void *data, uint64_t digest[])
 	digest[7] += h;
 }
 
-static inline void hash_init_digest(SHA512_WORD_T * digest)
+static inline void hash_init_digest(SHA512_WORD_T *digest)
 {
 	static const SHA512_WORD_T hash_initial_digest[SHA512_DIGEST_NWORDS] =
 	    { SHA512_INITIAL_DIGEST };

@@ -70,11 +70,11 @@ static void sha256_final(SHA256_HASH_CTX * ctx);
 static void OPT_FIX sha256_single(const void *data, uint32_t digest[]);
 static inline void hash_init_digest(SHA256_WORD_T * digest);
 
-void sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR * mgr)
+void sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR * mgr, SHA256_HASH_CTX * ctx,
+SHA256_HASH_CTX *sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx,
 					    const void *buffer, uint32_t len,
 					    HASH_CTX_FLAG flags)
 {
@@ -121,12 +121,12 @@ SHA256_HASH_CTX *sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR * mgr, SHA256_HA
 	return ctx;
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_flush_base(SHA256_HASH_CTX_MGR * mgr)
+SHA256_HASH_CTX *sha256_ctx_mgr_flush_base(SHA256_HASH_CTX_MGR *mgr)
 {
 	return NULL;
 }
 
-static void sha256_init(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha256_init(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	// Init digest
 	hash_init_digest(ctx->job.result_digest);
@@ -144,7 +144,7 @@ static void sha256_init(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void sha256_update(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	uint32_t remain_len = len;
 	uint32_t *digest = ctx->job.result_digest;
@@ -198,7 +198,7 @@ static void sha256_update(SHA256_HASH_CTX * ctx, const void *buffer, uint32_t le
 	return;
 }
 
-static void sha256_final(SHA256_HASH_CTX * ctx)
+static void sha256_final(SHA256_HASH_CTX *ctx)
 {
 
 	const void *buffer = ctx->partial_block_buffer;
@@ -318,7 +318,7 @@ void sha256_single(const void *data, uint32_t digest[])
 	digest[7] += h;
 }
 
-static inline void hash_init_digest(SHA256_WORD_T * digest)
+static inline void hash_init_digest(SHA256_WORD_T *digest)
 {
 	static const SHA256_WORD_T hash_initial_digest[SHA256_DIGEST_NWORDS] =
 	    { SHA256_INITIAL_DIGEST };

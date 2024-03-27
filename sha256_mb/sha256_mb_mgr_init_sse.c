@@ -29,7 +29,7 @@
 
 #include "sha256_mb.h"
 
-void sha256_mb_mgr_init_sse(SHA256_MB_JOB_MGR * state)
+void sha256_mb_mgr_init_sse(SHA256_MB_JOB_MGR *state)
 {
 	unsigned int j;
 

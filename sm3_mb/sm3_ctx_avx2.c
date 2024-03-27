@@ -54,7 +54,7 @@ void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR * state);
 SM3_JOB *sm3_mb_mgr_submit_avx2(SM3_MB_JOB_MGR * state, SM3_JOB * job);
 SM3_JOB *sm3_mb_mgr_flush_avx2(SM3_MB_JOB_MGR * state);
 
-void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR * state)
+void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR *state)
 {
 	unsigned int j;
 
@@ -67,12 +67,12 @@ void sm3_mb_mgr_init_avx2(SM3_MB_JOB_MGR * state)
 	}
 }
 
-void sm3_ctx_mgr_init_avx2(SM3_HASH_CTX_MGR * mgr)
+void sm3_ctx_mgr_init_avx2(SM3_HASH_CTX_MGR *mgr)
 {
 	sm3_mb_mgr_init_avx2(&mgr->mgr);
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_submit_avx2(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx,
+SM3_HASH_CTX *sm3_ctx_mgr_submit_avx2(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx,
 				      const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 	if (flags & (~HASH_ENTIRE)) {
@@ -151,7 +151,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_submit_avx2(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx
 	return sm3_ctx_mgr_resubmit(mgr, ctx);
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_flush_avx2(SM3_HASH_CTX_MGR * mgr)
+SM3_HASH_CTX *sm3_ctx_mgr_flush_avx2(SM3_HASH_CTX_MGR *mgr)
 {
 	SM3_HASH_CTX *ctx;
 
@@ -174,7 +174,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_flush_avx2(SM3_HASH_CTX_MGR * mgr)
 	}
 }
 
-static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx)
+static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx)
 {
 	while (ctx) {
 		if (ctx->status & HASH_CTX_STS_COMPLETE) {
@@ -239,14 +239,14 @@ static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX *
 	return NULL;
 }
 
-static inline void hash_init_digest(SM3_WORD_T * digest)
+static inline void hash_init_digest(SM3_WORD_T *digest)
 {
 	static const SM3_WORD_T hash_initial_digest[SM3_DIGEST_NWORDS] =
 	    { SM3_INITIAL_DIGEST };
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE * 2], uint64_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE *2], uint64_t total_len)
 {
 	uint32_t i = (uint32_t) (total_len & (SM3_BLOCK_SIZE - 1));
 

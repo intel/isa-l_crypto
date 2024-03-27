@@ -62,7 +62,7 @@ extern void mh_sha1_ref(const void *buffer, uint32_t len, uint32_t * mh_sha1_dig
 #define MH_SHA1_REF	mh_sha1_ref
 
 // Generates pseudo-random data
-void rand_buffer(uint8_t * buf, long buffer_size)
+void rand_buffer(uint8_t *buf, long buffer_size)
 {
 	long i;
 	for (i = 0; i < buffer_size; i++)

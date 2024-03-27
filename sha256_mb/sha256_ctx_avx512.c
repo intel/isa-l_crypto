@@ -53,12 +53,12 @@ static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint64_
 static SHA256_HASH_CTX *sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR * mgr,
 						SHA256_HASH_CTX * ctx);
 
-void sha256_ctx_mgr_init_avx512(SHA256_HASH_CTX_MGR * mgr)
+void sha256_ctx_mgr_init_avx512(SHA256_HASH_CTX_MGR *mgr)
 {
 	sha256_mb_mgr_init_avx512(&mgr->mgr);
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR * mgr, SHA256_HASH_CTX * ctx,
+SHA256_HASH_CTX *sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx,
 					      const void *buffer, uint32_t len,
 					      HASH_CTX_FLAG flags)
 {
@@ -139,7 +139,7 @@ SHA256_HASH_CTX *sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR * mgr, SHA256_
 	return sha256_ctx_mgr_resubmit(mgr, ctx);
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_flush_avx512(SHA256_HASH_CTX_MGR * mgr)
+SHA256_HASH_CTX *sha256_ctx_mgr_flush_avx512(SHA256_HASH_CTX_MGR *mgr)
 {
 	SHA256_HASH_CTX *ctx;
 
@@ -162,8 +162,7 @@ SHA256_HASH_CTX *sha256_ctx_mgr_flush_avx512(SHA256_HASH_CTX_MGR * mgr)
 	}
 }
 
-static SHA256_HASH_CTX *sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR * mgr,
-						SHA256_HASH_CTX * ctx)
+static SHA256_HASH_CTX *sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx)
 {
 	while (ctx) {
 		if (ctx->status & HASH_CTX_STS_COMPLETE) {
@@ -225,14 +224,14 @@ static SHA256_HASH_CTX *sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR * mgr,
 	return NULL;
 }
 
-static inline void hash_init_digest(SHA256_WORD_T * digest)
+static inline void hash_init_digest(SHA256_WORD_T *digest)
 {
 	static const SHA256_WORD_T hash_initial_digest[SHA256_DIGEST_NWORDS] =
 	    { SHA256_INITIAL_DIGEST };
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE * 2], uint64_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SHA256_BLOCK_SIZE *2], uint64_t total_len)
 {
 	uint32_t i = (uint32_t) (total_len & (SHA256_BLOCK_SIZE - 1));
 

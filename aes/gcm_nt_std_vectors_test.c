@@ -39,7 +39,7 @@
 # define TEST_SEED 0x1234
 #endif
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
+int check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 {
 	int mismatch;
 	int OK = 0;

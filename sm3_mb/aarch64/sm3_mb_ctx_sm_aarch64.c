@@ -40,12 +40,12 @@ static inline void hash_init_digest(SM3_WORD_T * digest);
 static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE * 2], uint64_t total_len);
 static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx);
 
-void sm3_ctx_mgr_init_sm(SM3_HASH_CTX_MGR * mgr)
+void sm3_ctx_mgr_init_sm(SM3_HASH_CTX_MGR *mgr)
 {
 	sm3_mb_mgr_init_sm(&mgr->mgr);
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_submit_sm(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx,
+SM3_HASH_CTX *sm3_ctx_mgr_submit_sm(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx,
 				    const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 	if (flags & (~HASH_ENTIRE)) {
@@ -125,7 +125,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_submit_sm(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx,
 	return sm3_ctx_mgr_resubmit(mgr, ctx);
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_flush_sm(SM3_HASH_CTX_MGR * mgr)
+SM3_HASH_CTX *sm3_ctx_mgr_flush_sm(SM3_HASH_CTX_MGR *mgr)
 {
 	SM3_HASH_CTX *ctx;
 
@@ -148,7 +148,7 @@ SM3_HASH_CTX *sm3_ctx_mgr_flush_sm(SM3_HASH_CTX_MGR * mgr)
 	}
 }
 
-static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx)
+static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx)
 {
 	while (ctx) {
 
@@ -209,7 +209,7 @@ static SM3_HASH_CTX *sm3_ctx_mgr_resubmit(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX *
 	return NULL;
 }
 
-static inline void hash_init_digest(SM3_WORD_T * digest)
+static inline void hash_init_digest(SM3_WORD_T *digest)
 {
 	static const SM3_WORD_T hash_initial_digest[SM3_DIGEST_NWORDS] =
 	    { to_be32(0x7380166f), to_be32(0x4914b2b9),
@@ -220,7 +220,7 @@ static inline void hash_init_digest(SM3_WORD_T * digest)
 	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
-static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE * 2], uint64_t total_len)
+static inline uint32_t hash_pad(uint8_t padblock[SM3_BLOCK_SIZE *2], uint64_t total_len)
 {
 	uint32_t i = (uint32_t) (total_len & (SM3_BLOCK_SIZE - 1));
 

@@ -58,7 +58,7 @@ void sm3_mb_sm_x1(SM3_JOB *, int);
 	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
 #define LANE_IS_INVALID(state,i)	\
 	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void sm3_mb_mgr_init_sm(SM3_MB_JOB_MGR * state)
+void sm3_mb_mgr_init_sm(SM3_MB_JOB_MGR *state)
 {
 	unsigned int i;
 
@@ -78,7 +78,7 @@ void sm3_mb_mgr_init_sm(SM3_MB_JOB_MGR * state)
 	}
 }
 
-static int sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR * state)
+static int sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR *state)
 {
 	int lane_idx, len, i, lanes;
 
@@ -175,7 +175,7 @@ static int sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR * state)
 
 }
 
-static SM3_JOB *sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR * state)
+static SM3_JOB *sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR *state)
 {
 	int i;
 	SM3_JOB *ret = NULL;
@@ -195,7 +195,7 @@ static SM3_JOB *sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR * state)
 	return ret;
 }
 
-static void sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR * state, SM3_JOB * job)
+static void sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR *state, SM3_JOB *job)
 {
 	int lane_idx;
 	//add job into lanes
@@ -208,7 +208,7 @@ static void sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR * state, SM3_JOB * job)
 	state->num_lanes_inuse++;
 }
 
-SM3_JOB *sm3_mb_mgr_submit_sm(SM3_MB_JOB_MGR * state, SM3_JOB * job)
+SM3_JOB *sm3_mb_mgr_submit_sm(SM3_MB_JOB_MGR *state, SM3_JOB *job)
 {
 #ifndef NDEBUG
 	int lane_idx;
@@ -236,7 +236,7 @@ SM3_JOB *sm3_mb_mgr_submit_sm(SM3_MB_JOB_MGR * state, SM3_JOB * job)
 	return ret;
 }
 
-SM3_JOB *sm3_mb_mgr_flush_sm(SM3_MB_JOB_MGR * state)
+SM3_JOB *sm3_mb_mgr_flush_sm(SM3_MB_JOB_MGR *state)
 {
 	SM3_JOB *ret;
 	ret = sm3_mb_mgr_free_lane(state);

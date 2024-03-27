@@ -60,7 +60,7 @@ static uint8_t key128[GCM_128_KEY_LEN];
 static uint8_t key256[GCM_256_KEY_LEN];
 uint8_t iv_len = 0;
 
-void mk_rand_data(uint8_t * data, uint32_t size)
+void mk_rand_data(uint8_t *data, uint32_t size)
 {
 	unsigned int i;
 	for (i = 0; i < size; i++) {
@@ -68,7 +68,7 @@ void mk_rand_data(uint8_t * data, uint32_t size)
 	}
 }
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, int vect, char *data_name)
+int check_data(uint8_t *test, uint8_t *expected, uint64_t len, int vect, char *data_name)
 {
 	int mismatch;
 	int OK = 1;

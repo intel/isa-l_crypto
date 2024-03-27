@@ -67,10 +67,10 @@
 	for(s = 0; s < HASH_SEGS; s++) \
 		update_h(s);
 
-static inline void step(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			uint32_t * d, uint32_t * e, uint32_t * f,
-			uint32_t * g, uint32_t * h, uint32_t k,
-			uint32_t * t1, uint32_t * t2, uint32_t(*w)[HASH_SEGS], uint32_t * ww)
+static inline void step(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			uint32_t *d, uint32_t *e, uint32_t *f,
+			uint32_t *g, uint32_t *h, uint32_t k,
+			uint32_t *t1, uint32_t *t2, uint32_t(*w)[HASH_SEGS], uint32_t *ww)
 {
 	uint8_t s;
 	if (i < 16) {
@@ -84,7 +84,7 @@ static inline void step(int i, uint32_t * a, uint32_t * b, uint32_t * c,
 	UPDATE_H(s);
 }
 
-static inline void init_abcdefgh(uint32_t * xx, uint32_t n,
+static inline void init_abcdefgh(uint32_t *xx, uint32_t n,
 				 uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS])
 {
 	uint8_t s;
@@ -92,7 +92,7 @@ static inline void init_abcdefgh(uint32_t * xx, uint32_t n,
 		xx[s] = digests[n][s];
 }
 
-static inline void add_abcdefgh(uint32_t * xx, uint32_t n,
+static inline void add_abcdefgh(uint32_t *xx, uint32_t n,
 				uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS])
 {
 	uint8_t s;
@@ -112,8 +112,8 @@ static inline void add_abcdefgh(uint32_t * xx, uint32_t n,
  * Return:
  *   N/A
  */
-void mh_sha256_single(const uint8_t * input, uint32_t(*digests)[HASH_SEGS],
-		      uint8_t * frame_buffer)
+void mh_sha256_single(const uint8_t *input, uint32_t(*digests)[HASH_SEGS],
+		      uint8_t *frame_buffer)
 {
 	uint8_t i;
 	uint32_t aa[HASH_SEGS], bb[HASH_SEGS], cc[HASH_SEGS], dd[HASH_SEGS];
@@ -173,7 +173,7 @@ void mh_sha256_single(const uint8_t * input, uint32_t(*digests)[HASH_SEGS],
 	add_abcdefgh(hh, 7, digests);
 }
 
-void mh_sha256_block_base(const uint8_t * input_data,
+void mh_sha256_block_base(const uint8_t *input_data,
 			  uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
 			  uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {

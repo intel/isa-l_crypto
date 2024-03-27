@@ -75,7 +75,7 @@
 
 static void OPT_FIX sha256_single(const uint8_t * data, uint32_t digest[]);
 
-void sha256_ref(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
+void sha256_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[2 * SHA256_BLOCK_SIZE];
@@ -113,7 +113,7 @@ void sha256_ref(const uint8_t * input_data, uint32_t * digest, const uint32_t le
 		sha256_single(buf + SHA256_BLOCK_SIZE, digest);
 }
 
-void sha256_single(const uint8_t * data, uint32_t digest[])
+void sha256_single(const uint8_t *data, uint32_t digest[])
 {
 	uint32_t a, b, c, d, e, f, g, h, t1, t2;
 	uint32_t w[16];

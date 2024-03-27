@@ -52,7 +52,7 @@
  * Return: SHA512_JOB pointer.
  *
  **/
-SHA512_JOB *sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR * state, SHA512_JOB * job)
+SHA512_JOB *sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 {
 	assert(job != NULL);
 

@@ -38,7 +38,7 @@
 #define KEY_SIZE GCM_256_KEY_LEN
 #define IV_SIZE  GCM_IV_DATA_LEN
 
-void mprint(const char *msg, uint8_t * buf, int len)
+void mprint(const char *msg, uint8_t *buf, int len)
 {
 	int i;
 	printf("%s", msg);

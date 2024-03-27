@@ -169,17 +169,16 @@
   update_b(14, b);				\
   update_b(15, b)
 
-static inline void step00_15(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			     uint32_t * d, uint32_t * e, uint32_t(*w)[HASH_SEGS],
-			     uint32_t * ww)
+static inline void step00_15(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			     uint32_t *d, uint32_t *e, uint32_t(*w)[HASH_SEGS], uint32_t *ww)
 {
 	STORE_W(i, w, ww);
 	UPDATE_E1(a, b, c, d, e, i, w);
 	UPDATE_B(b);
 }
 
-static inline void step16_19(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			     uint32_t * d, uint32_t * e, uint32_t(*w)[HASH_SEGS])
+static inline void step16_19(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			     uint32_t *d, uint32_t *e, uint32_t(*w)[HASH_SEGS])
 {
 	UPDATE_W(i, w);
 	UPDATE_E1(a, b, c, d, e, i, w);
@@ -187,31 +186,31 @@ static inline void step16_19(int i, uint32_t * a, uint32_t * b, uint32_t * c,
 
 }
 
-static inline void step20_39(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			     uint32_t * d, uint32_t * e, uint32_t(*w)[HASH_SEGS])
+static inline void step20_39(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			     uint32_t *d, uint32_t *e, uint32_t(*w)[HASH_SEGS])
 {
 	UPDATE_W(i, w);
 	UPDATE_E2(a, b, c, d, e, i, w);
 	UPDATE_B(b);
 }
 
-static inline void step40_59(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			     uint32_t * d, uint32_t * e, uint32_t(*w)[HASH_SEGS])
+static inline void step40_59(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			     uint32_t *d, uint32_t *e, uint32_t(*w)[HASH_SEGS])
 {
 	UPDATE_W(i, w);
 	UPDATE_E3(a, b, c, d, e, i, w);
 	UPDATE_B(b);
 }
 
-static inline void step60_79(int i, uint32_t * a, uint32_t * b, uint32_t * c,
-			     uint32_t * d, uint32_t * e, uint32_t(*w)[HASH_SEGS])
+static inline void step60_79(int i, uint32_t *a, uint32_t *b, uint32_t *c,
+			     uint32_t *d, uint32_t *e, uint32_t(*w)[HASH_SEGS])
 {
 	UPDATE_W(i, w);
 	UPDATE_E4(a, b, c, d, e, i, w);
 	UPDATE_B(b);
 }
 
-static inline void init_abcde(uint32_t * xx, uint32_t n,
+static inline void init_abcde(uint32_t *xx, uint32_t n,
 			      uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS])
 {
 	xx[0] = digests[n][0];
@@ -232,7 +231,7 @@ static inline void init_abcde(uint32_t * xx, uint32_t n,
 	xx[15] = digests[n][15];
 }
 
-static inline void add_abcde(uint32_t * xx, uint32_t n,
+static inline void add_abcde(uint32_t *xx, uint32_t n,
 			     uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS])
 {
 	digests[n][0] += xx[0];
@@ -265,8 +264,7 @@ static inline void add_abcde(uint32_t * xx, uint32_t n,
  * Return:
  *   N/A
  */
-void mh_sha1_single(const uint8_t * input, uint32_t(*digests)[HASH_SEGS],
-		    uint8_t * frame_buffer)
+void mh_sha1_single(const uint8_t *input, uint32_t(*digests)[HASH_SEGS], uint8_t *frame_buffer)
 {
 	uint32_t aa[HASH_SEGS], bb[HASH_SEGS], cc[HASH_SEGS], dd[HASH_SEGS], ee[HASH_SEGS];
 	uint32_t *ww = (uint32_t *) input;
@@ -372,7 +370,7 @@ void mh_sha1_single(const uint8_t * input, uint32_t(*digests)[HASH_SEGS],
 	add_abcde(ee, 4, digests);
 }
 
-void mh_sha1_block_base(const uint8_t * input_data,
+void mh_sha1_block_base(const uint8_t *input_data,
 			uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
 			uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
 {

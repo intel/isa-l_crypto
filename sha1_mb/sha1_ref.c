@@ -81,7 +81,7 @@
 
 static void OPT_FIX sha1_single(const uint8_t * data, uint32_t digest[]);
 
-void sha1_ref(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
+void sha1_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[2 * SHA1_BLOCK_SIZE];
@@ -116,7 +116,7 @@ void sha1_ref(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
 		sha1_single(buf + SHA1_BLOCK_SIZE, digest);
 }
 
-void sha1_single(const uint8_t * data, uint32_t digest[])
+void sha1_single(const uint8_t *data, uint32_t digest[])
 {
 	uint32_t a, b, c, d, e;
 	uint32_t w[16] = { 0 };

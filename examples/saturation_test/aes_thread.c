@@ -108,7 +108,7 @@ static unsigned char const ic[] = {
 	0x0e, 0x0f
 };
 
-void mk_rand_data(uint8_t * data, uint32_t size)
+void mk_rand_data(uint8_t *data, uint32_t size)
 {
 	unsigned int i;
 	for (i = 0; i < size; i++) {

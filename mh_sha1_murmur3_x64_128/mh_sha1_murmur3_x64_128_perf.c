@@ -79,7 +79,7 @@ extern void murmur3_x64_128(const void *buffer, uint32_t len, uint64_t murmur_se
 			    uint32_t * murmur3_x64_128_digest);
 
 void mh_sha1_murmur3_x64_128_base(const void *buffer, uint32_t len, uint64_t murmur_seed,
-				  uint32_t * mh_sha1_digest, uint32_t * murmur3_x64_128_digest)
+				  uint32_t *mh_sha1_digest, uint32_t *murmur3_x64_128_digest)
 {
 	mh_sha1_ref(buffer, len, mh_sha1_digest);
 	murmur3_x64_128(buffer, len, murmur_seed, murmur3_x64_128_digest);
@@ -88,7 +88,7 @@ void mh_sha1_murmur3_x64_128_base(const void *buffer, uint32_t len, uint64_t mur
 }
 
 // Generates pseudo-random data
-void rand_buffer(uint8_t * buf, long buffer_size)
+void rand_buffer(uint8_t *buf, long buffer_size)
 {
 	long i;
 	for (i = 0; i < buffer_size; i++)

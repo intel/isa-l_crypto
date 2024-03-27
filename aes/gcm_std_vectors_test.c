@@ -39,7 +39,7 @@
 # define TEST_SEED 0x1234
 #endif
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
+int check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 {
 	int mismatch;
 	int OK = 0;
@@ -264,12 +264,12 @@ int test_gcm256_std_vectors(gcm_vector const *vector)
 
 void aes_gcm_stream_enc_128(const struct gcm_key_data *key_data,
 			    struct gcm_context_data *context,
-			    uint8_t * out,
+			    uint8_t *out,
 			    uint8_t const *in,
 			    uint64_t len,
-			    uint8_t * iv,
+			    uint8_t *iv,
 			    uint8_t const *aad,
-			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+			    uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_128(key_data, context, iv, aad, aad_len);
 	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
@@ -290,12 +290,12 @@ void aes_gcm_stream_enc_128(const struct gcm_key_data *key_data,
 
 void aes_gcm_stream_dec_128(const struct gcm_key_data *key_data,
 			    struct gcm_context_data *context,
-			    uint8_t * out,
+			    uint8_t *out,
 			    uint8_t const *in,
 			    uint64_t len,
-			    uint8_t * iv,
+			    uint8_t *iv,
 			    uint8_t const *aad,
-			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+			    uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_128(key_data, context, iv, aad, aad_len);
 	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
@@ -419,12 +419,12 @@ int test_gcm128_std_stream_vectors(gcm_vector const *vector)
 
 void aes_gcm_stream_enc_256(const struct gcm_key_data *key_data,
 			    struct gcm_context_data *context,
-			    uint8_t * out,
+			    uint8_t *out,
 			    uint8_t const *in,
 			    uint64_t len,
-			    uint8_t * iv,
+			    uint8_t *iv,
 			    uint8_t const *aad,
-			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+			    uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_256(key_data, context, iv, aad, aad_len);
 	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors
@@ -446,12 +446,12 @@ void aes_gcm_stream_enc_256(const struct gcm_key_data *key_data,
 
 void aes_gcm_stream_dec_256(const struct gcm_key_data *key_data,
 			    struct gcm_context_data *context,
-			    uint8_t * out,
+			    uint8_t *out,
 			    uint8_t const *in,
 			    uint64_t len,
-			    uint8_t * iv,
+			    uint8_t *iv,
 			    uint8_t const *aad,
-			    uint64_t aad_len, uint8_t * auth_tag, uint64_t auth_tag_len)
+			    uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
 {
 	aes_gcm_init_256(key_data, context, iv, aad, aad_len);
 	uint8_t test_sequence[] = { 1, 12, 22, 0, 1, 12, 16 };	//sum(test_sequence) > max_Plen in vectors

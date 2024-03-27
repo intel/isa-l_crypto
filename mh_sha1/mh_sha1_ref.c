@@ -70,7 +70,7 @@
 	e += rol32(a,5) + F4(b,c,d) + 0xCA62C1D6 + W(i); \
 	b = rol32(b,30)
 
-static void OPT_FIX sha1_single_for_mh_sha1_ref(const uint8_t * data, uint32_t digest[])
+static void OPT_FIX sha1_single_for_mh_sha1_ref(const uint8_t *data, uint32_t digest[])
 {
 	uint32_t a, b, c, d, e;
 	uint32_t w[16] = { 0 };
@@ -173,7 +173,7 @@ static void OPT_FIX sha1_single_for_mh_sha1_ref(const uint8_t * data, uint32_t d
 	digest[4] += e;
 }
 
-void sha1_for_mh_sha1_ref(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
+void sha1_for_mh_sha1_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[2 * SHA1_BLOCK_SIZE];
@@ -217,7 +217,7 @@ void sha1_for_mh_sha1_ref(const uint8_t * input_data, uint32_t * digest, const u
  *   w0  |  w1  | ... |  w15
  *
  */
-static inline void transform_input_single(uint32_t * new_data, uint32_t * input,
+static inline void transform_input_single(uint32_t *new_data, uint32_t *input,
 					  uint32_t segment)
 {
 	new_data[16 * segment + 0] = input[16 * 0 + segment];
@@ -255,7 +255,7 @@ static inline void transform_input_single(uint32_t * new_data, uint32_t * input,
  *   seg15: | w0  |  w1  | ... |  w15
  *
  */
-static inline void transform_input(uint32_t * new_data, uint32_t * input, uint32_t block)
+static inline void transform_input(uint32_t *new_data, uint32_t *input, uint32_t block)
 {
 	uint32_t *current_input = input + block * MH_SHA1_BLOCK_SIZE / 4;
 
@@ -291,7 +291,7 @@ static inline void transform_input(uint32_t * new_data, uint32_t * input, uint32
  *   seg15: | H0  |  H1  | ... |  H4
  *
  */
-static inline void sha1_update_all_segs(uint32_t * new_data,
+static inline void sha1_update_all_segs(uint32_t *new_data,
 					uint32_t(*mh_sha1_seg_digests)[SHA1_DIGEST_WORDS])
 {
 	sha1_update_one_seg(&(new_data)[16 * 0], mh_sha1_seg_digests[0]);
@@ -312,7 +312,7 @@ static inline void sha1_update_all_segs(uint32_t * new_data,
 	sha1_update_one_seg(&(new_data)[16 * 15], mh_sha1_seg_digests[15]);
 }
 
-void mh_sha1_block_ref(const uint8_t * input_data, uint32_t(*digests)[HASH_SEGS],
+void mh_sha1_block_ref(const uint8_t *input_data, uint32_t(*digests)[HASH_SEGS],
 		       uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
 {
 	uint32_t i, j;
@@ -346,8 +346,8 @@ void mh_sha1_block_ref(const uint8_t * input_data, uint32_t(*digests)[HASH_SEGS]
 	return;
 }
 
-void mh_sha1_tail_ref(uint8_t * partial_buffer, uint32_t total_len,
-		      uint32_t(*mh_sha1_segs_digests)[HASH_SEGS], uint8_t * frame_buffer,
+void mh_sha1_tail_ref(uint8_t *partial_buffer, uint32_t total_len,
+		      uint32_t(*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
 		      uint32_t digests[SHA1_DIGEST_WORDS])
 {
 	uint64_t partial_buffer_len, len_in_bit;
@@ -378,7 +378,7 @@ void mh_sha1_tail_ref(uint8_t * partial_buffer, uint32_t total_len,
 	return;
 }
 
-void mh_sha1_ref(const void *buffer, uint32_t len, uint32_t * mh_sha1_digest)
+void mh_sha1_ref(const void *buffer, uint32_t len, uint32_t *mh_sha1_digest)
 {
 	uint64_t total_len;
 	uint64_t num_blocks;

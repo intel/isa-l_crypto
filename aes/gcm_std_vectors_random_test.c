@@ -69,7 +69,7 @@
 #endif
 #endif
 
-void dump_table(char *title, uint8_t * table, uint8_t count)
+void dump_table(char *title, uint8_t *table, uint8_t count)
 {
 	int i;
 	char const *space = "   ";
@@ -111,7 +111,7 @@ void dump_gcm_data(struct gcm_key_data *gkey)
 #endif //GCM_VECTORS_VERBOSE
 }
 
-void mk_rand_data(uint8_t * data, uint32_t size)
+void mk_rand_data(uint8_t *data, uint32_t size)
 {
 	int i;
 	for (i = 0; i < size; i++) {
@@ -119,7 +119,7 @@ void mk_rand_data(uint8_t * data, uint32_t size)
 	}
 }
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
+int check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 {
 	int mismatch;
 	int OK = 0;
@@ -142,7 +142,7 @@ int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name
 	return OK;
 }
 
-int check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector * vector)
+int check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
@@ -238,7 +238,7 @@ int check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_v
 }
 
 int check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
-		      gcm_vector * vector, int test_len)
+		      gcm_vector *vector, int test_len)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
@@ -399,7 +399,7 @@ int check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
 }
 
 int check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
-		       gcm_vector * vector, int length, int start, int breaks)
+		       gcm_vector *vector, int length, int start, int breaks)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
@@ -533,7 +533,7 @@ int check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
 }
 
 int check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
-			     gcm_vector * vector)
+			     gcm_vector *vector)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
@@ -692,7 +692,7 @@ int check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data 
 }
 
 int check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
-		     gcm_vector * vector)
+		     gcm_vector *vector)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
@@ -793,7 +793,7 @@ int check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
 }
 
 int check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
-			  gcm_vector * vector, int test_len)
+			  gcm_vector *vector, int test_len)
 {
 	uint8_t *pt_test = NULL;
 	uint8_t *ct_test = NULL;
