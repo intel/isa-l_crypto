@@ -74,7 +74,7 @@
 					}while(0)
 
 // Generates pseudo-random data
-void rand_buffer(uint8_t * buf, long buffer_size)
+void rand_buffer(uint8_t *buf, long buffer_size)
 {
 	long i;
 	for (i = 0; i < buffer_size; i++)
