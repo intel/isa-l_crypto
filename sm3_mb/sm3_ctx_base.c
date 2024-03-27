@@ -93,11 +93,11 @@ static inline void sm3_message_schedule(uint32_t bi[], volatile uint32_t W[],
 	tmp = 0;
 }
 
-static inline void sm3_compress_step_func(int j, volatile uint32_t * a_p,
-					  volatile uint32_t * b_p, volatile uint32_t * c_p,
-					  volatile uint32_t * d_p, volatile uint32_t * e_p,
-					  volatile uint32_t * f_p, volatile uint32_t * g_p,
-					  volatile uint32_t * h_p, volatile uint32_t W[],
+static inline void sm3_compress_step_func(int j, volatile uint32_t *a_p,
+					  volatile uint32_t *b_p, volatile uint32_t *c_p,
+					  volatile uint32_t *d_p, volatile uint32_t *e_p,
+					  volatile uint32_t *f_p, volatile uint32_t *g_p,
+					  volatile uint32_t *h_p, volatile uint32_t W[],
 					  volatile uint32_t W_B[])
 {
 	volatile uint32_t SS1, SS2, TT1, TT2;
@@ -122,11 +122,11 @@ static inline void sm3_compress_step_func(int j, volatile uint32_t * a_p,
 	TT2 = 0;
 }
 
-void sm3_ctx_mgr_init_base(SM3_HASH_CTX_MGR * mgr)
+void sm3_ctx_mgr_init_base(SM3_HASH_CTX_MGR *mgr)
 {
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx,
+SM3_HASH_CTX *sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx,
 				      const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 
@@ -171,12 +171,12 @@ SM3_HASH_CTX *sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR * mgr, SM3_HASH_CTX * ctx
 	return ctx;
 }
 
-SM3_HASH_CTX *sm3_ctx_mgr_flush_base(SM3_HASH_CTX_MGR * mgr)
+SM3_HASH_CTX *sm3_ctx_mgr_flush_base(SM3_HASH_CTX_MGR *mgr)
 {
 	return NULL;
 }
 
-static void sm3_init(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sm3_init(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	// Init digest
 	hash_init_digest(ctx->job.result_digest);
@@ -194,7 +194,7 @@ static void sm3_init(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void sm3_update(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	uint32_t remain_len = len;
 	uint32_t *digest = ctx->job.result_digest;
@@ -248,7 +248,7 @@ static void sm3_update(SM3_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	return;
 }
 
-static void sm3_final(SM3_HASH_CTX * ctx)
+static void sm3_final(SM3_HASH_CTX *ctx)
 {
 	const void *buffer = ctx->partial_block_buffer;
 	uint32_t i = ctx->partial_block_buffer_length;
@@ -324,7 +324,7 @@ static void sm3_single(const volatile void *data, uint32_t digest[])
 	h = 0;
 }
 
-static inline void hash_init_digest(SM3_WORD_T * digest)
+static inline void hash_init_digest(SM3_WORD_T *digest)
 {
 	static const SM3_WORD_T hash_initial_digest[SM3_DIGEST_NWORDS] =
 	    { SM3_INITIAL_DIGEST };
