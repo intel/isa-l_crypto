@@ -65,7 +65,7 @@
 	e += rol32(a,5) + F4(b,c,d) + 0xCA62C1D6 + W(i); \
 	b = rol32(b,30)
 
-static void OPT_FIX sha1_single_for_mh_sha1(const uint8_t * data, uint32_t digest[])
+static void OPT_FIX sha1_single_for_mh_sha1(const uint8_t *data, uint32_t digest[])
 {
 	uint32_t a, b, c, d, e;
 	uint32_t w[16] = { 0 };
@@ -168,7 +168,7 @@ static void OPT_FIX sha1_single_for_mh_sha1(const uint8_t * data, uint32_t diges
 	digest[4] += e;
 }
 
-void sha1_for_mh_sha1(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
+void sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
 	uint32_t i, j;
 	uint8_t buf[2 * SHA1_BLOCK_SIZE];
