@@ -57,9 +57,9 @@ void mk_rand_data(unsigned char *k1, unsigned char *k2, unsigned char *k3, unsig
 }
 
 /* Wrapper for OpenSSL EVP AES-XTS 128 encryption */
-static inline
-    int openssl_aes_128_xts_enc(EVP_CIPHER_CTX * ctx, unsigned char *key, unsigned char *iv,
-				int len, unsigned char *pt, unsigned char *ct)
+static inline int openssl_aes_128_xts_enc(EVP_CIPHER_CTX *ctx, unsigned char *key,
+					  unsigned char *iv, int len,
+					  unsigned char *pt, unsigned char *ct)
 {
 	int outlen, tmplen;
 	if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)
@@ -72,9 +72,9 @@ static inline
 }
 
 /* Wrapper for OpenSSL EVP AES-XTS 128 decryption */
-static inline
-    int openssl_aes_128_xts_dec(EVP_CIPHER_CTX * ctx, unsigned char *key, unsigned char *iv,
-				int len, unsigned char *ct, unsigned char *dt)
+static inline int openssl_aes_128_xts_dec(EVP_CIPHER_CTX *ctx, unsigned char *key,
+					  unsigned char *iv, int len,
+					  unsigned char *ct, unsigned char *dt)
 {
 	int outlen, tmplen;
 	if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)

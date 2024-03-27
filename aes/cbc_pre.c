@@ -30,7 +30,7 @@
 #include <aes_cbc.h>
 #include <aes_keyexp.h>
 
-int aes_cbc_precomp(uint8_t * key, int key_size, struct cbc_key_data *keys_blk)
+int aes_cbc_precomp(uint8_t *key, int key_size, struct cbc_key_data *keys_blk)
 {
 	if (CBC_128_BITS == key_size) {
 		aes_keyexp_128(key, keys_blk->enc_keys, keys_blk->dec_keys);

@@ -62,7 +62,7 @@ typedef void (*aes_cbc_generic)(uint8_t * in,
 				uint8_t * keys, uint8_t * out, uint64_t len_bytes);
 
 int OpenSslEnc(uint8_t k_len,
-	       uint8_t * key, uint8_t * in, uint8_t * iv, uint8_t * out, uint64_t len_bytes)
+	       uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, uint64_t len_bytes)
 {
 	if (CBC_128_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
@@ -88,7 +88,7 @@ int OpenSslEnc(uint8_t k_len,
 }
 
 int OpenSslDec(uint8_t k_len,
-	       uint8_t * key, uint8_t * in, uint8_t * iv, uint8_t * out, uint64_t len_bytes)
+	       uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, uint64_t len_bytes)
 {
 	if (CBC_128_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
@@ -112,7 +112,7 @@ int OpenSslDec(uint8_t k_len,
 	return 0;
 }
 
-void mk_rand_data(uint8_t * data, uint32_t size)
+void mk_rand_data(uint8_t *data, uint32_t size)
 {
 	int i;
 	for (i = 0; i < size; i++) {
@@ -120,7 +120,7 @@ void mk_rand_data(uint8_t * data, uint32_t size)
 	}
 }
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
+int check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 {
 	int mismatch;
 	int fail = 0;

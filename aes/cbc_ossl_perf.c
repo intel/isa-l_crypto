@@ -68,7 +68,7 @@ static unsigned char *ossl_ciphertext = NULL;
 
 static uint8_t test_key[CBC_256_BITS];
 
-void mk_rand_data(uint8_t * data, uint32_t size)
+void mk_rand_data(uint8_t *data, uint32_t size)
 {
 	unsigned int i;
 	for (i = 0; i < size; i++) {
@@ -76,7 +76,7 @@ void mk_rand_data(uint8_t * data, uint32_t size)
 	}
 }
 
-int aes_128_perf(uint8_t * key)
+int aes_128_perf(uint8_t *key)
 {
 	int i, ret;
 
@@ -164,7 +164,7 @@ int aes_128_perf(uint8_t * key)
 	return ret;
 }
 
-int aes_192_perf(uint8_t * key)
+int aes_192_perf(uint8_t *key)
 {
 	int i, ret;
 	uint8_t *iv = NULL;
@@ -249,7 +249,7 @@ int aes_192_perf(uint8_t * key)
 	return ret;
 }
 
-int aes_256_perf(uint8_t * key)
+int aes_256_perf(uint8_t *key)
 {
 	int i, ret;
 	uint8_t *iv = NULL;
