@@ -54,7 +54,7 @@ int rolling_hash2_init(struct rh_state2 *state, uint32_t w)
 	return 0;
 }
 
-void rolling_hash2_reset(struct rh_state2 *state, uint8_t * init_bytes)
+void rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
 {
 	uint64_t hash;
 	uint32_t i, w;
@@ -77,8 +77,8 @@ uint64_t hash_fn(struct rh_state2 *state, uint64_t h, uint8_t new_char, uint8_t 
 	return h;
 }
 
-uint64_t rolling_hash2_run_until_base(uint32_t * idx, int max_idx, uint64_t * t1,
-				      uint64_t * t2, uint8_t * b1, uint8_t * b2, uint64_t h,
+uint64_t rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1,
+				      uint64_t *t2, uint8_t *b1, uint8_t *b2, uint64_t h,
 				      uint64_t mask, uint64_t trigger)
 {
 	int i = *idx;
@@ -107,8 +107,8 @@ uint64_t rolling_hash2_run_until_base(uint32_t * idx, int max_idx, uint64_t * t1
 }
 
 int
-rolling_hash2_run(struct rh_state2 *state, uint8_t * buffer, uint32_t buffer_length,
-		  uint32_t mask, uint32_t trigger, uint32_t * offset)
+rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_length,
+		  uint32_t mask, uint32_t trigger, uint32_t *offset)
 {
 
 	uint32_t i;
