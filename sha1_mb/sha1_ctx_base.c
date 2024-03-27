@@ -80,11 +80,11 @@ static void sha1_final(SHA1_HASH_CTX * ctx);
 static void OPT_FIX sha1_single(const void *data, uint32_t digest[]);
 static inline void hash_init_digest(SHA1_WORD_T * digest);
 
-void sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR * mgr)
+void sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA1_HASH_CTX *sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR * mgr, SHA1_HASH_CTX * ctx,
+SHA1_HASH_CTX *sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx,
 					const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
 
@@ -130,12 +130,12 @@ SHA1_HASH_CTX *sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR * mgr, SHA1_HASH_CTX *
 	return ctx;
 }
 
-SHA1_HASH_CTX *sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR * mgr)
+SHA1_HASH_CTX *sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr)
 {
 	return NULL;
 }
 
-static void sha1_init(SHA1_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha1_init(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	// Init digest
 	hash_init_digest(ctx->job.result_digest);
@@ -153,7 +153,7 @@ static void sha1_init(SHA1_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void sha1_update(SHA1_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
 	uint32_t remain_len = len;
 	uint32_t *digest = ctx->job.result_digest;
@@ -207,7 +207,7 @@ static void sha1_update(SHA1_HASH_CTX * ctx, const void *buffer, uint32_t len)
 	return;
 }
 
-static void sha1_final(SHA1_HASH_CTX * ctx)
+static void sha1_final(SHA1_HASH_CTX *ctx)
 {
 	const void *buffer = ctx->partial_block_buffer;
 	uint32_t i = ctx->partial_block_buffer_length;
@@ -339,7 +339,7 @@ void sha1_single(const void *data, uint32_t digest[])
 	digest[4] += e;
 }
 
-static inline void hash_init_digest(SHA1_WORD_T * digest)
+static inline void hash_init_digest(SHA1_WORD_T *digest)
 {
 	static const SHA1_WORD_T hash_initial_digest[SHA1_DIGEST_NWORDS] =
 	    { SHA1_INITIAL_DIGEST };
