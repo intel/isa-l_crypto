@@ -53,7 +53,7 @@
  *
  */
 void OPT_FIX2 murmur3_x64_128(const void *buffer, uint32_t len, uint64_t murmur_seed,
-			      uint32_t * murmur3_x64_128_digest)
+			      uint32_t *murmur3_x64_128_digest)
 {
 	uint64_t *murmur3_x64_128_hash;
 	uint32_t murmur3_x64_128_hash_dword[4];

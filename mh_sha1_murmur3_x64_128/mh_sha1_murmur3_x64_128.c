@@ -57,7 +57,7 @@ int mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64
 	return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 }
 
-void mh_sha1_murmur3_x64_128_block_base(const uint8_t * input_data,
+void mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
 					uint32_t mh_sha1_digests[SHA1_DIGEST_WORDS][HASH_SEGS],
 					uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE],
 					uint32_t
