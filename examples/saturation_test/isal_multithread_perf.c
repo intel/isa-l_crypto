@@ -85,7 +85,7 @@ void usage(char *appname)
 
 }
 
-void notice(char *appname, alg_method * alg_choose_p)
+void notice(char *appname, alg_method *alg_choose_p)
 {
 	int i = 0;
 	printf("%s starts to run\n", appname);
