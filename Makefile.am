@@ -49,6 +49,7 @@ include aes/Makefile.am
 endif
 if CPU_AARCH64
 include aes/Makefile.am
+include xxhash_mb/Makefile.am
 endif
 
 # LIB version info not necessarily the same as package version
