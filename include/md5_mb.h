@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+  Copyright(c) 2011-2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -123,6 +123,7 @@ extern "C" {
 #define MD5_PADLENGTHFIELD_SIZE	8
 #define MD5_INITIAL_DIGEST	\
 	0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+#define MD5_MAX_LEN		((1 << 16) - 2)
 
 typedef uint32_t md5_digest_array[MD5_DIGEST_NWORDS][MD5_MAX_LANES];
 typedef uint32_t MD5_WORD_T;
@@ -345,6 +346,51 @@ MD5_HASH_CTX* md5_ctx_mgr_submit (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx,
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
 MD5_HASH_CTX* md5_ctx_mgr_flush  (MD5_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief Initialize the MD5 multi-buffer manager structure.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_md5_ctx_mgr_init (MD5_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief Submit a new MD5 job to the multi-buffer manager.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @param[in] ctx_in Pointer to structure holding input job ctx info
+ * @param[out] ctx_out Pointer address to output job ctx info.
+ *                     Modified to point to completed job structure or
+ *                     NULL if no jobs completed.
+ * @param[in] buffer Pointer to buffer to be processed
+ * @param[in] len Length of buffer (in bytes) to be processed
+ * @param[in] flags Input flag specifying job type (first, update, last or entire)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_md5_ctx_mgr_submit (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX* ctx_in,
+			     MD5_HASH_CTX** ctx_out, const void* buffer,
+			     const uint32_t len, const HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted MD5 jobs and return when complete.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @param[out] ctx_out Pointer address to output job ctx info.
+ *                     Modified to point to completed job structure or NULL
+ *                     if no jobs complete.
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_md5_ctx_mgr_flush (MD5_HASH_CTX_MGR* mgr, MD5_HASH_CTX** ctx_out);
 
 
 /*******************************************************************

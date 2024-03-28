@@ -248,7 +248,8 @@ objs = \
 	bin\XTS_AES_128_dec_vaes.obj \
 	bin\XTS_AES_256_dec_expanded_key_vaes.obj \
 	bin\XTS_AES_128_dec_expanded_key_vaes.obj \
-	bin\aes_keyexp.obj
+	bin\aes_keyexp.obj \
+	bin\md5_mb.obj
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/
 # Modern asm feature level, consider upgrading nasm/yasm before decreasing feature_level
@@ -380,7 +381,8 @@ checks = \
 	xts_256_expanded_key_test.exe \
 	aes_param_test.exe \
 	mh_sha1_param_test.exe \
-	mh_sha256_param_test.exe
+	mh_sha256_param_test.exe \
+	md5_mb_param_test.exe
 
 
 checks: lib $(checks)

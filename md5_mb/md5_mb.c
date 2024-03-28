@@ -27,38 +27,61 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#ifndef _ISAL_CRYPTO_API_H
-#define _ISAL_CRYPTO_API_H
+#include "md5_mb.h"
+#include "isal_crypto_api.h"
+#include "multi_buffer.h"
 
-#ifdef __cplusplus
-extern "C" {
+int isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR * mgr)
+{
+#ifdef SAFE_PARAM
+	if (mgr == NULL)
+		return ISAL_CRYPTO_ERR_NULL_MGR;
 #endif
+	md5_ctx_mgr_init(mgr);
 
-typedef enum {
-        ISAL_CRYPTO_ERR_NONE = 0,
-        ISAL_CRYPTO_ERR_NULL_SRC = 2000,
-        ISAL_CRYPTO_ERR_NULL_DST,
-        ISAL_CRYPTO_ERR_NULL_CTX,
-        ISAL_CRYPTO_ERR_NULL_MGR,
-        ISAL_CRYPTO_ERR_NULL_KEY,
-        ISAL_CRYPTO_ERR_NULL_EXP_KEY,
-        ISAL_CRYPTO_ERR_NULL_IV,
-        ISAL_CRYPTO_ERR_NULL_AUTH,
-        ISAL_CRYPTO_ERR_NULL_AAD,
-        ISAL_CRYPTO_ERR_CIPH_LEN,
-        ISAL_CRYPTO_ERR_AUTH_LEN,
-        ISAL_CRYPTO_ERR_IV_LEN,
-        ISAL_CRYPTO_ERR_KEY_LEN,
-        ISAL_CRYPTO_ERR_AUTH_TAG_LEN,
-        ISAL_CRYPTO_ERR_AAD_LEN,
-        ISAL_CRYPTO_ERR_INVALID_FLAGS,
-        ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
-        ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
-        /* add new error types above this comment */
-        ISAL_CRYPTO_ERR_MAX /* don't move this one */
-} ISAL_CRYPTO_ERROR;
-
-#ifdef __cplusplus
+	return 0;
 }
-#endif //__cplusplus
-#endif //ifndef _ISAL_CRYPTO_API_H
+
+int isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx_in,
+			    MD5_HASH_CTX ** ctx_out, const void *buffer,
+			    const uint32_t len, const HASH_CTX_FLAG flags)
+{
+#ifdef SAFE_PARAM
+	if (mgr == NULL)
+		return ISAL_CRYPTO_ERR_NULL_MGR;
+	if (ctx_in == NULL || ctx_out == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+	if (buffer == NULL)
+		return ISAL_CRYPTO_ERR_NULL_SRC;
+	if (len > MD5_MAX_LEN)
+		return ISAL_CRYPTO_ERR_AUTH_LEN;
+#endif
+	*ctx_out = md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+
+#ifdef SAFE_PARAM
+	if (*ctx_out != NULL && (MD5_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+		MD5_HASH_CTX *cp = (MD5_HASH_CTX *) (*ctx_out);
+
+		if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
+			return ISAL_CRYPTO_ERR_INVALID_FLAGS;
+		if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
+			return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
+		if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
+			return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
+	}
+#endif
+	return 0;
+}
+
+int isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX ** ctx_out)
+{
+#ifdef SAFE_PARAM
+	if (mgr == NULL)
+		return ISAL_CRYPTO_ERR_NULL_MGR;
+	if (ctx_out == NULL)
+		return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+	*ctx_out = md5_ctx_mgr_flush(mgr);
+
+	return 0;
+}

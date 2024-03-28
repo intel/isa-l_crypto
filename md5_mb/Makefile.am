@@ -27,6 +27,8 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+lsrc +=		md5_mb/md5_mb.c
+
 lsrc_x86_64 +=	md5_mb/md5_ctx_sse.c \
 		md5_mb/md5_ctx_avx.c \
 		md5_mb/md5_ctx_avx2.c \
@@ -68,7 +70,8 @@ lsrc_aarch64 += md5_mb/md5_ctx_base.c \
 		md5_mb/aarch64/md5_mb_multibinary.S
 
 lsrc_base_aliases += md5_mb/md5_ctx_base.c \
-		md5_mb/md5_ctx_base_aliases.c
+		     md5_mb/md5_ctx_base_aliases.c
+
 src_include  += -I $(srcdir)/md5_mb
 extern_hdrs  += include/md5_mb.h \
 		include/multi_buffer.h
@@ -84,7 +87,8 @@ other_src += 	include/datastruct.asm \
 
 check_tests  += md5_mb/md5_mb_test \
 		md5_mb/md5_mb_rand_test \
-		md5_mb/md5_mb_rand_update_test
+		md5_mb/md5_mb_rand_update_test \
+		md5_mb/md5_mb_param_test
 
 unit_tests  += md5_mb/md5_mb_rand_ssl_test
 
