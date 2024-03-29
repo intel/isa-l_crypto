@@ -103,6 +103,9 @@
 extern "C" {
 #endif
 
+#define ISAL_AES_XTS_MIN_LEN 16
+#define ISAL_AES_XTS_MAX_LEN (1 << 24)
+
 /** @brief XTS-AES-128 Encryption
  * @requires AES-NI
  */
@@ -207,6 +210,141 @@ void XTS_AES_256_dec_expanded_key(
 	uint8_t *pt	//!<  plaintext sector output data
 	);
 
+/** @brief XTS-AES-128 Encryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_enc_128(
+	const uint8_t *k2,	//!<  key used for tweaking, 16 bytes
+	const uint8_t *k1,	//!<  key used for encryption of tweaked plaintext, 16 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  plaintext sector input data
+	void *out	//!<  ciphertext sector output data
+	);
+
+/** @brief XTS-AES-128 Encryption with pre-expanded keys
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_enc_128_expanded_key(
+	const uint8_t *k2,	//!<  expnaded key used for tweaking, 16*11 bytes
+	const uint8_t *k1,	//!<  expanded key used for encryption of tweaked plaintext, 16*11 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  plaintext sector input data
+	void *out	//!<  ciphertext sector output data
+	);
+
+/** @brief XTS-AES-128 Decryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_dec_128(
+	const uint8_t *k2,	//!<  key used for tweaking, 16 bytes
+	const uint8_t *k1,	//!<  key used for decryption of tweaked ciphertext, 16 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  ciphertext sector input data
+	void *out	//!< plaintext sector output data
+	);
+
+/** @brief XTS-AES-128 Decryption with pre-expanded keys
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_dec_128_expanded_key(
+	const uint8_t *k2,	//!<  expanded key used for tweaking, 16*11 bytes
+	const uint8_t *k1,	//!<  expanded key used for decryption of tweaked ciphertext, 16*11 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  ciphertext sector input data
+	void *out	//!< plaintext sector output data
+	);
+
+/** @brief XTS-AES-256 Encryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_enc_256(
+	const uint8_t *k2,	//!<  key used for tweaking, 16*2 bytes
+	const uint8_t *k1,	//!<  key used for encryption of tweaked plaintext, 16*2 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  plaintext sector input data
+	void *out	//!<  ciphertext sector output data
+	);
+
+/** @brief XTS-AES-256 Encryption with pre-expanded keys
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_enc_256_expanded_key(
+	const uint8_t *k2,	//!<  expnaded key used for tweaking, 16*15 bytes
+	const uint8_t *k1,	//!<  expanded key used for encryption of tweaked plaintext, 16*15 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  plaintext sector input data
+	void *out	//!<  ciphertext sector output data
+	);
+
+/** @brief XTS-AES-256 Decryption
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_dec_256(
+	const uint8_t *k2,	//!<  key used for tweaking, 16 bytes
+	const uint8_t *k1,	//!<  key used for decryption of tweaked ciphertext, 16*2 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16*2 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  ciphertext sector input data
+	void *out	//!< plaintext sector output data
+	);
+
+/** @brief XTS-AES-256 Decryption with pre-expanded keys
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ * @return  Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+
+int isal_aes_xts_dec_256_expanded_key(
+	const uint8_t *k2,	//!<  expanded key used for tweaking, 16*15 bytes
+	const uint8_t *k1,	//!<  expanded key used for decryption of tweaked ciphertext, 16*15 bytes
+	const uint8_t *initial_tweak,	//!<  initial tweak value, 16 bytes
+	const uint64_t len_bytes,	//!<  sector size, in bytes
+	const void *in,	//!<  ciphertext sector input data
+	void *out	//!< plaintext sector output data
+	);
 #ifdef __cplusplus
 }
 #endif

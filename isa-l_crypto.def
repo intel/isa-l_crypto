@@ -99,3 +99,11 @@ isal_aes_cbc_enc_192                   @94
 isal_aes_cbc_dec_192                   @95
 isal_aes_cbc_enc_256                   @96
 isal_aes_cbc_dec_256                   @97
+isal_aes_xts_enc_128                   @98
+isal_aes_xts_enc_128_expanded_key      @99
+isal_aes_xts_dec_128                   @100
+isal_aes_xts_dec_128_expanded_key      @101
+isal_aes_xts_enc_256                   @102
+isal_aes_xts_enc_256_expanded_key      @103
+isal_aes_xts_dec_256                   @104
+isal_aes_xts_dec_256_expanded_key      @105

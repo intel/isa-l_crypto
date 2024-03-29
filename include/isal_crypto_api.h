@@ -54,6 +54,7 @@ typedef enum {
         ISAL_CRYPTO_ERR_INVALID_FLAGS,
         ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
         ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
+	ISAL_CRYPTO_ERR_XTS_NULL_TWEAK,
         /* add new error types above this comment */
         ISAL_CRYPTO_ERR_MAX /* don't move this one */
 } ISAL_CRYPTO_ERROR;
