@@ -48,6 +48,14 @@ extern "C" {
 int
 _aes_cbc_self_test(void);
 
+/**
+ * @brief Run AES-XTS self tests
+ * @return  Self test result
+ * @retval  0 on success, 1 on failure
+ */
+int
+_aes_xts_self_test(void);
+
 #ifdef __cplusplus
 }
 #endif
