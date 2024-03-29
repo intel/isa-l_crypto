@@ -34,20 +34,21 @@
 ; first key is required only once, no need for storage of this key
 
 %include "reg_sizes.asm"
+%include "clear_regs.inc"
 
 default rel
 %define TW              rsp     ; store 8 tweak values
 %define keys    rsp + 16*8      ; store 15 expanded keys
 
 %ifidn __OUTPUT_FORMAT__, win64
-	%define _xmm    rsp + 16*23     ; store xmm6:xmm15
+	%define _xmm    rsp + 16*(8+15)     ; store xmm6:xmm15
 %endif
 
 %ifidn __OUTPUT_FORMAT__, elf64
-%define _gpr    rsp + 16*23     ; store rbx
+%define _gpr    rsp + 16*(8+15)     ; store rbx
 %define VARIABLE_OFFSET 16*8 + 16*15 + 8*1     ; VARIABLE_OFFSET has to be an odd multiple of 8
 %else
-%define _gpr    rsp + 16*33     ; store rdi, rsi, rbx
+%define _gpr    rsp + 16*(8+15+10)     ; store rdi, rsi, rbx
 %define VARIABLE_OFFSET 16*8 + 16*15 + 16*10 + 8*3     ; VARIABLE_OFFSET has to be an odd multiple of 8
 %endif
 
@@ -1523,6 +1524,15 @@ _done:
 	movdqu  [ptr_ciphertext+16*7], xmm8
 
 _ret_:
+%ifdef SAFE_DATA
+        clear_all_xmms_sse_asm
+        ; Clear expanded keys (16*15 bytes)
+%assign i 0
+%rep 15
+        movdqa  [keys + i*16], xmm0
+%assign i (i + 1)
+%endrep
+%endif
 
 	mov     rbx, [_gpr + 8*0]
 %ifidn __OUTPUT_FORMAT__, win64

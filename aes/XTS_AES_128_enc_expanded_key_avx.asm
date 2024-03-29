@@ -41,14 +41,14 @@ default rel
 %define keys    rsp + 16*8      ; store 11 expanded keys
 
 %ifidn __OUTPUT_FORMAT__, win64
-	%define _xmm    rsp + 16*19     ; store xmm6:xmm15
+	%define _xmm    rsp + 16*(11+8)     ; store xmm6:xmm15
 %endif
 
 %ifidn __OUTPUT_FORMAT__, elf64
-%define _gpr    rsp + 16*19     ; store rbx
+%define _gpr    rsp + 16*(11+8)     ; store rbx
 %define VARIABLE_OFFSET 16*8 + 16*11 + 8*1     ; VARIABLE_OFFSET has to be an odd multiple of 8
 %else
-%define _gpr    rsp + 16*29     ; store rdi, rsi, rbx
+%define _gpr    rsp + 16*(11+8+10)     ; store rdi, rsi, rbx
 %define VARIABLE_OFFSET 16*8 + 16*11 + 16*10 + 8*3     ; VARIABLE_OFFSET has to be an odd multiple of 8
 %endif
 
@@ -1324,6 +1324,12 @@ _done:
 _ret_:
 %ifdef SAFE_DATA
         clear_all_xmms_avx_asm
+        ; Clear expanded keys (16*11 bytes)
+%assign i 0
+%rep 11
+        vmovdqa [keys + i*16], xmm0
+%assign i (i + 1)
+%endrep
 %endif
 
 	mov     rbx, [_gpr + 8*0]
