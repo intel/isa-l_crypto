@@ -27,62 +27,42 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#ifndef _ISAL_CRYPTO_API_H
-#define _ISAL_CRYPTO_API_H
+#ifndef _INTERNAL_FIPS_H
+#define _INTERNAL_FIPS_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef enum {
-        ISAL_CRYPTO_ERR_NONE = 0,
-        ISAL_CRYPTO_ERR_NULL_SRC = 2000,
-        ISAL_CRYPTO_ERR_NULL_DST,
-        ISAL_CRYPTO_ERR_NULL_CTX,
-        ISAL_CRYPTO_ERR_NULL_MGR,
-        ISAL_CRYPTO_ERR_NULL_KEY,
-        ISAL_CRYPTO_ERR_NULL_EXP_KEY,
-        ISAL_CRYPTO_ERR_NULL_IV,
-        ISAL_CRYPTO_ERR_NULL_AUTH,
-        ISAL_CRYPTO_ERR_NULL_AAD,
-        ISAL_CRYPTO_ERR_CIPH_LEN,
-        ISAL_CRYPTO_ERR_AUTH_LEN,
-        ISAL_CRYPTO_ERR_IV_LEN,
-        ISAL_CRYPTO_ERR_KEY_LEN,
-        ISAL_CRYPTO_ERR_AUTH_TAG_LEN,
-        ISAL_CRYPTO_ERR_AAD_LEN,
-        ISAL_CRYPTO_ERR_INVALID_FLAGS,
-        ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
-        ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
-        ISAL_CRYPTO_ERR_XTS_NULL_TWEAK,
-        ISAL_CRYPTO_ERR_SELF_TEST,
-        /* add new error types above this comment */
-        ISAL_CRYPTO_ERR_MAX /* don't move this one */
-} ISAL_CRYPTO_ERROR;
-
 /**
- * @brief Run all crypto self tests
- *
- * When FIPS Mode is enabled, all isal_XXX API which performs any crypto processing
- * on a NIST-approved algorithm (such as isal_aes_cbc_enc_128) will require this function
- * to be run.
- *
- * This API can be run from the application or it will be run internally in the library,
- * after calling any of the isal_XXX API.
- *
- * Either way, once the self tests have passed, all API calls will be able to start
- * performing the crypto operation. If the self tests fail, no crypto processing will be done.
- *
- * This function is thread safe, so only one thread will run the tests and the rest of the threads
- * will wait until the tests are finished.
+ * @brief Internal function checking on self tests status.
  *
  * @return  Self test result
- * @retval  0 on success, ISAL_CRYPTO_ERR_SELF_TEST on failure
+ * @retval  0 on success, 1 on failure, else on self tests not done
  */
 int
-isal_self_tests(void);
+asm_check_self_tests_status(void);
+
+/**
+ * @brief Internal function setting the self tests status.
+ *
+ * To be called after running the self tests. It changes the status
+ * to self tests OK (0) or self tests failed (1).
+ *
+ * @param [in] status Self test status
+ */
+void
+asm_set_self_tests_status(int status);
+
+/**
+ * @brief Run AES self tests
+ * @return  Self test result
+ * @retval  0 on success, 1 on failure
+ */
+int
+_aes_self_tests(void);
 
 #ifdef __cplusplus
 }
 #endif //__cplusplus
-#endif // ifndef _ISAL_CRYPTO_API_H
+#endif // ifndef _INTERNAL_FIPS_H

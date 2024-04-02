@@ -50,6 +50,7 @@ endif
 if CPU_AARCH64
 include aes/Makefile.am
 endif
+include fips/Makefile.am
 
 # LIB version info not necessarily the same as package version
 LIBISAL_CURRENT=2

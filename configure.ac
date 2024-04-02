@@ -370,6 +370,7 @@ AC_CHECK_FUNCS([memmove memset])
 
 my_CFLAGS="\
 -Wall \
+-fPIC \
 -Wchar-subscripts \
 -Wformat-security \
 -Wnested-externs \

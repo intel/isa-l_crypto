@@ -372,5 +372,5 @@ CS_IGNORE_WORDS ?= iinclude,struc,fo,ue,od,ba,padd,hist,unx,sav,datas
 spellcheck:
 	$(CODESPELL) -d -L $(CS_IGNORE_WORDS) \
 	-S "*.obj,*.o,*.a,*.so,*.lib,*~,*.so,*.so.*,*.d" \
-	./aes ./examples/saturation_test ./include ./md5_mb ./mh_sha1 ./mh_sha1_murmur3_x86_128 ./mh_sha256 ./rolling_hash ./sha1_mb ./sha256_mb ./sha512_mb ./sm3_mb ./tests README.md SECURITY.md CONTRIBUTING.md \
+	./aes ./examples/saturation_test ./include ./md5_mb ./mh_sha1 ./mh_sha1_murmur3_x86_128 ./mh_sha256 ./rolling_hash ./sha1_mb ./sha256_mb ./sha512_mb ./sm3_mb ./tests ./fips README.md SECURITY.md CONTRIBUTING.md \
 	Makefile.unx Makefile.nmake Release_notes.txt LICENSE $(CS_EXTRA_OPTS)

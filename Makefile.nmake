@@ -256,7 +256,9 @@ objs = \
 	bin\sha256_mb.obj \
 	bin\sha512_mb.obj \
 	bin\aes_gcm.obj \
-	bin\aes_self_tests.obj
+	bin\aes_self_tests.obj \
+	bin\self_tests.obj \
+        bin\asm_self_tests.obj
 
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/ -Iintel-ipsec-mb/lib
@@ -345,6 +347,11 @@ $?
 {aes}.c.obj:
 	$(CC) $(CFLAGS) /c -Fo$@ $?
 {aes}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
+{fips}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{fips}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
 
 

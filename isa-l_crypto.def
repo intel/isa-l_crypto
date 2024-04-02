@@ -137,3 +137,4 @@ isal_aes_gcm_enc_256_nt                @132
 isal_aes_gcm_dec_256_nt                @133
 isal_aes_gcm_enc_256_update_nt         @134
 isal_aes_gcm_dec_256_update_nt         @135
+isal_self_tests                        @136

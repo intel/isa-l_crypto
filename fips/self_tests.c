@@ -27,37 +27,34 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-/**
- *  @file  isal_self_test.h
- *  @brief Declares self tests functions for NIST approved algorithms
- *
- */
+#include "isal_crypto_api.h"
+#include "internal_fips.h"
 
-#ifndef _ISAL_SELF_TESTS_H_
-#define _ISAL_SELF_TESTS_H_
-
-#ifdef __cplusplus
-extern "C" {
+#ifndef likely
+#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+#define likely(x) __builtin_expect(!!(x), 1)
+#else
+#define likely(x) (!!(x))
 #endif
+#endif /* likely */
 
-/**
- * @brief Run AES-CBC self tests
- * @return  Self test result
- * @retval  0 on success, 1 on failure
- */
 int
-_aes_cbc_self_test(void);
+isal_self_tests(void)
+{
+        int ret = asm_check_self_tests_status();
 
-/**
- * @brief Run AES-XTS self tests
- * @return  Self test result
- * @retval  0 on success, 1 on failure
- */
-int
-_aes_xts_self_test(void);
+        if (likely(ret == 0))
+                return 0;
+        else if (ret == 1)
+                return ISAL_CRYPTO_ERR_SELF_TEST;
 
-#ifdef __cplusplus
+        /* Self tests have not been done yet, so run them */
+        ret = _aes_self_tests();
+
+        asm_set_self_tests_status(ret);
+
+        if (ret == 0)
+                return 0;
+        else
+                return ISAL_CRYPTO_ERR_SELF_TEST;
 }
-#endif
-
-#endif // _ISAL_SELF_TESTS_H_

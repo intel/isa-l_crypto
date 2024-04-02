@@ -40,7 +40,8 @@
 #include <aes_xts.h>
 #include <aes_keyexp.h>
 #include <isal_crypto_api.h>
-#include <isal_self_tests.h>
+
+#include "internal_fips.h"
 #include "types.h"
 #include "test.h"
 
@@ -338,26 +339,14 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
         return 1;
 }
 
-int
+static int
 _aes_cbc_self_test(void)
 {
-        static int self_tests_done = 0;
-        static int previous_result = 0;
-
-        if (self_tests_done)
-                return previous_result;
-
-        /* Only execute once */
-        self_tests_done = 1;
-
         for (uint32_t i = 0; i < DIM(cbc_vectors); i++) {
                 const struct self_test_cbc_vector *v = &cbc_vectors[i];
 
-                if (cbc_self_test_vector(v) == 0) {
-                        /* Store the result for future API calls */
-                        previous_result = 1;
-                        return previous_result;
-                }
+                if (cbc_self_test_vector(v) == 0)
+                        return 1;
         }
 
         return 0;
@@ -487,27 +476,33 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
         return 1;
 }
 
-int
+static int
 _aes_xts_self_test(void)
 {
-        static int self_tests_done = 0;
-        static int previous_result = 0;
-
-        if (self_tests_done)
-                return previous_result;
-
-        /* Only execute once */
-        self_tests_done = 1;
-
         for (uint32_t i = 0; i < DIM(xts_vectors); i++) {
                 const struct self_test_xts_vector *v = &xts_vectors[i];
 
-                if (xts_self_test_vector(v) == 0) {
-                        /* Store the result for future API calls */
-                        previous_result = 1;
-                        return previous_result;
-                }
+                if (xts_self_test_vector(v) == 0)
+                        return 1;
         }
+
+        return 0;
+}
+
+int
+_aes_self_tests(void)
+{
+        int ret;
+
+        ret = _aes_cbc_self_test();
+
+        if (ret != 0)
+                return ret;
+
+        ret = _aes_xts_self_test();
+
+        if (ret != 0)
+                return ret;
 
         return 0;
 }
