@@ -38,6 +38,14 @@ extern "C" {
 
 #define DIM(_x) (sizeof(_x)/sizeof(_x[0]))
 
+#define CHECK_RETURN_GOTO(state, expected, func, label)	do{ \
+	if((state) != (expected)){ \
+		printf("test: %s() - expected return " \
+		       "value %d, got %d\n", func, expected, state); \
+		goto label; \
+	} \
+}while(0)
+
 // Use sys/time.h functions for time
 #if defined (__unix__) || (__APPLE__) || (__MINGW32__)
 # include <sys/time.h>

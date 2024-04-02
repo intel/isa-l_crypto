@@ -32,18 +32,11 @@
 #include <string.h>
 #include "isal_crypto_api.h"
 #include "mh_sha256.h"
-
-#define TEST_LEN   16*1024
-
-#define CHECK_RETURN(state, expected, func, label)	do{ \
-	if((state) != (expected)){ \
-		printf("test: %s() - expected return " \
-		       "value %d, got %d\n", func, expected, state); \
-		goto label; \
-	} \
-}while(0)
+#include "test.h"
 
 #ifdef SAFE_PARAM
+#define TEST_LEN   16*1024
+
 static int test_mh_sha256_init_api(void)
 {
 	int ret, retval = 1;
@@ -58,11 +51,11 @@ static int test_mh_sha256_init_api(void)
 	}
 
 	ret = isal_mh_sha256_init(NULL);
-	CHECK_RETURN(ret, expected, func_name, exit_init);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_init);
 
 	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_init(update_ctx);
-	CHECK_RETURN(ret, expected, func_name, exit_init);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_init);
 
 	retval = 0;
 
@@ -88,15 +81,15 @@ static int test_mh_sha256_update_api(void)
 	}
 
 	ret = isal_mh_sha256_update(NULL, buff, TEST_LEN);
-	CHECK_RETURN(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
 
 	expected = ISAL_CRYPTO_ERR_NULL_SRC;
 	ret = isal_mh_sha256_update(update_ctx, NULL, TEST_LEN);
-	CHECK_RETURN(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
 
 	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_update(update_ctx, buff, TEST_LEN);
-	CHECK_RETURN(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
 
 	retval = 0;
 
@@ -122,15 +115,15 @@ static int test_mh_sha256_finalize_api(void)
 	}
 
 	ret = isal_mh_sha256_finalize(NULL, hash_test);
-	CHECK_RETURN(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
 
 	expected = ISAL_CRYPTO_ERR_NULL_AUTH;
 	ret = isal_mh_sha256_finalize(update_ctx, NULL);
-	CHECK_RETURN(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
 
 	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_finalize(update_ctx, hash_test);
-	CHECK_RETURN(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
 	retval = 0;
 
       exit_finalize:
