@@ -41,7 +41,6 @@ static int test_mh_sha256_init_api(void)
 {
 	int ret, retval = 1;
 	struct mh_sha256_ctx *update_ctx = NULL;
-	ISAL_CRYPTO_ERROR expected = ISAL_CRYPTO_ERR_NULL_CTX;
 	const char *func_name = "isal_mh_sha256_init";
 
 	update_ctx = malloc(sizeof(*update_ctx));
@@ -51,11 +50,10 @@ static int test_mh_sha256_init_api(void)
 	}
 
 	ret = isal_mh_sha256_init(NULL);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_init);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_init);
 
-	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_init(update_ctx);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_init);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
 
 	retval = 0;
 
@@ -70,7 +68,6 @@ static int test_mh_sha256_update_api(void)
 	int ret, retval = 1;
 	struct mh_sha256_ctx *update_ctx = NULL;
 	uint8_t *buff = NULL;
-	ISAL_CRYPTO_ERROR expected = ISAL_CRYPTO_ERR_NULL_CTX;
 	const char *func_name = "isal_mh_sha256_update";
 
 	update_ctx = malloc(sizeof(*update_ctx));
@@ -81,15 +78,13 @@ static int test_mh_sha256_update_api(void)
 	}
 
 	ret = isal_mh_sha256_update(NULL, buff, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_update);
 
-	expected = ISAL_CRYPTO_ERR_NULL_SRC;
 	ret = isal_mh_sha256_update(update_ctx, NULL, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_SRC, func_name, exit_update);
 
-	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_update(update_ctx, buff, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_update);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
 
 	retval = 0;
 
@@ -105,7 +100,6 @@ static int test_mh_sha256_finalize_api(void)
 	int ret, retval = 1;
 	struct mh_sha256_ctx *update_ctx = NULL;
 	uint32_t hash_test[SHA256_DIGEST_WORDS] = { 0 };
-	ISAL_CRYPTO_ERROR expected = ISAL_CRYPTO_ERR_NULL_CTX;
 	const char *func_name = "isal_mh_sha256_finalize";
 
 	update_ctx = malloc(sizeof(*update_ctx));
@@ -115,15 +109,13 @@ static int test_mh_sha256_finalize_api(void)
 	}
 
 	ret = isal_mh_sha256_finalize(NULL, hash_test);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_finalize);
 
-	expected = ISAL_CRYPTO_ERR_NULL_AUTH;
 	ret = isal_mh_sha256_finalize(update_ctx, NULL);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_AUTH, func_name, exit_finalize);
 
-	expected = ISAL_CRYPTO_ERR_NONE;
 	ret = isal_mh_sha256_finalize(update_ctx, hash_test);
-	CHECK_RETURN_GOTO(ret, expected, func_name, exit_finalize);
+	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
 	retval = 0;
 
       exit_finalize:

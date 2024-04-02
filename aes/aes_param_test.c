@@ -55,27 +55,22 @@ static int test_aes_keyexp_api(aes_keyexp_func aes_keyexp_func_ptr, const char *
 	uint8_t key[CBC_ROUND_KEY_LEN] = { 0 };
 	uint8_t enc_keys[CBC_MAX_KEYS_SIZE] = { 0 };
 	uint8_t dec_keys[CBC_MAX_KEYS_SIZE] = { 0 };
-	ISAL_CRYPTO_ERROR expected = ISAL_CRYPTO_ERR_NULL_KEY;
 
 	// test null key
 	ret = aes_keyexp_func_ptr(NULL, enc_keys, dec_keys);
-	CHECK_RETURN(ret, expected, name);
+	CHECK_RETURN(ret, ISAL_CRYPTO_ERR_NULL_KEY, name);
 
 	// test null exp key ptr
-	expected = ISAL_CRYPTO_ERR_NULL_EXP_KEY;
-
 	ret = aes_keyexp_func_ptr(key, NULL, dec_keys);
-	CHECK_RETURN(ret, expected, name);
+	CHECK_RETURN(ret, ISAL_CRYPTO_ERR_NULL_EXP_KEY, name);
 
 	// test null exp key ptr
 	ret = aes_keyexp_func_ptr(key, enc_keys, NULL);
-	CHECK_RETURN(ret, expected, name);
+	CHECK_RETURN(ret, ISAL_CRYPTO_ERR_NULL_EXP_KEY, name);
 
 	// test valid params
-	expected = ISAL_CRYPTO_ERR_NONE;
-
 	ret = aes_keyexp_func_ptr(key, enc_keys, dec_keys);
-	CHECK_RETURN(ret, expected, name);
+	CHECK_RETURN(ret, ISAL_CRYPTO_ERR_NONE, name);
 
 	return 0;
 }
