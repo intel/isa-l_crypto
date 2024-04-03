@@ -31,9 +31,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>		// for memcmp
+#include <malloc.h>		// for memalign() and _aligned_malloc() & aligned_free()
 #include <aes_gcm.h>
 #include "gcm_vectors.h"
 #include "types.h"
+#include "gcm_test_alloc.h"
 
 #ifndef TEST_SEED
 # define TEST_SEED 0x1234
@@ -73,31 +75,23 @@ int test_gcm128_std_vectors(gcm_vector const *vector)
 	uint8_t *IV_c = NULL;
 	uint8_t *T_test = NULL;
 	uint8_t *T2_test = NULL;
-	uint64_t IV_alloc_len = 0;
 
-	// Allocate space for the calculated ciphertext
-	ct_test = malloc(vector->Plen);
-	// Allocate space for the plain text
-	pt_test = malloc(vector->Plen);
-	if ((ct_test == NULL) || (pt_test == NULL)) {
-		fprintf(stderr, "Can't allocate ciphertext or plaintext memory\n");
+	// Allocate required memory
+	void **alloc_tab[] = {
+		(void **)&pt_test, (void **)&ct_test, (void **)&IV_c, (void **)&T_test,
+		(void **)&T2_test
+	};
+	const size_t length_tab[] = {
+		vector->Plen, vector->Plen, vector->IVlen, vector->Tlen, vector->Tlen
+	};
+
+	if (vector_allocate(alloc_tab, length_tab, NULL, DIM(alloc_tab)) != 0) {
+		vector_free(alloc_tab, NULL, DIM(alloc_tab));
 		return 1;
 	}
-	IV_alloc_len = vector->IVlen;
-	// Allocate space for the IV
-	IV_c = malloc(IV_alloc_len);
-	if (IV_c == NULL) {
-		fprintf(stderr, "Can't allocate IV memory\n");
-		return 1;
-	}
+
 	memcpy(IV_c, vector->IV, vector->IVlen);
 
-	T_test = malloc(vector->Tlen);
-	T2_test = malloc(vector->Tlen);
-	if ((T_test == NULL) || (T2_test == NULL)) {
-		fprintf(stderr, "Can't allocate tag memory\n");
-		return 1;
-	}
 	// This is only required once for a given key
 	aes_gcm_pre_128(vector->K, &gkey);
 
@@ -146,19 +140,7 @@ int test_gcm128_std_vectors(gcm_vector const *vector)
 		       "ISA-L self decrypted plain text (P)");
 	OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
-	memset(pt_test, 0, vector->Plen);
-
-	if (NULL != ct_test)
-		free(ct_test);
-	if (NULL != pt_test)
-		free(pt_test);
-	if (NULL != IV_c)
-		free(IV_c);
-	if (NULL != T_test)
-		free(T_test);
-	if (NULL != T2_test)
-		free(T2_test);
-
+	vector_free(alloc_tab, NULL, DIM(alloc_tab));
 	return OK;
 }
 
@@ -173,31 +155,23 @@ int test_gcm256_std_vectors(gcm_vector const *vector)
 	uint8_t *IV_c = NULL;
 	uint8_t *T_test = NULL;
 	uint8_t *T2_test = NULL;
-	uint64_t IV_alloc_len = 0;
 
-	// Allocate space for the calculated ciphertext
-	ct_test = malloc(vector->Plen);
-	// Allocate space for the plain text
-	pt_test = malloc(vector->Plen);
-	if ((ct_test == NULL) || (pt_test == NULL)) {
-		fprintf(stderr, "Can't allocate ciphertext or plaintext memory\n");
+	// Allocate required memory
+	void **alloc_tab[] = {
+		(void **)&pt_test, (void **)&ct_test, (void **)&IV_c, (void **)&T_test,
+		(void **)&T2_test
+	};
+	const size_t length_tab[] = {
+		vector->Plen, vector->Plen, vector->IVlen, vector->Tlen, vector->Tlen
+	};
+
+	if (vector_allocate(alloc_tab, length_tab, NULL, DIM(alloc_tab)) != 0) {
+		vector_free(alloc_tab, NULL, DIM(alloc_tab));
 		return 1;
 	}
-	IV_alloc_len = vector->IVlen;
-	// Allocate space for the IV
-	IV_c = malloc(IV_alloc_len);
-	if (IV_c == NULL) {
-		fprintf(stderr, "Can't allocate IV memory\n");
-		return 1;
-	}
+
 	memcpy(IV_c, vector->IV, vector->IVlen);
 
-	T_test = malloc(vector->Tlen);
-	T2_test = malloc(vector->Tlen);
-	if (T_test == NULL) {
-		fprintf(stderr, "Can't allocate tag memory\n");
-		return 1;
-	}
 	// This is only required once for a given key
 	aes_gcm_pre_256(vector->K, &gkey);
 
@@ -248,17 +222,7 @@ int test_gcm256_std_vectors(gcm_vector const *vector)
 		       "ISA-L self decrypted plain text (P)");
 	OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
-	if (NULL != ct_test)
-		free(ct_test);
-	if (NULL != pt_test)
-		free(pt_test);
-	if (NULL != IV_c)
-		free(IV_c);
-	if (NULL != T_test)
-		free(T_test);
-	if (NULL != T2_test)
-		free(T2_test);
-
+	vector_free(alloc_tab, NULL, DIM(alloc_tab));
 	return OK;
 }
 
@@ -326,31 +290,23 @@ int test_gcm128_std_stream_vectors(gcm_vector const *vector)
 	uint8_t *IV_c = NULL;
 	uint8_t *T_test = NULL;
 	uint8_t *T2_test = NULL;
-	uint64_t IV_alloc_len = 0;
 
-	// Allocate space for the calculated ciphertext
-	ct_test = malloc(vector->Plen);
-	// Allocate space for the plain text
-	pt_test = malloc(vector->Plen);
-	if ((ct_test == NULL) || (pt_test == NULL)) {
-		fprintf(stderr, "Can't allocate ciphertext or plaintext memory\n");
+	// Allocate required memory
+	void **alloc_tab[] = {
+		(void **)&pt_test, (void **)&ct_test, (void **)&IV_c, (void **)&T_test,
+		(void **)&T2_test
+	};
+	const size_t length_tab[] = {
+		vector->Plen, vector->Plen, vector->IVlen, vector->Tlen, vector->Tlen
+	};
+
+	if (vector_allocate(alloc_tab, length_tab, NULL, DIM(alloc_tab)) != 0) {
+		vector_free(alloc_tab, NULL, DIM(alloc_tab));
 		return 1;
 	}
-	IV_alloc_len = vector->IVlen;
-	// Allocate space for the IV
-	IV_c = malloc(IV_alloc_len);
-	if (IV_c == NULL) {
-		fprintf(stderr, "Can't allocate IV memory\n");
-		return 1;
-	}
+
 	memcpy(IV_c, vector->IV, vector->IVlen);
 
-	T_test = malloc(vector->Tlen);
-	T2_test = malloc(vector->Tlen);
-	if ((T_test == NULL) || (T2_test == NULL)) {
-		fprintf(stderr, "Can't allocate tag memory\n");
-		return 1;
-	}
 	// This is only required once for a given key
 	memset(gkey.expanded_keys, 0, sizeof(gkey.expanded_keys));
 	aes_gcm_pre_128(vector->K, &gkey);
@@ -401,19 +357,7 @@ int test_gcm128_std_stream_vectors(gcm_vector const *vector)
 		       "ISA-L self decrypted plain text (P)");
 	OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
-	memset(pt_test, 0, vector->Plen);
-
-	if (NULL != ct_test)
-		free(ct_test);
-	if (NULL != pt_test)
-		free(pt_test);
-	if (NULL != IV_c)
-		free(IV_c);
-	if (NULL != T_test)
-		free(T_test);
-	if (NULL != T2_test)
-		free(T2_test);
-
+	vector_free(alloc_tab, NULL, DIM(alloc_tab));
 	return OK;
 }
 
@@ -482,31 +426,23 @@ int test_gcm256_std_stream_vectors(gcm_vector const *vector)
 	uint8_t *IV_c = NULL;
 	uint8_t *T_test = NULL;
 	uint8_t *T2_test = NULL;
-	uint64_t IV_alloc_len = 0;
 
-	// Allocate space for the calculated ciphertext
-	ct_test = malloc(vector->Plen);
-	// Allocate space for the plain text
-	pt_test = malloc(vector->Plen);
-	if ((ct_test == NULL) || (pt_test == NULL)) {
-		fprintf(stderr, "Can't allocate ciphertext or plaintext memory\n");
+	// Allocate required memory
+	void **alloc_tab[] = {
+		(void **)&pt_test, (void **)&ct_test, (void **)&IV_c, (void **)&T_test,
+		(void **)&T2_test
+	};
+	const size_t length_tab[] = {
+		vector->Plen, vector->Plen, vector->IVlen, vector->Tlen, vector->Tlen
+	};
+
+	if (vector_allocate(alloc_tab, length_tab, NULL, DIM(alloc_tab)) != 0) {
+		vector_free(alloc_tab, NULL, DIM(alloc_tab));
 		return 1;
 	}
-	IV_alloc_len = vector->IVlen;
-	// Allocate space for the IV
-	IV_c = malloc(IV_alloc_len);
-	if (IV_c == NULL) {
-		fprintf(stderr, "Can't allocate IV memory\n");
-		return 1;
-	}
+
 	memcpy(IV_c, vector->IV, vector->IVlen);
 
-	T_test = malloc(vector->Tlen);
-	T2_test = malloc(vector->Tlen);
-	if (T_test == NULL) {
-		fprintf(stderr, "Can't allocate tag memory\n");
-		return 1;
-	}
 	// This is only required once for a given key
 	aes_gcm_pre_256(vector->K, &gkey);
 
@@ -557,17 +493,7 @@ int test_gcm256_std_stream_vectors(gcm_vector const *vector)
 		       "ISA-L self decrypted plain text (P)");
 	OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
-	if (NULL != ct_test)
-		free(ct_test);
-	if (NULL != pt_test)
-		free(pt_test);
-	if (NULL != IV_c)
-		free(IV_c);
-	if (NULL != T_test)
-		free(T_test);
-	if (NULL != T2_test)
-		free(T2_test);
-
+	vector_free(alloc_tab, NULL, DIM(alloc_tab));
 	return OK;
 }
 #endif
