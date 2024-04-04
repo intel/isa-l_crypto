@@ -52,8 +52,11 @@ isal_aes_xts_enc_128(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_128_enc((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                         (uint64_t) len_bytes, in, out);
@@ -82,8 +85,11 @@ isal_aes_xts_enc_128_expanded_key(const uint8_t *k2, const uint8_t *k1,
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_128_enc_expanded_key((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                                      (uint64_t) len_bytes, in, out);
@@ -111,8 +117,11 @@ isal_aes_xts_dec_128(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_128_dec((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                         (uint64_t) len_bytes, in, out);
@@ -141,8 +150,11 @@ isal_aes_xts_dec_128_expanded_key(const uint8_t *k2, const uint8_t *k1,
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_128_dec_expanded_key((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                                      (uint64_t) len_bytes, in, out);
@@ -170,8 +182,11 @@ isal_aes_xts_enc_256(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_256_enc((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                         (uint64_t) len_bytes, in, out);
@@ -200,8 +215,11 @@ isal_aes_xts_enc_256_expanded_key(const uint8_t *k2, const uint8_t *k1,
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_256_enc_expanded_key((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                                      (uint64_t) len_bytes, in, out);
@@ -229,8 +247,11 @@ isal_aes_xts_dec_256(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_256_dec((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                         (uint64_t) len_bytes, in, out);
@@ -259,8 +280,11 @@ isal_aes_xts_dec_256_expanded_key(const uint8_t *k2, const uint8_t *k1,
         if (len_bytes < ISAL_AES_XTS_MIN_LEN || len_bytes > ISAL_AES_XTS_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         XTS_AES_256_dec_expanded_key((uint8_t *) k2, (uint8_t *) k1, (uint8_t *) initial_tweak,
                                      (uint64_t) len_bytes, in, out);

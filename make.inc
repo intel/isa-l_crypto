@@ -132,6 +132,11 @@ CFLAGS += -DSAFE_PARAM
 ASFLAGS += -DSAFE_PARAM
 endif
 
+ifeq ($(FIPS_MODE),y)
+CFLAGS += -DFIPS_MODE
+ASFLAGS += -DFIPS_MODE
+endif
+
 ifeq ($(filter aarch64 x86_%,$(host_cpu)),)
   host_cpu=base_aliases
 endif

@@ -38,6 +38,7 @@
 #endif
 #endif /* likely */
 
+#ifdef FIPS_MODE
 int
 isal_self_tests(void)
 {
@@ -58,3 +59,13 @@ isal_self_tests(void)
         else
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 }
+#else /* FIPS_MODE disabled */
+#include <stdio.h>
+int
+isal_self_tests(void)
+{
+        fprintf(stderr, "FIPS Mode is not enabled\n");
+
+        return ISAL_CRYPTO_ERR_SELF_TEST;
+}
+#endif /* FIPS_MODE */

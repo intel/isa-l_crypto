@@ -31,7 +31,7 @@
 src_include += -I $(srcdir)/aes
 src_include += -I $(srcdir)/intel-ipsec-mb/lib
 
-extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h
+extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h include/isal_crypto_api.h
 
 lsrc            += aes/gcm_pre.c
 lsrc            += aes/cbc_pre.c

@@ -51,8 +51,11 @@ isal_aes_cbc_enc_128(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_enc_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
@@ -79,8 +82,11 @@ isal_aes_cbc_enc_192(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_enc_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
@@ -107,8 +113,11 @@ isal_aes_cbc_enc_256(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_enc_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
@@ -135,8 +144,11 @@ isal_aes_cbc_dec_128(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_dec_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
@@ -163,8 +175,11 @@ isal_aes_cbc_dec_192(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_dec_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
@@ -191,8 +206,11 @@ isal_aes_cbc_dec_256(const void *in, const uint8_t *iv, const uint8_t *keys, voi
         if ((len_bytes & 0xf) != 0)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
 
         aes_cbc_dec_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 

@@ -36,10 +36,10 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#include <aes_cbc.h>
-#include <aes_xts.h>
-#include <aes_keyexp.h>
-#include <isal_crypto_api.h>
+
+#include "aes_cbc.h"
+#include "aes_xts.h"
+#include "aes_keyexp.h"
 
 #include "internal_fips.h"
 #include "types.h"

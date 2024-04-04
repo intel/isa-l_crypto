@@ -64,6 +64,13 @@ AS_IF([test "x$enable_debug" = "xyes"], [
         AC_DEFINE(ENABLE_DEBUG, [1], [Debug messages.])
 ])
 
+AC_ARG_ENABLE([fips-mode],
+        AS_HELP_STRING([--enable-fips-mode], [enable FIPS mode @<:@default=disabled@:>@]),
+        [enable_fips_mode=yes], [enable_fips_mode=no])
+AS_IF([test "x$enable_fips_mode" = "xyes"], [
+        AC_DEFINE(FIPS_MODE, [1], [FIPS mode.])
+])
+
 AC_ARG_ENABLE([safe-data],
         AS_HELP_STRING([--disable-safe-data], [clear sensitive data @<:@default=enabled@:>@]),
         [safe_data=no], [safe_data=yes])
@@ -336,6 +343,7 @@ int main(int argc, char **argv)
   fi
 
   AM_CONDITIONAL(SAFE_DATA, test x"$SAFE_DATA" = x"yes")
+  AM_CONDITIONAL(FIPS_MODE, test x"$FIPS_MODE" = x"yes")
   AM_CONDITIONAL(USE_YASM, test x"$AS" = x"yasm")
   AM_CONDITIONAL(USE_NASM, test x"$AS" = x"nasm")
   AM_CONDITIONAL(WITH_AVX512, test x"$have_as_knows_avx512" = x"yes")
@@ -346,6 +354,7 @@ int main(int argc, char **argv)
 else
   # Disable below conditionals if not x86
   AM_CONDITIONAL(SAFE_DATA, test "x" = "y")
+  AM_CONDITIONAL(FIPS_MODE, test "x" = "y")
   AM_CONDITIONAL(USE_YASM, test "x" = "y")
   AM_CONDITIONAL(USE_NASM, test "x" = "y")
   AM_CONDITIONAL(WITH_AVX512, test "x" = "y")
@@ -405,4 +414,5 @@ AC_MSG_RESULT([
         debug:                  ${enable_debug}
         safe_data:              ${safe_data}
         safe_param:             ${safe_param}
+        FIPS mode:              ${enable_fips_mode}
 ])
