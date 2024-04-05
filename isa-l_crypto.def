@@ -90,3 +90,6 @@ isal_mh_sha256_finalize                @85
 isal_md5_ctx_mgr_init                  @86
 isal_md5_ctx_mgr_submit                @87
 isal_md5_ctx_mgr_flush                 @88
+isal_sha1_ctx_mgr_init                 @89
+isal_sha1_ctx_mgr_submit               @90
+isal_sha1_ctx_mgr_flush                @91

@@ -249,7 +249,8 @@ objs = \
 	bin\XTS_AES_256_dec_expanded_key_vaes.obj \
 	bin\XTS_AES_128_dec_expanded_key_vaes.obj \
 	bin\aes_keyexp.obj \
-	bin\md5_mb.obj
+	bin\md5_mb.obj \
+	bin\sha1_mb.obj
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/
 # Modern asm feature level, consider upgrading nasm/yasm before decreasing feature_level
