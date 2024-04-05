@@ -373,7 +373,7 @@ sha1_mb_x8_avx2:
 
 	xor	IDX, IDX
 lloop:
-	vmovdqu	F, [PSHUFFLE_BYTE_FLIP_MASK]
+	vbroadcasti128	F, [PSHUFFLE_BYTE_FLIP_MASK]
 %assign I 0
 %rep 2
 	VMOVPS	T0,[inp0+IDX]
@@ -416,7 +416,7 @@ lloop:
 ;;
 ;; perform 0-79 steps
 ;;
-	vmovdqu	K, [K00_19]
+	vpbroadcastd	K, [K00_19]
 ;; do rounds 0...15
 %assign I 0
 %rep 16
@@ -435,7 +435,7 @@ lloop:
 %endrep
 
 ;; do rounds 20...39
-	vmovdqu	K, [K20_39]
+	vpbroadcastd	K, [K20_39]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F1
 	ROTATE_ARGS
@@ -443,7 +443,7 @@ lloop:
 %endrep
 
 ;; do rounds 40...59
-	vmovdqu	K, [K40_59]
+	vpbroadcastd	K, [K40_59]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F2
 	ROTATE_ARGS
@@ -451,7 +451,7 @@ lloop:
 %endrep
 
 ;; do rounds 60...79
-	vmovdqu	K, [K60_79]
+	vpbroadcastd	K, [K60_79]
 %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F3
 	ROTATE_ARGS
@@ -505,14 +505,10 @@ lloop:
 section .data align=32
 
 align 32
-K00_19:			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
+K00_19:			dd 0x5A827999
+K20_39:                 dd 0x6ED9EBA1
+K40_59:                 dd 0x8F1BBCDC
+K60_79:                 dd 0xCA62C1D6
 
+align 32
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b

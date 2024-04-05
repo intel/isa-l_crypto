@@ -341,7 +341,7 @@ section .text
 %define %%WT	 %1
 %define %%OFFSET %2
 	mov		inp0, [IN + (%%OFFSET*8)]
-	vmovups		%%WT, [inp0+IDX]
+	vmovdqu64		%%WT, [inp0+IDX]
 %endmacro
 
 align 64
@@ -354,11 +354,11 @@ sha1_mb_x16_avx512:
 	endbranch
 
 	;; Initialize digests
-	vmovups	A, [DIGEST + 0*64]
-	vmovups	B, [DIGEST + 1*64]
-	vmovups	C, [DIGEST + 2*64]
-	vmovups	D, [DIGEST + 3*64]
-	vmovups	E, [DIGEST + 4*64]
+	vmovdqu64	A, [DIGEST + 0*64]
+	vmovdqu64	B, [DIGEST + 1*64]
+	vmovdqu64	C, [DIGEST + 2*64]
+	vmovdqu64	D, [DIGEST + 3*64]
+	vmovdqu64	E, [DIGEST + 4*64]
 
 	xor IDX, IDX
 
@@ -372,14 +372,14 @@ sha1_mb_x16_avx512:
 	mov	inp6, [IN + 6*8]
 	mov	inp7, [IN + 7*8]
 
-	vmovups	W0,[inp0+IDX]
-	vmovups	W1,[inp1+IDX]
-	vmovups	W2,[inp2+IDX]
-	vmovups	W3,[inp3+IDX]
-	vmovups	W4,[inp4+IDX]
-	vmovups	W5,[inp5+IDX]
-	vmovups	W6,[inp6+IDX]
-	vmovups	W7,[inp7+IDX]
+	vmovdqu64	W0,[inp0]
+	vmovdqu64	W1,[inp1]
+	vmovdqu64	W2,[inp2]
+	vmovdqu64	W3,[inp3]
+	vmovdqu64	W4,[inp4]
+	vmovdqu64	W5,[inp5]
+	vmovdqu64	W6,[inp6]
+	vmovdqu64	W7,[inp7]
 
 	mov	inp0, [IN + 8*8]
 	mov	inp1, [IN + 9*8]
@@ -390,17 +390,17 @@ sha1_mb_x16_avx512:
 	mov	inp6, [IN +14*8]
 	mov	inp7, [IN +15*8]
 
-	vmovups	W8, [inp0+IDX]
-	vmovups	W9, [inp1+IDX]
-	vmovups	W10,[inp2+IDX]
-	vmovups	W11,[inp3+IDX]
-	vmovups	W12,[inp4+IDX]
-	vmovups	W13,[inp5+IDX]
-	vmovups	W14,[inp6+IDX]
-	vmovups	W15,[inp7+IDX]
+	vmovdqu64	W8, [inp0]
+	vmovdqu64	W9, [inp1]
+	vmovdqu64	W10,[inp2]
+	vmovdqu64	W11,[inp3]
+	vmovdqu64	W12,[inp4]
+	vmovdqu64	W13,[inp5]
+	vmovdqu64	W14,[inp6]
+	vmovdqu64	W15,[inp7]
 
 lloop:
-	vmovdqa32	TMP2, [PSHUFFLE_BYTE_FLIP_MASK]
+	vbroadcasti32x4	TMP2, [PSHUFFLE_BYTE_FLIP_MASK]
 
 	add	IDX, 64
 
@@ -419,7 +419,7 @@ lloop:
 	vmovdqa32	DD, D
 	vmovdqa32	EE, E
 
-	vmovdqa32	KT, [K00_19]
+	vpbroadcastd	KT, [K00_19]
 %assign I 0xCA
 %assign J 0
 %assign K 2
@@ -430,13 +430,13 @@ lloop:
 	PROCESS_LOOP  APPEND(W,J),  I
 	MSG_SCHED_ROUND_16_79  APPEND(W,J), APPEND(W,K), APPEND(W,L), APPEND(W,M)
 	%if N = 19
-		vmovdqa32	KT, [K20_39]
+		vpbroadcastd	KT, [K20_39]
 		%assign I 0x96
 	%elif N = 39
-		vmovdqa32	KT, [K40_59]
+		vpbroadcastd	KT, [K40_59]
 		%assign I 0xE8
 	%elif N = 59
-		vmovdqa32	KT, [K60_79]
+		vpbroadcastd	KT, [K60_79]
 		%assign I 0x96
 	%endif
 %assign J ((J+1)% 16)
@@ -505,38 +505,24 @@ lastLoop:
 
 	; Write out digest
 	; Do we need to untranspose digests???
-	vmovups	[DIGEST + 0*64], A
-	vmovups	[DIGEST + 1*64], B
-	vmovups	[DIGEST + 2*64], C
-	vmovups	[DIGEST + 3*64], D
-	vmovups	[DIGEST + 4*64], E
+	vmovdqu64	[DIGEST + 0*64], A
+	vmovdqu64	[DIGEST + 1*64], B
+	vmovdqu64	[DIGEST + 2*64], C
+	vmovdqu64	[DIGEST + 3*64], D
+	vmovdqu64	[DIGEST + 4*64], E
 
 	ret
 
 section .data
 align 64
-K00_19:			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-			dq 0x5A8279995A827999, 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-			dq 0x6ED9EBA16ED9EBA1, 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-			dq 0x8F1BBCDC8F1BBCDC, 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
-			dq 0xCA62C1D6CA62C1D6, 0xCA62C1D6CA62C1D6
+K00_19:			dd 0x5A827999
+K20_39:                 dd 0x6ED9EBA1
+K40_59:                 dd 0x8F1BBCDC
+K60_79:                 dd 0xCA62C1D6
 
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 
+align 64
 PSHUFFLE_TRANSPOSE16_MASK1: 	dq 0x0000000000000000
 				dq 0x0000000000000001
 				dq 0x0000000000000008

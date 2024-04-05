@@ -406,7 +406,7 @@ func(mh_sha1_block_avx2)
 ;;
 ;; perform 0-79 steps
 ;;
-	vpbroadcastq	K, [K00_19]
+	vpbroadcastd	K, [K00_19]
 ;; do rounds 0...15
  %assign I 0
  %rep 16
@@ -426,14 +426,14 @@ func(mh_sha1_block_avx2)
 	PREFETCH_X [mh_in_p + pref+128*0]
 	PREFETCH_X [mh_in_p + pref+128*1]
 ;; do rounds 20...39
-	vpbroadcastq	K, [K20_39]
+	vpbroadcastd	K, [K20_39]
  %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F1, mh_data_p
 	ROTATE_ARGS
  %assign I (I+1)
  %endrep
 ;; do rounds 40...59
-	vpbroadcastq	K, [K40_59]
+	vpbroadcastd	K, [K40_59]
  %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F2, mh_data_p
 	ROTATE_ARGS
@@ -442,7 +442,7 @@ func(mh_sha1_block_avx2)
 	PREFETCH_X [mh_in_p + pref+128*2]
         PREFETCH_X [mh_in_p + pref+128*3]
 ;; do rounds 60...79
-	vpbroadcastq	K, [K60_79]
+	vpbroadcastd	K, [K60_79]
  %rep 20
 	SHA1_STEP_16_79 A,B,C,D,E, TMP,FUN, I, K, MAGIC_F3, mh_data_p
 	ROTATE_ARGS
@@ -502,7 +502,7 @@ section .rodata align=32
 
 align 32
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-K00_19:			dq 0x5A8279995A827999
-K20_39:                 dq 0x6ED9EBA16ED9EBA1
-K40_59:                 dq 0x8F1BBCDC8F1BBCDC
-K60_79:                 dq 0xCA62C1D6CA62C1D6
+K00_19:			dq 0x5A827999
+K20_39:                 dq 0x6ED9EBA1
+K40_59:                 dq 0x8F1BBCDC
+K60_79:                 dq 0xCA62C1D6
