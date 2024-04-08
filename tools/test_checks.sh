@@ -18,6 +18,12 @@ source $src/tools/test_tools.sh
 cd "$src"
 tmp_install_dir=$out/tmp_install
 
+# Get configuration options if available
+if [ $# -gt 0 ]; then
+    opt_config=$1
+    shift;
+fi
+
 # Run on mult cpus
 if command -V lscpu >/dev/null 2>&1; then
     cpus=`lscpu -p | tail -1 | cut -d, -f 2`
@@ -40,12 +46,12 @@ echo "Running with TEST_SEED=$S"
 # Fix Darwin issues
 if uname | grep -q 'Darwin' 2>&1; then
     export SED=`which sed`
-    opt_config_target='--target=darwin'
+    opt_config+=' --target=darwin'
 fi
 
 # Tests
 time ./autogen.sh
-time ./configure --prefix=$tmp_install_dir $opt_config_target
+time ./configure --prefix=$tmp_install_dir $opt_config
 time $MAKE -j $cpus
 test_start "check_tests"
 time $MAKE check -j $cpus D="-D TEST_SEED=$S"
