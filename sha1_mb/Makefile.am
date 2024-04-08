@@ -103,7 +103,8 @@ other_src += 	include/datastruct.asm \
 check_tests  += sha1_mb/sha1_mb_test \
 		sha1_mb/sha1_mb_rand_test \
 		sha1_mb/sha1_mb_rand_update_test \
-		sha1_mb/sha1_mb_flush_test
+		sha1_mb/sha1_mb_flush_test \
+		sha1_mb/sha1_mb_param_test
 
 unit_tests   += sha1_mb/sha1_mb_rand_ssl_test
 
