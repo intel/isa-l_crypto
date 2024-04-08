@@ -28,6 +28,8 @@
 **********************************************************************/
 
 #include <stdio.h>
+#include <string.h>
+
 #include "isal_crypto_api.h"
 #include "aes_keyexp.h"
 #include "aes_cbc.h"
@@ -131,13 +133,17 @@ test_aes_xts_api(aes_xts_func aes_xts_func_ptr, const char *name, const int expa
 {
         uint8_t key1[32] = { 0 };
         uint8_t exp_keys1[CBC_MAX_KEYS_SIZE] = { 0 };
-        uint8_t key2[32] = { 0 };
-        uint8_t exp_keys2[CBC_MAX_KEYS_SIZE] = { 0 };
+        uint8_t key2[32];
+        uint8_t exp_keys2[CBC_MAX_KEYS_SIZE];
         uint8_t buf[16] = { 0 };
         uint8_t tweak[16] = { 0 };
 
         uint8_t *key1_ptr = (expanded_key) ? exp_keys1 : key1;
         uint8_t *key2_ptr = (expanded_key) ? exp_keys2 : key2;
+
+        /* Key1 and key2 must be different, to avoid error */
+        memset(key2, 0xff, sizeof(key2));
+        memset(exp_keys2, 0xff, sizeof(exp_keys2));
 
         if (expanded_key) {
                 // test null expanded key ptr
@@ -173,6 +179,11 @@ test_aes_xts_api(aes_xts_func aes_xts_func_ptr, const char *name, const int expa
         CHECK_RETURN(aes_xts_func_ptr(key1_ptr, key2_ptr, tweak, 16, buf, NULL),
                      ISAL_CRYPTO_ERR_NULL_DST, name);
 
+#ifdef FIPS_MODE
+        // test same key error
+        CHECK_RETURN(aes_xts_func_ptr(key1_ptr, key1_ptr, tweak, 16, buf, buf),
+                     ISAL_CRYPTO_ERR_XTS_SAME_KEYS, name);
+#endif
         // test valid params
         CHECK_RETURN(aes_xts_func_ptr(key1_ptr, key2_ptr, tweak, 16, buf, buf),
                      ISAL_CRYPTO_ERR_NONE, name);

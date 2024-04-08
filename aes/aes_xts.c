@@ -54,6 +54,10 @@ isal_aes_xts_enc_128(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare keys, before expansion (16 bytes) */
+        if (memcmp(k1, k2, 16) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -87,6 +91,10 @@ isal_aes_xts_enc_128_expanded_key(const uint8_t *k2, const uint8_t *k1,
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare entire expanded keys (16*11 bytes) */
+        if (memcmp(k1, k2, 16 * 11) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -119,6 +127,10 @@ isal_aes_xts_dec_128(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare keys, before expansion (16 bytes) */
+        if (memcmp(k1, k2, 16) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -152,6 +164,10 @@ isal_aes_xts_dec_128_expanded_key(const uint8_t *k2, const uint8_t *k1,
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare entire expanded keys (16*11 bytes) */
+        if (memcmp(k1, k2, 16 * 11) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -184,6 +200,10 @@ isal_aes_xts_enc_256(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare keys, before expansion (16*2 bytes) */
+        if (memcmp(k1, k2, 16 * 2) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -217,6 +237,10 @@ isal_aes_xts_enc_256_expanded_key(const uint8_t *k2, const uint8_t *k1,
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare entire expanded keys (16*15 bytes) */
+        if (memcmp(k1, k2, 16 * 15) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -249,6 +273,10 @@ isal_aes_xts_dec_256(const uint8_t *k2, const uint8_t *k1, const uint8_t *initia
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare keys, before expansion (16*2 bytes) */
+        if (memcmp(k1, k2, 16 * 2) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
@@ -282,6 +310,10 @@ isal_aes_xts_dec_256_expanded_key(const uint8_t *k2, const uint8_t *k1,
 #endif
 
 #ifdef FIPS_MODE
+        /* Compare entire expanded keys (16*15 bytes) */
+        if (memcmp(k1, k2, 16 * 15) == 0)
+                return ISAL_CRYPTO_ERR_XTS_SAME_KEYS;
+
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif

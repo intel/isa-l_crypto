@@ -29,7 +29,15 @@
 
 #include "aes_xts.h"
 
+/*
+ * One of the AES-XTS vectors has its two keys the same,
+ * so disable that for FIPS mode, otherwise the tests will fail
+ */
+#ifndef FIPS_MODE
 #define NVEC 14
+#else
+#define NVEC 13
+#endif
 
 // struct to hold pointers to the key, plaintext and ciphertext vectors
 struct xts_vector {
@@ -56,6 +64,7 @@ struct xts_vector {
  * Plaintext length (bytes): 32
  */
 
+#ifndef FIPS_MODE
 static uint8_t v1_key1[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
@@ -72,6 +81,7 @@ static uint8_t v1_PTX[32] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
 static uint8_t v1_CTX[32] = { 0x91, 0x7c, 0xf6, 0x9e, 0xbd, 0x68, 0xb2, 0xec, 0x9b, 0x9f, 0xe9,
                               0xa3, 0xea, 0xdd, 0xa6, 0x92, 0xcd, 0x43, 0xd2, 0xf5, 0x95, 0x98,
                               0xed, 0x85, 0x8c, 0x02, 0xc2, 0x65, 0x2f, 0xbf, 0x92, 0x2e };
+#endif
 
 /*
  * Vector 2
@@ -1124,10 +1134,12 @@ static uint8_t v19_CTX[512] = {
 
 struct xts_vector vlist[NVEC] = {
 
-        // pointers to the statically defined vectors here
+// pointers to the statically defined vectors here
 
+#ifndef FIPS_MODE
         // Vector 1
         { sizeof(v1_CTX), v1_key1, v1_key2, v1_TW, v1_PTX, v1_CTX },
+#endif
         // Vector 2
         { sizeof(v2_CTX), v2_key1, v2_key2, v2_TW, v2_PTX, v2_CTX },
         // Vector 3

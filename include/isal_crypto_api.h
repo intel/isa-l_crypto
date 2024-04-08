@@ -55,6 +55,7 @@ typedef enum {
         ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
         ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
         ISAL_CRYPTO_ERR_XTS_NULL_TWEAK,
+        ISAL_CRYPTO_ERR_XTS_SAME_KEYS,
         ISAL_CRYPTO_ERR_SELF_TEST,
         /* add new error types above this comment */
         ISAL_CRYPTO_ERR_MAX /* don't move this one */
