@@ -79,7 +79,7 @@ default rel
 %define stack_size	3*16 + 1*8	; must be an odd multiple of 8
 
 %macro FUNC_SAVE 0
-	mov             rsp, stack_size
+	alloc_stack     stack_size
 	vmovdqa64	[rsp + 0*16], xmm6
 	vmovdqa64	[rsp + 1*16], xmm7
 	vmovdqa64	[rsp + 2*16], xmm8
