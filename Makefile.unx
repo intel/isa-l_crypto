@@ -54,4 +54,4 @@ lib_name := bin/isa-l_crypto.a
 
 include make.inc
 include tools/gen_nmake.mk
-VPATH = . $(units) include
+VPATH = . $(units) include intel-ipsec-mb/lib

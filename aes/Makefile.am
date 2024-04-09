@@ -29,6 +29,7 @@
 
 # Assembling AES requires including cbc_common.asm, gcm_defines.asm
 src_include += -I $(srcdir)/aes
+src_include += -I $(srcdir)/intel-ipsec-mb/lib
 
 extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h
 
