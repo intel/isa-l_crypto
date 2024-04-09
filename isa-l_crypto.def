@@ -107,3 +107,6 @@ isal_aes_xts_enc_256                   @102
 isal_aes_xts_enc_256_expanded_key      @103
 isal_aes_xts_dec_256                   @104
 isal_aes_xts_dec_256_expanded_key      @105
+isal_sha256_ctx_mgr_init               @106
+isal_sha256_ctx_mgr_submit             @107
+isal_sha256_ctx_mgr_flush              @108

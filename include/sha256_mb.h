@@ -417,6 +417,47 @@ SHA256_HASH_CTX* sha256_ctx_mgr_submit_avx512_ni (SHA256_HASH_CTX_MGR* mgr, SHA2
  */
 SHA256_HASH_CTX* sha256_ctx_mgr_flush_avx512_ni (SHA256_HASH_CTX_MGR* mgr);
 
+/**
+ * @brief Initialize the SHA256 multi-buffer manager structure.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_sha256_ctx_mgr_init (SHA256_HASH_CTX_MGR* mgr);
+
+/**
+ * @brief  Submit a new SHA256 job to the multi-buffer manager.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @param[in] ctx_in Structure holding ctx job info
+ * @param[out] ctx_out	Pointer address to output job ctx info.
+ *			Modified to point to completed job structure or
+ *			NULL if no jobs completed.
+ * @param[in] buffer Pointer to buffer to be processed
+ * @param[in] len Length of buffer (in bytes) to be processed
+ * @param[in] flags Input flag specifying job type (first, update, last or entire)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_sha256_ctx_mgr_submit (SHA256_HASH_CTX_MGR* mgr, SHA256_HASH_CTX* ctx_in,
+			      SHA256_HASH_CTX** ctx_out, const void* buffer,
+			      const uint32_t len, const HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA256 jobs and return when complete.
+ * @requires SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int isal_sha256_ctx_mgr_flush (SHA256_HASH_CTX_MGR* mgr, SHA256_HASH_CTX** ctx_out);
 
 /*******************************************************************
  * Scheduler (internal) level out-of-order function prototypes

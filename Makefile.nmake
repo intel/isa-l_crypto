@@ -251,9 +251,9 @@ objs = \
 	bin\aes_keyexp.obj \
 	bin\md5_mb.obj \
 	bin\sha1_mb.obj \
-	bin\sha1_mb_param_test.obj \
 	bin\aes_cbc.obj \
-	bin\aes_xts.obj
+	bin\aes_xts.obj \
+	bin\sha256_mb.obj
 
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/
@@ -387,7 +387,8 @@ checks = \
 	aes_param_test.exe \
 	mh_sha1_param_test.exe \
 	mh_sha256_param_test.exe \
-	md5_mb_param_test.exe
+	md5_mb_param_test.exe \
+	sha256_mb_param_test.exe
 
 
 checks: lib $(checks)

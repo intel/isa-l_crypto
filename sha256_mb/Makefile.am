@@ -27,6 +27,8 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+lsrc +=		sha256_mb/sha256_mb.c
+
 lsrc_x86_64 += 	sha256_mb/sha256_ctx_sse.c \
 		sha256_mb/sha256_ctx_avx.c \
 		sha256_mb/sha256_ctx_avx2.c \
@@ -100,7 +102,8 @@ other_src += 	include/datastruct.asm \
 check_tests  +=	sha256_mb/sha256_mb_test  \
 		sha256_mb/sha256_mb_rand_test  \
 		sha256_mb/sha256_mb_rand_update_test \
-		sha256_mb/sha256_mb_flush_test
+		sha256_mb/sha256_mb_flush_test \
+		sha256_mb/sha256_mb_param_test
 
 unit_tests   += sha256_mb/sha256_mb_rand_ssl_test
 
