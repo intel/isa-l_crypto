@@ -42,7 +42,7 @@ fi
 
 if hash grep; then
     echo "Checking for dos and whitespace violations..."
-    for f in $(git ls-files); do
+    for f in $(git ls-files -- ':(exclude)intel-ipsec-mb*'); do
 	[ "$verbose" -gt 0 ] && echo "checking whitespace on $f"
 	if grep -q '[[:space:]]$' $f ; then
 	    echo "  File found with trailing whitespace: $f"
@@ -63,7 +63,7 @@ while read -r perm _res0 _res1 f; do
 	echo "  File found with permissions issue ($perm): $f"
 	rc=1
     fi
-done <<< $(git ls-files -s -- ':(exclude)*.sh' ':(exclude)*iindent')
+done <<< $(git ls-files -s -- ':(exclude)*.sh' ':(exclude)*iindent' ':(exclude)intel-ipsec-mb*')
 
 echo "Checking script files for permissions..."
 while read -r perm _res0 _res1 f; do
