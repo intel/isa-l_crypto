@@ -760,7 +760,7 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                         if ((ret != 0) || (stream == NULL)) {
                                 OK = 1;
                                 fprintf(stderr, "posix_memalign failed\n");
-                                break;
+                                goto exit_free;
                         }
                         memcpy(stream, vector->P + last_break, i - last_break);
                 }
@@ -808,7 +808,7 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                         if ((ret != 0) || (stream == NULL)) {
                                 OK = 1;
                                 fprintf(stderr, "posix_memalign failed\n");
-                                break;
+                                goto exit_free;
                         }
                         memcpy(stream, vector->C + last_break, i - last_break);
                 }
@@ -848,6 +848,8 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
         if (-1 == result)
                 printf(" ISA-L->OpenSSL decryption failed Authentication\n");
         OK |= (-1 == result);
+
+exit_free:
         vector_free(alloc_tab, align_tab, DIM(alloc_tab));
         return OK;
 }
