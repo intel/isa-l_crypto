@@ -35,278 +35,276 @@
 
 typedef uint32_t DigestSHA1[SHA1_DIGEST_NWORDS];
 
-#define MSGS 7
+#define MSGS     7
 #define NUM_JOBS 1000
 
 #define PSEUDO_RANDOM_NUM(seed) ((seed) * 5 + ((seed) * (seed)) / 64) % MSGS
 static uint8_t msg1[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
-static DigestSHA1 expResultDigest1 =
-    { 0x84983E44, 0x1C3BD26E, 0xBAAE4AA1, 0xF95129E5, 0xE54670F1 };
+static DigestSHA1 expResultDigest1 = { 0x84983E44, 0x1C3BD26E, 0xBAAE4AA1, 0xF95129E5, 0xE54670F1 };
 
 static uint8_t msg2[] = "0123456789:;<=>?@ABCDEFGHIJKLMNO";
-static DigestSHA1 expResultDigest2 =
-    { 0xB7C66452, 0x0FD122B3, 0x55D539F2, 0xA35E6FAA, 0xC2A5A11D };
+static DigestSHA1 expResultDigest2 = { 0xB7C66452, 0x0FD122B3, 0x55D539F2, 0xA35E6FAA, 0xC2A5A11D };
 
-static uint8_t msg3[] =
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<";
-static DigestSHA1 expResultDigest3 =
-    { 0x127729B6, 0xA8B2F8A0, 0xA4DDC819, 0x08E1D8B3, 0x67CEEA55 };
+static uint8_t msg3[] = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<";
+static DigestSHA1 expResultDigest3 = { 0x127729B6, 0xA8B2F8A0, 0xA4DDC819, 0x08E1D8B3, 0x67CEEA55 };
 
-static uint8_t msg4[] =
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQR";
-static DigestSHA1 expResultDigest4 =
-    { 0xFDDE2D00, 0xABD5B7A3, 0x699DE6F2, 0x3FF1D1AC, 0x3B872AC2 };
+static uint8_t msg4[] = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQR";
+static DigestSHA1 expResultDigest4 = { 0xFDDE2D00, 0xABD5B7A3, 0x699DE6F2, 0x3FF1D1AC, 0x3B872AC2 };
 
-static uint8_t msg5[] =
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?";
-static DigestSHA1 expResultDigest5 =
-    { 0xE7FCA85C, 0xA4AB3740, 0x6A180B32, 0x0B8D362C, 0x622A96E6 };
+static uint8_t msg5[] = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?";
+static DigestSHA1 expResultDigest5 = { 0xE7FCA85C, 0xA4AB3740, 0x6A180B32, 0x0B8D362C, 0x622A96E6 };
 
-static uint8_t msg6[] =
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX" "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
-    "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTU";
-static DigestSHA1 expResultDigest6 =
-    { 0x505B0686, 0xE1ACDF42, 0xB3588B5A, 0xB043D52C, 0x6D8C7444 };
+static uint8_t msg6[] = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWX"
+                        "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTU";
+static DigestSHA1 expResultDigest6 = { 0x505B0686, 0xE1ACDF42, 0xB3588B5A, 0xB043D52C, 0x6D8C7444 };
 
 static uint8_t msg7[] = "";
-static DigestSHA1 expResultDigest7 =
-    { 0xDA39A3EE, 0x5E6B4B0D, 0x3255BFEF, 0x95601890, 0xAFD80709 };
+static DigestSHA1 expResultDigest7 = { 0xDA39A3EE, 0x5E6B4B0D, 0x3255BFEF, 0x95601890, 0xAFD80709 };
 
 static uint8_t *msgs[MSGS] = { msg1, msg2, msg3, msg4, msg5, msg6, msg7 };
 
-static uint32_t *expResultDigest[MSGS] = {
-	expResultDigest1, expResultDigest2, expResultDigest3,
-	expResultDigest4, expResultDigest5, expResultDigest6,
-	expResultDigest7
-};
+static uint32_t *expResultDigest[MSGS] = { expResultDigest1, expResultDigest2, expResultDigest3,
+                                           expResultDigest4, expResultDigest5, expResultDigest6,
+                                           expResultDigest7 };
 
-#define NUM_CHUNKS	4
-#define DATA_BUF_LEN	4096
-int non_blocksize_updates_test(SHA1_HASH_CTX_MGR * mgr)
+#define NUM_CHUNKS   4
+#define DATA_BUF_LEN 4096
+int
+non_blocksize_updates_test(SHA1_HASH_CTX_MGR *mgr)
 {
-	SHA1_HASH_CTX ctx_refer;
-	SHA1_HASH_CTX ctx_pool[NUM_CHUNKS];
-	SHA1_HASH_CTX *ctx = NULL;
+        SHA1_HASH_CTX ctx_refer;
+        SHA1_HASH_CTX ctx_pool[NUM_CHUNKS];
+        SHA1_HASH_CTX *ctx = NULL;
 
-	const int update_chunks[NUM_CHUNKS] = { 32, 64, 128, 256 };
-	unsigned char data_buf[DATA_BUF_LEN];
+        const int update_chunks[NUM_CHUNKS] = { 32, 64, 128, 256 };
+        unsigned char data_buf[DATA_BUF_LEN];
 
-	memset(data_buf, 0xA, DATA_BUF_LEN);
+        memset(data_buf, 0xA, DATA_BUF_LEN);
 
-	// Init contexts before first use
-	hash_ctx_init(&ctx_refer);
+        // Init contexts before first use
+        hash_ctx_init(&ctx_refer);
 
-	ctx = sha1_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, HASH_ENTIRE);
-	if (ctx && ctx->error) {
-		return -1;
-	}
-	ctx = sha1_ctx_mgr_flush(mgr);
-	if ((ctx && ctx->error) || (ctx_refer.status != HASH_CTX_STS_COMPLETE)) {
-		return -1;
-	}
+        ctx = sha1_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, HASH_ENTIRE);
+        if (ctx && ctx->error) {
+                return -1;
+        }
+        ctx = sha1_ctx_mgr_flush(mgr);
+        if ((ctx && ctx->error) || (ctx_refer.status != HASH_CTX_STS_COMPLETE)) {
+                return -1;
+        }
 
-	for (int c = 0; c < NUM_CHUNKS; c++) {
-		int chunk = update_chunks[c];
-		hash_ctx_init(&ctx_pool[c]);
-		for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-			HASH_CTX_FLAG flags = HASH_UPDATE;
-			if (i == 0) {
-				flags = HASH_FIRST;
-			}
-			ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c],
-						  data_buf + i * chunk, chunk, flags);
-			if (ctx && ctx->error) {
-				return -1;
-			}
-			ctx = sha1_ctx_mgr_flush(mgr);
-			if (ctx && ctx->error) {
-				return -1;
-			}
-		}
-	}
+        for (int c = 0; c < NUM_CHUNKS; c++) {
+                int chunk = update_chunks[c];
+                hash_ctx_init(&ctx_pool[c]);
+                for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
+                        HASH_CTX_FLAG flags = HASH_UPDATE;
+                        if (i == 0) {
+                                flags = HASH_FIRST;
+                        }
+                        ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
+                                                  flags);
+                        if (ctx && ctx->error) {
+                                return -1;
+                        }
+                        ctx = sha1_ctx_mgr_flush(mgr);
+                        if (ctx && ctx->error) {
+                                return -1;
+                        }
+                }
+        }
 
-	for (int c = 0; c < NUM_CHUNKS; c++) {
-		ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, HASH_LAST);
-		if (ctx && ctx->error) {
-			return -1;
-		}
-		ctx = sha1_ctx_mgr_flush(mgr);
-		if (ctx && ctx->error) {
-			return -1;
-		}
-		if (ctx_pool[c].status != HASH_CTX_STS_COMPLETE) {
-			return -1;
-		}
-		for (int i = 0; i < SHA1_DIGEST_NWORDS; i++) {
-			if (ctx_refer.job.result_digest[i] != ctx_pool[c].job.result_digest[i]) {
-				printf
-				    ("sm3 calc error! chunk %d, digest[%d], (%d) != (%d)\n",
-				     update_chunks[c], i, ctx_refer.job.result_digest[i],
-				     ctx_pool[c].job.result_digest[i]);
-				return -2;
-			}
-		}
-	}
-	return 0;
+        for (int c = 0; c < NUM_CHUNKS; c++) {
+                ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, HASH_LAST);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
+                ctx = sha1_ctx_mgr_flush(mgr);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
+                if (ctx_pool[c].status != HASH_CTX_STS_COMPLETE) {
+                        return -1;
+                }
+                for (int i = 0; i < SHA1_DIGEST_NWORDS; i++) {
+                        if (ctx_refer.job.result_digest[i] != ctx_pool[c].job.result_digest[i]) {
+                                printf("sm3 calc error! chunk %d, digest[%d], (%d) != (%d)\n",
+                                       update_chunks[c], i, ctx_refer.job.result_digest[i],
+                                       ctx_pool[c].job.result_digest[i]);
+                                return -2;
+                        }
+                }
+        }
+        return 0;
 }
 
-int main(void)
+int
+main(void)
 {
-	SHA1_HASH_CTX_MGR *mgr = NULL;
-	SHA1_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
-	uint32_t i, j, k, t, checked = 0;
-	uint32_t *good;
-	int rc, ret = -1;
+        SHA1_HASH_CTX_MGR *mgr = NULL;
+        SHA1_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
+        uint32_t i, j, k, t, checked = 0;
+        uint32_t *good;
+        int rc, ret = -1;
 
-	rc = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
-	if ((rc != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        if ((rc != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	sha1_ctx_mgr_init(mgr);
+        sha1_ctx_mgr_init(mgr);
 
-	// Init contexts before first use
-	for (i = 0; i < MSGS; i++) {
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
-	}
+        // Init contexts before first use
+        for (i = 0; i < MSGS; i++) {
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
+        }
 
-	for (i = 0; i < MSGS; i++) {
-		ctx = sha1_ctx_mgr_submit(mgr,
-					  &ctxpool[i], msgs[i],
-					  strlen((char *)msgs[i]), HASH_ENTIRE);
+        for (i = 0; i < MSGS; i++) {
+                ctx = sha1_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
+                                          HASH_ENTIRE);
 
-		if (ctx) {
-			t = (uint32_t) ((uintptr_t) (ctx->user_data));
-			good = expResultDigest[t];
-			checked++;
-			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-				if (good[j] != ctxpool[t].job.result_digest[j]) {
-					printf("Test %d, digest %d is %08X, should be %08X\n",
-					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					goto end;
-				}
-			}
+                if (ctx) {
+                        t = (uint32_t) ((uintptr_t) (ctx->user_data));
+                        good = expResultDigest[t];
+                        checked++;
+                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                                if (good[j] != ctxpool[t].job.result_digest[j]) {
+                                        printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
+                                               ctxpool[t].job.result_digest[j], good[j]);
+                                        goto end;
+                                }
+                        }
 
-			if (ctx->error) {
-				printf("Something bad happened during the submit."
-				       " Error code: %d", ctx->error);
-				goto end;
-			}
+                        if (ctx->error) {
+                                printf("Something bad happened during the submit."
+                                       " Error code: %d",
+                                       ctx->error);
+                                goto end;
+                        }
+                }
+        }
 
-		}
-	}
+        while (1) {
+                ctx = sha1_ctx_mgr_flush(mgr);
 
-	while (1) {
-		ctx = sha1_ctx_mgr_flush(mgr);
+                if (ctx) {
+                        t = (uint32_t) ((uintptr_t) (ctx->user_data));
+                        good = expResultDigest[t];
+                        checked++;
+                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                                if (good[j] != ctxpool[t].job.result_digest[j]) {
+                                        printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
+                                               ctxpool[t].job.result_digest[j], good[j]);
+                                        goto end;
+                                }
+                        }
 
-		if (ctx) {
-			t = (uint32_t) ((uintptr_t) (ctx->user_data));
-			good = expResultDigest[t];
-			checked++;
-			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-				if (good[j] != ctxpool[t].job.result_digest[j]) {
-					printf("Test %d, digest %d is %08X, should be %08X\n",
-					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					goto end;
-				}
-			}
+                        if (ctx->error) {
+                                printf("Something bad happened during the submit."
+                                       " Error code: %d",
+                                       ctx->error);
+                                goto end;
+                        }
+                } else {
+                        break;
+                }
+        }
 
-			if (ctx->error) {
-				printf("Something bad happened during the submit."
-				       " Error code: %d", ctx->error);
-				goto end;
-			}
-		} else {
-			break;
-		}
-	}
+        // do larger test in pseudo-random order
 
-	// do larger test in pseudo-random order
+        // Init contexts before first use
+        for (i = 0; i < NUM_JOBS; i++) {
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
+        }
 
-	// Init contexts before first use
-	for (i = 0; i < NUM_JOBS; i++) {
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
-	}
+        checked = 0;
+        for (i = 0; i < NUM_JOBS; i++) {
+                j = PSEUDO_RANDOM_NUM(i);
+                ctx = sha1_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j], strlen((char *) msgs[j]),
+                                          HASH_ENTIRE);
+                if (ctx) {
+                        t = (uint32_t) ((uintptr_t) (ctx->user_data));
+                        k = PSEUDO_RANDOM_NUM(t);
+                        good = expResultDigest[k];
+                        checked++;
+                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                                if (good[j] != ctxpool[t].job.result_digest[j]) {
+                                        printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
+                                               ctxpool[t].job.result_digest[j], good[j]);
+                                        goto end;
+                                }
+                        }
 
-	checked = 0;
-	for (i = 0; i < NUM_JOBS; i++) {
-		j = PSEUDO_RANDOM_NUM(i);
-		ctx = sha1_ctx_mgr_submit(mgr,
-					  &ctxpool[i],
-					  msgs[j], strlen((char *)msgs[j]), HASH_ENTIRE);
-		if (ctx) {
-			t = (uint32_t) ((uintptr_t) (ctx->user_data));
-			k = PSEUDO_RANDOM_NUM(t);
-			good = expResultDigest[k];
-			checked++;
-			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-				if (good[j] != ctxpool[t].job.result_digest[j]) {
-					printf("Test %d, digest %d is %08X, should be %08X\n",
-					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					goto end;
-				}
-			}
+                        if (ctx->error) {
+                                printf("Something bad happened during the"
+                                       " submit. Error code: %d",
+                                       ctx->error);
+                                goto end;
+                        }
 
-			if (ctx->error) {
-				printf("Something bad happened during the"
-				       " submit. Error code: %d", ctx->error);
-				goto end;
-			}
+                        t = (uint32_t) ((uintptr_t) (ctx->user_data));
+                        k = PSEUDO_RANDOM_NUM(t);
+                }
+        }
+        while (1) {
+                ctx = sha1_ctx_mgr_flush(mgr);
 
-			t = (uint32_t) ((uintptr_t) (ctx->user_data));
-			k = PSEUDO_RANDOM_NUM(t);
-		}
-	}
-	while (1) {
-		ctx = sha1_ctx_mgr_flush(mgr);
+                if (ctx) {
+                        t = (uint32_t) ((uintptr_t) (ctx->user_data));
+                        k = PSEUDO_RANDOM_NUM(t);
+                        good = expResultDigest[k];
+                        checked++;
+                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                                if (good[j] != ctxpool[t].job.result_digest[j]) {
+                                        printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
+                                               ctxpool[t].job.result_digest[j], good[j]);
+                                        goto end;
+                                }
+                        }
 
-		if (ctx) {
-			t = (uint32_t) ((uintptr_t) (ctx->user_data));
-			k = PSEUDO_RANDOM_NUM(t);
-			good = expResultDigest[k];
-			checked++;
-			for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-				if (good[j] != ctxpool[t].job.result_digest[j]) {
-					printf("Test %d, digest %d is %08X, should be %08X\n",
-					       t, j, ctxpool[t].job.result_digest[j], good[j]);
-					goto end;
-				}
-			}
+                        if (ctx->error) {
+                                printf("Something bad happened during the submit."
+                                       " Error code: %d",
+                                       ctx->error);
+                                goto end;
+                        }
+                } else {
+                        break;
+                }
+        }
 
-			if (ctx->error) {
-				printf("Something bad happened during the submit."
-				       " Error code: %d", ctx->error);
-				goto end;
-			}
-		} else {
-			break;
-		}
-	}
+        if (checked != NUM_JOBS) {
+                printf("only tested %d rather than %d\n", checked, NUM_JOBS);
+                goto end;
+        }
 
-	if (checked != NUM_JOBS) {
-		printf("only tested %d rather than %d\n", checked, NUM_JOBS);
-		goto end;
-	}
+        rc = non_blocksize_updates_test(mgr);
+        if (rc) {
+                printf("multi updates test fail %d\n", rc);
+                goto end;
+        }
+        ret = 0;
 
-	rc = non_blocksize_updates_test(mgr);
-	if (rc) {
-		printf("multi updates test fail %d\n", rc);
-		goto end;
-	}
-	ret = 0;
+        printf(" multibinary_sha1 test: Pass\n");
+end:
+        aligned_free(mgr);
 
-	printf(" multibinary_sha1 test: Pass\n");
-      end:
-	aligned_free(mgr);
-
-	return ret;
+        return ret;
 }

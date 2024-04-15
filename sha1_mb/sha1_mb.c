@@ -31,57 +31,59 @@
 #include "isal_crypto_api.h"
 #include "multi_buffer.h"
 
-int isal_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR * mgr)
+int
+isal_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
 {
 #ifdef SAFE_PARAM
-	if (mgr == NULL)
-		return ISAL_CRYPTO_ERR_NULL_MGR;
+        if (mgr == NULL)
+                return ISAL_CRYPTO_ERR_NULL_MGR;
 #endif
-	sha1_ctx_mgr_init(mgr);
+        sha1_ctx_mgr_init(mgr);
 
-	return 0;
+        return 0;
 }
 
-int isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR * mgr, SHA1_HASH_CTX * ctx_in,
-			     SHA1_HASH_CTX ** ctx_out, const void *buffer,
-			     const uint32_t len, const HASH_CTX_FLAG flags)
+int
+isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HASH_CTX **ctx_out,
+                         const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags)
 {
 #ifdef SAFE_PARAM
-	if (mgr == NULL)
-		return ISAL_CRYPTO_ERR_NULL_MGR;
-	if (ctx_in == NULL || ctx_out == NULL)
-		return ISAL_CRYPTO_ERR_NULL_CTX;
-	if (buffer == NULL)
-		return ISAL_CRYPTO_ERR_NULL_SRC;
+        if (mgr == NULL)
+                return ISAL_CRYPTO_ERR_NULL_MGR;
+        if (ctx_in == NULL || ctx_out == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
 
-	*ctx_out = sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+        *ctx_out = sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-	if (*ctx_out != NULL && (SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
-		SHA1_HASH_CTX *cp = (SHA1_HASH_CTX *) (*ctx_out);
+        if (*ctx_out != NULL && (SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+                SHA1_HASH_CTX *cp = (SHA1_HASH_CTX *) (*ctx_out);
 
-		if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
-			return ISAL_CRYPTO_ERR_INVALID_FLAGS;
-		if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
-			return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
-		if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
-			return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
-	}
+                if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
+                        return ISAL_CRYPTO_ERR_INVALID_FLAGS;
+                if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
+                        return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
+                if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
+                        return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
+        }
 #endif
-	return 0;
+        return 0;
 }
 
-int isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR * mgr, SHA1_HASH_CTX ** ctx_out)
+int
+isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX **ctx_out)
 {
 #ifdef SAFE_PARAM
-	if (mgr == NULL)
-		return ISAL_CRYPTO_ERR_NULL_MGR;
-	if (ctx_out == NULL)
-		return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (mgr == NULL)
+                return ISAL_CRYPTO_ERR_NULL_MGR;
+        if (ctx_out == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
 
-	*ctx_out = sha1_ctx_mgr_flush(mgr);
+        *ctx_out = sha1_ctx_mgr_flush(mgr);
 
-	return 0;
+        return 0;
 }

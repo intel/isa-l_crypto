@@ -37,95 +37,98 @@
 #define TEST_BUFS 32
 
 #ifndef GT_L3_CACHE
-# define GT_L3_CACHE  32*1024*1024	/* some number > last level cache */
+#define GT_L3_CACHE 32 * 1024 * 1024 /* some number > last level cache */
 #endif
 
 #if !defined(COLD_TEST) && !defined(TEST_CUSTOM)
 // Cached test, loop many times over small dataset
-# define TEST_LEN     4*1024
-# define TEST_LOOPS   10000
-# define TEST_TYPE_STR "_warm"
+#define TEST_LEN      4 * 1024
+#define TEST_LOOPS    10000
+#define TEST_TYPE_STR "_warm"
 #elif defined(COLD_TEST)
 // Uncached test.  Pull from large mem base.
-# define TEST_LEN     (GT_L3_CACHE / TEST_BUFS)
-# define TEST_LOOPS   100
-# define TEST_TYPE_STR "_cold"
+#define TEST_LEN      (GT_L3_CACHE / TEST_BUFS)
+#define TEST_LOOPS    100
+#define TEST_TYPE_STR "_cold"
 #endif
 
-#define TEST_MEM TEST_LEN * TEST_BUFS * TEST_LOOPS
+#define TEST_MEM TEST_LEN *TEST_BUFS *TEST_LOOPS
 
 /* Reference digest global to reduce stack usage */
 static uint8_t digest_ssl[TEST_BUFS][4 * SHA1_DIGEST_NWORDS];
 
-int main(void)
+int
+main(void)
 {
-	SHA1_HASH_CTX_MGR *mgr = NULL;
-	SHA1_HASH_CTX ctxpool[TEST_BUFS];
-	unsigned char *bufs[TEST_BUFS];
-	uint32_t i, j, t, fail = 0;
-	struct perf start, stop;
+        SHA1_HASH_CTX_MGR *mgr = NULL;
+        SHA1_HASH_CTX ctxpool[TEST_BUFS];
+        unsigned char *bufs[TEST_BUFS];
+        uint32_t i, j, t, fail = 0;
+        struct perf start, stop;
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		bufs[i] = (unsigned char *)calloc((size_t)TEST_LEN, 1);
-		if (bufs[i] == NULL) {
-			printf("calloc failed test aborted\n");
-			return 1;
-		}
-		// Init ctx contents
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                bufs[i] = (unsigned char *) calloc((size_t) TEST_LEN, 1);
+                if (bufs[i] == NULL) {
+                        printf("calloc failed test aborted\n");
+                        return 1;
+                }
+                // Init ctx contents
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
+        }
 
-	int ret = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
-	if (ret) {
-		printf("alloc error: Fail");
-		return -1;
-	}
-	sha1_ctx_mgr_init(mgr);
+        int ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        if (ret) {
+                printf("alloc error: Fail");
+                return -1;
+        }
+        sha1_ctx_mgr_init(mgr);
 
-	// Start OpenSSL tests
-	perf_start(&start);
-	for (t = 0; t < TEST_LOOPS; t++) {
-		for (i = 0; i < TEST_BUFS; i++)
-			SHA1(bufs[i], TEST_LEN, digest_ssl[i]);
-	}
-	perf_stop(&stop);
+        // Start OpenSSL tests
+        perf_start(&start);
+        for (t = 0; t < TEST_LOOPS; t++) {
+                for (i = 0; i < TEST_BUFS; i++)
+                        SHA1(bufs[i], TEST_LEN, digest_ssl[i]);
+        }
+        perf_stop(&stop);
 
-	printf("sha1_openssl" TEST_TYPE_STR ": ");
-	perf_print(stop, start, (long long)TEST_LEN * i * t);
+        printf("sha1_openssl" TEST_TYPE_STR ": ");
+        perf_print(stop, start, (long long) TEST_LEN * i * t);
 
-	// Start mb tests
-	perf_start(&start);
-	for (t = 0; t < TEST_LOOPS; t++) {
-		for (i = 0; i < TEST_BUFS; i++)
-			sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+        // Start mb tests
+        perf_start(&start);
+        for (t = 0; t < TEST_LOOPS; t++) {
+                for (i = 0; i < TEST_BUFS; i++)
+                        sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
 
-		while (sha1_ctx_mgr_flush(mgr)) ;
-	}
-	perf_stop(&stop);
+                while (sha1_ctx_mgr_flush(mgr))
+                        ;
+        }
+        perf_stop(&stop);
 
-	printf("multibinary_sha1" TEST_TYPE_STR ": ");
-	perf_print(stop, start, (long long)TEST_LEN * i * t);
+        printf("multibinary_sha1" TEST_TYPE_STR ": ");
+        perf_print(stop, start, (long long) TEST_LEN * i * t);
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] !=
-			    to_be32(((uint32_t *) digest_ssl[i])[j])) {
-				fail++;
-				printf("Test%d, digest%d fail %08X <=> %08X\n",
-				       i, j, ctxpool[i].job.result_digest[j],
-				       to_be32(((uint32_t *) digest_ssl[i])[j]));
-			}
-		}
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] !=
+                            to_be32(((uint32_t *) digest_ssl[i])[j])) {
+                                fail++;
+                                printf("Test%d, digest%d fail %08X <=> %08X\n", i, j,
+                                       ctxpool[i].job.result_digest[j],
+                                       to_be32(((uint32_t *) digest_ssl[i])[j]));
+                        }
+                }
+        }
 
-	printf("Multi-buffer sha1 test complete %d buffers of %d B with "
-	       "%d iterations\n", TEST_BUFS, TEST_LEN, TEST_LOOPS);
+        printf("Multi-buffer sha1 test complete %d buffers of %d B with "
+               "%d iterations\n",
+               TEST_BUFS, TEST_LEN, TEST_LOOPS);
 
-	if (fail)
-		printf("Test failed function check %d\n", fail);
-	else
-		printf(" multibinary_sha1_ossl_perf: Pass\n");
+        if (fail)
+                printf("Test failed function check %d\n", fail);
+        else
+                printf(" multibinary_sha1_ossl_perf: Pass\n");
 
-	return fail;
+        return fail;
 }

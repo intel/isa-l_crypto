@@ -41,7 +41,7 @@ uint8_t msg3[] = TST_STR TST_STR "0123456789:;<";
 uint8_t msg4[] = TST_STR TST_STR TST_STR "0123456789:;<=>?@ABCDEFGHIJKLMNOPQR";
 uint8_t msg5[] = TST_STR TST_STR TST_STR TST_STR TST_STR "0123456789:;<=>?";
 uint8_t msg6[] =
-    TST_STR TST_STR TST_STR TST_STR TST_STR TST_STR "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTU";
+        TST_STR TST_STR TST_STR TST_STR TST_STR TST_STR "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTU";
 uint8_t msg7[] = "";
 
 // Expected digests
@@ -56,57 +56,57 @@ uint32_t dgst7[] = { 0xDA39A3EE, 0x5E6B4B0D, 0x3255BFEF, 0x95601890, 0xAFD80709 
 uint8_t *msgs[] = { msg1, msg2, msg3, msg4, msg5, msg6, msg7 };
 uint32_t *expected_digest[] = { dgst1, dgst2, dgst3, dgst4, dgst5, dgst6, dgst7 };
 
-int check_job(uint32_t * ref, uint32_t * good, int words)
+int
+check_job(uint32_t *ref, uint32_t *good, int words)
 {
-	int i;
-	for (i = 0; i < words; i++)
-		if (good[i] != ref[i])
-			return 1;
+        int i;
+        for (i = 0; i < words; i++)
+                if (good[i] != ref[i])
+                        return 1;
 
-	return 0;
+        return 0;
 }
 
 #define MAX_MSGS 7
 
-int main(void)
+int
+main(void)
 {
-	SHA1_HASH_CTX_MGR *mgr = NULL;
-	SHA1_HASH_CTX ctxpool[MAX_MSGS];
-	SHA1_HASH_CTX *p_job;
-	int i, checked = 0, failed = 0;
-	int n = sizeof(msgs) / sizeof(msgs[0]);
-	int ret;
+        SHA1_HASH_CTX_MGR *mgr = NULL;
+        SHA1_HASH_CTX ctxpool[MAX_MSGS];
+        SHA1_HASH_CTX *p_job;
+        int i, checked = 0, failed = 0;
+        int n = sizeof(msgs) / sizeof(msgs[0]);
+        int ret;
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
-	// Initialize multi-buffer manager
-	sha1_ctx_mgr_init(mgr);
+        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        if ((ret != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
+        // Initialize multi-buffer manager
+        sha1_ctx_mgr_init(mgr);
 
-	for (i = 0; i < n; i++) {
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)expected_digest[i];
+        for (i = 0; i < n; i++) {
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) expected_digest[i];
 
-		p_job = sha1_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
-					    strlen((char *)msgs[i]), HASH_ENTIRE);
+                p_job = sha1_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
+                                            HASH_ENTIRE);
 
-		if (p_job) {	// If we have finished a job, process it
-			checked++;
-			failed +=
-			    check_job(p_job->job.result_digest, p_job->user_data,
-				      SHA1_DIGEST_NWORDS);
-		}
-	}
+                if (p_job) { // If we have finished a job, process it
+                        checked++;
+                        failed += check_job(p_job->job.result_digest, p_job->user_data,
+                                            SHA1_DIGEST_NWORDS);
+                }
+        }
 
-	// Finish remaining jobs
-	while (NULL != (p_job = sha1_ctx_mgr_flush(mgr))) {
-		checked++;
-		failed +=
-		    check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
-	}
+        // Finish remaining jobs
+        while (NULL != (p_job = sha1_ctx_mgr_flush(mgr))) {
+                checked++;
+                failed += check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
+        }
 
-	printf("Example multi-buffer sha1 completed=%d, failed=%d\n", checked, failed);
-	return failed;
+        printf("Example multi-buffer sha1 completed=%d, failed=%d\n", checked, failed);
+        return failed;
 }
