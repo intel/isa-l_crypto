@@ -1,4 +1,0 @@
-[submodule "intel-ipsec-mb"]
-	path = intel-ipsec-mb
-	url = https://github.com/intel/intel-ipsec-mb.git
-	fetchRecurseSubmodules = yes
