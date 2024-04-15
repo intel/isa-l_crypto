@@ -29,37 +29,40 @@
 
 #include <stdint.h>
 #ifdef _MSC_VER
-# define inline __inline
+#define inline __inline
 #endif
 
-static inline int floor_pow2(uint32_t in)
+static inline int
+floor_pow2(uint32_t in)
 {
-	uint32_t x = in;
+        uint32_t x = in;
 
-	while (in) {
-		x = in;
-		in &= (in - 1);
-	}
-	return x;
+        while (in) {
+                x = in;
+                in &= (in - 1);
+        }
+        return x;
 }
 
-static inline uint32_t rol(uint32_t x, int i)
+static inline uint32_t
+rol(uint32_t x, int i)
 {
-	return x << i | x >> (8 * sizeof(x) - i);
+        return x << i | x >> (8 * sizeof(x) - i);
 }
 
-uint32_t rolling_hashx_mask_gen(long mean, int shift)
+uint32_t
+rolling_hashx_mask_gen(long mean, int shift)
 {
-	if (mean <= 2)
-		mean = 2;
+        if (mean <= 2)
+                mean = 2;
 
-	return rol(floor_pow2(mean) - 1, shift);
+        return rol(floor_pow2(mean) - 1, shift);
 }
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 struct slver rolling_hashx_mask_gen_slver_00000260;
 struct slver rolling_hashx_mask_gen_slver = { 0x0260, 0x00, 0x00 };
