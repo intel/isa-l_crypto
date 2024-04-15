@@ -35,106 +35,110 @@
 #include "test.h"
 
 #ifdef SAFE_PARAM
-#define TEST_LEN   16*1024
+#define TEST_LEN 16 * 1024
 
-static int test_mh_sha256_init_api(void)
+static int
+test_mh_sha256_init_api(void)
 {
-	int ret, retval = 1;
-	struct mh_sha256_ctx *update_ctx = NULL;
-	const char *func_name = "isal_mh_sha256_init";
+        int ret, retval = 1;
+        struct mh_sha256_ctx *update_ctx = NULL;
+        const char *func_name = "isal_mh_sha256_init";
 
-	update_ctx = malloc(sizeof(*update_ctx));
-	if (update_ctx == NULL) {
-		printf("malloc failed test aborted\n");
-		return retval;
-	}
+        update_ctx = malloc(sizeof(*update_ctx));
+        if (update_ctx == NULL) {
+                printf("malloc failed test aborted\n");
+                return retval;
+        }
 
-	ret = isal_mh_sha256_init(NULL);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_init);
+        ret = isal_mh_sha256_init(NULL);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_init);
 
-	ret = isal_mh_sha256_init(update_ctx);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
+        ret = isal_mh_sha256_init(update_ctx);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
 
-	retval = 0;
+        retval = 0;
 
-      exit_init:
-	free(update_ctx);
+exit_init:
+        free(update_ctx);
 
-	return retval;
+        return retval;
 }
 
-static int test_mh_sha256_update_api(void)
+static int
+test_mh_sha256_update_api(void)
 {
-	int ret, retval = 1;
-	struct mh_sha256_ctx *update_ctx = NULL;
-	uint8_t *buff = NULL;
-	const char *func_name = "isal_mh_sha256_update";
+        int ret, retval = 1;
+        struct mh_sha256_ctx *update_ctx = NULL;
+        uint8_t *buff = NULL;
+        const char *func_name = "isal_mh_sha256_update";
 
-	update_ctx = malloc(sizeof(*update_ctx));
-	buff = malloc(TEST_LEN);
-	if (update_ctx == NULL || buff == NULL) {
-		printf("malloc failed test aborted\n");
-		goto exit_update;
-	}
+        update_ctx = malloc(sizeof(*update_ctx));
+        buff = malloc(TEST_LEN);
+        if (update_ctx == NULL || buff == NULL) {
+                printf("malloc failed test aborted\n");
+                goto exit_update;
+        }
 
-	ret = isal_mh_sha256_update(NULL, buff, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_update);
+        ret = isal_mh_sha256_update(NULL, buff, TEST_LEN);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_update);
 
-	ret = isal_mh_sha256_update(update_ctx, NULL, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_SRC, func_name, exit_update);
+        ret = isal_mh_sha256_update(update_ctx, NULL, TEST_LEN);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_SRC, func_name, exit_update);
 
-	ret = isal_mh_sha256_update(update_ctx, buff, TEST_LEN);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
+        ret = isal_mh_sha256_update(update_ctx, buff, TEST_LEN);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
 
-	retval = 0;
+        retval = 0;
 
-      exit_update:
-	free(update_ctx);
-	free(buff);
+exit_update:
+        free(update_ctx);
+        free(buff);
 
-	return retval;
+        return retval;
 }
 
-static int test_mh_sha256_finalize_api(void)
+static int
+test_mh_sha256_finalize_api(void)
 {
-	int ret, retval = 1;
-	struct mh_sha256_ctx *update_ctx = NULL;
-	uint32_t hash_test[SHA256_DIGEST_WORDS] = { 0 };
-	const char *func_name = "isal_mh_sha256_finalize";
+        int ret, retval = 1;
+        struct mh_sha256_ctx *update_ctx = NULL;
+        uint32_t hash_test[SHA256_DIGEST_WORDS] = { 0 };
+        const char *func_name = "isal_mh_sha256_finalize";
 
-	update_ctx = malloc(sizeof(*update_ctx));
-	if (update_ctx == NULL) {
-		printf("malloc failed test aborted\n");
-		return retval;
-	}
+        update_ctx = malloc(sizeof(*update_ctx));
+        if (update_ctx == NULL) {
+                printf("malloc failed test aborted\n");
+                return retval;
+        }
 
-	ret = isal_mh_sha256_finalize(NULL, hash_test);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_finalize);
+        ret = isal_mh_sha256_finalize(NULL, hash_test);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_finalize);
 
-	ret = isal_mh_sha256_finalize(update_ctx, NULL);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_AUTH, func_name, exit_finalize);
+        ret = isal_mh_sha256_finalize(update_ctx, NULL);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_AUTH, func_name, exit_finalize);
 
-	ret = isal_mh_sha256_finalize(update_ctx, hash_test);
-	CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
-	retval = 0;
+        ret = isal_mh_sha256_finalize(update_ctx, hash_test);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
+        retval = 0;
 
-      exit_finalize:
-	free(update_ctx);
+exit_finalize:
+        free(update_ctx);
 
-	return retval;
+        return retval;
 }
 #endif /* SAFE_PARAM */
 
-int main(void)
+int
+main(void)
 {
-	int fail = 0;
+        int fail = 0;
 #ifdef SAFE_PARAM
-	fail |= test_mh_sha256_init_api();
-	fail |= test_mh_sha256_update_api();
-	fail |= test_mh_sha256_finalize_api();
-	printf(fail ? "Fail\n" : "Pass\n");
+        fail |= test_mh_sha256_init_api();
+        fail |= test_mh_sha256_update_api();
+        fail |= test_mh_sha256_finalize_api();
+        printf(fail ? "Fail\n" : "Pass\n");
 #else
-	printf("Not Executed\n");
+        printf("Not Executed\n");
 #endif
-	return fail;
+        return fail;
 }

@@ -29,13 +29,13 @@
 #include <string.h>
 #include "mh_sha256_internal.h"
 
-void mh_sha256_block_ce(const uint8_t * input_data,
-			uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
-			uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+void
+mh_sha256_block_ce(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+                   uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 /***************mh_sha256_update***********/
 // mh_sha256_update_ce.c
-#define MH_SHA256_UPDATE_FUNCTION	mh_sha256_update_ce
-#define MH_SHA256_BLOCK_FUNCTION	mh_sha256_block_ce
+#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_ce
+#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_ce
 #include "mh_sha256_update_base.c"
 #undef MH_SHA256_UPDATE_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
@@ -44,9 +44,9 @@ void mh_sha256_block_ce(const uint8_t * input_data,
 // mh_sha256_tail is used to calculate the last incomplete src data block
 // mh_sha256_finalize is a mh_sha256_ctx wrapper of mh_sha256_tail
 // mh_sha256_finalize_ce.c and mh_sha256_tail_ce.c
-#define MH_SHA256_FINALIZE_FUNCTION	mh_sha256_finalize_ce
-#define MH_SHA256_TAIL_FUNCTION		mh_sha256_tail_ce
-#define MH_SHA256_BLOCK_FUNCTION	mh_sha256_block_ce
+#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_ce
+#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_ce
+#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_ce
 #include "mh_sha256_finalize_base.c"
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
