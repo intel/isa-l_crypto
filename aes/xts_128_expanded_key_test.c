@@ -32,98 +32,97 @@
 #include <aes_keyexp.h>
 #include "xts_128_vect.h"
 
-int main(void)
+int
+main(void)
 {
 
-	// Temporary array for the calculated vectors
-	uint8_t *ct_test = NULL;
-	uint8_t *pt_test = NULL;
-	// Arrays for expanded keys, null_key is a dummy vector (decrypt key not
-	// needed for the tweak part of the decryption)
-	uint8_t expkey1_enc[16 * 11], expkey2_enc[16 * 11];
-	uint8_t expkey1_dec[16 * 11], null_key[16 * 11];
+        // Temporary array for the calculated vectors
+        uint8_t *ct_test = NULL;
+        uint8_t *pt_test = NULL;
+        // Arrays for expanded keys, null_key is a dummy vector (decrypt key not
+        // needed for the tweak part of the decryption)
+        uint8_t expkey1_enc[16 * 11], expkey2_enc[16 * 11];
+        uint8_t expkey1_dec[16 * 11], null_key[16 * 11];
 
-	int i, j, ret = -1;
+        int i, j, ret = -1;
 
-	// --- Encryption test ---
+        // --- Encryption test ---
 
-	// Loop over the vectors
-	for (i = 0; i < NVEC; i++) {
+        // Loop over the vectors
+        for (i = 0; i < NVEC; i++) {
 
-		// Allocate space for the calculated ciphertext
-		ct_test = malloc(vlist[i].ptlen);
-		if (ct_test == NULL) {
-			printf("Can't allocate ciphertext memory\n");
-			goto end;
-		}
-		// Pre-expand keys (will only use the encryption ones here)
-		aes_keyexp_128(vlist[i].key1, expkey1_enc, expkey1_dec);
-		aes_keyexp_128(vlist[i].key2, expkey2_enc, null_key);
+                // Allocate space for the calculated ciphertext
+                ct_test = malloc(vlist[i].ptlen);
+                if (ct_test == NULL) {
+                        printf("Can't allocate ciphertext memory\n");
+                        goto end;
+                }
+                // Pre-expand keys (will only use the encryption ones here)
+                aes_keyexp_128(vlist[i].key1, expkey1_enc, expkey1_dec);
+                aes_keyexp_128(vlist[i].key2, expkey2_enc, null_key);
 
-		XTS_AES_128_enc_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW,
-					     vlist[i].ptlen, vlist[i].PTX, ct_test);
+                XTS_AES_128_enc_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW, vlist[i].ptlen,
+                                             vlist[i].PTX, ct_test);
 
-		// Carry out comparison of the calculated ciphertext with
-		// the reference
-		for (j = 0; j < vlist[i].ptlen; j++) {
+                // Carry out comparison of the calculated ciphertext with
+                // the reference
+                for (j = 0; j < vlist[i].ptlen; j++) {
 
-			if (ct_test[j] != vlist[i].CTX[j]) {
-				// Vectors 1-10 and 15-19 are for the 128 bit code
-				printf("\nXTS_AES_128_enc: Vector %d: ",
-				       i < 9 ? i + 1 : i + 6);
-				printf("failed at byte %d! \n", j);
-				goto end;
-			}
-		}
-		printf(".");
+                        if (ct_test[j] != vlist[i].CTX[j]) {
+                                // Vectors 1-10 and 15-19 are for the 128 bit code
+                                printf("\nXTS_AES_128_enc: Vector %d: ", i < 9 ? i + 1 : i + 6);
+                                printf("failed at byte %d! \n", j);
+                                goto end;
+                        }
+                }
+                printf(".");
 
-		free(ct_test);
-		ct_test = NULL;
-	}
+                free(ct_test);
+                ct_test = NULL;
+        }
 
-	// --- Decryption test ---
+        // --- Decryption test ---
 
-	// Loop over the vectors
-	for (i = 0; i < NVEC; i++) {
+        // Loop over the vectors
+        for (i = 0; i < NVEC; i++) {
 
-		// Allocate space for the calculated ciphertext
-		pt_test = malloc(vlist[i].ptlen);
-		if (pt_test == NULL) {
-			printf("Can't allocate plaintext memory\n");
-			goto end;
-		}
-		// Pre-expand keys for the decryption
-		aes_keyexp_128(vlist[i].key1, expkey1_enc, expkey1_dec);
-		aes_keyexp_128(vlist[i].key2, expkey2_enc, null_key);
+                // Allocate space for the calculated ciphertext
+                pt_test = malloc(vlist[i].ptlen);
+                if (pt_test == NULL) {
+                        printf("Can't allocate plaintext memory\n");
+                        goto end;
+                }
+                // Pre-expand keys for the decryption
+                aes_keyexp_128(vlist[i].key1, expkey1_enc, expkey1_dec);
+                aes_keyexp_128(vlist[i].key2, expkey2_enc, null_key);
 
-		// Note, encryption key is re-used for the tweak decryption step
-		XTS_AES_128_dec_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW,
-					     vlist[i].ptlen, vlist[i].CTX, pt_test);
+                // Note, encryption key is re-used for the tweak decryption step
+                XTS_AES_128_dec_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW, vlist[i].ptlen,
+                                             vlist[i].CTX, pt_test);
 
-		// Carry out comparison of the calculated ciphertext with
-		// the reference
-		for (j = 0; j < vlist[i].ptlen; j++) {
+                // Carry out comparison of the calculated ciphertext with
+                // the reference
+                for (j = 0; j < vlist[i].ptlen; j++) {
 
-			if (pt_test[j] != vlist[i].PTX[j]) {
-				printf("\nXTS_AES_128_enc: Vector %d: ",
-				       i < 9 ? i + 1 : i + 6);
-				printf(" failed at byte %d! \n", j);
-				goto end;
-			}
-		}
-		printf(".");
+                        if (pt_test[j] != vlist[i].PTX[j]) {
+                                printf("\nXTS_AES_128_enc: Vector %d: ", i < 9 ? i + 1 : i + 6);
+                                printf(" failed at byte %d! \n", j);
+                                goto end;
+                        }
+                }
+                printf(".");
 
-		free(pt_test);
-		pt_test = NULL;
-	}
-	ret = 0;
-	printf("Pass\n");
+                free(pt_test);
+                pt_test = NULL;
+        }
+        ret = 0;
+        printf("Pass\n");
 
-      end:
-	if (ct_test != NULL)
-		free(ct_test);
-	if (pt_test != NULL)
-		free(pt_test);
+end:
+        if (ct_test != NULL)
+                free(ct_test);
+        if (pt_test != NULL)
+                free(pt_test);
 
-	return ret;
+        return ret;
 }

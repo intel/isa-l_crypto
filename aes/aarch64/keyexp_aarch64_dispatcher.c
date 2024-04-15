@@ -29,44 +29,40 @@
 #include <aarch64_multibinary.h>
 
 #undef PROVIDER_BASIC
-#define PROVIDER_BASIC(a) (void*)0
+#define PROVIDER_BASIC(a) (void *) 0
 
 DEFINE_INTERFACE_DISPATCHER(aes_keyexp_128)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-		return PROVIDER_INFO(aes_keyexp_128_aes);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
+                return PROVIDER_INFO(aes_keyexp_128_aes);
 
-	return PROVIDER_BASIC(aes_keyexp_128);
-
+        return PROVIDER_BASIC(aes_keyexp_128);
 }
 
 DEFINE_INTERFACE_DISPATCHER(aes_keyexp_128_enc)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-		return PROVIDER_INFO(aes_keyexp_128_enc_aes);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
+                return PROVIDER_INFO(aes_keyexp_128_enc_aes);
 
-	return PROVIDER_BASIC(aes_keyexp_128_enc);
-
+        return PROVIDER_BASIC(aes_keyexp_128_enc);
 }
 
 DEFINE_INTERFACE_DISPATCHER(aes_keyexp_192)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-		return PROVIDER_INFO(aes_keyexp_192_aes);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
+                return PROVIDER_INFO(aes_keyexp_192_aes);
 
-	return PROVIDER_BASIC(aes_keyexp_192);
-
+        return PROVIDER_BASIC(aes_keyexp_192);
 }
 
 DEFINE_INTERFACE_DISPATCHER(aes_keyexp_256)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-		return PROVIDER_INFO(aes_keyexp_256_aes);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
+                return PROVIDER_INFO(aes_keyexp_256_aes);
 
-	return PROVIDER_BASIC(aes_keyexp_256);
-
+        return PROVIDER_BASIC(aes_keyexp_256);
 }

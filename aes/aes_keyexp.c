@@ -31,41 +31,44 @@
 #include "isal_crypto_api.h"
 #include "aes_keyexp.h"
 
-int isal_aes_keyexp_128(const uint8_t * key, uint8_t * exp_key_enc, uint8_t * exp_key_dec)
+int
+isal_aes_keyexp_128(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
 {
 #ifdef SAFE_PARAM
-	if (key == NULL)
-		return ISAL_CRYPTO_ERR_NULL_KEY;
-	if (exp_key_enc == NULL || exp_key_dec == NULL)
-		return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
+        if (key == NULL)
+                return ISAL_CRYPTO_ERR_NULL_KEY;
+        if (exp_key_enc == NULL || exp_key_dec == NULL)
+                return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
 #endif
-	aes_keyexp_128(key, exp_key_enc, exp_key_dec);
+        aes_keyexp_128(key, exp_key_enc, exp_key_dec);
 
-	return 0;
+        return 0;
 }
 
-int isal_aes_keyexp_192(const uint8_t * key, uint8_t * exp_key_enc, uint8_t * exp_key_dec)
+int
+isal_aes_keyexp_192(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
 {
 #ifdef SAFE_PARAM
-	if (key == NULL)
-		return ISAL_CRYPTO_ERR_NULL_KEY;
-	if (exp_key_enc == NULL || exp_key_dec == NULL)
-		return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
+        if (key == NULL)
+                return ISAL_CRYPTO_ERR_NULL_KEY;
+        if (exp_key_enc == NULL || exp_key_dec == NULL)
+                return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
 #endif
-	aes_keyexp_192(key, exp_key_enc, exp_key_dec);
+        aes_keyexp_192(key, exp_key_enc, exp_key_dec);
 
-	return 0;
+        return 0;
 }
 
-int isal_aes_keyexp_256(const uint8_t * key, uint8_t * exp_key_enc, uint8_t * exp_key_dec)
+int
+isal_aes_keyexp_256(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
 {
 #ifdef SAFE_PARAM
-	if (key == NULL)
-		return ISAL_CRYPTO_ERR_NULL_KEY;
-	if (exp_key_enc == NULL || exp_key_dec == NULL)
-		return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
+        if (key == NULL)
+                return ISAL_CRYPTO_ERR_NULL_KEY;
+        if (exp_key_enc == NULL || exp_key_dec == NULL)
+                return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
 #endif
-	aes_keyexp_256(key, exp_key_enc, exp_key_dec);
+        aes_keyexp_256(key, exp_key_enc, exp_key_dec);
 
-	return 0;
+        return 0;
 }

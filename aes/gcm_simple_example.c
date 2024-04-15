@@ -32,47 +32,49 @@
 #include <string.h>
 #include "aes_gcm.h"
 
-#define TXT_SIZE  8
+#define TXT_SIZE 8
 #define AAD_SIZE 32
-#define TAG_SIZE 16		/* Valid values are 16, 12, or 8 */
+#define TAG_SIZE 16 /* Valid values are 16, 12, or 8 */
 #define KEY_SIZE GCM_256_KEY_LEN
 #define IV_SIZE  GCM_IV_DATA_LEN
 
-void mprint(const char *msg, uint8_t * buf, int len)
+void
+mprint(const char *msg, uint8_t *buf, int len)
 {
-	int i;
-	printf("%s", msg);
-	for (i = 0; i < len;) {
-		printf(" %2x", 0xff & buf[i++]);
-		if (i % 32 == 0)
-			printf("\n");
-	}
-	printf("\n");
+        int i;
+        printf("%s", msg);
+        for (i = 0; i < len;) {
+                printf(" %2x", 0xff & buf[i++]);
+                if (i % 32 == 0)
+                        printf("\n");
+        }
+        printf("\n");
 }
 
-int main(void)
+int
+main(void)
 {
-	struct gcm_key_data gkey;
-	struct gcm_context_data gctx;
-	uint8_t ct[TXT_SIZE], pt[TXT_SIZE], pt2[TXT_SIZE];	// Cipher text and plain text
-	uint8_t iv[IV_SIZE], aad[AAD_SIZE], key[KEY_SIZE];	// Key and authentication data
-	uint8_t tag1[TAG_SIZE], tag2[TAG_SIZE];	// Authentication tags for encode and decode
+        struct gcm_key_data gkey;
+        struct gcm_context_data gctx;
+        uint8_t ct[TXT_SIZE], pt[TXT_SIZE], pt2[TXT_SIZE]; // Cipher text and plain text
+        uint8_t iv[IV_SIZE], aad[AAD_SIZE], key[KEY_SIZE]; // Key and authentication data
+        uint8_t tag1[TAG_SIZE], tag2[TAG_SIZE]; // Authentication tags for encode and decode
 
-	printf("gcm example:\n");
-	memset(key, 0, KEY_SIZE);
-	memset(pt, 0, TXT_SIZE);
-	memset(iv, 0, IV_SIZE);
-	memset(aad, 0, AAD_SIZE);
+        printf("gcm example:\n");
+        memset(key, 0, KEY_SIZE);
+        memset(pt, 0, TXT_SIZE);
+        memset(iv, 0, IV_SIZE);
+        memset(aad, 0, AAD_SIZE);
 
-	aes_gcm_pre_256(key, &gkey);
-	aes_gcm_enc_256(&gkey, &gctx, ct, pt, TXT_SIZE, iv, aad, AAD_SIZE, tag1, TAG_SIZE);
-	aes_gcm_dec_256(&gkey, &gctx, pt2, ct, TXT_SIZE, iv, aad, AAD_SIZE, tag2, TAG_SIZE);
+        aes_gcm_pre_256(key, &gkey);
+        aes_gcm_enc_256(&gkey, &gctx, ct, pt, TXT_SIZE, iv, aad, AAD_SIZE, tag1, TAG_SIZE);
+        aes_gcm_dec_256(&gkey, &gctx, pt2, ct, TXT_SIZE, iv, aad, AAD_SIZE, tag2, TAG_SIZE);
 
-	mprint("  input text:     ", pt, TXT_SIZE);
-	mprint("  cipher text:    ", ct, TXT_SIZE);
-	mprint("  decode text:    ", pt2, TXT_SIZE);
-	mprint("  ath tag1 (enc): ", tag1, TAG_SIZE);
-	mprint("  ath tag2 (dec): ", tag2, TAG_SIZE);
+        mprint("  input text:     ", pt, TXT_SIZE);
+        mprint("  cipher text:    ", ct, TXT_SIZE);
+        mprint("  decode text:    ", pt2, TXT_SIZE);
+        mprint("  ath tag1 (enc): ", tag1, TAG_SIZE);
+        mprint("  ath tag2 (dec): ", tag2, TAG_SIZE);
 
-	return memcmp(tag1, tag2, TAG_SIZE);
+        return memcmp(tag1, tag2, TAG_SIZE);
 }

@@ -30,60 +30,61 @@
 #ifndef GCM_TEST_ALLOC_H_
 #define GCM_TEST_ALLOC_H_
 
-#include "types.h"		// aligned_free() and posix_memalign() wrappers
+#include "types.h" // aligned_free() and posix_memalign() wrappers
 
 #define DIM(x) (sizeof(x) / sizeof(x[0]))
 
-static int vector_allocate(void **memory[], const size_t length[], const size_t align[],
-			   const size_t num)
+static int
+vector_allocate(void **memory[], const size_t length[], const size_t align[], const size_t num)
 {
-	int ret = 0;
+        int ret = 0;
 
-	for (size_t n = 0; n < num; n++) {
-		if (length[n] != 0) {
-			const int use_memalign = ((align != NULL) && (align[n] != 0));
-			void *ptr = NULL;
-			int posix_ret = 0;
+        for (size_t n = 0; n < num; n++) {
+                if (length[n] != 0) {
+                        const int use_memalign = ((align != NULL) && (align[n] != 0));
+                        void *ptr = NULL;
+                        int posix_ret = 0;
 
-			if (use_memalign)
-				posix_ret = posix_memalign(&ptr, align[n], length[n]);
-			else
-				ptr = malloc(length[n]);
+                        if (use_memalign)
+                                posix_ret = posix_memalign(&ptr, align[n], length[n]);
+                        else
+                                ptr = malloc(length[n]);
 
-			if (ptr == NULL || posix_ret != 0)
-				ret = 1;	/* operation error */
+                        if (ptr == NULL || posix_ret != 0)
+                                ret = 1; /* operation error */
 
-			*memory[n] = ptr;
-		} else {
-			/* NULL pointer for zero length input */
-			*memory[n] = NULL;
-		}
-	}
+                        *memory[n] = ptr;
+                } else {
+                        /* NULL pointer for zero length input */
+                        *memory[n] = NULL;
+                }
+        }
 
-	if (ret)
-		fprintf(stderr, "ERROR: Can't allocate required memory\n");
+        if (ret)
+                fprintf(stderr, "ERROR: Can't allocate required memory\n");
 
-	return ret;
+        return ret;
 }
 
-static int vector_free(void **memory[], const size_t align[], const size_t num)
+static int
+vector_free(void **memory[], const size_t align[], const size_t num)
 {
-	int ret = 0;
+        int ret = 0;
 
-	for (size_t n = 0; n < num; n++) {
-		if (memory[n] != NULL) {
-			const int used_memalign = ((align != NULL) && (align[n] != 0));
+        for (size_t n = 0; n < num; n++) {
+                if (memory[n] != NULL) {
+                        const int used_memalign = ((align != NULL) && (align[n] != 0));
 
-			if (used_memalign)
-				aligned_free(*memory[n]);
-			else
-				free(*memory[n]);
+                        if (used_memalign)
+                                aligned_free(*memory[n]);
+                        else
+                                free(*memory[n]);
 
-			*memory[n] = NULL;
-		}
-	}
+                        *memory[n] = NULL;
+                }
+        }
 
-	return ret;
+        return ret;
 }
 
 #endif /* GCM_TEST_ALLOC_H_ */
