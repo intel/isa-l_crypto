@@ -30,16 +30,17 @@
 #include <stdio.h>
 #include <openssl/evp.h>
 
-void sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest)
+void
+sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest)
 {
-	EVP_MD_CTX *md_ctx;
-	const EVP_MD *md;
-	unsigned int md_len;
+        EVP_MD_CTX *md_ctx;
+        const EVP_MD *md;
+        unsigned int md_len;
 
-	md = EVP_sm3();
-	md_ctx = EVP_MD_CTX_new();
-	EVP_DigestInit_ex(md_ctx, md, NULL);
-	EVP_DigestUpdate(md_ctx, buf, length);
-	EVP_DigestFinal_ex(md_ctx, digest, &md_len);
-	EVP_MD_CTX_free(md_ctx);
+        md = EVP_sm3();
+        md_ctx = EVP_MD_CTX_new();
+        EVP_DigestInit_ex(md_ctx, md, NULL);
+        EVP_DigestUpdate(md_ctx, buf, length);
+        EVP_DigestFinal_ex(md_ctx, digest, &md_len);
+        EVP_MD_CTX_free(md_ctx);
 }
