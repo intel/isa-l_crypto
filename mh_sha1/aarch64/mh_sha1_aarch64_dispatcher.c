@@ -29,65 +29,65 @@
 #include <aarch64_multibinary.h>
 
 #ifndef HWCAP2_SVE2
-#define HWCAP2_SVE2	(1 << 1)
+#define HWCAP2_SVE2 (1 << 1)
 #endif
 
-#define CAP_SVE	1
-#define CAP_SVE2	2
-#define CAP_NOSVE	0
+#define CAP_SVE   1
+#define CAP_SVE2  2
+#define CAP_NOSVE 0
 
-static inline int sve_capable(unsigned long auxval)
+static inline int
+sve_capable(unsigned long auxval)
 {
-	if (auxval & HWCAP_SVE) {
-		if (getauxval(AT_HWCAP2) & HWCAP2_SVE2) {
-			return CAP_SVE2;
-		}
-		return CAP_SVE;
-	}
-	return CAP_NOSVE;
+        if (auxval & HWCAP_SVE) {
+                if (getauxval(AT_HWCAP2) & HWCAP2_SVE2) {
+                        return CAP_SVE2;
+                }
+                return CAP_SVE;
+        }
+        return CAP_NOSVE;
 }
 
 DEFINE_INTERFACE_DISPATCHER(mh_sha1_update)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
+        unsigned long auxval = getauxval(AT_HWCAP);
 
-	if (auxval & HWCAP_SHA1)
-		return PROVIDER_INFO(mh_sha1_update_ce);
+        if (auxval & HWCAP_SHA1)
+                return PROVIDER_INFO(mh_sha1_update_ce);
 
-	switch (sve_capable(auxval)) {
-	case CAP_SVE:
-		return PROVIDER_INFO(mh_sha1_update_sve);
-	case CAP_SVE2:
-		return PROVIDER_INFO(mh_sha1_update_sve2);
-	default:
-		break;
-	}
+        switch (sve_capable(auxval)) {
+        case CAP_SVE:
+                return PROVIDER_INFO(mh_sha1_update_sve);
+        case CAP_SVE2:
+                return PROVIDER_INFO(mh_sha1_update_sve2);
+        default:
+                break;
+        }
 
-	if (auxval & HWCAP_ASIMD)
-		return PROVIDER_INFO(mh_sha1_update_asimd);
+        if (auxval & HWCAP_ASIMD)
+                return PROVIDER_INFO(mh_sha1_update_asimd);
 
-	return PROVIDER_BASIC(mh_sha1_update);
-
+        return PROVIDER_BASIC(mh_sha1_update);
 }
 
 DEFINE_INTERFACE_DISPATCHER(mh_sha1_finalize)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
+        unsigned long auxval = getauxval(AT_HWCAP);
 
-	if (auxval & HWCAP_SHA1)
-		return PROVIDER_INFO(mh_sha1_finalize_ce);
+        if (auxval & HWCAP_SHA1)
+                return PROVIDER_INFO(mh_sha1_finalize_ce);
 
-	switch (sve_capable(auxval)) {
-	case CAP_SVE:
-		return PROVIDER_INFO(mh_sha1_finalize_sve);
-	case CAP_SVE2:
-		return PROVIDER_INFO(mh_sha1_finalize_sve2);
-	default:
-		break;
-	}
+        switch (sve_capable(auxval)) {
+        case CAP_SVE:
+                return PROVIDER_INFO(mh_sha1_finalize_sve);
+        case CAP_SVE2:
+                return PROVIDER_INFO(mh_sha1_finalize_sve2);
+        default:
+                break;
+        }
 
-	if (auxval & HWCAP_ASIMD)
-		return PROVIDER_INFO(mh_sha1_finalize_asimd);
+        if (auxval & HWCAP_ASIMD)
+                return PROVIDER_INFO(mh_sha1_finalize_asimd);
 
-	return PROVIDER_BASIC(mh_sha1_finalize);
+        return PROVIDER_BASIC(mh_sha1_finalize);
 }

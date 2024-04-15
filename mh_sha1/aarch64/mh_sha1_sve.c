@@ -29,13 +29,13 @@
 #include <string.h>
 #include "mh_sha1_internal.h"
 
-void mh_sha1_block_sve(const uint8_t * input_data,
-		       uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-		       uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+void
+mh_sha1_block_sve(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                  uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 /***************mh_sha1_update***********/
 // mh_sha1_update_sve.c
 #define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_sve
-#define MH_SHA1_BLOCK_FUNCTION	mh_sha1_block_sve
+#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_sve
 #include "mh_sha1_update_base.c"
 #undef MH_SHA1_UPDATE_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
@@ -44,9 +44,9 @@ void mh_sha1_block_sve(const uint8_t * input_data,
 // mh_sha1_tail is used to calculate the last incomplete src data block
 // mh_sha1_finalize is a mh_sha1_ctx wrapper of mh_sha1_tail
 // mh_sha1_finalize_sve.c and mh_sha1_tail_sve.c
-#define MH_SHA1_FINALIZE_FUNCTION	mh_sha1_finalize_sve
-#define MH_SHA1_TAIL_FUNCTION		mh_sha1_tail_sve
-#define MH_SHA1_BLOCK_FUNCTION		mh_sha1_block_sve
+#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_sve
+#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_sve
+#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_sve
 #include "mh_sha1_finalize_base.c"
 #undef MH_SHA1_FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION

@@ -37,168 +37,172 @@
 ////////////////////////////////////////////////////////////////////////
 
 #if (__GNUC__ >= 11)
-# define OPT_FIX __attribute__ ((noipa))
+#define OPT_FIX __attribute__((noipa))
 #else
-# define OPT_FIX
+#define OPT_FIX
 #endif
 
 #define W(x) w[(x) & 15]
 
-#define step00_19(i,a,b,c,d,e) \
-	if (i>15) W(i) = rol32(W(i-3)^W(i-8)^W(i-14)^W(i-16), 1); \
-	else W(i) = to_be32(ww[i]); \
-	e += rol32(a,5) + F1(b,c,d) + 0x5A827999 + W(i); \
-	b = rol32(b,30)
+#define step00_19(i, a, b, c, d, e)                                                                \
+        if (i > 15)                                                                                \
+                W(i) = rol32(W(i - 3) ^ W(i - 8) ^ W(i - 14) ^ W(i - 16), 1);                      \
+        else                                                                                       \
+                W(i) = to_be32(ww[i]);                                                             \
+        e += rol32(a, 5) + F1(b, c, d) + 0x5A827999 + W(i);                                        \
+        b = rol32(b, 30)
 
-#define step20_39(i,a,b,c,d,e) \
-	W(i) = rol32(W(i-3)^W(i-8)^W(i-14)^W(i-16), 1); \
-	e += rol32(a,5) + F2(b,c,d) + 0x6ED9EBA1 + W(i); \
-	b = rol32(b,30)
+#define step20_39(i, a, b, c, d, e)                                                                \
+        W(i) = rol32(W(i - 3) ^ W(i - 8) ^ W(i - 14) ^ W(i - 16), 1);                              \
+        e += rol32(a, 5) + F2(b, c, d) + 0x6ED9EBA1 + W(i);                                        \
+        b = rol32(b, 30)
 
-#define step40_59(i,a,b,c,d,e) \
-	W(i) = rol32(W(i-3)^W(i-8)^W(i-14)^W(i-16), 1); \
-	e += rol32(a,5) + F3(b,c,d) + 0x8F1BBCDC + W(i); \
-	b = rol32(b,30)
+#define step40_59(i, a, b, c, d, e)                                                                \
+        W(i) = rol32(W(i - 3) ^ W(i - 8) ^ W(i - 14) ^ W(i - 16), 1);                              \
+        e += rol32(a, 5) + F3(b, c, d) + 0x8F1BBCDC + W(i);                                        \
+        b = rol32(b, 30)
 
-#define step60_79(i,a,b,c,d,e) \
-	W(i) = rol32(W(i-3)^W(i-8)^W(i-14)^W(i-16), 1); \
-	e += rol32(a,5) + F4(b,c,d) + 0xCA62C1D6 + W(i); \
-	b = rol32(b,30)
+#define step60_79(i, a, b, c, d, e)                                                                \
+        W(i) = rol32(W(i - 3) ^ W(i - 8) ^ W(i - 14) ^ W(i - 16), 1);                              \
+        e += rol32(a, 5) + F4(b, c, d) + 0xCA62C1D6 + W(i);                                        \
+        b = rol32(b, 30)
 
-static void OPT_FIX sha1_single_for_mh_sha1(const uint8_t * data, uint32_t digest[])
+static void OPT_FIX
+sha1_single_for_mh_sha1(const uint8_t *data, uint32_t digest[])
 {
-	uint32_t a, b, c, d, e;
-	uint32_t w[16] = { 0 };
-	uint32_t *ww = (uint32_t *) data;
+        uint32_t a, b, c, d, e;
+        uint32_t w[16] = { 0 };
+        uint32_t *ww = (uint32_t *) data;
 
-	a = digest[0];
-	b = digest[1];
-	c = digest[2];
-	d = digest[3];
-	e = digest[4];
+        a = digest[0];
+        b = digest[1];
+        c = digest[2];
+        d = digest[3];
+        e = digest[4];
 
-	step00_19(0, a, b, c, d, e);
-	step00_19(1, e, a, b, c, d);
-	step00_19(2, d, e, a, b, c);
-	step00_19(3, c, d, e, a, b);
-	step00_19(4, b, c, d, e, a);
-	step00_19(5, a, b, c, d, e);
-	step00_19(6, e, a, b, c, d);
-	step00_19(7, d, e, a, b, c);
-	step00_19(8, c, d, e, a, b);
-	step00_19(9, b, c, d, e, a);
-	step00_19(10, a, b, c, d, e);
-	step00_19(11, e, a, b, c, d);
-	step00_19(12, d, e, a, b, c);
-	step00_19(13, c, d, e, a, b);
-	step00_19(14, b, c, d, e, a);
-	step00_19(15, a, b, c, d, e);
-	step00_19(16, e, a, b, c, d);
-	step00_19(17, d, e, a, b, c);
-	step00_19(18, c, d, e, a, b);
-	step00_19(19, b, c, d, e, a);
+        step00_19(0, a, b, c, d, e);
+        step00_19(1, e, a, b, c, d);
+        step00_19(2, d, e, a, b, c);
+        step00_19(3, c, d, e, a, b);
+        step00_19(4, b, c, d, e, a);
+        step00_19(5, a, b, c, d, e);
+        step00_19(6, e, a, b, c, d);
+        step00_19(7, d, e, a, b, c);
+        step00_19(8, c, d, e, a, b);
+        step00_19(9, b, c, d, e, a);
+        step00_19(10, a, b, c, d, e);
+        step00_19(11, e, a, b, c, d);
+        step00_19(12, d, e, a, b, c);
+        step00_19(13, c, d, e, a, b);
+        step00_19(14, b, c, d, e, a);
+        step00_19(15, a, b, c, d, e);
+        step00_19(16, e, a, b, c, d);
+        step00_19(17, d, e, a, b, c);
+        step00_19(18, c, d, e, a, b);
+        step00_19(19, b, c, d, e, a);
 
-	step20_39(20, a, b, c, d, e);
-	step20_39(21, e, a, b, c, d);
-	step20_39(22, d, e, a, b, c);
-	step20_39(23, c, d, e, a, b);
-	step20_39(24, b, c, d, e, a);
-	step20_39(25, a, b, c, d, e);
-	step20_39(26, e, a, b, c, d);
-	step20_39(27, d, e, a, b, c);
-	step20_39(28, c, d, e, a, b);
-	step20_39(29, b, c, d, e, a);
-	step20_39(30, a, b, c, d, e);
-	step20_39(31, e, a, b, c, d);
-	step20_39(32, d, e, a, b, c);
-	step20_39(33, c, d, e, a, b);
-	step20_39(34, b, c, d, e, a);
-	step20_39(35, a, b, c, d, e);
-	step20_39(36, e, a, b, c, d);
-	step20_39(37, d, e, a, b, c);
-	step20_39(38, c, d, e, a, b);
-	step20_39(39, b, c, d, e, a);
+        step20_39(20, a, b, c, d, e);
+        step20_39(21, e, a, b, c, d);
+        step20_39(22, d, e, a, b, c);
+        step20_39(23, c, d, e, a, b);
+        step20_39(24, b, c, d, e, a);
+        step20_39(25, a, b, c, d, e);
+        step20_39(26, e, a, b, c, d);
+        step20_39(27, d, e, a, b, c);
+        step20_39(28, c, d, e, a, b);
+        step20_39(29, b, c, d, e, a);
+        step20_39(30, a, b, c, d, e);
+        step20_39(31, e, a, b, c, d);
+        step20_39(32, d, e, a, b, c);
+        step20_39(33, c, d, e, a, b);
+        step20_39(34, b, c, d, e, a);
+        step20_39(35, a, b, c, d, e);
+        step20_39(36, e, a, b, c, d);
+        step20_39(37, d, e, a, b, c);
+        step20_39(38, c, d, e, a, b);
+        step20_39(39, b, c, d, e, a);
 
-	step40_59(40, a, b, c, d, e);
-	step40_59(41, e, a, b, c, d);
-	step40_59(42, d, e, a, b, c);
-	step40_59(43, c, d, e, a, b);
-	step40_59(44, b, c, d, e, a);
-	step40_59(45, a, b, c, d, e);
-	step40_59(46, e, a, b, c, d);
-	step40_59(47, d, e, a, b, c);
-	step40_59(48, c, d, e, a, b);
-	step40_59(49, b, c, d, e, a);
-	step40_59(50, a, b, c, d, e);
-	step40_59(51, e, a, b, c, d);
-	step40_59(52, d, e, a, b, c);
-	step40_59(53, c, d, e, a, b);
-	step40_59(54, b, c, d, e, a);
-	step40_59(55, a, b, c, d, e);
-	step40_59(56, e, a, b, c, d);
-	step40_59(57, d, e, a, b, c);
-	step40_59(58, c, d, e, a, b);
-	step40_59(59, b, c, d, e, a);
+        step40_59(40, a, b, c, d, e);
+        step40_59(41, e, a, b, c, d);
+        step40_59(42, d, e, a, b, c);
+        step40_59(43, c, d, e, a, b);
+        step40_59(44, b, c, d, e, a);
+        step40_59(45, a, b, c, d, e);
+        step40_59(46, e, a, b, c, d);
+        step40_59(47, d, e, a, b, c);
+        step40_59(48, c, d, e, a, b);
+        step40_59(49, b, c, d, e, a);
+        step40_59(50, a, b, c, d, e);
+        step40_59(51, e, a, b, c, d);
+        step40_59(52, d, e, a, b, c);
+        step40_59(53, c, d, e, a, b);
+        step40_59(54, b, c, d, e, a);
+        step40_59(55, a, b, c, d, e);
+        step40_59(56, e, a, b, c, d);
+        step40_59(57, d, e, a, b, c);
+        step40_59(58, c, d, e, a, b);
+        step40_59(59, b, c, d, e, a);
 
-	step60_79(60, a, b, c, d, e);
-	step60_79(61, e, a, b, c, d);
-	step60_79(62, d, e, a, b, c);
-	step60_79(63, c, d, e, a, b);
-	step60_79(64, b, c, d, e, a);
-	step60_79(65, a, b, c, d, e);
-	step60_79(66, e, a, b, c, d);
-	step60_79(67, d, e, a, b, c);
-	step60_79(68, c, d, e, a, b);
-	step60_79(69, b, c, d, e, a);
-	step60_79(70, a, b, c, d, e);
-	step60_79(71, e, a, b, c, d);
-	step60_79(72, d, e, a, b, c);
-	step60_79(73, c, d, e, a, b);
-	step60_79(74, b, c, d, e, a);
-	step60_79(75, a, b, c, d, e);
-	step60_79(76, e, a, b, c, d);
-	step60_79(77, d, e, a, b, c);
-	step60_79(78, c, d, e, a, b);
-	step60_79(79, b, c, d, e, a);
+        step60_79(60, a, b, c, d, e);
+        step60_79(61, e, a, b, c, d);
+        step60_79(62, d, e, a, b, c);
+        step60_79(63, c, d, e, a, b);
+        step60_79(64, b, c, d, e, a);
+        step60_79(65, a, b, c, d, e);
+        step60_79(66, e, a, b, c, d);
+        step60_79(67, d, e, a, b, c);
+        step60_79(68, c, d, e, a, b);
+        step60_79(69, b, c, d, e, a);
+        step60_79(70, a, b, c, d, e);
+        step60_79(71, e, a, b, c, d);
+        step60_79(72, d, e, a, b, c);
+        step60_79(73, c, d, e, a, b);
+        step60_79(74, b, c, d, e, a);
+        step60_79(75, a, b, c, d, e);
+        step60_79(76, e, a, b, c, d);
+        step60_79(77, d, e, a, b, c);
+        step60_79(78, c, d, e, a, b);
+        step60_79(79, b, c, d, e, a);
 
-	digest[0] += a;
-	digest[1] += b;
-	digest[2] += c;
-	digest[3] += d;
-	digest[4] += e;
+        digest[0] += a;
+        digest[1] += b;
+        digest[2] += c;
+        digest[3] += d;
+        digest[4] += e;
 }
 
-void sha1_for_mh_sha1(const uint8_t * input_data, uint32_t * digest, const uint32_t len)
+void
+sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
-	uint32_t i, j;
-	uint8_t buf[2 * SHA1_BLOCK_SIZE];
+        uint32_t i, j;
+        uint8_t buf[2 * SHA1_BLOCK_SIZE];
 
-	digest[0] = MH_SHA1_H0;
-	digest[1] = MH_SHA1_H1;
-	digest[2] = MH_SHA1_H2;
-	digest[3] = MH_SHA1_H3;
-	digest[4] = MH_SHA1_H4;
+        digest[0] = MH_SHA1_H0;
+        digest[1] = MH_SHA1_H1;
+        digest[2] = MH_SHA1_H2;
+        digest[3] = MH_SHA1_H3;
+        digest[4] = MH_SHA1_H4;
 
-	i = len;
-	while (i >= SHA1_BLOCK_SIZE) {
-		sha1_single_for_mh_sha1(input_data, digest);
-		input_data += SHA1_BLOCK_SIZE;
-		i -= SHA1_BLOCK_SIZE;
-	}
+        i = len;
+        while (i >= SHA1_BLOCK_SIZE) {
+                sha1_single_for_mh_sha1(input_data, digest);
+                input_data += SHA1_BLOCK_SIZE;
+                i -= SHA1_BLOCK_SIZE;
+        }
 
-	memcpy(buf, input_data, i);
-	buf[i++] = 0x80;
-	for (j = i; j < ((2 * SHA1_BLOCK_SIZE) - 8); j++)
-		buf[j] = 0;
+        memcpy(buf, input_data, i);
+        buf[i++] = 0x80;
+        for (j = i; j < ((2 * SHA1_BLOCK_SIZE) - 8); j++)
+                buf[j] = 0;
 
-	if (i > SHA1_BLOCK_SIZE - 8)
-		i = 2 * SHA1_BLOCK_SIZE;
-	else
-		i = SHA1_BLOCK_SIZE;
+        if (i > SHA1_BLOCK_SIZE - 8)
+                i = 2 * SHA1_BLOCK_SIZE;
+        else
+                i = SHA1_BLOCK_SIZE;
 
-	*(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
+        *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 
-	sha1_single_for_mh_sha1(buf, digest);
-	if (i == (2 * SHA1_BLOCK_SIZE))
-		sha1_single_for_mh_sha1(buf + SHA1_BLOCK_SIZE, digest);
+        sha1_single_for_mh_sha1(buf, digest);
+        if (i == (2 * SHA1_BLOCK_SIZE))
+                sha1_single_for_mh_sha1(buf + SHA1_BLOCK_SIZE, digest);
 }
