@@ -161,9 +161,11 @@ non_blocksize_updates_test(SHA512_HASH_CTX_MGR *mgr)
                 }
                 for (int i = 0; i < SHA512_DIGEST_NWORDS; i++) {
                         if (ctx_refer.job.result_digest[i] != ctx_pool[c].job.result_digest[i]) {
-                                printf("sha512 calc error! chunk %d, digest[%d], (%ld) != (%ld)\n",
-                                       update_chunks[c], i, ctx_refer.job.result_digest[i],
-                                       ctx_pool[c].job.result_digest[i]);
+                                printf("sha512 calc error! chunk %d, digest[%d], (%llx) != "
+                                       "(%llx)\n",
+                                       update_chunks[c], i,
+                                       (unsigned long long) ctx_refer.job.result_digest[i],
+                                       (unsigned long long) ctx_pool[c].job.result_digest[i]);
                                 return -2;
                         }
                 }
@@ -207,14 +209,16 @@ main(void)
                                             HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
-                                        printf("Test %d, digest %d is %016lX, "
-                                               "should be %016lX\n",
-                                               t, j, ctxpool[t].job.result_digest[j], good[j]);
+                                        printf("Test %d, digest %d is %016llX, "
+                                               "should be %016llX\n",
+                                               t, j,
+                                               (unsigned long long) ctxpool[t].job.result_digest[j],
+                                               (unsigned long long) good[j]);
                                         return -1;
                                 }
                         }
@@ -232,14 +236,16 @@ main(void)
                 ctx = sha512_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
-                                        printf("Test %d, digest %d is %016lX, "
-                                               "should be %016lX\n",
-                                               t, j, ctxpool[t].job.result_digest[j], good[j]);
+                                        printf("Test %d, digest %d is %016llX, "
+                                               "should be %016llX\n",
+                                               t, j,
+                                               (unsigned long long) ctxpool[t].job.result_digest[j],
+                                               (unsigned long long) good[j]);
                                         return -1;
                                 }
                         }
@@ -271,15 +277,17 @@ main(void)
                                             HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
-                                        printf("Test %d, digest %d is %016lX, "
-                                               "should be %016lX\n",
-                                               t, j, ctxpool[t].job.result_digest[j], good[j]);
+                                        printf("Test %d, digest %d is %016llX, "
+                                               "should be %016llX\n",
+                                               t, j,
+                                               (unsigned long long) ctxpool[t].job.result_digest[j],
+                                               (unsigned long long) good[j]);
                                         return -1;
                                 }
                         }
@@ -291,7 +299,7 @@ main(void)
                                 return -1;
                         }
 
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                 }
         }
@@ -299,15 +307,17 @@ main(void)
                 ctx = sha512_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
-                                        printf("Test %d, digest %d is %016lX, "
-                                               "should be %016lX\n",
-                                               t, j, ctxpool[t].job.result_digest[j], good[j]);
+                                        printf("Test %d, digest %d is %016llX, "
+                                               "should be %016llX\n",
+                                               t, j,
+                                               (unsigned long long) ctxpool[t].job.result_digest[j],
+                                               (unsigned long long) good[j]);
                                         return -1;
                                 }
                         }

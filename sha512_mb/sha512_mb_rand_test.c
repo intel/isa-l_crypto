@@ -108,8 +108,9 @@ main(void)
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
                                 printf("Test%d fixed size, digest%d "
-                                       "fail 0x%016lX <=> 0x%016lX \n",
-                                       i, j, ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                                       "fail 0x%016llX <=> 0x%016llX \n",
+                                       i, j, (unsigned long long) ctxpool[i].job.result_digest[j],
+                                       (unsigned long long) digest_ref[i][j]);
                         }
                 }
         }
@@ -144,9 +145,10 @@ main(void)
                                 if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                         fail++;
                                         printf("Test%d, digest%d fail "
-                                               "0x%016lX <=> 0x%016lX\n",
-                                               i, j, ctxpool[i].job.result_digest[j],
-                                               digest_ref[i][j]);
+                                               "0x%016llX <=> 0x%016llX\n",
+                                               i, j,
+                                               (unsigned long long) ctxpool[i].job.result_digest[j],
+                                               (unsigned long long) digest_ref[i][j]);
                                 }
                         }
                 }
@@ -195,9 +197,10 @@ main(void)
                 for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
-                                printf("End test failed at offset %d - result: 0x%016lX"
-                                       ", ref: 0x%016lX\n",
-                                       i, ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                                printf("End test failed at offset %d - result: 0x%016llX"
+                                       ", ref: 0x%016llX\n",
+                                       i, (unsigned long long) ctxpool[i].job.result_digest[j],
+                                       (unsigned long long) digest_ref[i][j]);
                         }
                 }
         }

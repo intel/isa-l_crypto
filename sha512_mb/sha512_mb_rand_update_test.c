@@ -114,7 +114,7 @@ main(void)
 
         // Run sb_sha512 tests
         for (i = 0; i < TEST_BUFS;) {
-                len_done = (int) ((unsigned long) buf_ptr[i] - (unsigned long) bufs[i]);
+                len_done = (int) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
                 len_rem = TEST_LEN - len_done;
 
                 if (len_done == 0)
@@ -133,7 +133,7 @@ main(void)
                         continue;
                 }
                 // Resubmit unfinished job
-                i = (unsigned long) (ctx->user_data);
+                i = (unsigned long) (uintptr_t) (ctx->user_data);
                 buf_ptr[i] += UPDATE_SIZE;
         }
 
@@ -146,10 +146,10 @@ main(void)
                         continue;
                 }
                 // Resubmit unfinished job
-                i = (unsigned long) (ctx->user_data);
+                i = (unsigned long) (uintptr_t) (ctx->user_data);
                 buf_ptr[i] += UPDATE_SIZE;
 
-                len_done = (int) ((unsigned long) buf_ptr[i] - (unsigned long) bufs[i]);
+                len_done = (int) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
                 len_rem = TEST_LEN - len_done;
 
                 if (len_rem <= UPDATE_SIZE)
@@ -168,8 +168,9 @@ main(void)
                 for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
-                                printf("Test%d fixed size, digest%d fail %8lX <=> %8lX", i, j,
-                                       ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                                printf("Test%d fixed size, digest%d fail %8llX <=> %8llX", i, j,
+                                       (unsigned long long) ctxpool[i].job.result_digest[j],
+                                       (unsigned long long) digest_ref[i][j]);
                         }
                 }
         }
@@ -218,8 +219,11 @@ main(void)
                                 // submit either UPDATE or LAST depending on the amount of buffer
                                 // remaining
                                 while ((ctx != NULL) && !(hash_ctx_complete(ctx))) {
-                                        j = (unsigned long) (ctx->user_data); // Get index of the
-                                                                              // returned ctx
+                                        j = (unsigned long) (uintptr_t) (ctx->user_data); // Get
+                                                                                          // index
+                                                                                          // of the
+                                                                                          // returned
+                                                                                          // ctx
                                         buf_ptr[j] = bufs[j] + ctx->total_length;
                                         len_rand = (rand() % SHA512_BLOCK_SIZE) *
                                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
@@ -251,7 +255,7 @@ main(void)
                                 continue;
                         }
                         // Resubmit unfinished job
-                        i = (unsigned long) (ctx->user_data);
+                        i = (unsigned long) (uintptr_t) (ctx->user_data);
                         buf_ptr[i] = bufs[i] + ctx->total_length; // update buffer pointer
                         len_rem = lens[i] - ctx->total_length;
                         len_rand = (rand() % SHA512_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
@@ -272,8 +276,9 @@ main(void)
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                         fail++;
-                                        printf("Test%d, digest%d fail %8lX <=> %8lX\n", i, j,
-                                               ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                                        printf("Test%d, digest%d fail %8llX <=> %8llX\n", i, j,
+                                               (unsigned long long) ctxpool[i].job.result_digest[j],
+                                               (unsigned long long) digest_ref[i][j]);
                                 }
                         }
                 }

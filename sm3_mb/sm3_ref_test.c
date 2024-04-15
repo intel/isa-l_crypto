@@ -83,7 +83,7 @@ main(void)
                                          HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (uint32_t) ((uintptr_t) ctx->user_data);
                         good = exp_result_digest[t];
                         checked++;
                         for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
@@ -108,7 +108,7 @@ main(void)
                 ctx = sm3_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         good = exp_result_digest[t];
                         checked++;
                         for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
@@ -145,7 +145,7 @@ main(void)
                 ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j], strlen((char *) msgs[j]),
                                          HASH_ENTIRE);
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = exp_result_digest[k];
                         checked++;
@@ -170,7 +170,7 @@ main(void)
                 ctx = sm3_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = exp_result_digest[k];
                         checked++;

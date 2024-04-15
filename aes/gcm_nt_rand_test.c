@@ -129,8 +129,9 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
                         uint64_t a;
                         for (a = 0; a < len; a++) {
                                 if (test[a] != expected[a]) {
-                                        printf(" '%x' != '%x' at %lx of %lx\n", test[a],
-                                               expected[a], a, len);
+                                        printf(" '%x' != '%x' at 0x%llx of 0x%llx\n", test[a],
+                                               expected[a], (unsigned long long) a,
+                                               (unsigned long long) len);
                                         break;
                                 }
                         }
@@ -289,7 +290,8 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
         aes_gcm_enc_128_update_nt(gkey, gctx, vector->C + last_break, vector->P + last_break,
                                   vector->Plen - last_break);
         if (gctx->in_length != vector->Plen)
-                printf("%lu, %lu\n", gctx->in_length, vector->Plen);
+                printf("%llu, %llu\n", (unsigned long long) gctx->in_length,
+                       (unsigned long long) vector->Plen);
         aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
         openssl_aes_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen, o_T_test,
                             vector->Tlen, vector->P, vector->Plen, o_ct_test);
@@ -781,7 +783,8 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
         aes_gcm_enc_256_update_nt(gkey, gctx, vector->C + last_break, vector->P + last_break,
                                   vector->Plen - last_break);
         if (gctx->in_length != vector->Plen)
-                printf("%lu, %lu\n", gctx->in_length, vector->Plen);
+                printf("%llu, %llu\n", (unsigned long long) gctx->in_length,
+                       (unsigned long long) vector->Plen);
         aes_gcm_enc_256_finalize(gkey, gctx, vector->T, vector->Tlen);
 
         openssl_aes_256_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,

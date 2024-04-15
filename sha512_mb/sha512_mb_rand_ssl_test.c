@@ -105,9 +105,10 @@ main(void)
                         if (ctxpool[i].job.result_digest[j] !=
                             to_be64(((uint64_t *) digest_ssl[i])[j])) {
                                 fail++;
-                                printf("Test%d, digest%d fail %016lX <=> %016lX\n", i, j,
-                                       ctxpool[i].job.result_digest[j],
-                                       to_be64(((uint64_t *) digest_ssl[i])[j]));
+                                printf("Test%d, digest%d fail %016llX <=> %016llX\n", i, j,
+                                       (unsigned long long) ctxpool[i].job.result_digest[j],
+                                       (unsigned long long) to_be64(
+                                               ((uint64_t *) digest_ssl[i])[j]));
                         }
                 }
         }
@@ -139,9 +140,10 @@ main(void)
                                 if (ctxpool[i].job.result_digest[j] !=
                                     to_be64(((uint64_t *) digest_ssl[i])[j])) {
                                         fail++;
-                                        printf("Test%d, digest%d fail %016lX <=> %016lX\n", i, j,
-                                               ctxpool[i].job.result_digest[j],
-                                               to_be64(((uint64_t *) digest_ssl[i])[j]));
+                                        printf("Test%d, digest%d fail %016llX <=> %016llX\n", i, j,
+                                               (unsigned long long) ctxpool[i].job.result_digest[j],
+                                               (unsigned long long) to_be64(
+                                                       ((uint64_t *) digest_ssl[i])[j]));
                                 }
                         }
                 }

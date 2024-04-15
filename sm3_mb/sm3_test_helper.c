@@ -33,12 +33,11 @@
 void
 sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest)
 {
-        EVP_MD_CTX *md_ctx;
-        const EVP_MD *md;
-        unsigned int md_len;
+        unsigned int md_len = 0;
 
-        md = EVP_sm3();
-        md_ctx = EVP_MD_CTX_new();
+        const EVP_MD *md = EVP_sm3();
+        EVP_MD_CTX *md_ctx = EVP_MD_CTX_new();
+
         EVP_DigestInit_ex(md_ctx, md, NULL);
         EVP_DigestUpdate(md_ctx, buf, length);
         EVP_DigestFinal_ex(md_ctx, digest, &md_len);

@@ -192,7 +192,7 @@ main(void)
                 ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], test_data[i].msg,
                                          strlen((char *) test_data[i].msg), HASH_ENTIRE);
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         good = test_data[t].resultDigest;
                         checked++;
                         for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
@@ -215,7 +215,7 @@ main(void)
         while (1) {
                 ctx = sm3_ctx_mgr_flush(mgr);
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         good = test_data[t].resultDigest;
                         checked++;
                         for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
@@ -251,7 +251,7 @@ main(void)
                 ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], test_data[j].msg,
                                          strlen((char *) test_data[j].msg), HASH_ENTIRE);
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = test_data[k].resultDigest;
                         checked++;
@@ -270,14 +270,14 @@ main(void)
                                 goto end;
                         }
 
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                 }
         }
         while (1) {
                 ctx = sm3_ctx_mgr_flush(mgr);
                 if (ctx) {
-                        t = (unsigned long) (ctx->user_data);
+                        t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = test_data[k].resultDigest;
                         checked++;

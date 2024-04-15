@@ -150,7 +150,8 @@ main(void)
                         hash = FUT_ref(&state, &p[offset] - w, w, 0);
                         if ((hash & mask) != trigger) {
                                 printf("   mismatch chunk from ref");
-                                printf(" hit: offset=%d %lx %lx\n", offset, state.hash, hash);
+                                printf(" hit: offset=%u %llx %llx\n", (unsigned) offset,
+                                       (unsigned long long) state.hash, (unsigned long long) hash);
                                 errors++;
                         }
                 }

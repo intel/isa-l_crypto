@@ -56,8 +56,9 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
                         uint64_t a;
                         for (a = 0; a < len; a++) {
                                 if (test[a] != expected[a]) {
-                                        printf(" '%x' != '%x' at %lx of %lx\n", test[a],
-                                               expected[a], a, len);
+                                        printf(" '%x' != '%x' at 0x%llx of 0x%llx\n", test[a],
+                                               expected[a], (unsigned long long) a,
+                                               (unsigned long long) len);
                                         break;
                                 }
                         }
