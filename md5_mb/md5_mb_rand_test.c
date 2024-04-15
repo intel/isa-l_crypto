@@ -31,183 +31,188 @@
 #include <stdlib.h>
 #include "md5_mb.h"
 
-#define TEST_LEN  (1024*1024)
+#define TEST_LEN  (1024 * 1024)
 #define TEST_BUFS 100
 #ifndef RANDOMS
-# define RANDOMS  10
+#define RANDOMS 10
 #endif
 #ifndef TEST_SEED
-# define TEST_SEED 0x1234
+#define TEST_SEED 0x1234
 #endif
 
 static uint32_t digest_ref[TEST_BUFS][MD5_DIGEST_NWORDS];
 
 // Compare against reference function
-extern void md5_ref(uint8_t * input_data, uint32_t * digest, uint32_t len);
+extern void
+md5_ref(uint8_t *input_data, uint32_t *digest, uint32_t len);
 
 // Generates pseudo-random data
-void rand_buffer(unsigned char *buf, const long buffer_size)
+void
+rand_buffer(unsigned char *buf, const long buffer_size)
 {
-	long i;
-	for (i = 0; i < buffer_size; i++)
-		buf[i] = rand();
+        long i;
+        for (i = 0; i < buffer_size; i++)
+                buf[i] = rand();
 }
 
-int main(void)
+int
+main(void)
 {
-	MD5_HASH_CTX_MGR *mgr = NULL;
-	MD5_HASH_CTX ctxpool[TEST_BUFS];
-	uint32_t i, j, fail = 0;
-	unsigned char *bufs[TEST_BUFS] = { 0 };
-	uint32_t lens[TEST_BUFS];
-	unsigned int jobs, t;
-	uint8_t *tmp_buf = NULL;
-	int ret;
+        MD5_HASH_CTX_MGR *mgr = NULL;
+        MD5_HASH_CTX ctxpool[TEST_BUFS];
+        uint32_t i, j, fail = 0;
+        unsigned char *bufs[TEST_BUFS] = { 0 };
+        uint32_t lens[TEST_BUFS];
+        unsigned int jobs, t;
+        uint8_t *tmp_buf = NULL;
+        int ret;
 
-	printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
+        printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(MD5_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        ret = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        if ((ret != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	md5_ctx_mgr_init(mgr);
+        md5_ctx_mgr_init(mgr);
 
-	srand(TEST_SEED);
+        srand(TEST_SEED);
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		// Allocate  and fill buffer
-		bufs[i] = (unsigned char *)malloc(TEST_LEN);
-		if (bufs[i] == NULL) {
-			printf("malloc failed test aborted\n");
-			fail++;
-			goto end;
-		}
-		rand_buffer(bufs[i], TEST_LEN);
+        for (i = 0; i < TEST_BUFS; i++) {
+                // Allocate  and fill buffer
+                bufs[i] = (unsigned char *) malloc(TEST_LEN);
+                if (bufs[i] == NULL) {
+                        printf("malloc failed test aborted\n");
+                        fail++;
+                        goto end;
+                }
+                rand_buffer(bufs[i], TEST_LEN);
 
-		// Init ctx contexts
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
+                // Init ctx contexts
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
 
-		// Run reference test
-		md5_ref(bufs[i], digest_ref[i], TEST_LEN);
+                // Run reference test
+                md5_ref(bufs[i], digest_ref[i], TEST_LEN);
 
-		// Run sb_md5 test
-		md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
-	}
+                // Run sb_md5 test
+                md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+        }
 
-	while (md5_ctx_mgr_flush(mgr)) ;
+        while (md5_ctx_mgr_flush(mgr))
+                ;
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
-				fail++;
-				printf("Test%d fixed size, digest%d "
-				       "fail 0x%08X <=> 0x%08X \n",
-				       i, j, ctxpool[i].job.result_digest[j],
-				       digest_ref[i][j]);
-			}
-		}
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
+                                fail++;
+                                printf("Test%d fixed size, digest%d "
+                                       "fail 0x%08X <=> 0x%08X \n",
+                                       i, j, ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                        }
+                }
+        }
 
-	if (fail) {
-		printf("Test failed function check %d\n", fail);
-		goto end;
-	}
-	// Run tests with random size and number of jobs
-	for (t = 0; t < RANDOMS; t++) {
-		jobs = rand() % (TEST_BUFS);
+        if (fail) {
+                printf("Test failed function check %d\n", fail);
+                goto end;
+        }
+        // Run tests with random size and number of jobs
+        for (t = 0; t < RANDOMS; t++) {
+                jobs = rand() % (TEST_BUFS);
 
-		md5_ctx_mgr_init(mgr);
+                md5_ctx_mgr_init(mgr);
 
-		for (i = 0; i < jobs; i++) {
-			// Use buffer with random len and contents
-			lens[i] = rand() % (TEST_LEN);
-			rand_buffer(bufs[i], lens[i]);
+                for (i = 0; i < jobs; i++) {
+                        // Use buffer with random len and contents
+                        lens[i] = rand() % (TEST_LEN);
+                        rand_buffer(bufs[i], lens[i]);
 
-			// Run reference test
-			md5_ref(bufs[i], digest_ref[i], lens[i]);
+                        // Run reference test
+                        md5_ref(bufs[i], digest_ref[i], lens[i]);
 
-			// Run md5_mb test
-			md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
-		}
+                        // Run md5_mb test
+                        md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                }
 
-		while (md5_ctx_mgr_flush(mgr)) ;
+                while (md5_ctx_mgr_flush(mgr))
+                        ;
 
-		for (i = 0; i < jobs; i++) {
-			for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
-				if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
-					fail++;
-					printf("Test%d, digest%d fail "
-					       "0x%08X <=> 0x%08X\n",
-					       i, j, ctxpool[i].job.result_digest[j],
-					       digest_ref[i][j]);
-				}
-			}
-		}
-		if (fail) {
-			printf("Test failed function check %d\n", fail);
-			goto end;
-		}
+                for (i = 0; i < jobs; i++) {
+                        for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                                if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
+                                        fail++;
+                                        printf("Test%d, digest%d fail "
+                                               "0x%08X <=> 0x%08X\n",
+                                               i, j, ctxpool[i].job.result_digest[j],
+                                               digest_ref[i][j]);
+                                }
+                        }
+                }
+                if (fail) {
+                        printf("Test failed function check %d\n", fail);
+                        goto end;
+                }
 
-		putchar('.');
-		fflush(0);
-	}			// random test t
+                putchar('.');
+                fflush(0);
+        } // random test t
 
-	// Test at the end of buffer
-	jobs = rand() % TEST_BUFS;
-	tmp_buf = (uint8_t *) malloc(sizeof(uint8_t) * jobs);
-	if (!tmp_buf) {
-		printf("malloc failed, end test aborted.\n");
-		goto end;
-	}
+        // Test at the end of buffer
+        jobs = rand() % TEST_BUFS;
+        tmp_buf = (uint8_t *) malloc(sizeof(uint8_t) * jobs);
+        if (!tmp_buf) {
+                printf("malloc failed, end test aborted.\n");
+                goto end;
+        }
 
-	rand_buffer(tmp_buf, jobs);
+        rand_buffer(tmp_buf, jobs);
 
-	md5_ctx_mgr_init(mgr);
+        md5_ctx_mgr_init(mgr);
 
-	for (i = 0; i < TEST_BUFS; i++)
-		free(bufs[i]);
+        for (i = 0; i < TEST_BUFS; i++)
+                free(bufs[i]);
 
-	// Extend to the end of allocated buffer to construct jobs
-	for (i = 0; i < jobs; i++) {
-		bufs[i] = (uint8_t *) & tmp_buf[i];
-		lens[i] = jobs - i;
+        // Extend to the end of allocated buffer to construct jobs
+        for (i = 0; i < jobs; i++) {
+                bufs[i] = (uint8_t *) &tmp_buf[i];
+                lens[i] = jobs - i;
 
-		// Reference test
-		md5_ref(bufs[i], digest_ref[i], lens[i]);
+                // Reference test
+                md5_ref(bufs[i], digest_ref[i], lens[i]);
 
-		// sb_md5 test
-		md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
-	}
-	// Clear bufs
-	memset(bufs, 0, sizeof(bufs));
+                // sb_md5 test
+                md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+        }
+        // Clear bufs
+        memset(bufs, 0, sizeof(bufs));
 
-	while (md5_ctx_mgr_flush(mgr)) ;
+        while (md5_ctx_mgr_flush(mgr))
+                ;
 
-	for (i = 0; i < jobs; i++) {
-		for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
-				fail++;
-				printf("End test failed at offset %d - result: 0x%08X"
-				       ", ref: 0x%08X\n", i, ctxpool[i].job.result_digest[j],
-				       digest_ref[i][j]);
-			}
-		}
-	}
-	putchar('.');
+        for (i = 0; i < jobs; i++) {
+                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
+                                fail++;
+                                printf("End test failed at offset %d - result: 0x%08X"
+                                       ", ref: 0x%08X\n",
+                                       i, ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                        }
+                }
+        }
+        putchar('.');
 
-      end:
-	for (i = 0; i < TEST_BUFS; i++)
-		free(bufs[i]);
-	free(tmp_buf);
-	aligned_free(mgr);
+end:
+        for (i = 0; i < TEST_BUFS; i++)
+                free(bufs[i]);
+        free(tmp_buf);
+        aligned_free(mgr);
 
-	if (fail)
-		printf("Test failed function check %d\n", fail);
-	else
-		printf(" multibinary_md5 rand: Pass\n");
+        if (fail)
+                printf("Test failed function check %d\n", fail);
+        else
+                printf(" multibinary_md5 rand: Pass\n");
 
-	return fail;
+        return fail;
 }

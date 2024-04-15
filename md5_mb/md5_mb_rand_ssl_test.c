@@ -33,140 +33,145 @@
 #include "md5_mb.h"
 #include "endian_helper.h"
 
-#define TEST_LEN  (1024*1024)
+#define TEST_LEN  (1024 * 1024)
 #define TEST_BUFS 200
 #ifndef RANDOMS
-# define RANDOMS  10
+#define RANDOMS 10
 #endif
 #ifndef TEST_SEED
-# define TEST_SEED 0x1234
+#define TEST_SEED 0x1234
 #endif
 
 /* Reference digest global to reduce stack usage */
 static uint8_t digest_ssl[TEST_BUFS][4 * MD5_DIGEST_NWORDS];
 
 // Generates pseudo-random data
-void rand_buffer(unsigned char *buf, const long buffer_size)
+void
+rand_buffer(unsigned char *buf, const long buffer_size)
 {
-	long i;
-	for (i = 0; i < buffer_size; i++)
-		buf[i] = rand();
+        long i;
+        for (i = 0; i < buffer_size; i++)
+                buf[i] = rand();
 }
 
-unsigned char md5_ossl(const uint8_t * d, unsigned long n, uint8_t * md)
+unsigned char
+md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
 {
-	unsigned int tmplen;
-	EVP_MD_CTX *c;
+        unsigned int tmplen;
+        EVP_MD_CTX *c;
 
-	c = EVP_MD_CTX_create();
-	EVP_DigestInit_ex(c, EVP_md5(), NULL);
-	EVP_DigestUpdate(c, d, n);
-	EVP_DigestFinal_ex(c, md, &tmplen);
-	EVP_MD_CTX_destroy(c);
-	return 1;
+        c = EVP_MD_CTX_create();
+        EVP_DigestInit_ex(c, EVP_md5(), NULL);
+        EVP_DigestUpdate(c, d, n);
+        EVP_DigestFinal_ex(c, md, &tmplen);
+        EVP_MD_CTX_destroy(c);
+        return 1;
 }
 
-int main(void)
+int
+main(void)
 {
-	MD5_HASH_CTX_MGR *mgr = NULL;
-	MD5_HASH_CTX ctxpool[TEST_BUFS];
-	unsigned char *bufs[TEST_BUFS];
-	uint32_t i, j, fail = 0;
-	uint32_t lens[TEST_BUFS];
-	unsigned int jobs, t;
-	int ret;
+        MD5_HASH_CTX_MGR *mgr = NULL;
+        MD5_HASH_CTX ctxpool[TEST_BUFS];
+        unsigned char *bufs[TEST_BUFS];
+        uint32_t i, j, fail = 0;
+        uint32_t lens[TEST_BUFS];
+        unsigned int jobs, t;
+        int ret;
 
-	printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
+        printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
 
-	srand(TEST_SEED);
+        srand(TEST_SEED);
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(MD5_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        ret = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        if ((ret != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	md5_ctx_mgr_init(mgr);
+        md5_ctx_mgr_init(mgr);
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		// Allocate and fill buffer
-		bufs[i] = (unsigned char *)malloc(TEST_LEN);
-		if (bufs[i] == NULL) {
-			printf("malloc failed test aborted\n");
-			return 1;
-		}
-		rand_buffer(bufs[i], TEST_LEN);
+        for (i = 0; i < TEST_BUFS; i++) {
+                // Allocate and fill buffer
+                bufs[i] = (unsigned char *) malloc(TEST_LEN);
+                if (bufs[i] == NULL) {
+                        printf("malloc failed test aborted\n");
+                        return 1;
+                }
+                rand_buffer(bufs[i], TEST_LEN);
 
-		// Init ctx contents
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
+                // Init ctx contents
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
 
-		// SSL test
-		md5_ossl(bufs[i], TEST_LEN, digest_ssl[i]);
+                // SSL test
+                md5_ossl(bufs[i], TEST_LEN, digest_ssl[i]);
 
-		// sb_md5 test
-		md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
-	}
+                // sb_md5 test
+                md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+        }
 
-	while (md5_ctx_mgr_flush(mgr)) ;
+        while (md5_ctx_mgr_flush(mgr))
+                ;
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] !=
-			    to_le32(((uint32_t *) digest_ssl[i])[j])) {
-				fail++;
-				printf("Test%d, digest%d fail %08X <=> %08X\n",
-				       i, j, ctxpool[i].job.result_digest[j],
-				       to_le32(((uint32_t *) digest_ssl[i])[j]));
-			}
-		}
-	}
-	putchar('.');
+        for (i = 0; i < TEST_BUFS; i++) {
+                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] !=
+                            to_le32(((uint32_t *) digest_ssl[i])[j])) {
+                                fail++;
+                                printf("Test%d, digest%d fail %08X <=> %08X\n", i, j,
+                                       ctxpool[i].job.result_digest[j],
+                                       to_le32(((uint32_t *) digest_ssl[i])[j]));
+                        }
+                }
+        }
+        putchar('.');
 
-	// Run tests with random size and number of jobs
-	for (t = 0; t < RANDOMS; t++) {
-		jobs = rand() % (TEST_BUFS);
+        // Run tests with random size and number of jobs
+        for (t = 0; t < RANDOMS; t++) {
+                jobs = rand() % (TEST_BUFS);
 
-		md5_ctx_mgr_init(mgr);
+                md5_ctx_mgr_init(mgr);
 
-		for (i = 0; i < jobs; i++) {
-			// Random buffer with random len and contents
-			lens[i] = rand() % (TEST_LEN);
-			rand_buffer(bufs[i], lens[i]);
+                for (i = 0; i < jobs; i++) {
+                        // Random buffer with random len and contents
+                        lens[i] = rand() % (TEST_LEN);
+                        rand_buffer(bufs[i], lens[i]);
 
-			// Run SSL test
-			md5_ossl(bufs[i], lens[i], digest_ssl[i]);
+                        // Run SSL test
+                        md5_ossl(bufs[i], lens[i], digest_ssl[i]);
 
-			// Run sb_md5 test
-			md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
-		}
+                        // Run sb_md5 test
+                        md5_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                }
 
-		while (md5_ctx_mgr_flush(mgr)) ;
+                while (md5_ctx_mgr_flush(mgr))
+                        ;
 
-		for (i = 0; i < jobs; i++) {
-			for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
-				if (ctxpool[i].job.result_digest[j] !=
-				    to_le32(((uint32_t *) digest_ssl[i])[j])) {
-					fail++;
-					printf("Test%d, digest%d fail %08X <=> %08X\n",
-					       i, j, ctxpool[i].job.result_digest[j],
-					       to_le32(((uint32_t *) digest_ssl[i])[j]));
-				}
-			}
-		}
-		if (fail) {
-			printf("Test failed function check %d\n", fail);
-			return fail;
-		}
+                for (i = 0; i < jobs; i++) {
+                        for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                                if (ctxpool[i].job.result_digest[j] !=
+                                    to_le32(((uint32_t *) digest_ssl[i])[j])) {
+                                        fail++;
+                                        printf("Test%d, digest%d fail %08X <=> %08X\n", i, j,
+                                               ctxpool[i].job.result_digest[j],
+                                               to_le32(((uint32_t *) digest_ssl[i])[j]));
+                                }
+                        }
+                }
+                if (fail) {
+                        printf("Test failed function check %d\n", fail);
+                        return fail;
+                }
 
-		putchar('.');
-		fflush(0);
-	}			// random test t
+                putchar('.');
+                fflush(0);
+        } // random test t
 
-	if (fail)
-		printf("Test failed function check %d\n", fail);
-	else
-		printf(" multibinary_md5_ssl rand: Pass\n");
+        if (fail)
+                printf("Test failed function check %d\n", fail);
+        else
+                printf(" multibinary_md5_ssl rand: Pass\n");
 
-	return fail;
+        return fail;
 }

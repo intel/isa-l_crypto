@@ -39,285 +39,303 @@
 #endif
 
 #if (__GNUC__ >= 11)
-# define OPT_FIX __attribute__ ((noipa))
+#define OPT_FIX __attribute__((noipa))
 #else
-# define OPT_FIX
+#define OPT_FIX
 #endif
 
-#define F1(b,c,d) (d ^ (b & (c ^ d)))
-#define F2(b,c,d) (c ^ (d & (b ^ c)))
-#define F3(b,c,d) (b ^ c ^ d)
-#define F4(b,c,d) (c ^ (b | ~d))
+#define F1(b, c, d) (d ^ (b & (c ^ d)))
+#define F2(b, c, d) (c ^ (d & (b ^ c)))
+#define F3(b, c, d) (b ^ c ^ d)
+#define F4(b, c, d) (c ^ (b | ~d))
 
-#define rol32(x, r) (((x)<<(r)) ^ ((x)>>(32-(r))))
+#define rol32(x, r) (((x) << (r)) ^ ((x) >> (32 - (r))))
 
-#define step(i,a,b,c,d,f,k,w,r) \
-	if (i < 16) {f = F1(b,c,d); } else \
-	if (i < 32) {f = F2(b,c,d); } else \
-	if (i < 48) {f = F3(b,c,d); } else \
-				{f = F4(b,c,d); } \
-	f = a + f + k + to_le32(w); \
-	a = b + rol32(f, r);
+#define step(i, a, b, c, d, f, k, w, r)                                                            \
+        if (i < 16) {                                                                              \
+                f = F1(b, c, d);                                                                   \
+        } else if (i < 32) {                                                                       \
+                f = F2(b, c, d);                                                                   \
+        } else if (i < 48) {                                                                       \
+                f = F3(b, c, d);                                                                   \
+        } else {                                                                                   \
+                f = F4(b, c, d);                                                                   \
+        }                                                                                          \
+        f = a + f + k + to_le32(w);                                                                \
+        a = b + rol32(f, r);
 
-static void md5_init(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len);
-static void md5_update(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len);
-static void md5_final(MD5_HASH_CTX * ctx);
-static void OPT_FIX md5_single(const void *data, uint32_t digest[4]);
-static inline void hash_init_digest(MD5_WORD_T * digest);
+static void
+md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
+static void
+md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
+static void
+md5_final(MD5_HASH_CTX *ctx);
+static void OPT_FIX
+md5_single(const void *data, uint32_t digest[4]);
+static inline void
+hash_init_digest(MD5_WORD_T *digest);
 
-void md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR * mgr)
+void
+md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
 {
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR * mgr, MD5_HASH_CTX * ctx,
-				      const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
+MD5_HASH_CTX *
+md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                        HASH_CTX_FLAG flags)
 {
 
-	if (flags & (~HASH_ENTIRE)) {
-		// User should not pass anything other than FIRST, UPDATE, or LAST
-		ctx->error = HASH_CTX_ERROR_INVALID_FLAGS;
-		return ctx;
-	}
+        if (flags & (~HASH_ENTIRE)) {
+                // User should not pass anything other than FIRST, UPDATE, or LAST
+                ctx->error = HASH_CTX_ERROR_INVALID_FLAGS;
+                return ctx;
+        }
 
-	if ((ctx->status & HASH_CTX_STS_PROCESSING) && (flags == HASH_ENTIRE)) {
-		// Cannot submit a new entire job to a currently processing job.
-		ctx->error = HASH_CTX_ERROR_ALREADY_PROCESSING;
-		return ctx;
-	}
+        if ((ctx->status & HASH_CTX_STS_PROCESSING) && (flags == HASH_ENTIRE)) {
+                // Cannot submit a new entire job to a currently processing job.
+                ctx->error = HASH_CTX_ERROR_ALREADY_PROCESSING;
+                return ctx;
+        }
 
-	if ((ctx->status & HASH_CTX_STS_COMPLETE) && !(flags & HASH_FIRST)) {
-		// Cannot update a finished job.
-		ctx->error = HASH_CTX_ERROR_ALREADY_COMPLETED;
-		return ctx;
-	}
+        if ((ctx->status & HASH_CTX_STS_COMPLETE) && !(flags & HASH_FIRST)) {
+                // Cannot update a finished job.
+                ctx->error = HASH_CTX_ERROR_ALREADY_COMPLETED;
+                return ctx;
+        }
 
-	if (flags == HASH_FIRST) {
+        if (flags == HASH_FIRST) {
 
-		md5_init(ctx, buffer, len);
-		md5_update(ctx, buffer, len);
-	}
+                md5_init(ctx, buffer, len);
+                md5_update(ctx, buffer, len);
+        }
 
-	if (flags == HASH_UPDATE) {
-		md5_update(ctx, buffer, len);
-	}
+        if (flags == HASH_UPDATE) {
+                md5_update(ctx, buffer, len);
+        }
 
-	if (flags == HASH_LAST) {
-		md5_update(ctx, buffer, len);
-		md5_final(ctx);
-	}
+        if (flags == HASH_LAST) {
+                md5_update(ctx, buffer, len);
+                md5_final(ctx);
+        }
 
-	if (flags == HASH_ENTIRE) {
-		md5_init(ctx, buffer, len);
-		md5_update(ctx, buffer, len);
-		md5_final(ctx);
-	}
+        if (flags == HASH_ENTIRE) {
+                md5_init(ctx, buffer, len);
+                md5_update(ctx, buffer, len);
+                md5_final(ctx);
+        }
 
-	return ctx;
+        return ctx;
 }
 
-MD5_HASH_CTX *md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR * mgr)
+MD5_HASH_CTX *
+md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr)
 {
-	return NULL;
+        return NULL;
 }
 
-static void md5_init(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void
+md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
-	// Init digest
-	hash_init_digest(ctx->job.result_digest);
+        // Init digest
+        hash_init_digest(ctx->job.result_digest);
 
-	// Reset byte counter
-	ctx->total_length = 0;
+        // Reset byte counter
+        ctx->total_length = 0;
 
-	// Clear extra blocks
-	ctx->partial_block_buffer_length = 0;
+        // Clear extra blocks
+        ctx->partial_block_buffer_length = 0;
 
-	// If we made it here, there were no errors during this call to submit
-	ctx->error = HASH_CTX_ERROR_NONE;
+        // If we made it here, there were no errors during this call to submit
+        ctx->error = HASH_CTX_ERROR_NONE;
 
-	// Mark it as processing
-	ctx->status = HASH_CTX_STS_PROCESSING;
+        // Mark it as processing
+        ctx->status = HASH_CTX_STS_PROCESSING;
 }
 
-static void md5_update(MD5_HASH_CTX * ctx, const void *buffer, uint32_t len)
+static void
+md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
-	uint32_t remain_len = len;
-	uint32_t *digest = ctx->job.result_digest;
+        uint32_t remain_len = len;
+        uint32_t *digest = ctx->job.result_digest;
 
-	// Advance byte counter
-	ctx->total_length += len;
+        // Advance byte counter
+        ctx->total_length += len;
 
-	// If there is anything currently buffered in the extra blocks, append to it until it contains a whole block.
-	// Or if the user's buffer contains less than a whole block, append as much as possible to the extra block.
-	if ((ctx->partial_block_buffer_length) | (remain_len < MD5_BLOCK_SIZE)) {
-		// Compute how many bytes to copy from user buffer into extra block
-		uint32_t copy_len = MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
-		if (remain_len < copy_len) {
-			copy_len = remain_len;
-		}
+        // If there is anything currently buffered in the extra blocks, append to it until it
+        // contains a whole block. Or if the user's buffer contains less than a whole block, append
+        // as much as possible to the extra block.
+        if ((ctx->partial_block_buffer_length) | (remain_len < MD5_BLOCK_SIZE)) {
+                // Compute how many bytes to copy from user buffer into extra block
+                uint32_t copy_len = MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                if (remain_len < copy_len) {
+                        copy_len = remain_len;
+                }
 
-		if (copy_len) {
-			// Copy and update relevant pointers and counters
-			memcpy_fixedlen(&ctx->partial_block_buffer
-					[ctx->partial_block_buffer_length], buffer, copy_len);
+                if (copy_len) {
+                        // Copy and update relevant pointers and counters
+                        memcpy_fixedlen(
+                                &ctx->partial_block_buffer[ctx->partial_block_buffer_length],
+                                buffer, copy_len);
 
-			ctx->partial_block_buffer_length += copy_len;
-			remain_len -= copy_len;
-			buffer = (void *)((uint8_t *) buffer + copy_len);
-		}
-		// The extra block should never contain more than 1 block here
-		assert(ctx->partial_block_buffer_length <= MD5_BLOCK_SIZE);
+                        ctx->partial_block_buffer_length += copy_len;
+                        remain_len -= copy_len;
+                        buffer = (void *) ((uint8_t *) buffer + copy_len);
+                }
+                // The extra block should never contain more than 1 block here
+                assert(ctx->partial_block_buffer_length <= MD5_BLOCK_SIZE);
 
-		// If the extra block buffer contains exactly 1 block, it can be hashed.
-		if (ctx->partial_block_buffer_length >= MD5_BLOCK_SIZE) {
-			ctx->partial_block_buffer_length = 0;
-			md5_single(ctx->partial_block_buffer, digest);
-		}
-	}
-	// If the extra blocks are empty, begin hashing what remains in the user's buffer.
-	if (ctx->partial_block_buffer_length == 0) {
-		while (remain_len >= MD5_BLOCK_SIZE) {
-			md5_single(buffer, digest);
-			buffer = (void *)((uint8_t *) buffer + MD5_BLOCK_SIZE);
-			remain_len -= MD5_BLOCK_SIZE;
-		}
+                // If the extra block buffer contains exactly 1 block, it can be hashed.
+                if (ctx->partial_block_buffer_length >= MD5_BLOCK_SIZE) {
+                        ctx->partial_block_buffer_length = 0;
+                        md5_single(ctx->partial_block_buffer, digest);
+                }
+        }
+        // If the extra blocks are empty, begin hashing what remains in the user's buffer.
+        if (ctx->partial_block_buffer_length == 0) {
+                while (remain_len >= MD5_BLOCK_SIZE) {
+                        md5_single(buffer, digest);
+                        buffer = (void *) ((uint8_t *) buffer + MD5_BLOCK_SIZE);
+                        remain_len -= MD5_BLOCK_SIZE;
+                }
+        }
 
-	}
+        if (remain_len > 0) {
+                memcpy_fixedlen(&ctx->partial_block_buffer, buffer, remain_len);
+                ctx->partial_block_buffer_length = remain_len;
+        }
 
-	if (remain_len > 0) {
-		memcpy_fixedlen(&ctx->partial_block_buffer, buffer, remain_len);
-		ctx->partial_block_buffer_length = remain_len;
-	}
-
-	ctx->status = HASH_CTX_STS_IDLE;
-	return;
+        ctx->status = HASH_CTX_STS_IDLE;
+        return;
 }
 
-static void md5_final(MD5_HASH_CTX * ctx)
+static void
+md5_final(MD5_HASH_CTX *ctx)
 {
-	const void *buffer = ctx->partial_block_buffer;
-	uint32_t i = ctx->partial_block_buffer_length;
-	uint8_t buf[2 * MD5_BLOCK_SIZE];
-	uint32_t *digest = ctx->job.result_digest;
+        const void *buffer = ctx->partial_block_buffer;
+        uint32_t i = ctx->partial_block_buffer_length;
+        uint8_t buf[2 * MD5_BLOCK_SIZE];
+        uint32_t *digest = ctx->job.result_digest;
 
-	memcpy(buf, buffer, i);
-	buf[i++] = 0x80;
-	for (uint32_t j = i; j < (2 * MD5_BLOCK_SIZE); j++) {
-		buf[j] = 0;
-	}
+        memcpy(buf, buffer, i);
+        buf[i++] = 0x80;
+        for (uint32_t j = i; j < (2 * MD5_BLOCK_SIZE); j++) {
+                buf[j] = 0;
+        }
 
-	if (i > MD5_BLOCK_SIZE - MD5_PADLENGTHFIELD_SIZE) {
-		i = 2 * MD5_BLOCK_SIZE;
-	} else {
-		i = MD5_BLOCK_SIZE;
-	}
+        if (i > MD5_BLOCK_SIZE - MD5_PADLENGTHFIELD_SIZE) {
+                i = 2 * MD5_BLOCK_SIZE;
+        } else {
+                i = MD5_BLOCK_SIZE;
+        }
 
-	*(uint64_t *) (buf + i - 8) = to_le64((uint64_t) ctx->total_length * 8);
+        *(uint64_t *) (buf + i - 8) = to_le64((uint64_t) ctx->total_length * 8);
 
-	md5_single(buf, digest);
-	if (i == 2 * MD5_BLOCK_SIZE) {
-		md5_single(buf + MD5_BLOCK_SIZE, digest);
-	}
+        md5_single(buf, digest);
+        if (i == 2 * MD5_BLOCK_SIZE) {
+                md5_single(buf + MD5_BLOCK_SIZE, digest);
+        }
 
-	ctx->status = HASH_CTX_STS_COMPLETE;
+        ctx->status = HASH_CTX_STS_COMPLETE;
 }
 
-static void md5_single(const void *data, uint32_t digest[4])
+static void
+md5_single(const void *data, uint32_t digest[4])
 {
 
-	uint32_t a, b, c, d;
-	uint32_t f;
-	uint32_t *w = (uint32_t *) data;
+        uint32_t a, b, c, d;
+        uint32_t f;
+        uint32_t *w = (uint32_t *) data;
 
-	a = digest[0];
-	b = digest[1];
-	c = digest[2];
-	d = digest[3];
+        a = digest[0];
+        b = digest[1];
+        c = digest[2];
+        d = digest[3];
 
-	step(0, a, b, c, d, f, 0xd76aa478, w[0], 7);
-	step(1, d, a, b, c, f, 0xe8c7b756, w[1], 12);
-	step(2, c, d, a, b, f, 0x242070db, w[2], 17);
-	step(3, b, c, d, a, f, 0xc1bdceee, w[3], 22);
-	step(4, a, b, c, d, f, 0xf57c0faf, w[4], 7);
-	step(5, d, a, b, c, f, 0x4787c62a, w[5], 12);
-	step(6, c, d, a, b, f, 0xa8304613, w[6], 17);
-	step(7, b, c, d, a, f, 0xfd469501, w[7], 22);
-	step(8, a, b, c, d, f, 0x698098d8, w[8], 7);
-	step(9, d, a, b, c, f, 0x8b44f7af, w[9], 12);
-	step(10, c, d, a, b, f, 0xffff5bb1, w[10], 17);
-	step(11, b, c, d, a, f, 0x895cd7be, w[11], 22);
-	step(12, a, b, c, d, f, 0x6b901122, w[12], 7);
-	step(13, d, a, b, c, f, 0xfd987193, w[13], 12);
-	step(14, c, d, a, b, f, 0xa679438e, w[14], 17);
-	step(15, b, c, d, a, f, 0x49b40821, w[15], 22);
+        step(0, a, b, c, d, f, 0xd76aa478, w[0], 7);
+        step(1, d, a, b, c, f, 0xe8c7b756, w[1], 12);
+        step(2, c, d, a, b, f, 0x242070db, w[2], 17);
+        step(3, b, c, d, a, f, 0xc1bdceee, w[3], 22);
+        step(4, a, b, c, d, f, 0xf57c0faf, w[4], 7);
+        step(5, d, a, b, c, f, 0x4787c62a, w[5], 12);
+        step(6, c, d, a, b, f, 0xa8304613, w[6], 17);
+        step(7, b, c, d, a, f, 0xfd469501, w[7], 22);
+        step(8, a, b, c, d, f, 0x698098d8, w[8], 7);
+        step(9, d, a, b, c, f, 0x8b44f7af, w[9], 12);
+        step(10, c, d, a, b, f, 0xffff5bb1, w[10], 17);
+        step(11, b, c, d, a, f, 0x895cd7be, w[11], 22);
+        step(12, a, b, c, d, f, 0x6b901122, w[12], 7);
+        step(13, d, a, b, c, f, 0xfd987193, w[13], 12);
+        step(14, c, d, a, b, f, 0xa679438e, w[14], 17);
+        step(15, b, c, d, a, f, 0x49b40821, w[15], 22);
 
-	step(16, a, b, c, d, f, 0xf61e2562, w[1], 5);
-	step(17, d, a, b, c, f, 0xc040b340, w[6], 9);
-	step(18, c, d, a, b, f, 0x265e5a51, w[11], 14);
-	step(19, b, c, d, a, f, 0xe9b6c7aa, w[0], 20);
-	step(20, a, b, c, d, f, 0xd62f105d, w[5], 5);
-	step(21, d, a, b, c, f, 0x02441453, w[10], 9);
-	step(22, c, d, a, b, f, 0xd8a1e681, w[15], 14);
-	step(23, b, c, d, a, f, 0xe7d3fbc8, w[4], 20);
-	step(24, a, b, c, d, f, 0x21e1cde6, w[9], 5);
-	step(25, d, a, b, c, f, 0xc33707d6, w[14], 9);
-	step(26, c, d, a, b, f, 0xf4d50d87, w[3], 14);
-	step(27, b, c, d, a, f, 0x455a14ed, w[8], 20);
-	step(28, a, b, c, d, f, 0xa9e3e905, w[13], 5);
-	step(29, d, a, b, c, f, 0xfcefa3f8, w[2], 9);
-	step(30, c, d, a, b, f, 0x676f02d9, w[7], 14);
-	step(31, b, c, d, a, f, 0x8d2a4c8a, w[12], 20);
+        step(16, a, b, c, d, f, 0xf61e2562, w[1], 5);
+        step(17, d, a, b, c, f, 0xc040b340, w[6], 9);
+        step(18, c, d, a, b, f, 0x265e5a51, w[11], 14);
+        step(19, b, c, d, a, f, 0xe9b6c7aa, w[0], 20);
+        step(20, a, b, c, d, f, 0xd62f105d, w[5], 5);
+        step(21, d, a, b, c, f, 0x02441453, w[10], 9);
+        step(22, c, d, a, b, f, 0xd8a1e681, w[15], 14);
+        step(23, b, c, d, a, f, 0xe7d3fbc8, w[4], 20);
+        step(24, a, b, c, d, f, 0x21e1cde6, w[9], 5);
+        step(25, d, a, b, c, f, 0xc33707d6, w[14], 9);
+        step(26, c, d, a, b, f, 0xf4d50d87, w[3], 14);
+        step(27, b, c, d, a, f, 0x455a14ed, w[8], 20);
+        step(28, a, b, c, d, f, 0xa9e3e905, w[13], 5);
+        step(29, d, a, b, c, f, 0xfcefa3f8, w[2], 9);
+        step(30, c, d, a, b, f, 0x676f02d9, w[7], 14);
+        step(31, b, c, d, a, f, 0x8d2a4c8a, w[12], 20);
 
-	step(32, a, b, c, d, f, 0xfffa3942, w[5], 4);
-	step(33, d, a, b, c, f, 0x8771f681, w[8], 11);
-	step(34, c, d, a, b, f, 0x6d9d6122, w[11], 16);
-	step(35, b, c, d, a, f, 0xfde5380c, w[14], 23);
-	step(36, a, b, c, d, f, 0xa4beea44, w[1], 4);
-	step(37, d, a, b, c, f, 0x4bdecfa9, w[4], 11);
-	step(38, c, d, a, b, f, 0xf6bb4b60, w[7], 16);
-	step(39, b, c, d, a, f, 0xbebfbc70, w[10], 23);
-	step(40, a, b, c, d, f, 0x289b7ec6, w[13], 4);
-	step(41, d, a, b, c, f, 0xeaa127fa, w[0], 11);
-	step(42, c, d, a, b, f, 0xd4ef3085, w[3], 16);
-	step(43, b, c, d, a, f, 0x04881d05, w[6], 23);
-	step(44, a, b, c, d, f, 0xd9d4d039, w[9], 4);
-	step(45, d, a, b, c, f, 0xe6db99e5, w[12], 11);
-	step(46, c, d, a, b, f, 0x1fa27cf8, w[15], 16);
-	step(47, b, c, d, a, f, 0xc4ac5665, w[2], 23);
+        step(32, a, b, c, d, f, 0xfffa3942, w[5], 4);
+        step(33, d, a, b, c, f, 0x8771f681, w[8], 11);
+        step(34, c, d, a, b, f, 0x6d9d6122, w[11], 16);
+        step(35, b, c, d, a, f, 0xfde5380c, w[14], 23);
+        step(36, a, b, c, d, f, 0xa4beea44, w[1], 4);
+        step(37, d, a, b, c, f, 0x4bdecfa9, w[4], 11);
+        step(38, c, d, a, b, f, 0xf6bb4b60, w[7], 16);
+        step(39, b, c, d, a, f, 0xbebfbc70, w[10], 23);
+        step(40, a, b, c, d, f, 0x289b7ec6, w[13], 4);
+        step(41, d, a, b, c, f, 0xeaa127fa, w[0], 11);
+        step(42, c, d, a, b, f, 0xd4ef3085, w[3], 16);
+        step(43, b, c, d, a, f, 0x04881d05, w[6], 23);
+        step(44, a, b, c, d, f, 0xd9d4d039, w[9], 4);
+        step(45, d, a, b, c, f, 0xe6db99e5, w[12], 11);
+        step(46, c, d, a, b, f, 0x1fa27cf8, w[15], 16);
+        step(47, b, c, d, a, f, 0xc4ac5665, w[2], 23);
 
-	step(48, a, b, c, d, f, 0xf4292244, w[0], 6);
-	step(49, d, a, b, c, f, 0x432aff97, w[7], 10);
-	step(50, c, d, a, b, f, 0xab9423a7, w[14], 15);
-	step(51, b, c, d, a, f, 0xfc93a039, w[5], 21);
-	step(52, a, b, c, d, f, 0x655b59c3, w[12], 6);
-	step(53, d, a, b, c, f, 0x8f0ccc92, w[3], 10);
-	step(54, c, d, a, b, f, 0xffeff47d, w[10], 15);
-	step(55, b, c, d, a, f, 0x85845dd1, w[1], 21);
-	step(56, a, b, c, d, f, 0x6fa87e4f, w[8], 6);
-	step(57, d, a, b, c, f, 0xfe2ce6e0, w[15], 10);
-	step(58, c, d, a, b, f, 0xa3014314, w[6], 15);
-	step(59, b, c, d, a, f, 0x4e0811a1, w[13], 21);
-	step(60, a, b, c, d, f, 0xf7537e82, w[4], 6);
-	step(61, d, a, b, c, f, 0xbd3af235, w[11], 10);
-	step(62, c, d, a, b, f, 0x2ad7d2bb, w[2], 15);
-	step(63, b, c, d, a, f, 0xeb86d391, w[9], 21);
+        step(48, a, b, c, d, f, 0xf4292244, w[0], 6);
+        step(49, d, a, b, c, f, 0x432aff97, w[7], 10);
+        step(50, c, d, a, b, f, 0xab9423a7, w[14], 15);
+        step(51, b, c, d, a, f, 0xfc93a039, w[5], 21);
+        step(52, a, b, c, d, f, 0x655b59c3, w[12], 6);
+        step(53, d, a, b, c, f, 0x8f0ccc92, w[3], 10);
+        step(54, c, d, a, b, f, 0xffeff47d, w[10], 15);
+        step(55, b, c, d, a, f, 0x85845dd1, w[1], 21);
+        step(56, a, b, c, d, f, 0x6fa87e4f, w[8], 6);
+        step(57, d, a, b, c, f, 0xfe2ce6e0, w[15], 10);
+        step(58, c, d, a, b, f, 0xa3014314, w[6], 15);
+        step(59, b, c, d, a, f, 0x4e0811a1, w[13], 21);
+        step(60, a, b, c, d, f, 0xf7537e82, w[4], 6);
+        step(61, d, a, b, c, f, 0xbd3af235, w[11], 10);
+        step(62, c, d, a, b, f, 0x2ad7d2bb, w[2], 15);
+        step(63, b, c, d, a, f, 0xeb86d391, w[9], 21);
 
-	digest[0] += a;
-	digest[1] += b;
-	digest[2] += c;
-	digest[3] += d;
+        digest[0] += a;
+        digest[1] += b;
+        digest[2] += c;
+        digest[3] += d;
 }
 
-static inline void hash_init_digest(MD5_WORD_T * digest)
+static inline void
+hash_init_digest(MD5_WORD_T *digest)
 {
-	static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] =
-	    { MD5_INITIAL_DIGEST };
-	memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
+        static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] = { MD5_INITIAL_DIGEST };
+        memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 struct slver md5_ctx_mgr_init_base_slver_0000018f;
 struct slver md5_ctx_mgr_init_base_slver = { 0x018f, 0x00, 0x00 };

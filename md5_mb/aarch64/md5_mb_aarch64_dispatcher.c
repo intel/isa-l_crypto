@@ -29,80 +29,79 @@
 #include <aarch64_multibinary.h>
 
 #ifndef HWCAP2_SVE2
-#define HWCAP2_SVE2	(1 << 1)
+#define HWCAP2_SVE2 (1 << 1)
 #endif
 
-#define CAP_SVE	1
-#define CAP_SVE2	2
-#define CAP_NOSVE	0
+#define CAP_SVE   1
+#define CAP_SVE2  2
+#define CAP_NOSVE 0
 
-static inline int sve_capable(unsigned long auxval)
+static inline int
+sve_capable(unsigned long auxval)
 {
-	if (auxval & HWCAP_SVE) {
-		if (getauxval(AT_HWCAP2) & HWCAP2_SVE2) {
-			return CAP_SVE2;
-		}
-		return CAP_SVE;
-	}
+        if (auxval & HWCAP_SVE) {
+                if (getauxval(AT_HWCAP2) & HWCAP2_SVE2) {
+                        return CAP_SVE2;
+                }
+                return CAP_SVE;
+        }
 
-	return CAP_NOSVE;
+        return CAP_NOSVE;
 }
 
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_submit)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
+        unsigned long auxval = getauxval(AT_HWCAP);
 
-	switch (sve_capable(auxval)) {
-	case CAP_SVE:
-		return PROVIDER_INFO(md5_ctx_mgr_submit_sve);
-	case CAP_SVE2:
-		return PROVIDER_INFO(md5_ctx_mgr_submit_sve2);
-	default:
-		break;
-	}
+        switch (sve_capable(auxval)) {
+        case CAP_SVE:
+                return PROVIDER_INFO(md5_ctx_mgr_submit_sve);
+        case CAP_SVE2:
+                return PROVIDER_INFO(md5_ctx_mgr_submit_sve2);
+        default:
+                break;
+        }
 
-	if (auxval & HWCAP_ASIMD)
-		return PROVIDER_INFO(md5_ctx_mgr_submit_asimd);
+        if (auxval & HWCAP_ASIMD)
+                return PROVIDER_INFO(md5_ctx_mgr_submit_asimd);
 
-	return PROVIDER_BASIC(md5_ctx_mgr_submit);
-
+        return PROVIDER_BASIC(md5_ctx_mgr_submit);
 }
 
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_init)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
+        unsigned long auxval = getauxval(AT_HWCAP);
 
-	switch (sve_capable(auxval)) {
-	case CAP_SVE:
-		return PROVIDER_INFO(md5_ctx_mgr_init_sve);
-	case CAP_SVE2:
-		return PROVIDER_INFO(md5_ctx_mgr_init_sve2);
-	default:
-		break;
-	}
+        switch (sve_capable(auxval)) {
+        case CAP_SVE:
+                return PROVIDER_INFO(md5_ctx_mgr_init_sve);
+        case CAP_SVE2:
+                return PROVIDER_INFO(md5_ctx_mgr_init_sve2);
+        default:
+                break;
+        }
 
-	if (auxval & HWCAP_ASIMD)
-		return PROVIDER_INFO(md5_ctx_mgr_init_asimd);
+        if (auxval & HWCAP_ASIMD)
+                return PROVIDER_INFO(md5_ctx_mgr_init_asimd);
 
-	return PROVIDER_BASIC(md5_ctx_mgr_init);
-
+        return PROVIDER_BASIC(md5_ctx_mgr_init);
 }
 
 DEFINE_INTERFACE_DISPATCHER(md5_ctx_mgr_flush)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
+        unsigned long auxval = getauxval(AT_HWCAP);
 
-	switch (sve_capable(auxval)) {
-	case CAP_SVE:
-		return PROVIDER_INFO(md5_ctx_mgr_flush_sve);
-	case CAP_SVE2:
-		return PROVIDER_INFO(md5_ctx_mgr_flush_sve2);
-	default:
-		break;
-	}
+        switch (sve_capable(auxval)) {
+        case CAP_SVE:
+                return PROVIDER_INFO(md5_ctx_mgr_flush_sve);
+        case CAP_SVE2:
+                return PROVIDER_INFO(md5_ctx_mgr_flush_sve2);
+        default:
+                break;
+        }
 
-	if (auxval & HWCAP_ASIMD)
-		return PROVIDER_INFO(md5_ctx_mgr_flush_asimd);
+        if (auxval & HWCAP_ASIMD)
+                return PROVIDER_INFO(md5_ctx_mgr_flush_asimd);
 
-	return PROVIDER_BASIC(md5_ctx_mgr_flush);
+        return PROVIDER_BASIC(md5_ctx_mgr_flush);
 }
