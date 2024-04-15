@@ -34,174 +34,171 @@
 
 #ifdef SAFE_PARAM
 
-static int test_sha512_mb_init_api(void)
+static int
+test_sha512_mb_init_api(void)
 {
-	SHA512_HASH_CTX_MGR *mgr = NULL;
-	int rc, ret = -1;
+        SHA512_HASH_CTX_MGR *mgr = NULL;
+        int rc, ret = -1;
 
-	rc = posix_memalign((void *)&mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
-	if ((rc != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
-	// check null mgr
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_init(NULL), ISAL_CRYPTO_ERR_NULL_MGR,
-			  "isal_sha512_ctx_mgr_init", end_init);
+        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        if ((rc != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
+        // check null mgr
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_init(NULL), ISAL_CRYPTO_ERR_NULL_MGR,
+                          "isal_sha512_ctx_mgr_init", end_init);
 
-	// check valid args
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_init(mgr), ISAL_CRYPTO_ERR_NONE,
-			  "isal_sha512_ctx_mgr_init", end_init);
-	ret = 0;
+        // check valid args
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_init(mgr), ISAL_CRYPTO_ERR_NONE,
+                          "isal_sha512_ctx_mgr_init", end_init);
+        ret = 0;
 
-      end_init:
-	aligned_free(mgr);
+end_init:
+        aligned_free(mgr);
 
-	return ret;
+        return ret;
 }
 
-static int test_sha512_mb_submit_api(void)
+static int
+test_sha512_mb_submit_api(void)
 {
-	SHA512_HASH_CTX_MGR *mgr = NULL;
-	SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
-	int rc, ret = -1;
-	const char *fn_name = "isal_sha512_ctx_mgr_submit";
-	static uint8_t msg[] = "Test message";
+        SHA512_HASH_CTX_MGR *mgr = NULL;
+        SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        int rc, ret = -1;
+        const char *fn_name = "isal_sha512_ctx_mgr_submit";
+        static uint8_t msg[] = "Test message";
 
-	rc = posix_memalign((void *)&mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
-	if ((rc != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        if ((rc != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	rc = isal_sha512_ctx_mgr_init(mgr);
-	if (rc != ISAL_CRYPTO_ERR_NONE)
-		goto end_submit;
+        rc = isal_sha512_ctx_mgr_init(mgr);
+        if (rc != ISAL_CRYPTO_ERR_NONE)
+                goto end_submit;
 
-	// Init context before first use
-	hash_ctx_init(&ctx);
+        // Init context before first use
+        hash_ctx_init(&ctx);
 
-	// check null mgr
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(NULL, ctx_ptr, &ctx_ptr, msg,
-						     strlen((char *)msg),
-						     HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_NULL_MGR, fn_name, end_submit);
+        // check null mgr
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(NULL, ctx_ptr, &ctx_ptr, msg,
+                                                     strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NULL_MGR, fn_name, end_submit);
 
-	// check null input ctx
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit
-			  (mgr, NULL, &ctx_ptr, msg, strlen((char *)msg), HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
+        // check null input ctx
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, NULL, &ctx_ptr, msg, strlen((char *) msg),
+                                                     HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
-	// check null output ctx
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit
-			  (mgr, ctx_ptr, NULL, msg, strlen((char *)msg), HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
+        // check null output ctx
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, NULL, msg, strlen((char *) msg),
+                                                     HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
-	// check null source ptr
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, NULL,
-						     strlen((char *)msg),
-						     HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
+        // check null source ptr
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, NULL,
+                                                     strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
-	// check invalid flag
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-						     strlen((char *)msg), 999),
-			  ISAL_CRYPTO_ERR_INVALID_FLAGS, fn_name, end_submit);
+        // check invalid flag
+        CHECK_RETURN_GOTO(
+                isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, strlen((char *) msg), 999),
+                ISAL_CRYPTO_ERR_INVALID_FLAGS, fn_name, end_submit);
 
-	// simulate internal error (submit in progress job)
-	ctx_ptr->status = HASH_CTX_STS_PROCESSING;
+        // simulate internal error (submit in progress job)
+        ctx_ptr->status = HASH_CTX_STS_PROCESSING;
 
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-						     strlen((char *)msg),
-						     HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_ALREADY_PROCESSING, fn_name, end_submit);
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                     strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_ALREADY_PROCESSING, fn_name, end_submit);
 
-	CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_PROCESSING,
-			  fn_name, end_submit);
+        CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_PROCESSING, fn_name, end_submit);
 
-	// simulate internal error (submit completed job)
-	ctx_ptr->error = HASH_CTX_ERROR_NONE;
-	ctx_ptr->status = HASH_CTX_STS_COMPLETE;
+        // simulate internal error (submit completed job)
+        ctx_ptr->error = HASH_CTX_ERROR_NONE;
+        ctx_ptr->status = HASH_CTX_STS_COMPLETE;
 
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-						     strlen((char *)msg),
-						     HASH_UPDATE),
-			  ISAL_CRYPTO_ERR_ALREADY_COMPLETED, fn_name, end_submit);
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                     strlen((char *) msg), HASH_UPDATE),
+                          ISAL_CRYPTO_ERR_ALREADY_COMPLETED, fn_name, end_submit);
 
-	CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_COMPLETED,
-			  fn_name, end_submit);
+        CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_COMPLETED, fn_name, end_submit);
 
-	// check valid args
-	hash_ctx_init(&ctx);
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-						     strlen((char *)msg),
-						     HASH_ENTIRE),
-			  ISAL_CRYPTO_ERR_NONE, fn_name, end_submit);
-	ret = 0;
+        // check valid args
+        hash_ctx_init(&ctx);
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                     strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NONE, fn_name, end_submit);
+        ret = 0;
 
-      end_submit:
-	aligned_free(mgr);
+end_submit:
+        aligned_free(mgr);
 
-	return ret;
+        return ret;
 }
 
-static int test_sha512_mb_flush_api(void)
+static int
+test_sha512_mb_flush_api(void)
 {
-	SHA512_HASH_CTX_MGR *mgr = NULL;
-	SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
-	int rc, ret = -1;
-	const char *fn_name = "isal_sha512_ctx_mgr_flush";
+        SHA512_HASH_CTX_MGR *mgr = NULL;
+        SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        int rc, ret = -1;
+        const char *fn_name = "isal_sha512_ctx_mgr_flush";
 
-	rc = posix_memalign((void *)&mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
-	if ((rc != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        if ((rc != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	rc = isal_sha512_ctx_mgr_init(mgr);
-	if (rc != ISAL_CRYPTO_ERR_NONE)
-		goto end_flush;
+        rc = isal_sha512_ctx_mgr_init(mgr);
+        if (rc != ISAL_CRYPTO_ERR_NONE)
+                goto end_flush;
 
-	// Init context before first use
-	hash_ctx_init(&ctx);
+        // Init context before first use
+        hash_ctx_init(&ctx);
 
-	// check null mgr
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(NULL, &ctx_ptr),
-			  ISAL_CRYPTO_ERR_NULL_MGR, fn_name, end_flush);
+        // check null mgr
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(NULL, &ctx_ptr), ISAL_CRYPTO_ERR_NULL_MGR,
+                          fn_name, end_flush);
 
-	// check null ctx
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(mgr, NULL),
-			  ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_flush);
+        // check null ctx
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(mgr, NULL), ISAL_CRYPTO_ERR_NULL_CTX, fn_name,
+                          end_flush);
 
-	// check valid args
-	CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(mgr, &ctx_ptr),
-			  ISAL_CRYPTO_ERR_NONE, fn_name, end_flush);
+        // check valid args
+        CHECK_RETURN_GOTO(isal_sha512_ctx_mgr_flush(mgr, &ctx_ptr), ISAL_CRYPTO_ERR_NONE, fn_name,
+                          end_flush);
 
-	if (ctx_ptr != NULL) {
-		printf("test: %s() - expected NULL job ptr\n", fn_name);
-		goto end_flush;
-	}
+        if (ctx_ptr != NULL) {
+                printf("test: %s() - expected NULL job ptr\n", fn_name);
+                goto end_flush;
+        }
 
-	ret = 0;
+        ret = 0;
 
-      end_flush:
-	aligned_free(mgr);
+end_flush:
+        aligned_free(mgr);
 
-	return ret;
+        return ret;
 }
 #endif /* SAFE_PARAM */
 
-int main(void)
+int
+main(void)
 {
-	int fail = 0;
+        int fail = 0;
 
 #ifdef SAFE_PARAM
-	fail |= test_sha512_mb_init_api();
-	fail |= test_sha512_mb_submit_api();
-	fail |= test_sha512_mb_flush_api();
+        fail |= test_sha512_mb_init_api();
+        fail |= test_sha512_mb_submit_api();
+        fail |= test_sha512_mb_flush_api();
 
-	printf(fail ? "Fail\n" : "Pass\n");
+        printf(fail ? "Fail\n" : "Pass\n");
 #else
-	printf("Not Executed\n");
+        printf("Not Executed\n");
 #endif
-	return fail;
+        return fail;
 }

@@ -29,18 +29,19 @@
 
 #include "sha512_mb.h"
 
-void sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR * state)
+void
+sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state)
 {
-	unsigned int j;
+        unsigned int j;
 
-	memset(state, 0, sizeof(*state));
-	state->lens[0] = 0;
-	state->lens[1] = 1;
-	state->lens[2] = 2;
-	state->lens[3] = 3;
-	state->unused_lanes = 0xFF03020100;
-	state->num_lanes_inuse = 0;
-	for (j = 0; j < SHA512_X4_LANES; j++) {
-		state->ldata[j].job_in_lane = 0;
-	}
+        memset(state, 0, sizeof(*state));
+        state->lens[0] = 0;
+        state->lens[1] = 1;
+        state->lens[2] = 2;
+        state->lens[3] = 3;
+        state->unused_lanes = 0xFF03020100;
+        state->num_lanes_inuse = 0;
+        for (j = 0; j < SHA512_X4_LANES; j++) {
+                state->ldata[j].job_in_lane = 0;
+        }
 }
