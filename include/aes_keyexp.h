@@ -44,31 +44,31 @@ extern "C" {
 #endif
 
 /** @brief AES key expansion 128 bit
-* @requires SSE4.1
-*/
-void aes_keyexp_128(
-	const uint8_t *key,  		//!< input key for AES-128, 16 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*11 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*11 bytes
-	);
+ * @requires SSE4.1
+ */
+void
+aes_keyexp_128(const uint8_t *key,   //!< input key for AES-128, 16 bytes
+               uint8_t *exp_key_enc, //!< expanded encryption keys, 16*11 bytes
+               uint8_t *exp_key_dec  //!< expanded decryption keys, 16*11 bytes
+);
 
 /** @brief AES key expansion 192 bit
-* @requires SSE4.1
-*/
-void aes_keyexp_192(
-	const uint8_t *key,	//!< input key for AES-192, 16*1.5 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*13 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*13 bytes
-	);
+ * @requires SSE4.1
+ */
+void
+aes_keyexp_192(const uint8_t *key,   //!< input key for AES-192, 16*1.5 bytes
+               uint8_t *exp_key_enc, //!< expanded encryption keys, 16*13 bytes
+               uint8_t *exp_key_dec  //!< expanded decryption keys, 16*13 bytes
+);
 
 /** @brief AES key expansion 256 bit
-* @requires SSE4.1
-*/
-void aes_keyexp_256(
-	const uint8_t *key,	//!< input key for AES-256, 16*2 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*15 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*15 bytes
-	);
+ * @requires SSE4.1
+ */
+void
+aes_keyexp_256(const uint8_t *key,   //!< input key for AES-256, 16*2 bytes
+               uint8_t *exp_key_enc, //!< expanded encryption keys, 16*15 bytes
+               uint8_t *exp_key_dec  //!< expanded decryption keys, 16*15 bytes
+);
 
 /**
  * @brief AES key expansion 128 bit
@@ -76,12 +76,12 @@ void aes_keyexp_256(
  * @return Operation status
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
-*/
-int isal_aes_keyexp_128(
-	const uint8_t *key,  		//!< input key for AES-128, 16 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*11 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*11 bytes
-	);
+ */
+int
+isal_aes_keyexp_128(const uint8_t *key,   //!< input key for AES-128, 16 bytes
+                    uint8_t *exp_key_enc, //!< expanded encryption keys, 16*11 bytes
+                    uint8_t *exp_key_dec  //!< expanded decryption keys, 16*11 bytes
+);
 
 /**
  * @brief AES key expansion 192 bit
@@ -90,11 +90,11 @@ int isal_aes_keyexp_128(
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_aes_keyexp_192(
-	const uint8_t *key,	//!< input key for AES-192, 24 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*13 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*13 bytes
-	);
+int
+isal_aes_keyexp_192(const uint8_t *key,   //!< input key for AES-192, 24 bytes
+                    uint8_t *exp_key_enc, //!< expanded encryption keys, 16*13 bytes
+                    uint8_t *exp_key_dec  //!< expanded decryption keys, 16*13 bytes
+);
 
 /**
  * @brief AES key expansion 256 bit
@@ -102,14 +102,14 @@ int isal_aes_keyexp_192(
  * @return Operation status
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
-*/
-int isal_aes_keyexp_256(
-	const uint8_t *key,	//!< input key for AES-256, 32 bytes
-	uint8_t *exp_key_enc,	//!< expanded encryption keys, 16*15 bytes
-	uint8_t *exp_key_dec	//!< expanded decryption keys, 16*15 bytes
-	);
+ */
+int
+isal_aes_keyexp_256(const uint8_t *key,   //!< input key for AES-256, 32 bytes
+                    uint8_t *exp_key_enc, //!< expanded encryption keys, 16*15 bytes
+                    uint8_t *exp_key_dec  //!< expanded decryption keys, 16*15 bytes
+);
 
 #ifdef __cplusplus
 }
 #endif //__cplusplus
-#endif //ifndef _KEYEXP_128_H
+#endif // ifndef _KEYEXP_128_H

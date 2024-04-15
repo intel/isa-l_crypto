@@ -121,72 +121,74 @@ extern "C" {
 #endif
 
 // Hash Constants and Typedefs
-#define SHA512_DIGEST_NWORDS		8
-#define SHA512_MAX_LANES		8
-#define SHA512_X4_LANES			4
-#define SHA512_MIN_LANES		2
-#define SHA512_BLOCK_SIZE		128
-#define SHA512_LOG2_BLOCK_SIZE		7
-#define SHA512_PADLENGTHFIELD_SIZE	16
-#define SHA512_INITIAL_DIGEST		\
-	0x6a09e667f3bcc908,0xbb67ae8584caa73b,0x3c6ef372fe94f82b,0xa54ff53a5f1d36f1, \
-	0x510e527fade682d1,0x9b05688c2b3e6c1f,0x1f83d9abfb41bd6b,0x5be0cd19137e2179
-
+#define SHA512_DIGEST_NWORDS       8
+#define SHA512_MAX_LANES           8
+#define SHA512_X4_LANES            4
+#define SHA512_MIN_LANES           2
+#define SHA512_BLOCK_SIZE          128
+#define SHA512_LOG2_BLOCK_SIZE     7
+#define SHA512_PADLENGTHFIELD_SIZE 16
+#define SHA512_INITIAL_DIGEST                                                                      \
+        0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,            \
+                0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 
 typedef uint64_t sha512_digest_array[SHA512_DIGEST_NWORDS][SHA512_MAX_LANES];
 typedef uint64_t SHA512_WORD_T;
 
-/** @brief Scheduler layer - Holds info describing a single SHA512 job for the multi-buffer manager */
+/** @brief Scheduler layer - Holds info describing a single SHA512 job for the multi-buffer manager
+ */
 
 typedef struct {
-	uint8_t*  buffer;	//!< pointer to data buffer for this job
-	uint64_t  len;		//!< length of buffer for this job in blocks.
-	DECLARE_ALIGNED(uint64_t result_digest[SHA512_DIGEST_NWORDS], 64);
-	JOB_STS status;		//!< output job status
-	void*   user_data;	//!< pointer for user's job-related data
+        uint8_t *buffer; //!< pointer to data buffer for this job
+        uint64_t len;    //!< length of buffer for this job in blocks.
+        DECLARE_ALIGNED(uint64_t result_digest[SHA512_DIGEST_NWORDS], 64);
+        JOB_STS status;  //!< output job status
+        void *user_data; //!< pointer for user's job-related data
 } SHA512_JOB;
 
 /** @brief Scheduler layer -  Holds arguments for submitted SHA512 job */
 
 typedef struct {
-	sha512_digest_array digest;
-	uint8_t* data_ptr[SHA512_MAX_LANES];
+        sha512_digest_array digest;
+        uint8_t *data_ptr[SHA512_MAX_LANES];
 } SHA512_MB_ARGS_X8;
 
 /** @brief Scheduler layer - Lane data */
 
 typedef struct {
-	SHA512_JOB *job_in_lane;
+        SHA512_JOB *job_in_lane;
 } SHA512_LANE_DATA;
 
 /** @brief Scheduler layer - Holds state for multi-buffer SHA512 jobs */
 
 typedef struct {
-	SHA512_MB_ARGS_X8 args;
-	uint64_t lens[SHA512_MAX_LANES];
-	uint64_t unused_lanes;	//!< each byte is index (00, 01 or 00...03) of unused lanes, byte 2 or 4 is set to FF as a flag
-	SHA512_LANE_DATA ldata[SHA512_MAX_LANES];
-	uint32_t num_lanes_inuse;
+        SHA512_MB_ARGS_X8 args;
+        uint64_t lens[SHA512_MAX_LANES];
+        uint64_t unused_lanes; //!< each byte is index (00, 01 or 00...03) of unused lanes, byte 2
+                               //!< or 4 is set to FF as a flag
+        SHA512_LANE_DATA ldata[SHA512_MAX_LANES];
+        uint32_t num_lanes_inuse;
 } SHA512_MB_JOB_MGR;
 
 /** @brief Context layer - Holds state for multi-buffer SHA512 jobs */
 
 typedef struct {
-	SHA512_MB_JOB_MGR mgr;
+        SHA512_MB_JOB_MGR mgr;
 } SHA512_HASH_CTX_MGR;
 
-/** @brief Context layer - Holds info describing a single SHA512 job for the multi-buffer CTX manager */
+/** @brief Context layer - Holds info describing a single SHA512 job for the multi-buffer CTX
+ * manager */
 
 typedef struct {
-	SHA512_JOB	job; // Must be at struct offset 0.
-	HASH_CTX_STS	status;		//!< Context status flag
-	HASH_CTX_ERROR	error;		//!< Context error flag
-	uint64_t	total_length;	//!< Running counter of length processed for this CTX's job
-	const void*	incoming_buffer; //!< pointer to data input buffer for this CTX's job
-	uint32_t	incoming_buffer_length; //!< length of buffer for this job in bytes.
-	uint8_t		partial_block_buffer[SHA512_BLOCK_SIZE * 2]; //!< CTX partial blocks
-	uint32_t	partial_block_buffer_length;
-	void*		user_data;	//!< pointer for user to keep any job-related data
+        SHA512_JOB job;                  // Must be at struct offset 0.
+        HASH_CTX_STS status;             //!< Context status flag
+        HASH_CTX_ERROR error;            //!< Context error flag
+        uint64_t total_length;           //!< Running counter of length processed for this CTX's job
+        const void *incoming_buffer;     //!< pointer to data input buffer for this CTX's job
+        uint32_t incoming_buffer_length; //!< length of buffer for this job in bytes.
+        uint8_t partial_block_buffer[SHA512_BLOCK_SIZE * 2]; //!< CTX partial blocks
+        uint32_t partial_block_buffer_length;
+        void *user_data; //!< pointer for user to keep any job-related data
 } SHA512_HASH_CTX;
 
 /*******************************************************************
@@ -200,7 +202,8 @@ typedef struct {
  * @param mgr Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init_sse   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init_sse(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the context level multi-buffer manager.
@@ -213,8 +216,9 @@ void      sha512_ctx_mgr_init_sse   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit_sse (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                          uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -223,7 +227,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit_sse (SHA512_HASH_CTX_MGR* mgr, SHA512_HAS
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush_sse  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the SHA512 multi-buffer manager structure.
@@ -232,7 +237,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush_sse  (SHA512_HASH_CTX_MGR* mgr);
  * @param mgr Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init_avx   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init_avx(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -245,8 +251,9 @@ void      sha512_ctx_mgr_init_avx   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit_avx(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                          uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -255,7 +262,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx (SHA512_HASH_CTX_MGR* mgr, SHA512_HAS
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush_avx(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the SHA512 multi-buffer manager structure.
@@ -264,7 +272,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx  (SHA512_HASH_CTX_MGR* mgr);
  * @param mgr	Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init_avx2   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init_avx2(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -277,8 +286,9 @@ void      sha512_ctx_mgr_init_avx2   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx2 (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit_avx2(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                           uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -287,7 +297,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx2 (SHA512_HASH_CTX_MGR* mgr, SHA512_HA
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx2  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush_avx2(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the SHA512 multi-buffer manager structure.
@@ -296,7 +307,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx2  (SHA512_HASH_CTX_MGR* mgr);
  * @param mgr	Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init_avx512   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init_avx512(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -309,8 +321,9 @@ void      sha512_ctx_mgr_init_avx512   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx512 (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit_avx512(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                             uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -319,7 +332,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit_avx512 (SHA512_HASH_CTX_MGR* mgr, SHA512_
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx512  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush_avx512(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the SHA512 multi-buffer manager structure.
@@ -328,7 +342,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush_avx512  (SHA512_HASH_CTX_MGR* mgr);
  * @param mgr	Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init_sb_sse4   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init_sb_sse4(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -341,8 +356,9 @@ void      sha512_ctx_mgr_init_sb_sse4   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit_sb_sse4 (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-					const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit_sb_sse4(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                              uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -351,7 +367,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit_sb_sse4 (SHA512_HASH_CTX_MGR* mgr, SHA512
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush_sb_sse4  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush_sb_sse4(SHA512_HASH_CTX_MGR *mgr);
 
 /******************** multibinary function prototypes **********************/
 
@@ -362,7 +379,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush_sb_sse4  (SHA512_HASH_CTX_MGR* mgr);
  * @param mgr	Structure holding context level state info
  * @returns void
  */
-void      sha512_ctx_mgr_init   (SHA512_HASH_CTX_MGR* mgr);
+void
+sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -375,8 +393,9 @@ void      sha512_ctx_mgr_init   (SHA512_HASH_CTX_MGR* mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_submit (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx,
-				const void* buffer, uint32_t len, HASH_CTX_FLAG flags);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                      uint32_t len, HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -385,7 +404,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_submit (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CT
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-SHA512_HASH_CTX* sha512_ctx_mgr_flush  (SHA512_HASH_CTX_MGR* mgr);
+SHA512_HASH_CTX *
+sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the SHA512 multi-buffer manager structure.
@@ -396,7 +416,8 @@ SHA512_HASH_CTX* sha512_ctx_mgr_flush  (SHA512_HASH_CTX_MGR* mgr);
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_sha512_ctx_mgr_init (SHA512_HASH_CTX_MGR* mgr);
+int
+isal_sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA512 job to the multi-buffer manager.
@@ -414,9 +435,10 @@ int isal_sha512_ctx_mgr_init (SHA512_HASH_CTX_MGR* mgr);
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_sha512_ctx_mgr_submit (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx_in,
-			      SHA512_HASH_CTX** ctx_out, const void* buffer,
-			      const uint32_t len, const HASH_CTX_FLAG flags);
+int
+isal_sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx_in,
+                           SHA512_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+                           const HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA512 jobs and return when complete.
@@ -427,39 +449,53 @@ int isal_sha512_ctx_mgr_submit (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX* ctx_i
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_sha512_ctx_mgr_flush (SHA512_HASH_CTX_MGR* mgr, SHA512_HASH_CTX** ctx_out);
+int
+isal_sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX **ctx_out);
 
 /*******************************************************************
  * Scheduler (internal) level out-of-order function prototypes
  ******************************************************************/
 
-void        sha512_mb_mgr_init_sse   (SHA512_MB_JOB_MGR *state);
-SHA512_JOB* sha512_mb_mgr_submit_sse (SHA512_MB_JOB_MGR *state, SHA512_JOB* job);
-SHA512_JOB* sha512_mb_mgr_flush_sse  (SHA512_MB_JOB_MGR *state);
+void
+sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR *state);
+SHA512_JOB *
+sha512_mb_mgr_submit_sse(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
+SHA512_JOB *
+sha512_mb_mgr_flush_sse(SHA512_MB_JOB_MGR *state);
 
-#define     sha512_mb_mgr_init_avx   sha512_mb_mgr_init_sse
-SHA512_JOB* sha512_mb_mgr_submit_avx (SHA512_MB_JOB_MGR *state, SHA512_JOB* job);
-SHA512_JOB* sha512_mb_mgr_flush_avx  (SHA512_MB_JOB_MGR *state);
+#define sha512_mb_mgr_init_avx sha512_mb_mgr_init_sse
+SHA512_JOB *
+sha512_mb_mgr_submit_avx(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
+SHA512_JOB *
+sha512_mb_mgr_flush_avx(SHA512_MB_JOB_MGR *state);
 
-void        sha512_mb_mgr_init_avx2   (SHA512_MB_JOB_MGR *state);
-SHA512_JOB* sha512_mb_mgr_submit_avx2 (SHA512_MB_JOB_MGR *state, SHA512_JOB* job);
-SHA512_JOB* sha512_mb_mgr_flush_avx2  (SHA512_MB_JOB_MGR *state);
+void
+sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state);
+SHA512_JOB *
+sha512_mb_mgr_submit_avx2(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
+SHA512_JOB *
+sha512_mb_mgr_flush_avx2(SHA512_MB_JOB_MGR *state);
 
-void        sha512_mb_mgr_init_avx512   (SHA512_MB_JOB_MGR *state);
-SHA512_JOB* sha512_mb_mgr_submit_avx512 (SHA512_MB_JOB_MGR *state, SHA512_JOB* job);
-SHA512_JOB* sha512_mb_mgr_flush_avx512  (SHA512_MB_JOB_MGR *state);
+void
+sha512_mb_mgr_init_avx512(SHA512_MB_JOB_MGR *state);
+SHA512_JOB *
+sha512_mb_mgr_submit_avx512(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
+SHA512_JOB *
+sha512_mb_mgr_flush_avx512(SHA512_MB_JOB_MGR *state);
 
 // Single buffer SHA512 APIs, optimized for SLM.
-void        sha512_sse4              (const void* M, void* D, uint64_t L);
+void
+sha512_sse4(const void *M, void *D, uint64_t L);
 // Note that these APIs comply with multi-buffer APIs' high level usage
-void        sha512_sb_mgr_init_sse4   (SHA512_MB_JOB_MGR *state);
-SHA512_JOB* sha512_sb_mgr_submit_sse4 (SHA512_MB_JOB_MGR *state, SHA512_JOB* job);
-SHA512_JOB* sha512_sb_mgr_flush_sse4  (SHA512_MB_JOB_MGR *state);
+void
+sha512_sb_mgr_init_sse4(SHA512_MB_JOB_MGR *state);
+SHA512_JOB *
+sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
+SHA512_JOB *
+sha512_sb_mgr_flush_sse4(SHA512_MB_JOB_MGR *state);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // _SHA512_MB_H_
-
-

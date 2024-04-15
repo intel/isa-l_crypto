@@ -36,82 +36,86 @@ extern "C" {
 
 #include "endian_helper.h"
 
-#define DIM(_x) (sizeof(_x)/sizeof(_x[0]))
+#define DIM(_x) (sizeof(_x) / sizeof(_x[0]))
 
-#define CHECK_RETURN_GOTO(state, expected, func, label)	do{ \
-	if((state) != (expected)){ \
-		printf("test: %s() - expected return " \
-		       "value %d, got %d\n", func, expected, state); \
-		goto label; \
-	} \
-}while(0)
+#define CHECK_RETURN_GOTO(state, expected, func, label)                                            \
+        do {                                                                                       \
+                if ((state) != (expected)) {                                                       \
+                        printf("test: %s() - expected return "                                     \
+                               "value %d, got %d\n",                                               \
+                               func, expected, state);                                             \
+                        goto label;                                                                \
+                }                                                                                  \
+        } while (0)
 
 // Use sys/time.h functions for time
-#if defined (__unix__) || (__APPLE__) || (__MINGW32__)
-# include <sys/time.h>
+#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+#include <sys/time.h>
 #endif
 
 #ifdef _MSC_VER
-# define inline __inline
-# include <time.h>
-# include <Windows.h>
+#define inline __inline
+#include <time.h>
+#include <Windows.h>
 #endif
 
 #include <stdio.h>
 #include <stdint.h>
 
-struct perf{
-	struct timeval tv;
+struct perf {
+        struct timeval tv;
 };
 
-
-#if defined (__unix__) || (__APPLE__) || (__MINGW32__)
-static inline int perf_start(struct perf *p)
+#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+static inline int
+perf_start(struct perf *p)
 {
-	return gettimeofday(&(p->tv), 0);
+        return gettimeofday(&(p->tv), 0);
 }
-static inline int perf_stop(struct perf *p)
+static inline int
+perf_stop(struct perf *p)
 {
-	return gettimeofday(&(p->tv), 0);
+        return gettimeofday(&(p->tv), 0);
 }
 
-static inline void perf_print(struct perf stop, struct perf start, long long dsize)
+static inline void
+perf_print(struct perf stop, struct perf start, long long dsize)
 {
-	long long secs = stop.tv.tv_sec - start.tv.tv_sec;
-	long long usecs = secs * 1000000 + stop.tv.tv_usec - start.tv.tv_usec;
+        long long secs = stop.tv.tv_sec - start.tv.tv_sec;
+        long long usecs = secs * 1000000 + stop.tv.tv_usec - start.tv.tv_usec;
 
-	printf("runtime = %10lld usecs", usecs);
-	if (dsize != 0) {
+        printf("runtime = %10lld usecs", usecs);
+        if (dsize != 0) {
 #if 1 // not bug in printf for 32-bit
-		printf(", bandwidth %lld MB in %.4f sec = %.2f MB/s\n", dsize/(1024*1024),
-			((double) usecs)/1000000, ((double) dsize) / (double)usecs);
+                printf(", bandwidth %lld MB in %.4f sec = %.2f MB/s\n", dsize / (1024 * 1024),
+                       ((double) usecs) / 1000000, ((double) dsize) / (double) usecs);
 #else
-		printf(", bandwidth %lld MB ", dsize/(1024*1024));
-		printf("in %.4f sec ",(double)usecs/1000000);
-		printf("= %.2f MB/s\n", (double)dsize/usecs);
+                printf(", bandwidth %lld MB ", dsize / (1024 * 1024));
+                printf("in %.4f sec ", (double) usecs / 1000000);
+                printf("= %.2f MB/s\n", (double) dsize / usecs);
 #endif
-	}
-	else
-		printf("\n");
+        } else
+                printf("\n");
 }
 #endif
 
-static inline uint64_t get_filesize(FILE *fp)
+static inline uint64_t
+get_filesize(FILE *fp)
 {
-	uint64_t file_size;
-	fpos_t pos, pos_curr;
+        uint64_t file_size;
+        fpos_t pos, pos_curr;
 
-	fgetpos(fp, &pos_curr);  /* Save current position */
+        fgetpos(fp, &pos_curr); /* Save current position */
 #if defined(_WIN32) || defined(_WIN64)
-	_fseeki64(fp, 0, SEEK_END);
+        _fseeki64(fp, 0, SEEK_END);
 #else
-	fseeko(fp, 0, SEEK_END);
+        fseeko(fp, 0, SEEK_END);
 #endif
-	fgetpos(fp, &pos);
-	file_size = *(uint64_t *)&pos;
-	fsetpos(fp, &pos_curr);  /* Restore position */
+        fgetpos(fp, &pos);
+        file_size = *(uint64_t *) &pos;
+        fsetpos(fp, &pos_curr); /* Restore position */
 
-	return file_size;
+        return file_size;
 }
 
 #ifdef __cplusplus
