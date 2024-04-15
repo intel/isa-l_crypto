@@ -30,24 +30,24 @@
 #include <string.h>
 #include "mh_sha1_murmur3_aarch64_internal.h"
 
-extern void mh_sha1_tail_ce(uint8_t * partial_buffer, uint32_t total_len,
-			    uint32_t(*mh_sha1_segs_digests)[HASH_SEGS],
-			    uint8_t * frame_buffer,
-			    uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+extern void
+mh_sha1_tail_ce(uint8_t *partial_buffer, uint32_t total_len,
+                uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
-extern void mh_sha1_block_ce(const uint8_t * input_data,
-			     uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-			     uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+extern void
+mh_sha1_block_ce(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                 uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 // mh_sha1_murmur3_update_ce.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_update_ce
-#define BLOCK_FUNCTION	mh_sha1_murmur3_block_ce
+#define BLOCK_FUNCTION  mh_sha1_murmur3_block_ce
 #include "mh_sha1_murmur3_x64_128_update_base.c"
 #undef UPDATE_FUNCTION
 #undef BLOCK_FUNCTION
 
 // mh_sha1_murmur3_finalize_ce.c
-#define FINALIZE_FUNCTION mh_sha1_murmur3_finalize_ce
+#define FINALIZE_FUNCTION     mh_sha1_murmur3_finalize_ce
 #define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_ce
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION

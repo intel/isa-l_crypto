@@ -27,13 +27,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include <stdlib.h>		// for NULL
+#include <stdlib.h> // for NULL
 #include "murmur3_x64_128_internal.c"
 
 #if (__GNUC__ >= 11)
-# define OPT_FIX2 __attribute__ ((optimize(1)))
+#define OPT_FIX2 __attribute__((optimize(1)))
 #else
-# define OPT_FIX2
+#define OPT_FIX2
 #endif
 
 /*******************************************************************
@@ -52,34 +52,35 @@
  * @returns none
  *
  */
-void OPT_FIX2 murmur3_x64_128(const void *buffer, uint32_t len, uint64_t murmur_seed,
-			      uint32_t * murmur3_x64_128_digest)
+void OPT_FIX2
+murmur3_x64_128(const void *buffer, uint32_t len, uint64_t murmur_seed,
+                uint32_t *murmur3_x64_128_digest)
 {
-	uint64_t *murmur3_x64_128_hash;
-	uint32_t murmur3_x64_128_hash_dword[4];
-	uint8_t *tail_buffer;
-	const uint8_t *input_data = (const uint8_t *)buffer;
+        uint64_t *murmur3_x64_128_hash;
+        uint32_t murmur3_x64_128_hash_dword[4];
+        uint8_t *tail_buffer;
+        const uint8_t *input_data = (const uint8_t *) buffer;
 
-	// Initiate murmur3
-	murmur3_x64_128_hash = (uint64_t *) murmur3_x64_128_hash_dword;
-	murmur3_x64_128_hash[0] = murmur_seed;
-	murmur3_x64_128_hash[1] = murmur_seed;
+        // Initiate murmur3
+        murmur3_x64_128_hash = (uint64_t *) murmur3_x64_128_hash_dword;
+        murmur3_x64_128_hash[0] = murmur_seed;
+        murmur3_x64_128_hash[1] = murmur_seed;
 
-	// process bodies
-	murmur3_x64_128_block((uint8_t *) input_data, len / MUR_BLOCK_SIZE,
-			      murmur3_x64_128_hash_dword);
+        // process bodies
+        murmur3_x64_128_block((uint8_t *) input_data, len / MUR_BLOCK_SIZE,
+                              murmur3_x64_128_hash_dword);
 
-	// process finalize
-	tail_buffer = (uint8_t *) input_data + len - len % MUR_BLOCK_SIZE;
-	murmur3_x64_128_tail(tail_buffer, len, murmur3_x64_128_hash_dword);
+        // process finalize
+        tail_buffer = (uint8_t *) input_data + len - len % MUR_BLOCK_SIZE;
+        murmur3_x64_128_tail(tail_buffer, len, murmur3_x64_128_hash_dword);
 
-	// output the digests
-	if (murmur3_x64_128_digest != NULL) {
-		murmur3_x64_128_digest[0] = murmur3_x64_128_hash_dword[0];
-		murmur3_x64_128_digest[1] = murmur3_x64_128_hash_dword[1];
-		murmur3_x64_128_digest[2] = murmur3_x64_128_hash_dword[2];
-		murmur3_x64_128_digest[3] = murmur3_x64_128_hash_dword[3];
-	}
+        // output the digests
+        if (murmur3_x64_128_digest != NULL) {
+                murmur3_x64_128_digest[0] = murmur3_x64_128_hash_dword[0];
+                murmur3_x64_128_digest[1] = murmur3_x64_128_hash_dword[1];
+                murmur3_x64_128_digest[2] = murmur3_x64_128_hash_dword[2];
+                murmur3_x64_128_digest[3] = murmur3_x64_128_hash_dword[3];
+        }
 
-	return;
+        return;
 }

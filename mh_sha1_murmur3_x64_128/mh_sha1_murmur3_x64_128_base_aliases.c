@@ -28,16 +28,16 @@
 **********************************************************************/
 #include "mh_sha1_murmur3_x64_128_internal.h"
 #include <string.h>
-int mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
-				   uint32_t len)
+int
+mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                               uint32_t len)
 {
-	return mh_sha1_murmur3_x64_128_update_base(ctx, buffer, len);
-
+        return mh_sha1_murmur3_x64_128_update_base(ctx, buffer, len);
 }
 
-int mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx,
-				     void *mh_sha1_digest, void *murmur3_x64_128_digest)
+int
+mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                 void *murmur3_x64_128_digest)
 {
-	return mh_sha1_murmur3_x64_128_finalize_base(ctx, mh_sha1_digest,
-						     murmur3_x64_128_digest);
+        return mh_sha1_murmur3_x64_128_finalize_base(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 }
