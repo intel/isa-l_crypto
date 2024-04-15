@@ -30,7 +30,6 @@
 #ifndef GCM_TEST_ALLOC_H_
 #define GCM_TEST_ALLOC_H_
 
-#include <malloc.h>		// for memalign() and _aligned_malloc() & aligned_free()
 #include "types.h"		// aligned_free() and posix_memalign() wrappers
 
 #define DIM(x) (sizeof(x) / sizeof(x[0]))

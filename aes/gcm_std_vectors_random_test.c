@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>		// for memcmp()
-#include <malloc.h>		// for memalign() and _aligned_malloc() & aligned_free()
 #include <aes_gcm.h>
 #include <openssl/sha.h>
 #include "gcm_vectors.h"
