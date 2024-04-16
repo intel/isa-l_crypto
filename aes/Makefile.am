@@ -38,6 +38,7 @@ lsrc            += aes/cbc_pre.c
 lsrc            += aes/aes_keyexp.c
 lsrc            += aes/aes_cbc.c
 lsrc            += aes/aes_xts.c
+lsrc            += aes/aes_gcm.c
 
 lsrc_x86_64     += aes/gcm_multibinary.asm
 lsrc_x86_64     += aes/gcm128_avx_gen2.asm aes/gcm128_avx_gen4.asm aes/gcm128_sse.asm

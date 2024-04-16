@@ -104,6 +104,8 @@ extern "C" {
 #define GCM_ENC_KEY_LEN 16
 #define GCM_KEY_SETS    (15) /*exp key + 14 exp round keys */
 
+#define GCM_MAX_LEN UINT64_C(((1ULL << 39) - 256) - 1)
+
 /**
  * @brief holds intermediate key data needed to improve performance
  *
@@ -575,6 +577,527 @@ aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
                           uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
                           const uint8_t *in, //!< Ciphertext input
                           uint64_t len       //!< Length of data in Bytes for decryption
+);
+
+/**
+ * @brief GCM-AES Encryption using 128 bit keys
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_128(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len,                    //!< Length of data in Bytes for encryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of
+                                    //!< 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Encryption using 256 bit keys
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_256(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len,                    //!< Length of data in Bytes for encryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of
+                                    //!< 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_128(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len,                    //!< Length of data in Bytes for decryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of
+                                    //!< 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_256(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len,                    //!< Length of data in Bytes for decryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple of
+                                    //!< 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief Start a AES-GCM Encryption message 128 bit key
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                      struct gcm_context_data *context_data, //!< GCM operation context data
+                      const uint8_t *iv,                     //!< Pointer to 12 byte IV structure
+                      //!< Internally, library concates 0x00000001 value to it
+                      const uint8_t *aad,    //!< Additional Authenticated Data (AAD)
+                      const uint64_t aad_len //!< Length of AAD
+);
+
+/**
+ * @brief Start a AES-GCM Encryption message 256 bit key
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                      struct gcm_context_data *context_data, //!< GCM operation context data
+                      const uint8_t *iv,                     //!< Pointer to 12 byte IV structure
+                      //!< Internally, library concates 0x00000001 value to it
+                      const uint8_t *aad,    //!< Additional Authenticated Data (AAD)
+                      const uint64_t aad_len //!< Length of AAD
+);
+
+/**
+ * @brief Encrypt a block of a AES-128-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                            struct gcm_context_data *context_data, //!< GCM operation context data
+                            uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+                            const uint8_t *in, //!< Plaintext input
+                            const uint64_t len //!< Length of data in Bytes for encryption
+);
+
+/**
+ * @brief Encrypt a block of a AES-256-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                            struct gcm_context_data *context_data, //!< GCM operation context data
+                            uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+                            const uint8_t *in, //!< Plaintext input
+                            const uint64_t len //!< Length of data in Bytes for encryption
+);
+
+/**
+ * @brief Decrypt a block of a AES-128-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                            struct gcm_context_data *context_data, //!< GCM operation context data
+                            uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+                            const uint8_t *in, //!< Ciphertext input
+                            const uint64_t len //!< Length of data in Bytes for decryption
+);
+
+/**
+ * @brief Decrypt a block of a AES-256-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
+                            struct gcm_context_data *context_data, //!< GCM operation context data
+                            uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+                            const uint8_t *in, //!< Ciphertext input
+                            const uint64_t len //!< Length of data in Bytes for decryption
+);
+
+/**
+ * @brief End encryption of a AES-128-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_128_finalize(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                     //!< Authenticated Tag output
+        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
+                                               //!< multiple of 4 bytes).
+                                               //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief End encryption of a AES-256-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_256_finalize(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                     //!< Authenticated Tag output
+        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
+                                               //!< multiple of 4 bytes).
+                                               //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief End decryption of a AES-128-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_128_finalize(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                     //!< Authenticated Tag output
+        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
+                                               //!< multiple of 4 bytes).
+                                               //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief End decryption of a AES-256-GCM Encryption message
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_256_finalize(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                     //!< Authenticated Tag output
+        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
+                                               //!< multiple of 4 bytes).
+                                               //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief Pre-processes GCM key data 128 bit
+ *
+ * Prefills the gcm key data with key values for each round and
+ * the initial sub hash key for tag encoding
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_pre_128(const int *key,               //!< Pointer to key data
+                     struct gcm_key_data *key_data //!< GCM expanded key data
+);
+
+/**
+ * @brief Pre-processes GCM key data 128 bit
+ *
+ * Prefills the gcm key data with key values for each round and
+ * the initial sub hash key for tag encoding
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_pre_256(const int *key,               //!< Pointer to key data
+                     struct gcm_key_data *key_data //!< GCM expanded key data
+);
+
+/* ---- NT versions ---- */
+/**
+ * @brief GCM-AES Encryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of encrypt has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_128_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len,                    //!< Length of data in Bytes for encryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple
+                                    //!< of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Encryption using 256 bit keys, Non-temporal data
+ *
+ * Non-temporal version of encrypt has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_256_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len,                    //!< Length of data in Bytes for encryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple
+                                    //!< of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of decrypt has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_128_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len,                    //!< Length of data in Bytes for decryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple
+                                    //!< of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief GCM-AES Decryption using 128 bit keys, Non-temporal data
+ *
+ * Non-temporal version of decrypt has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_256_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len,                    //!< Length of data in Bytes for decryption
+        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        //!< Internally, library concates 0x00000001 value to it.
+        const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
+        const uint64_t aad_len,     //!< Length of AAD
+        uint8_t *auth_tag,          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a multiple
+                                    //!< of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
+);
+
+/**
+ * @brief Encrypt a block of a AES-128-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of encrypt update has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_128_update_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len                     //!< Length of data in Bytes for encryption
+);
+
+/**
+ * @brief Encrypt a block of a AES-256-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of encrypt update has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_enc_256_update_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in,                     //!< Plaintext input
+        const uint64_t len                     //!< Length of data in Bytes for encryption
+);
+
+/**
+ * @brief Decrypt a block of a AES-128-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of decrypt update has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_128_update_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len                     //!< Length of data in Bytes for decryption
+);
+
+/**
+ * @brief Decrypt a block of a AES-256-GCM Encryption message, Non-temporal data
+ *
+ * Non-temporal version of decrypt update has additional restrictions:
+ * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
+ * - All partial input buffers must be a multiple of 64 bytes long except for
+ *   the last input buffer.
+ * - In-place encryption/decryption is not recommended. Performance can be slow.
+ *
+ * @requires AES extensions and SSE4.1 for x86 or ASIMD for ARM
+ *
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_aes_gcm_dec_256_update_nt(
+        const struct gcm_key_data *key_data,   //!< GCM expanded key data
+        struct gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in,                     //!< Ciphertext input
+        const uint64_t len                     //!< Length of data in Bytes for decryption
 );
 
 #ifdef __cplusplus
