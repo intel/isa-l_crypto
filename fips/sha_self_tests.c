@@ -27,50 +27,62 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#ifndef _INTERNAL_FIPS_H
-#define _INTERNAL_FIPS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * @brief Internal function checking on self tests status.
- *
- * @return  Self test result
- * @retval  0 on success, 1 on failure, else on self tests not done
+/*
+ * SHA self tests
  */
-int
-asm_check_self_tests_status(void);
 
-/**
- * @brief Internal function setting the self tests status.
- *
- * To be called after running the self tests. It changes the status
- * to self tests OK (0) or self tests failed (1).
- *
- * @param [in] status Self test status
- */
-void
-asm_set_self_tests_status(int status);
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
-/**
- * @brief Run AES self tests
- * @return  Self test result
- * @retval  0 on success, 1 on failure
- */
-int
-_aes_self_tests(void);
+#include "sha1_mb.h"
 
-/**
- * @brief Run SHA self tests
- * @return  Self test result
- * @retval  0 on success, 1 on failure
- */
-int
-_sha_self_tests(void);
+#include "internal_fips.h"
+#include "types.h"
+#include "test.h"
 
-#ifdef __cplusplus
+typedef uint32_t DigestSHA1[SHA1_DIGEST_NWORDS];
+
+static const uint8_t msg[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+static const DigestSHA1 expResultDigest_sha1 = { 0x84983E44, 0x1C3BD26E, 0xBAAE4AA1, 0xF95129E5,
+                                                 0xE54670F1 };
+
+static int
+_sha1_self_test(void)
+{
+
+        SHA1_HASH_CTX_MGR mgr;
+        SHA1_HASH_CTX ctxpool, *ctx = NULL;
+        uint32_t j;
+
+        sha1_ctx_mgr_init(&mgr);
+
+        // Init context before first use
+        hash_ctx_init(&ctxpool);
+
+        ctx = sha1_ctx_mgr_submit(&mgr, &ctxpool, msg, strlen((char *) msg), HASH_ENTIRE);
+
+        if (ctx == NULL)
+                ctx = sha1_ctx_mgr_flush(&mgr);
+
+        if (ctx) {
+                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        if (expResultDigest_sha1[j] != ctxpool.job.result_digest[j])
+                                return -1;
+                }
+        } else
+                return -1;
+
+        return 0;
 }
-#endif //__cplusplus
-#endif // ifndef _INTERNAL_FIPS_H
+
+int
+_sha_self_tests(void)
+{
+        int ret;
+
+        ret = _sha1_self_test();
+
+        return ret;
+}

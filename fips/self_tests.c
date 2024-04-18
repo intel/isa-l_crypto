@@ -52,6 +52,8 @@ isal_self_tests(void)
         /* Self tests have not been done yet, so run them */
         ret = _aes_self_tests();
 
+        ret |= _sha_self_tests();
+
         asm_set_self_tests_status(ret);
 
         if (ret == 0)

@@ -257,6 +257,7 @@ objs = \
 	bin\sha512_mb.obj \
 	bin\aes_gcm.obj \
 	bin\aes_self_tests.obj \
+	bin\sha_self_tests.obj \
 	bin\self_tests.obj \
         bin\asm_self_tests.obj
 

@@ -35,7 +35,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
 
 #include "aes_cbc.h"
 #include "aes_xts.h"
