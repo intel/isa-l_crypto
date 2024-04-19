@@ -39,6 +39,7 @@
 
 #include "aes_cbc.h"
 #include "aes_xts.h"
+#include "aes_gcm.h"
 #include "aes_keyexp.h"
 
 #include "internal_fips.h"
@@ -63,6 +64,20 @@ struct self_test_xts_vector {
         const uint8_t *plaintext;  /* Plaintext */
         size_t plaintext_size;     /* Plaintext length in bytes */
         const uint8_t *ciphertext; /* Ciphertext */
+        const char *description;   /* Description of vector */
+};
+
+struct self_test_gcm_vector {
+        const uint8_t *key;        /* Cipher key */
+        size_t cipher_key_size;    /* Key size in bytes */
+        uint8_t *cipher_iv;        /* Initialization vector */
+        const uint8_t *plaintext;  /* Plaintext */
+        size_t plaintext_size;     /* Plaintext length in bytes */
+        const uint8_t *ciphertext; /* Ciphertext */
+        const uint8_t *aad;        /* AAD */
+        size_t aad_size;           /* AAD size */
+        uint8_t *tag;              /* Authenticationg tag */
+        size_t tag_size;           /* Authenticationg tag size */
         const char *description;   /* Description of vector */
 };
 
@@ -253,6 +268,57 @@ static uint8_t aes_xts_256_ciphertext[512] = {
         0x54, 0xc4, 0xf3, 0x6f, 0xfd, 0xa9, 0xfc, 0xea, 0x70, 0xb9, 0xc6, 0xe6, 0x93, 0xe1, 0x48,
         0xc1, 0x51
 };
+
+/* AES-GCM-128 vector, from
+ * http://www.ieee802.org/1/files/public/docs2011/bn-randall-test-vectors-0511-v1.pdf */
+static const uint8_t aes_gcm_128_key[] = { 0xAD, 0x7A, 0x2B, 0xD0, 0x3E, 0xAC, 0x83, 0x5A,
+                                           0x6F, 0x62, 0x0F, 0xDC, 0xB5, 0x06, 0xB3, 0x45 };
+static const uint8_t aes_gcm_128_plaintext[] = { 0x08, 0x00, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14,
+                                                 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C,
+                                                 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x24,
+                                                 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C,
+                                                 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x33, 0x34,
+                                                 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x00, 0x02 };
+static uint8_t aes_gcm_128_iv[] = { 0x12, 0x15, 0x35, 0x24, 0xC0, 0x89,
+                                    0x5E, 0x81, 0xB2, 0xC2, 0x84, 0x65 };
+static const uint8_t aes_gcm_128_aad[] = { 0xD6, 0x09, 0xB1, 0xF0, 0x56, 0x63, 0x7A,
+                                           0x0D, 0x46, 0xDF, 0x99, 0x8D, 0x88, 0xE5,
+                                           0x2E, 0x00, 0xB2, 0xC2, 0x84, 0x65, 0x12,
+                                           0x15, 0x35, 0x24, 0xC0, 0x89, 0x5E, 0x81 };
+static const uint8_t aes_gcm_128_ciphertext[] = { 0x70, 0x1A, 0xFA, 0x1C, 0xC0, 0x39, 0xC0, 0xD7,
+                                                  0x65, 0x12, 0x8A, 0x66, 0x5D, 0xAB, 0x69, 0x24,
+                                                  0x38, 0x99, 0xBF, 0x73, 0x18, 0xCC, 0xDC, 0x81,
+                                                  0xC9, 0x93, 0x1D, 0xA1, 0x7F, 0xBE, 0x8E, 0xDD,
+                                                  0x7D, 0x17, 0xCB, 0x8B, 0x4C, 0x26, 0xFC, 0x81,
+                                                  0xE3, 0x28, 0x4F, 0x2B, 0x7F, 0xBA, 0x71, 0x3D };
+static uint8_t aes_gcm_128_tag[] = { 0x4F, 0x8D, 0x55, 0xE7, 0xD3, 0xF0, 0x6F, 0xD5,
+                                     0xA1, 0x3C, 0x0C, 0x29, 0xB9, 0xD5, 0xB8, 0x80 };
+
+/* AES-GCM-256 vector, from
+ * http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-revised-spec.pdf */
+static const uint8_t aes_gcm_256_key[] = { 0xfe, 0xff, 0xe9, 0x92, 0x86, 0x65, 0x73, 0x1c,
+                                           0x6d, 0x6a, 0x8f, 0x94, 0x67, 0x30, 0x83, 0x08,
+                                           0xfe, 0xff, 0xe9, 0x92, 0x86, 0x65, 0x73, 0x1c,
+                                           0x6d, 0x6a, 0x8f, 0x94, 0x67, 0x30, 0x83, 0x08 };
+static const uint8_t aes_gcm_256_plaintext[] = {
+        0xd9, 0x31, 0x32, 0x25, 0xf8, 0x84, 0x06, 0xe5, 0xa5, 0x59, 0x09, 0xc5, 0xaf, 0xf5, 0x26,
+        0x9a, 0x86, 0xa7, 0xa9, 0x53, 0x15, 0x34, 0xf7, 0xda, 0x2e, 0x4c, 0x30, 0x3d, 0x8a, 0x31,
+        0x8a, 0x72, 0x1c, 0x3c, 0x0c, 0x95, 0x95, 0x68, 0x09, 0x53, 0x2f, 0xcf, 0x0e, 0x24, 0x49,
+        0xa6, 0xb5, 0x25, 0xb1, 0x6a, 0xed, 0xf5, 0xaa, 0x0d, 0xe6, 0x57, 0xba, 0x63, 0x7b, 0x39
+};
+static const uint8_t aes_gcm_256_aad[] = { 0xfe, 0xed, 0xfa, 0xce, 0xde, 0xad, 0xbe,
+                                           0xef, 0xfe, 0xed, 0xfa, 0xce, 0xde, 0xad,
+                                           0xbe, 0xef, 0xab, 0xad, 0xda, 0xd2 };
+static uint8_t aes_gcm_256_iv[] = { 0xca, 0xfe, 0xba, 0xbe, 0xfa, 0xce,
+                                    0xdb, 0xad, 0xde, 0xca, 0xf8, 0x88 };
+static const uint8_t aes_gcm_256_ciphertext[] = {
+        0x52, 0x2d, 0xc1, 0xf0, 0x99, 0x56, 0x7d, 0x07, 0xf4, 0x7f, 0x37, 0xa3, 0x2a, 0x84, 0x42,
+        0x7d, 0x64, 0x3a, 0x8c, 0xdc, 0xbf, 0xe5, 0xc0, 0xc9, 0x75, 0x98, 0xa2, 0xbd, 0x25, 0x55,
+        0xd1, 0xaa, 0x8c, 0xb0, 0x8e, 0x48, 0x59, 0x0d, 0xbb, 0x3d, 0xa7, 0xb0, 0x8b, 0x10, 0x56,
+        0x82, 0x88, 0x38, 0xc5, 0xf6, 0x1e, 0x63, 0x93, 0xba, 0x7a, 0x0a, 0xbc, 0xc9, 0xf6, 0x62
+};
+static uint8_t aes_gcm_256_tag[] = { 0x76, 0xfc, 0x6e, 0xce, 0x0f, 0x4e, 0x17, 0x68,
+                                     0xcd, 0xdf, 0x88, 0x53, 0xbb, 0x2d, 0x55, 0x1b };
 
 #define ADD_CBC_VECTOR(_key, _iv, _plain, _cipher, _descr)                                         \
         {                                                                                          \
@@ -489,20 +555,173 @@ _aes_xts_self_test(void)
         return 0;
 }
 
+#define ADD_GCM_VECTOR(_key, _iv, _plain, _cipher, _aad, _tag, _descr)                             \
+        {                                                                                          \
+                _key, sizeof(_key), _iv, _plain, sizeof(_plain), _cipher, _aad, sizeof(_aad),      \
+                        _tag, sizeof(_tag), _descr                                                 \
+        }
+
+static const struct self_test_gcm_vector gcm_vectors[] = {
+        ADD_GCM_VECTOR(aes_gcm_128_key, aes_gcm_128_iv, aes_gcm_128_plaintext,
+                       aes_gcm_128_ciphertext, aes_gcm_128_aad, aes_gcm_128_tag, "AES128-GCM"),
+        ADD_GCM_VECTOR(aes_gcm_256_key, aes_gcm_256_iv, aes_gcm_256_plaintext,
+                       aes_gcm_256_ciphertext, aes_gcm_256_aad, aes_gcm_256_tag, "AES256-GCM"),
+};
+
+static int
+gcm_self_test_vector(const struct self_test_gcm_vector *v)
+{
+        struct gcm_key_data gkey;
+        struct gcm_context_data gctx;
+        uint8_t scratch[512];
+        uint8_t result_tag[16];
+
+        /* message too long */
+        if (v->plaintext_size > sizeof(scratch))
+                return 0;
+
+        /* Precompute AES and GHASH keys */
+        switch (v->cipher_key_size) {
+        case 16:
+                aes_gcm_pre_128(v->key, &gkey);
+                break;
+        case 32:
+                aes_gcm_pre_256(v->key, &gkey);
+                break;
+        default:
+                /* invalid key size */
+                return 0;
+        }
+
+        /* test encrypt direction (single call API) */
+        memset(scratch, 0, sizeof(scratch));
+        memcpy(scratch, v->plaintext, v->plaintext_size);
+        switch (v->cipher_key_size) {
+        case 16:
+                aes_gcm_enc_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                v->aad, v->aad_size, result_tag, v->tag_size);
+                break;
+        case 32:
+                aes_gcm_enc_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                v->aad, v->aad_size, result_tag, v->tag_size);
+                break;
+        default:
+                /* invalid key size */
+                return 0;
+        }
+
+        /* check for ciphertext mismatch */
+        if (memcmp(scratch, v->ciphertext, v->plaintext_size))
+                return 0;
+
+        /* check for authentication tag mismatch */
+        if (memcmp(result_tag, v->tag, v->tag_size))
+                return 0;
+
+        /* test encrypt direction (multi-call API) */
+        memset(scratch, 0, sizeof(scratch));
+        memcpy(scratch, v->plaintext, v->plaintext_size);
+        switch (v->cipher_key_size) {
+        case 16:
+                aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                aes_gcm_enc_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                aes_gcm_enc_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                break;
+        case 32:
+                aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                aes_gcm_enc_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                aes_gcm_enc_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                break;
+        default:
+                /* invalid key size */
+                return 0;
+        }
+
+        /* check for ciphertext mismatch */
+        if (memcmp(scratch, v->ciphertext, v->plaintext_size))
+                return 0;
+
+        /* check for authentication tag mismatch */
+        if (memcmp(result_tag, v->tag, v->tag_size))
+                return 0;
+
+        /* test decrypt direction (single-call API) */
+        memset(scratch, 0, sizeof(scratch));
+        memcpy(scratch, v->ciphertext, v->plaintext_size);
+
+        switch (v->cipher_key_size) {
+        case 16:
+                aes_gcm_dec_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                v->aad, v->aad_size, result_tag, v->tag_size);
+                break;
+        case 32:
+                aes_gcm_dec_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                v->aad, v->aad_size, result_tag, v->tag_size);
+                break;
+        default:
+                /* invalid key size */
+                return 0;
+        }
+
+        /* check for plaintext mismatch */
+        if (memcmp(scratch, v->plaintext, v->plaintext_size))
+                return 0;
+
+        /* check for authentication tag mismatch */
+        if (memcmp(result_tag, v->tag, v->tag_size))
+                return 0;
+
+        /* test decrypt direction (multi-call API) */
+        memset(scratch, 0, sizeof(scratch));
+        memcpy(scratch, v->ciphertext, v->plaintext_size);
+        switch (v->cipher_key_size) {
+        case 16:
+                aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                aes_gcm_dec_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                aes_gcm_dec_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                break;
+        case 32:
+                aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                aes_gcm_dec_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                aes_gcm_dec_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                break;
+        default:
+                /* invalid key size */
+                return 0;
+        }
+
+        /* check for plaintext mismatch */
+        if (memcmp(scratch, v->plaintext, v->plaintext_size))
+                return 0;
+
+        /* check for authentication tag mismatch */
+        if (memcmp(result_tag, v->tag, v->tag_size))
+                return 0;
+
+        return 1;
+}
+
+static int
+_aes_gcm_self_test(void)
+{
+        for (unsigned i = 0; i < DIM(gcm_vectors); i++) {
+                const struct self_test_gcm_vector *v = &gcm_vectors[i];
+
+                if (gcm_self_test_vector(v) == 0)
+                        return 1;
+        }
+
+        return 0;
+}
+
 int
 _aes_self_tests(void)
 {
         int ret;
 
         ret = _aes_cbc_self_test();
+        ret |= _aes_xts_self_test();
+        ret |= _aes_gcm_self_test();
 
-        if (ret != 0)
-                return ret;
-
-        ret = _aes_xts_self_test();
-
-        if (ret != 0)
-                return ret;
-
-        return 0;
+        return ret;
 }
