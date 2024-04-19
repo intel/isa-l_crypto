@@ -87,6 +87,9 @@ FN_NAME(precomp,_):
 
         PRECOMPUTE arg1, xmm6, xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm7, xmm8
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
 exit_precomp:
 
@@ -112,6 +115,9 @@ FN_NAME(init,_):
                 zmm1, zmm3, zmm4, zmm5, zmm6, zmm7, zmm8, zmm9, zmm10, zmm11, \
                 zmm12, zmm13, zmm15, zmm16, zmm17, zmm18, zmm19, zmm20, multi_call
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
 
@@ -133,6 +139,9 @@ FN_NAME(enc,_update_):
 
         GCM_ENC_DEC arg1, arg2, arg3, arg4, arg5, ENC, multi_call
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
 
@@ -152,6 +161,9 @@ FN_NAME(dec,_update_):
 
         GCM_ENC_DEC arg1, arg2, arg3, arg4, arg5, DEC, multi_call
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
 
@@ -170,8 +182,10 @@ FN_NAME(enc,_finalize_):
         FUNC_SAVE small_frame
         GCM_COMPLETE    arg1, arg2, arg3, arg4, multi_call, k1, r10, r11, r12
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
-
         ret
 
 %endif	; _nt
@@ -192,8 +206,10 @@ FN_NAME(dec,_finalize_):
         FUNC_SAVE small_frame
         GCM_COMPLETE    arg1, arg2, arg3, arg4, multi_call, k1, r10, r11, r12
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
-
         ret
 
 %endif	; _nt
@@ -222,6 +238,9 @@ FN_NAME(enc,_):
         GCM_ENC_DEC  arg1, arg2, arg3, arg4, arg5, ENC, single_call
         GCM_COMPLETE arg1, arg2, arg9, arg10, single_call, k1, r10, r11, r12
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
 
@@ -249,6 +268,9 @@ FN_NAME(dec,_):
         GCM_ENC_DEC  arg1, arg2, arg3, arg4, arg5, DEC, single_call
         GCM_COMPLETE arg1, arg2, arg9, arg10, single_call, k1, r10, r11, r12
 
+%ifdef SAFE_DATA
+        clear_scratch_zmms_asm
+%endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
 
