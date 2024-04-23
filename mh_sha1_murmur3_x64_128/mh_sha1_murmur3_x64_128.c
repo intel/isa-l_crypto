@@ -29,6 +29,7 @@
 
 #include <string.h>
 #include "mh_sha1_murmur3_x64_128_internal.h"
+#include "isal_crypto_api.h"
 
 int
 mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
@@ -72,6 +73,43 @@ mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
                               murmur3_x64_128_digests);
 
         return;
+}
+
+int
+isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                  const uint64_t murmur_seed)
+{
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+        return mh_sha1_murmur3_x64_128_init(ctx, murmur_seed);
+}
+
+int
+isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    const uint32_t len)
+{
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
+#endif
+        return mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
+}
+
+int
+isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest)
+{
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (mh_sha1_digest == NULL || murmur3_x64_128_digest == NULL)
+                return ISAL_CRYPTO_ERR_NULL_AUTH;
+#endif
+        return mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 }
 
 #if (!defined(NOARCH)) &&                                                                          \

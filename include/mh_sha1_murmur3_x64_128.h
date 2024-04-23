@@ -332,6 +332,55 @@ int
 mh_sha1_murmur3_x64_128_finalize_avx512(struct mh_sha1_murmur3_x64_128_ctx *ctx,
                                         void *mh_sha1_digest, void *murmur3_x64_128_digest);
 
+/**
+ * @brief Initialize the mh_sha1_murmur3_x64_128_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  murmur_seed Seed as an initial digest of murmur3
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                  const uint64_t murmur_seed);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    const uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1 (5*4 bytes)
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128 (4*4 bytes)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
 #ifdef __cplusplus
 }
 #endif
