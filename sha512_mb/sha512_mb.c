@@ -38,6 +38,12 @@ isal_sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR *mgr)
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         sha512_ctx_mgr_init(mgr);
 
         return 0;
@@ -55,6 +61,11 @@ isal_sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx_in,
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
+#endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
         *ctx_out = sha512_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
@@ -82,6 +93,11 @@ isal_sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX **ctx_out)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
         if (ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
         *ctx_out = sha512_ctx_mgr_flush(mgr);
