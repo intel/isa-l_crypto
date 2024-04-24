@@ -57,6 +57,12 @@ isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_dat
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                         auth_tag, auth_tag_len);
 
@@ -89,6 +95,12 @@ isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_dat
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                         auth_tag, auth_tag_len);
 
@@ -121,6 +133,12 @@ isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_dat
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                         auth_tag, auth_tag_len);
         return 0;
@@ -152,6 +170,12 @@ isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_dat
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                         auth_tag, auth_tag_len);
         return 0;
@@ -171,6 +195,12 @@ isal_aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_da
         if (aad == NULL && aad_len > 0)
                 return ISAL_CRYPTO_ERR_NULL_AAD;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_init_128(key_data, context_data, (uint8_t *) iv, aad, aad_len);
 
         return 0;
@@ -190,6 +220,12 @@ isal_aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_da
         if (aad == NULL && aad_len > 0)
                 return ISAL_CRYPTO_ERR_NULL_AAD;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_init_256(key_data, context_data, (uint8_t *) iv, aad, aad_len);
 
         return 0;
@@ -212,6 +248,12 @@ isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_128_update(key_data, context_data, out, (uint8_t *) in, len);
 
         return 0;
@@ -234,6 +276,12 @@ isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_256_update(key_data, context_data, out, in, len);
 
         return 0;
@@ -256,6 +304,12 @@ isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_128_update(key_data, context_data, out, in, len);
 
         return 0;
@@ -298,6 +352,12 @@ isal_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
@@ -318,6 +378,12 @@ isal_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
@@ -338,6 +404,12 @@ isal_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
@@ -358,6 +430,12 @@ isal_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
@@ -372,6 +450,12 @@ isal_aes_gcm_pre_128(const int *key, struct gcm_key_data *key_data)
         if (key_data == NULL)
                 return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_pre_128(key, key_data);
 
         return 0;
@@ -386,6 +470,12 @@ isal_aes_gcm_pre_256(const int *key, struct gcm_key_data *key_data)
         if (key_data == NULL)
                 return ISAL_CRYPTO_ERR_NULL_EXP_KEY;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_pre_256(key, key_data);
 
         return 0;
@@ -417,6 +507,12 @@ isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                            auth_tag, auth_tag_len);
 
@@ -449,6 +545,12 @@ isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                            auth_tag, auth_tag_len);
 
@@ -481,6 +583,12 @@ isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                            auth_tag, auth_tag_len);
 
@@ -513,6 +621,12 @@ isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
         if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
                            auth_tag, auth_tag_len);
 
@@ -536,6 +650,12 @@ isal_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_128_update_nt(key_data, context_data, out, in, len);
         return 0;
 }
@@ -557,6 +677,12 @@ isal_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_enc_256_update_nt(key_data, context_data, out, in, len);
 
         return 0;
@@ -579,6 +705,12 @@ isal_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_128_update_nt(key_data, context_data, out, in, len);
 
         return 0;
@@ -601,6 +733,12 @@ isal_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
+
+#ifdef FIPS_MODE
+        if (isal_self_tests())
+                return ISAL_CRYPTO_ERR_SELF_TEST;
+#endif
+
         aes_gcm_dec_256_update_nt(key_data, context_data, out, in, len);
 
         return 0;
