@@ -111,22 +111,40 @@ check_vector(struct cbc_vector *vector)
         aes_cbc_precomp(vector->K, vector->K_LEN, vector->KEYS);
 
         ////
-        // ISA-l Encrypt
+        // ISA-L CBC Encrypt (out-of-place)
         ////
         enc(vector->P, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
 
         if (NULL != vector->EXP_C) { // when the encrypted text is known verify correct
                 OK |= check_data(vector->EXP_C, vector->C, vector->P_LEN,
-                                 "ISA-L expected cypher text (C)");
+                                 "AES-CBC out-of-place encryption");
+        }
+
+        ////
+        // ISA-L CBC Encrypt (in-place)
+        ////
+        memcpy(vector->C, vector->P, vector->P_LEN);
+        enc(vector->C, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
+
+        if (NULL != vector->EXP_C) { // when the encrypted text is known verify correct
+                OK |= check_data(vector->EXP_C, vector->C, vector->P_LEN,
+                                 "AES-CBC in-place encryption");
         }
         memcpy(pt_test, vector->P, vector->P_LEN);
         memset(vector->P, 0, vector->P_LEN);
 
         ////
-        // ISA-l Decrypt
+        // ISA-L CBC Decrypt (out-of-place)
         ////
         dec(vector->C, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
-        OK |= check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted plain text (P)");
+        OK |= check_data(vector->P, pt_test, vector->P_LEN, "AES-CBC in-place decryption");
+
+        ////
+        // ISA-L CBC Decrypt (in-place)
+        ////
+        memcpy(vector->P, vector->C, vector->P_LEN);
+        dec(vector->P, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
+        OK |= check_data(vector->P, pt_test, vector->P_LEN, "AES-CBC in-place decryption");
         DEBUG_PRINT((OK ? "Failed\n" : "Passed\n"));
 
         free(pt_test);
