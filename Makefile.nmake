@@ -208,11 +208,11 @@ objs = \
 	bin\keyexp_192.obj \
 	bin\keyexp_256.obj \
 	bin\cbc_multibinary.obj \
-	bin\cbc_dec_128_x4_sse.obj \
+	bin\cbc_dec_128_x8_sse.obj \
 	bin\cbc_dec_128_x8_avx.obj \
-	bin\cbc_dec_192_x4_sse.obj \
+	bin\cbc_dec_192_x8_sse.obj \
 	bin\cbc_dec_192_x8_avx.obj \
-	bin\cbc_dec_256_x4_sse.obj \
+	bin\cbc_dec_256_x8_sse.obj \
 	bin\cbc_dec_256_x8_avx.obj \
 	bin\cbc_enc_128_x4_sb.obj \
 	bin\cbc_enc_128_x8_sb.obj \
