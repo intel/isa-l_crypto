@@ -358,8 +358,7 @@ void
 mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
 {
         uint64_t total_len;
-        uint64_t num_blocks;
-        uint32_t mh_sha256_segs_digests[SHA256_DIGEST_WORDS][HASH_SEGS];
+        uint32_t num_blocks, mh_sha256_segs_digests[SHA256_DIGEST_WORDS][HASH_SEGS];
         uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE];
         uint8_t partial_block_buffer[MH_SHA256_BLOCK_SIZE * 2];
         uint32_t mh_sha256_hash_dword[SHA256_DIGEST_WORDS];
@@ -394,8 +393,8 @@ mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
         }
 
         /* Finalize */
-        mh_sha256_tail_ref(partial_block_buffer, total_len, mh_sha256_segs_digests, frame_buffer,
-                           mh_sha256_hash_dword);
+        mh_sha256_tail_ref(partial_block_buffer, (uint32_t) total_len, mh_sha256_segs_digests,
+                           frame_buffer, mh_sha256_hash_dword);
 
         // Output the digests of mh_sha256
         if (mh_sha256_digest != NULL) {

@@ -95,7 +95,7 @@ MH_SHA1_FINALIZE_FUNCTION(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
         mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
 
-        MH_SHA1_TAIL_FUNCTION(partial_block_buffer, total_len, mh_sha1_segs_digests,
+        MH_SHA1_TAIL_FUNCTION(partial_block_buffer, (uint32_t) total_len, mh_sha1_segs_digests,
                               aligned_frame_buffer, ctx->mh_sha1_digest);
 
         /* Output the digests of mh_sha1 */

@@ -41,8 +41,8 @@ UPDATE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uin
 {
 
         uint8_t *partial_block_buffer;
-        uint64_t partial_block_len;
-        uint64_t num_blocks;
+        uint32_t partial_block_len;
+        uint32_t num_blocks;
         uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
         uint8_t *aligned_frame_buffer;
         uint32_t *murmur3_x64_128_digest;

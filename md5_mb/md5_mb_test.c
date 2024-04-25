@@ -177,11 +177,11 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
-                                         HASH_ENTIRE);
+                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
+                                         (uint32_t) strlen((char *) msgs[i]), HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
@@ -205,7 +205,7 @@ main(void)
                 ctx = md5_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
@@ -238,10 +238,10 @@ main(void)
         checked = 0;
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
-                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j], strlen((char *) msgs[j]),
-                                         HASH_ENTIRE);
+                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
+                                         (uint32_t) strlen((char *) msgs[j]), HASH_ENTIRE);
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
@@ -260,7 +260,7 @@ main(void)
                                 goto end;
                         }
 
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                 }
         }
@@ -268,7 +268,7 @@ main(void)
                 ctx = md5_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;

@@ -73,7 +73,7 @@ main(void)
         MD5_HASH_CTX_MGR *mgr = NULL;
         MD5_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
-        int len_done, len_rem, len_rand;
+        uint32_t len_done, len_rem, len_rand;
         unsigned char *bufs[TEST_BUFS] = { 0 };
         unsigned char *buf_ptr[TEST_BUFS];
         uint32_t lens[TEST_BUFS];
@@ -131,7 +131,7 @@ main(void)
                         continue;
                 }
                 // Resubmit unfinished job
-                i = (uintptr_t) (ctx->user_data);
+                i = (uint32_t) (uintptr_t) (ctx->user_data);
                 buf_ptr[i] += UPDATE_SIZE;
         }
 
@@ -144,10 +144,10 @@ main(void)
                         continue;
                 }
                 // Resubmit unfinished job
-                i = (uintptr_t) (ctx->user_data);
+                i = (uint32_t) (uintptr_t) (ctx->user_data);
                 buf_ptr[i] += UPDATE_SIZE;
 
-                len_done = (int) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
+                len_done = (uint32_t) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
                 len_rem = TEST_LEN - len_done;
 
                 if (len_rem <= UPDATE_SIZE)
@@ -215,12 +215,13 @@ main(void)
                                 // submit either UPDATE or LAST depending on the amount of buffer
                                 // remaining
                                 while ((ctx != NULL) && !(hash_ctx_complete(ctx))) {
-                                        j = (uintptr_t) (ctx->user_data); // Get index of the
-                                                                          // returned ctx
+                                        j = (uint32_t) (uintptr_t) (ctx->user_data); // Get index of
+                                                                                     // the returned
+                                                                                     // ctx
                                         buf_ptr[j] = bufs[j] + ctx->total_length;
                                         len_rand = (rand() % MD5_BLOCK_SIZE) *
                                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
-                                        len_rem = lens[j] - ctx->total_length;
+                                        len_rem = lens[j] - (uint32_t) ctx->total_length;
 
                                         if (len_rem <=
                                             len_rand) // submit the rest of the job as LAST
@@ -248,9 +249,9 @@ main(void)
                                 continue;
                         }
                         // Resubmit unfinished job
-                        i = (uintptr_t) (ctx->user_data);
+                        i = (uint32_t) (uintptr_t) (ctx->user_data);
                         buf_ptr[i] = bufs[i] + ctx->total_length; // update buffer pointer
-                        len_rem = lens[i] - ctx->total_length;
+                        len_rem = lens[i] - (uint32_t) ctx->total_length;
                         len_rand = (rand() % MD5_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
                         debug_char('+');
                         if (len_rem <= len_rand)

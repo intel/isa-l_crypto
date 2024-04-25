@@ -60,15 +60,15 @@ FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
         // ( partial_block_buffer = n murmur3 blocks and 1 murmur3 tail)
         murmur_tail_data =
                 partial_block_buffer + partial_block_len - partial_block_len % MUR_BLOCK_SIZE;
-        MURMUR_BLOCK_FUNCTION(partial_block_buffer, partial_block_len / MUR_BLOCK_SIZE,
+        MURMUR_BLOCK_FUNCTION(partial_block_buffer, (uint32_t) (partial_block_len / MUR_BLOCK_SIZE),
                               ctx->murmur3_x64_128_digest);
-        MURMUR_TAIL_FUNCTION(murmur_tail_data, total_len, ctx->murmur3_x64_128_digest);
+        MURMUR_TAIL_FUNCTION(murmur_tail_data, (uint32_t) total_len, ctx->murmur3_x64_128_digest);
 
         /* mh_sha1 final */
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
         mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
 
-        MH_SHA1_TAIL_FUNCTION(partial_block_buffer, total_len, mh_sha1_segs_digests,
+        MH_SHA1_TAIL_FUNCTION(partial_block_buffer, (uint32_t) total_len, mh_sha1_segs_digests,
                               aligned_frame_buffer, ctx->mh_sha1_digest);
 
         /* Output  the digests of murmur3 and mh_sha1 */

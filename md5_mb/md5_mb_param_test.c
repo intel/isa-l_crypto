@@ -86,22 +86,22 @@ test_md5_mb_submit_api(void)
 
         // check null mgr
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(NULL, ctx_ptr, &ctx_ptr, msg,
-                                                  strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_MGR, fn_name, end_submit);
 
         // check null input ctx
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, NULL, &ctx_ptr, msg, strlen((char *) msg),
-                                                  HASH_ENTIRE),
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, NULL, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
         // check null output ctx
-        CHECK_RETURN_GOTO(
-                isal_md5_ctx_mgr_submit(mgr, ctx_ptr, NULL, msg, strlen((char *) msg), HASH_ENTIRE),
-                ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, NULL, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
         // check null source ptr
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, NULL,
-                                                  strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
         // check invalid len
@@ -110,15 +110,15 @@ test_md5_mb_submit_api(void)
                 ISAL_CRYPTO_ERR_AUTH_LEN, fn_name, end_submit);
 
         // check invalid flag
-        CHECK_RETURN_GOTO(
-                isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, strlen((char *) msg), 999),
-                ISAL_CRYPTO_ERR_INVALID_FLAGS, fn_name, end_submit);
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), 999),
+                          ISAL_CRYPTO_ERR_INVALID_FLAGS, fn_name, end_submit);
 
         // simulate internal error (submit in progress job)
         ctx_ptr->status = HASH_CTX_STS_PROCESSING;
 
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, strlen((char *) msg),
-                                                  HASH_ENTIRE),
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_ALREADY_PROCESSING, fn_name, end_submit);
 
         CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_PROCESSING, fn_name, end_submit);
@@ -127,16 +127,16 @@ test_md5_mb_submit_api(void)
         ctx_ptr->error = HASH_CTX_ERROR_NONE;
         ctx_ptr->status = HASH_CTX_STS_COMPLETE;
 
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, strlen((char *) msg),
-                                                  HASH_UPDATE),
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_UPDATE),
                           ISAL_CRYPTO_ERR_ALREADY_COMPLETED, fn_name, end_submit);
 
         CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_COMPLETED, fn_name, end_submit);
 
         // check valid args
         hash_ctx_init(&ctx);
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, strlen((char *) msg),
-                                                  HASH_ENTIRE),
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NONE, fn_name, end_submit);
         ret = 0;
 

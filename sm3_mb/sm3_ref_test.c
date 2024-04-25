@@ -79,8 +79,8 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
-                                         HASH_ENTIRE);
+                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
+                                         (uint32_t) strlen((char *) msgs[i]), HASH_ENTIRE);
 
                 if (ctx) {
                         t = (uint32_t) ((uintptr_t) ctx->user_data);
@@ -142,8 +142,8 @@ main(void)
         checked = 0;
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
-                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j], strlen((char *) msgs[j]),
-                                         HASH_ENTIRE);
+                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
+                                         (uint32_t) strlen((char *) msgs[j]), HASH_ENTIRE);
                 if (ctx) {
                         t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);

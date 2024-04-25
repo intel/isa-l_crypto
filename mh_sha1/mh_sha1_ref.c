@@ -386,8 +386,7 @@ mh_sha1_tail_ref(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha1_ref(const void *buffer, uint32_t len, uint32_t *mh_sha1_digest)
 {
-        uint64_t total_len;
-        uint64_t num_blocks;
+        uint32_t num_blocks, total_len;
         uint32_t mh_sha1_segs_digests[SHA1_DIGEST_WORDS][HASH_SEGS];
         uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE];
         uint8_t partial_block_buffer[MH_SHA1_BLOCK_SIZE * 2];

@@ -108,8 +108,8 @@ main(void)
 {
         uint8_t *buffer;
         uint64_t hash;
-        uint32_t mask, trigger, offset = 0;
-        int i, w, r, ret, max, errors = 0;
+        uint32_t w, max, mask, trigger, offset = 0;
+        int i, r, ret, errors = 0;
         uint32_t offset_fut;
         struct rh_state2 state;
 
@@ -135,7 +135,7 @@ main(void)
         FUT_reset(&state, buffer);
 
         uint8_t *p = buffer;
-        int remain = MAX_BUFFER_SIZE;
+        uint32_t remain = MAX_BUFFER_SIZE;
         ret = FINGERPRINT_RET_HIT;
 
         while ((ret == FINGERPRINT_RET_HIT) && (remain > 0)) {

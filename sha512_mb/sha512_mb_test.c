@@ -180,7 +180,6 @@ main(void)
         SHA512_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
         uint32_t i, j, k, t, checked = 0;
         uint64_t *good;
-        int ret;
 
 #if defined(_WIN32) || defined(_WIN64)
         mgr = (SHA512_HASH_CTX_MGR *) _aligned_malloc(sizeof(SHA512_HASH_CTX_MGR), 16);
@@ -189,7 +188,7 @@ main(void)
                 return 1;
         }
 #else
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        int ret = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed, test aborted\n");
                 return 1;
@@ -205,11 +204,11 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
-                                            HASH_ENTIRE);
+                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
+                                            (uint32_t) strlen((char *) msgs[i]), HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
@@ -236,7 +235,7 @@ main(void)
                 ctx = sha512_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         good = expResultDigest[t];
                         checked++;
                         for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
@@ -273,11 +272,11 @@ main(void)
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
 
-                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j], strlen((char *) msgs[j]),
-                                            HASH_ENTIRE);
+                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
+                                            (uint32_t) strlen((char *) msgs[j]), HASH_ENTIRE);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
@@ -299,7 +298,7 @@ main(void)
                                 return -1;
                         }
 
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                 }
         }
@@ -307,7 +306,7 @@ main(void)
                 ctx = sha512_ctx_mgr_flush(mgr);
 
                 if (ctx) {
-                        t = (uintptr_t) (ctx->user_data);
+                        t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;

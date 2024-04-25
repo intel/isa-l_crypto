@@ -96,7 +96,7 @@ MH_SHA256_FINALIZE_FUNCTION(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
         mh_sha256_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha256_interim_digests;
 
-        MH_SHA256_TAIL_FUNCTION(partial_block_buffer, total_len, mh_sha256_segs_digests,
+        MH_SHA256_TAIL_FUNCTION(partial_block_buffer, (uint32_t) total_len, mh_sha256_segs_digests,
                                 aligned_frame_buffer, ctx->mh_sha256_digest);
 
         /* Output the digests of mh_sha256 */

@@ -46,8 +46,8 @@ MH_SHA1_UPDATE_FUNCTION(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t le
 {
 
         uint8_t *partial_block_buffer;
-        uint64_t partial_block_len;
-        uint64_t num_blocks;
+        uint32_t partial_block_len;
+        uint32_t num_blocks;
         uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
         uint8_t *aligned_frame_buffer;
         const uint8_t *input_data = (const uint8_t *) buffer;
