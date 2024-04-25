@@ -141,3 +141,6 @@ isal_self_tests                        @136
 isal_mh_sha1_murmur3_x64_128_init      @137
 isal_mh_sha1_murmur3_x64_128_update    @138
 isal_mh_sha1_murmur3_x64_128_finalize  @139
+isal_sm3_ctx_mgr_init                  @140
+isal_sm3_ctx_mgr_submit                @141
+isal_sm3_ctx_mgr_flush                 @142

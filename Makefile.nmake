@@ -259,7 +259,8 @@ objs = \
 	bin\aes_self_tests.obj \
 	bin\sha_self_tests.obj \
 	bin\self_tests.obj \
-        bin\asm_self_tests.obj
+	bin\asm_self_tests.obj \
+	bin\sm3_mb.obj
 
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/ -Iintel-ipsec-mb/lib
@@ -404,9 +405,11 @@ checks = \
 	mh_sha1_param_test.exe \
 	mh_sha256_param_test.exe \
 	md5_mb_param_test.exe \
+	sha1_mb_param_test.exe \
 	sha256_mb_param_test.exe \
 	sha512_mb_param_test.exe \
-	mh_sha1_murmur3_x64_128_param_test.exe
+	mh_sha1_murmur3_x64_128_param_test.exe \
+	sm3_mb_param_test.exe
 
 
 checks: lib $(checks)

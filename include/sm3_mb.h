@@ -150,6 +150,50 @@ sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *buffer,
 SM3_HASH_CTX *
 sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr);
 
+/**
+ * @brief Initialize the SM3 multi-buffer manager structure.
+ *
+ * @param mgr Structure holding context level state info
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief Submit a new SM3 job to the multi-buffer manager.
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @param[in] ctx_in Structure holding ctx job info
+ * @param[out] ctx_out Pointer address to output job ctx info.
+ *                     Modified to point to completed job structure or
+ *                     NULL if no jobs completed.
+ * @param[in] buffer Pointer to buffer to be processed
+ * @param[in] len Length of buffer (in bytes) to be processed
+ * @param[in] flags Input flag specifying job type (first, update, last or entire)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CTX **ctx_out,
+                        const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SM3 jobs and return when complete.
+ *
+ * @param[in] mgr Structure holding context level state info
+ * @param[out] ctx_out Pointer address to output job ctx info.
+ *                     Modified to point to completed job structure or
+ *                     NULL if no jobs completed.
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX **ctx_out);
+
 #ifdef __cplusplus
 }
 #endif
