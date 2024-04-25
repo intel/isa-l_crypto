@@ -473,6 +473,9 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
  * @requires SSE4.1 for x86 or ASIMD for ARM
  *
  * @param[in] mgr Structure holding context level state info
+ * @param[out] ctx_out	Pointer address to output job ctx info.
+ *			Modified to point to completed job structure or
+ *			NULL if no jobs completed.
  * @return Operation status
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
