@@ -54,8 +54,11 @@ test_mh_sha256_init_api(void)
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_init);
 
         ret = isal_mh_sha256_init(update_ctx);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_init);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
-
+#endif
         retval = 0;
 
 exit_init:
@@ -86,7 +89,11 @@ test_mh_sha256_update_api(void)
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_SRC, func_name, exit_update);
 
         ret = isal_mh_sha256_update(update_ctx, buff, TEST_LEN);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_update);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
+#endif
 
         retval = 0;
 
@@ -118,7 +125,11 @@ test_mh_sha256_finalize_api(void)
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_AUTH, func_name, exit_finalize);
 
         ret = isal_mh_sha256_finalize(update_ctx, hash_test);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_finalize);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
+#endif
         retval = 0;
 
 exit_finalize:
