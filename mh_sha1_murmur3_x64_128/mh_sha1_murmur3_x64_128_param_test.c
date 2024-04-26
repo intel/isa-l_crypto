@@ -56,7 +56,11 @@ test_mh_sha1_murmur3_x64_128_init_api(void)
 
         // check valid params
         ret = isal_mh_sha1_murmur3_x64_128_init(ctx, seed);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_init);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
+#endif
 
         retval = 0;
 
@@ -92,7 +96,11 @@ test_mh_sha1_murmur3_x64_128_update_api(void)
 
         // check valid params
         ret = isal_mh_sha1_murmur3_x64_128_update(ctx, buff, len);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_update);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
+#endif
 
         retval = 0;
 
@@ -132,7 +140,11 @@ test_mh_sha1_murmur3_x64_128_finalize_api(void)
 
         // check valid params
         ret = isal_mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
+#ifdef FIPS_MODE
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_finalize);
+#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
+#endif
 
         retval = 0;
 
