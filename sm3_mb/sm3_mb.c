@@ -55,6 +55,9 @@ isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CT
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
 
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
         *ctx_out = sm3_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
@@ -70,6 +73,7 @@ isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CT
         }
 #endif
         return 0;
+#endif
 }
 
 int
@@ -81,7 +85,12 @@ isal_sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX **ctx_out)
         if (ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
+
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
         *ctx_out = sm3_ctx_mgr_flush(mgr);
 
         return 0;
+#endif
 }
