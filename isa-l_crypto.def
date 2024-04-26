@@ -144,3 +144,7 @@ isal_mh_sha1_murmur3_x64_128_finalize  @139
 isal_sm3_ctx_mgr_init                  @140
 isal_sm3_ctx_mgr_submit                @141
 isal_sm3_ctx_mgr_flush                 @142
+isal_rolling_hashx_mask_gen            @143
+isal_rolling_hash2_run                 @144
+isal_rolling_hash2_reset               @145
+isal_rolling_hash2_init                @146

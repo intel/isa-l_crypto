@@ -31,6 +31,7 @@
 #include <string.h>
 #include "rolling_hashx.h"
 #include "rolling_hash2_table.h"
+#include "isal_crypto_api.h"
 
 extern uint64_t
 rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
@@ -153,6 +154,64 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
         memcpy(state->history, buffer + i - w, w);
         state->hash = hash;
         return FINGERPRINT_RET_MAX;
+}
+
+int
+isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
+{
+#ifdef SAFE_PARAM
+        if (state == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+        if (rolling_hash2_init(state, w) < 0)
+                return ISAL_CRYPTO_ERR_WINDOW_SIZE;
+
+        return 0;
+}
+
+int
+isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
+{
+#ifdef SAFE_PARAM
+        if (state == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (init_bytes == NULL)
+                return ISAL_CRYPTO_ERR_HASH_INIT_VAL;
+#endif
+        rolling_hash2_reset(state, (uint8_t *) init_bytes);
+
+        return 0;
+}
+
+int
+isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
+                       const uint32_t mask, const uint32_t trigger, uint32_t *offset, int *match)
+{
+#ifdef SAFE_PARAM
+        if (state == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
+        if (offset == NULL)
+                return ISAL_CRYPTO_ERR_NULL_OFFSET;
+        if (match == NULL)
+                return ISAL_CRYPTO_ERR_NULL_MATCH;
+#endif
+        *match = rolling_hash2_run(state, (uint8_t *) buffer, max_len, mask, trigger, offset);
+
+        return 0;
+}
+
+int
+isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t *mask)
+{
+#ifdef SAFE_PARAM
+        if (mask == NULL)
+                return ISAL_CRYPTO_ERR_NULL_MASK;
+#endif
+        *mask = rolling_hashx_mask_gen((long) mean, (int) shift);
+
+        return 0;
 }
 
 struct slver {

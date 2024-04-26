@@ -58,6 +58,11 @@ typedef enum {
         ISAL_CRYPTO_ERR_XTS_SAME_KEYS,
         ISAL_CRYPTO_ERR_SELF_TEST,
         ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
+        ISAL_CRYPTO_ERR_WINDOW_SIZE,
+        ISAL_CRYPTO_ERR_NULL_OFFSET,
+        ISAL_CRYPTO_ERR_NULL_MATCH,
+        ISAL_CRYPTO_ERR_NULL_MASK,
+        ISAL_CRYPTO_ERR_HASH_INIT_VAL,
         /* add new error types above this comment */
         ISAL_CRYPTO_ERR_MAX /* don't move this one */
 } ISAL_CRYPTO_ERROR;

@@ -111,6 +111,65 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, ui
 uint32_t
 rolling_hashx_mask_gen(long mean, int shift);
 
+/**
+ * @brief Initialize state object for rolling hash2
+ *
+ * @param[in] state Structure holding state info on current rolling hash
+ * @param[in] w Window width (1 <= w <= 32)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w);
+
+/**
+ * @brief Reset the hash state history
+ *
+ * @param[in] state Structure holding state info on current rolling hash
+ * @param[in] init_bytes Optional window size buffer to pre-init hash
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes);
+
+/**
+ * @brief Run rolling hash function until trigger met or max length reached
+ *
+ * Checks for trigger based on a random hash in a sliding window.
+ * @param[in] state Structure holding state info on current rolling hash
+ * @param[in] buffer Pointer to input buffer to run windowed hash on
+ * @param[in] max_len Max length to run over input
+ * @param[in] mask Mask bits ORed with hash before test with trigger
+ * @param[in] trigger Match value to compare with windowed hash at each input byte
+ * @param[out] offset Offset from buffer to match, set if match found
+ * @param[out] match Pointer to fingerprint result status to set
+ *                   FINGERPRINT_RET_HIT - match found
+ *                   FINGERPRINT_RET_MAX - exceeded max length
+ *                   FINGERPRINT_RET_OTHER - error
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
+                       const uint32_t mask, const uint32_t trigger, uint32_t *offset, int *match);
+
+/**
+ * @brief Generate an appropriate mask to target mean hit rate
+ *
+ * @param[in] mean Target chunk size in bytes
+ * @param[in] shift Bits to rotate result to get independent masks
+ * @param[out] mask Generated 32-bit mask value
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t *mask);
+
 #ifdef __cplusplus
 }
 #endif
