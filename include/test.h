@@ -49,7 +49,7 @@ extern "C" {
         } while (0)
 
 // Use sys/time.h functions for time
-#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+#if defined(__unix__) || (__MINGW32__)
 #include <sys/time.h>
 #endif
 
@@ -66,7 +66,7 @@ struct perf {
         struct timeval tv;
 };
 
-#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+#if defined(__unix__) || (__MINGW32__)
 static inline int
 perf_start(struct perf *p)
 {

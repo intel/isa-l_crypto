@@ -134,7 +134,7 @@ struct gcm_key_data {
         uint8_t shifted_hkey_8_k[GCM_ENC_KEY_LEN];
         uint8_t shifted_hkey_n_k[GCM_ENC_KEY_LEN * (64 - 16)]; // Others vaes version needs 2x32
 }
-#if defined(__unix__) || (__APPLE__) || (__MINGW32__)
+#if defined(__unix__) || (__MINGW32__)
 __attribute__((aligned(16)));
 #else
 ;

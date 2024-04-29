@@ -40,7 +40,7 @@
 extern "C" {
 #endif
 
-#if defined __unix__ || defined __APPLE__
+#if defined __unix__
 #define DECLARE_ALIGNED(decl, alignval) decl __attribute__((aligned(alignval)))
 #define __forceinline                   static inline
 #define aligned_free(x)                 free(x)
