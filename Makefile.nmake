@@ -409,7 +409,8 @@ checks = \
 	sha256_mb_param_test.exe \
 	sha512_mb_param_test.exe \
 	mh_sha1_murmur3_x64_128_param_test.exe \
-	sm3_mb_param_test.exe
+	sm3_mb_param_test.exe \
+	rolling_hash2_param_test.exe
 
 
 checks: lib $(checks)
