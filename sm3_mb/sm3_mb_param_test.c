@@ -45,6 +45,11 @@ test_sm3_mb_init_api(void)
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_init(mgr), ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
+                          "isal_sm3_ctx_mgr_init", end_init);
+#else
         // check null mgr
         CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_init(NULL), ISAL_CRYPTO_ERR_NULL_MGR,
                           "isal_sm3_ctx_mgr_init", end_init);
@@ -52,6 +57,7 @@ test_sm3_mb_init_api(void)
         // check valid args
         CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_init(mgr), ISAL_CRYPTO_ERR_NONE, "isal_sm3_ctx_mgr_init",
                           end_init);
+#endif
         ret = 0;
 
 end_init:
@@ -75,6 +81,12 @@ test_sm3_mb_submit_api(void)
                 return 1;
         }
 
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
+                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_submit);
+#else
         rc = isal_sm3_ctx_mgr_init(mgr);
         if (rc != ISAL_CRYPTO_ERR_NONE)
                 goto end_submit;
@@ -102,11 +114,6 @@ test_sm3_mb_submit_api(void)
                                                   (uint32_t) strlen((char *) msg), HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
-#ifdef FIPS_MODE
-        CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
-                          ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_submit);
-#else
         // check invalid flag
         CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
                                                   (uint32_t) strlen((char *) msg), 999),
@@ -159,6 +166,11 @@ test_sm3_mb_flush_api(void)
                 return 1;
         }
 
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_flush(mgr, &ctx_ptr), ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
+                          fn_name, end_flush);
+#else
         rc = isal_sm3_ctx_mgr_init(mgr);
         if (rc != ISAL_CRYPTO_ERR_NONE)
                 goto end_flush;
@@ -175,10 +187,6 @@ test_sm3_mb_flush_api(void)
                           end_flush);
 
         // check valid args
-#ifdef FIPS_MODE
-        CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_flush(mgr, &ctx_ptr), ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
-                          fn_name, end_flush);
-#else
         CHECK_RETURN_GOTO(isal_sm3_ctx_mgr_flush(mgr, &ctx_ptr), ISAL_CRYPTO_ERR_NONE, fn_name,
                           end_flush);
 
