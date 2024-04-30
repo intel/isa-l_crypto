@@ -32,6 +32,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <assert.h>
+#include "isal_crypto_api.h"
 #include "rolling_hashx.h"
 #include "sha256_mb.h"
 #include "test.h"
@@ -148,7 +149,7 @@ finish_chunk_processing(void)
 int
 main(void)
 {
-        int i, w;
+        int i, w, match, ret;
         uint8_t *buffer, *p;
         uint32_t mask, trigger, offset = 0;
         uint32_t min_chunk, max_chunk, mean_chunk;
@@ -161,7 +162,13 @@ main(void)
         min_chunk = 1024;
         mean_chunk = 4 * 1024;
         max_chunk = 32 * 1024;
-        mask = rolling_hashx_mask_gen(mean_chunk, 0);
+        ret = isal_rolling_hashx_mask_gen(mean_chunk, 0, &mask);
+
+        if (ret != ISAL_CRYPTO_ERR_NONE) {
+                printf(" Error generating mask");
+                return -1;
+        }
+
         trigger = rand() & mask;
 
         printf("chunk and hash test w=%d, min=%d, target_ave=%d, max=%d:\n", w, min_chunk,
@@ -184,7 +191,7 @@ main(void)
         // Start chunking test with multi-buffer hashing of results
         perf_start(&start);
 
-        rolling_hash2_init(&state, w);
+        isal_rolling_hash2_init(&state, w);
         setup_chunk_processing();
 
         p = buffer;
@@ -192,9 +199,9 @@ main(void)
 
         while (remain > max_chunk) {
                 // Skip to min chunk
-                rolling_hash2_reset(&state, p + min_chunk - w);
-                rolling_hash2_run(&state, p + min_chunk, max_chunk - min_chunk, mask, trigger,
-                                  &offset);
+                isal_rolling_hash2_reset(&state, p + min_chunk - w);
+                isal_rolling_hash2_run(&state, p + min_chunk, max_chunk - min_chunk, mask, trigger,
+                                       &offset, &match);
 
                 process_chunk(p, min_chunk + offset);
 
@@ -203,9 +210,9 @@ main(void)
         }
 
         while (remain > min_chunk) {
-                rolling_hash2_reset(&state, p + min_chunk - w);
-                rolling_hash2_run(&state, p + min_chunk, remain - min_chunk, mask, trigger,
-                                  &offset);
+                isal_rolling_hash2_reset(&state, p + min_chunk - w);
+                isal_rolling_hash2_run(&state, p + min_chunk, remain - min_chunk, mask, trigger,
+                                       &offset, &match);
 
                 process_chunk(p, min_chunk + offset);
 

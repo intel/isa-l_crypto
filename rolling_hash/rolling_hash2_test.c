@@ -31,16 +31,17 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include "isal_crypto_api.h"
 #include "rolling_hashx.h"
 
 #ifndef FUT_run
-#define FUT_run rolling_hash2_run
+#define FUT_run isal_rolling_hash2_run
 #endif
 #ifndef FUT_init
-#define FUT_init rolling_hash2_init
+#define FUT_init isal_rolling_hash2_init
 #endif
 #ifndef FUT_reset
-#define FUT_reset rolling_hash2_reset
+#define FUT_reset isal_rolling_hash2_reset
 #endif
 #ifndef FUT_ref
 #define FUT_ref rolling_hash2_ref
@@ -109,7 +110,7 @@ main(void)
         uint8_t *buffer;
         uint64_t hash;
         uint32_t w, max, mask, trigger, offset = 0;
-        int i, r, ret, errors = 0;
+        int i, r, ret, match, errors = 0;
         uint32_t offset_fut;
         struct rh_state2 state;
 
@@ -136,17 +137,22 @@ main(void)
 
         uint8_t *p = buffer;
         uint32_t remain = MAX_BUFFER_SIZE;
-        ret = FINGERPRINT_RET_HIT;
+        match = FINGERPRINT_RET_HIT;
 
-        while ((ret == FINGERPRINT_RET_HIT) && (remain > 0)) {
-                ret = FUT_run(&state, p, remain, mask, trigger, &offset);
+        while ((match == FINGERPRINT_RET_HIT) && (remain > 0)) {
+                ret = FUT_run(&state, p, remain, mask, trigger, &offset, &match);
+
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC1) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
 
                 if (offset > remain) {
                         printf(" error offset past remaining limit\n");
                         errors++;
                 }
 
-                if ((ret == FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
+                if ((match == FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
                         hash = FUT_ref(&state, &p[offset] - w, w, 0);
                         if ((hash & mask) != trigger) {
                                 printf("   mismatch chunk from ref");
@@ -173,7 +179,7 @@ main(void)
         // Function under test
         FUT_init(&state, w);
         FUT_reset(&state, p);
-        FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
+        FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut, &match);
         offset_fut += w;
 
         // Reference
@@ -206,7 +212,7 @@ main(void)
                 // Function under test
                 FUT_init(&state, w);
                 FUT_reset(&state, p);
-                FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
+                FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut, &match);
                 offset_fut += w;
 
                 // Reference
@@ -241,7 +247,13 @@ main(void)
                 FUT_init(&state, w);
                 FUT_reset(&state, p);
 
-                ret = FUT_run(&state, p + w, max - w, mask, trigger, &offset_fut);
+                ret = FUT_run(&state, p + w, max - w, mask, trigger, &offset_fut, &match);
+
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC3) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
+
                 offset_fut += w;
 
                 int ret_ref = FINGERPRINT_RET_MAX;
@@ -253,11 +265,11 @@ main(void)
                         }
                 }
 
-                if (offset != offset_fut || ret != ret_ref) {
+                if (offset != offset_fut || match != ret_ref) {
                         printf("\ncase 3 max=%d, offset of chunk different from ref\n", max);
                         printf("  case 3: stop fut at offset=%d\n", offset_fut);
                         printf("  case 3: stop ref at offset=%d\n", offset);
-                        printf("  case 3: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
+                        printf("  case 3: ret_fut=%d ret_ref=%d\n", match, ret_ref);
                         errors++;
                         goto end;
                 }
@@ -279,7 +291,12 @@ main(void)
                 FUT_init(&state, w);
                 FUT_reset(&state, p);
 
-                ret = FUT_run(&state, p, max, mask, trigger, &offset_fut);
+                ret = FUT_run(&state, p, max, mask, trigger, &offset_fut, &match);
+
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC4) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
 
                 if (offset_fut <= w)
                         continue;
@@ -293,17 +310,17 @@ main(void)
                         }
                 }
 
-                if (offset != offset_fut || ret != ret_ref) {
+                if (offset != offset_fut || match != ret_ref) {
                         printf("\ncase 4 rand case different from ref, max=%d w=%d\n", max, w);
                         printf("  case 4: stop fut at offset=%d\n", offset_fut);
                         printf("  case 4: stop ref at offset=%d\n", offset);
-                        printf("  case 4: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
+                        printf("  case 4: ret_fut=%d ret_ref=%d\n", match, ret_ref);
                         errors++;
                         goto end;
                 }
                 putchar('.'); // Finished test 4
 
-                if (ret == FINGERPRINT_RET_HIT) {
+                if (match == FINGERPRINT_RET_HIT) {
                         p[-1] = rand(); // Keep hits from repeating
                 }
         }
