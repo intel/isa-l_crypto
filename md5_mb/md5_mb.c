@@ -34,6 +34,9 @@
 int
 isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
@@ -41,12 +44,16 @@ isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
         md5_ctx_mgr_init(mgr);
 
         return 0;
+#endif
 }
 
 int
 isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CTX **ctx_out,
                         const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
@@ -72,11 +79,15 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
         }
 #endif
         return 0;
+#endif
 }
 
 int
 isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX **ctx_out)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
@@ -86,4 +97,5 @@ isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX **ctx_out)
         *ctx_out = md5_ctx_mgr_flush(mgr);
 
         return 0;
+#endif
 }
