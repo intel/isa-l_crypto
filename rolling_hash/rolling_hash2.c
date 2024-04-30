@@ -159,6 +159,9 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
 int
 isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (state == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
@@ -167,11 +170,15 @@ isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
                 return ISAL_CRYPTO_ERR_WINDOW_SIZE;
 
         return 0;
+#endif
 }
 
 int
 isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (state == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
@@ -181,12 +188,16 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
         rolling_hash2_reset(state, (uint8_t *) init_bytes);
 
         return 0;
+#endif
 }
 
 int
 isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
                        const uint32_t mask, const uint32_t trigger, uint32_t *offset, int *match)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (state == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
@@ -200,11 +211,15 @@ isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uin
         *match = rolling_hash2_run(state, (uint8_t *) buffer, max_len, mask, trigger, offset);
 
         return 0;
+#endif
 }
 
 int
 isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t *mask)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (mask == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MASK;
@@ -212,6 +227,7 @@ isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t 
         *mask = rolling_hashx_mask_gen((long) mean, (int) shift);
 
         return 0;
+#endif
 }
 
 struct slver {

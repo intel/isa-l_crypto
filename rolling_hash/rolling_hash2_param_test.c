@@ -41,10 +41,14 @@ test_rolling_hash2_init_api(void)
         const char *fn_name = "isal_rolling_hash2_init";
         struct rh_state2 state = { 0 };
 
+#ifdef FIPS_MODE
+        // check for invalid algorithm
+        CHECK_RETURN_GOTO(isal_rolling_hash2_init(&state, 5), ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
+                          fn_name, end_init);
+#else
         // check NULL state
         CHECK_RETURN_GOTO(isal_rolling_hash2_init(NULL, 32), ISAL_CRYPTO_ERR_NULL_CTX, fn_name,
                           end_init);
-
         // check invalid window size
         CHECK_RETURN_GOTO(isal_rolling_hash2_init(&state, 500), ISAL_CRYPTO_ERR_WINDOW_SIZE,
                           fn_name, end_init);
@@ -52,6 +56,7 @@ test_rolling_hash2_init_api(void)
         // check valid args
         CHECK_RETURN_GOTO(isal_rolling_hash2_init(&state, 5), ISAL_CRYPTO_ERR_NONE, fn_name,
                           end_init);
+#endif
 
         ret = 0;
 end_init:
@@ -66,6 +71,11 @@ test_rolling_hash2_reset_api(void)
         struct rh_state2 state = { 0 };
         uint8_t init_bytes[64] = { 0 };
 
+#ifdef FIPS_MODE
+        // check for invalid algorithm
+        CHECK_RETURN_GOTO(isal_rolling_hash2_reset(&state, init_bytes),
+                          ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_reset);
+#else
         // check NULL state
         CHECK_RETURN_GOTO(isal_rolling_hash2_reset(NULL, init_bytes), ISAL_CRYPTO_ERR_NULL_CTX,
                           fn_name, end_reset);
@@ -77,6 +87,7 @@ test_rolling_hash2_reset_api(void)
         // check valid args
         CHECK_RETURN_GOTO(isal_rolling_hash2_reset(&state, init_bytes), ISAL_CRYPTO_ERR_NONE,
                           fn_name, end_reset);
+#endif
 
         ret = 0;
 end_reset:
@@ -96,6 +107,12 @@ test_rolling_hash2_run_api(void)
         uint32_t offset = 0;
         int match = -1;
 
+#ifdef FIPS_MODE
+        // check for invalid algorithm
+        CHECK_RETURN_GOTO(
+                isal_rolling_hash2_run(&state, buffer, len, mask, trigger, &offset, &match),
+                ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_run);
+#else
         // check NULL state
         CHECK_RETURN_GOTO(isal_rolling_hash2_run(NULL, buffer, len, mask, trigger, &offset, &match),
                           ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_run);
@@ -116,6 +133,7 @@ test_rolling_hash2_run_api(void)
         CHECK_RETURN_GOTO(
                 isal_rolling_hash2_run(&state, buffer, len, mask, trigger, &offset, &match),
                 ISAL_CRYPTO_ERR_NONE, fn_name, end_run);
+#endif
 
         ret = 0;
 end_run:
@@ -131,6 +149,11 @@ test_rolling_hashx_mask_gen_api(void)
         uint32_t shift = 0;
         uint32_t mask = FINGERPRINT_RET_OTHER + 1;
 
+#ifdef FIPS_MODE
+        // check for invalid algorithm
+        CHECK_RETURN_GOTO(isal_rolling_hashx_mask_gen(mean, shift, &mask),
+                          ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_mask_gen);
+#else
         // check NULL mask
         CHECK_RETURN_GOTO(isal_rolling_hashx_mask_gen(mean, shift, NULL), ISAL_CRYPTO_ERR_NULL_MASK,
                           fn_name, end_mask_gen);
@@ -144,6 +167,7 @@ test_rolling_hashx_mask_gen_api(void)
                 printf("test: %s() - unexpected mask set\n", fn_name);
                 goto end_mask_gen;
         }
+#endif
 
         ret = 0;
 end_mask_gen:

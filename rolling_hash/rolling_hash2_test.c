@@ -60,6 +60,7 @@
 #define TEST_SEED 0x1234
 #endif
 
+#ifndef FIPS_MODE
 static uint64_t
 rolling_hash2_ref(struct rh_state2 *state, unsigned char *p, int len, uint64_t hash_init)
 {
@@ -73,7 +74,7 @@ rolling_hash2_ref(struct rh_state2 *state, unsigned char *p, int len, uint64_t h
         return h;
 }
 
-int
+static int
 ones_in_mask(uint32_t in)
 {
         int count;
@@ -87,7 +88,7 @@ ones_in_mask(uint32_t in)
 /*
  * Utility function to pick a random mask.  Not uniform in number of bits.
  */
-uint32_t
+static uint32_t
 pick_rand_mask_in_range(int min_bits, int max_bits)
 {
         uint32_t mask = 0;
@@ -103,10 +104,12 @@ pick_rand_mask_in_range(int min_bits, int max_bits)
 
         return mask;
 }
+#endif
 
 int
 main(void)
 {
+#ifndef FIPS_MODE
         uint8_t *buffer;
         uint64_t hash;
         uint32_t w, max, mask, trigger, offset = 0;
@@ -334,4 +337,9 @@ end:
         else
                 printf(" Pass\n");
         return errors;
+#else
+        printf("FIPS Mode enabled. Test not run\n");
+
+        return 0;
+#endif
 }
