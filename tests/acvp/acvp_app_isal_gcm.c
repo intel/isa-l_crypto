@@ -68,61 +68,73 @@ aes_gcm_handler(ACVP_TEST_CASE *test_case)
         case 128:
                 if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT) {
                         if (tc->mct_index == 0) {
-                                aes_gcm_pre_128(tc->key, &key);
-                                aes_gcm_init_128(&key, &gctx, tc->iv, tc->aad, tc->aad_len);
+                                isal_aes_gcm_pre_128(tc->key, &key);
+                                isal_aes_gcm_init_128(&key, &gctx, tc->iv, tc->aad, tc->aad_len);
                         }
 
                         if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                aes_gcm_enc_128_update(&key, &gctx, tc->ct, tc->pt, tc->pt_len);
+                                isal_aes_gcm_enc_128_update(&key, &gctx, tc->ct, tc->pt,
+                                                            tc->pt_len);
                         else
-                                aes_gcm_dec_128_update(&key, &gctx, tc->pt, tc->ct, tc->ct_len);
+                                isal_aes_gcm_dec_128_update(&key, &gctx, tc->pt, tc->ct,
+                                                            tc->ct_len);
 
                         if (tc->mct_index == ACVP_AES_MCT_INNER - 1) {
                                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                        aes_gcm_enc_128_finalize(&key, &gctx, tc->tag, tc->tag_len);
+                                        isal_aes_gcm_enc_128_finalize(&key, &gctx, tc->tag,
+                                                                      tc->tag_len);
                                 else
-                                        aes_gcm_dec_128_finalize(&key, &gctx, res_tag, tc->tag_len);
+                                        isal_aes_gcm_dec_128_finalize(&key, &gctx, res_tag,
+                                                                      tc->tag_len);
                         }
                 } else {
                         memset(&gctx, 0, sizeof(gctx));
-                        aes_gcm_pre_128(tc->key, &key);
+                        isal_aes_gcm_pre_128(tc->key, &key);
 
                         if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                aes_gcm_enc_128(&key, &gctx, tc->ct, tc->pt, tc->pt_len, tc->iv,
-                                                tc->aad, tc->aad_len, tc->tag, tc->tag_len);
+                                isal_aes_gcm_enc_128(&key, &gctx, tc->ct, tc->pt, tc->pt_len,
+                                                     tc->iv, tc->aad, tc->aad_len, tc->tag,
+                                                     tc->tag_len);
                         else
-                                aes_gcm_dec_128(&key, &gctx, tc->pt, tc->ct, tc->pt_len, tc->iv,
-                                                tc->aad, tc->aad_len, res_tag, tc->tag_len);
+                                isal_aes_gcm_dec_128(&key, &gctx, tc->pt, tc->ct, tc->pt_len,
+                                                     tc->iv, tc->aad, tc->aad_len, res_tag,
+                                                     tc->tag_len);
                 }
                 break;
         case 256:
                 if (tc->test_type == ACVP_SYM_TEST_TYPE_MCT) {
                         if (tc->mct_index == 0) {
-                                aes_gcm_pre_256(tc->key, &key);
-                                aes_gcm_init_256(&key, &gctx, tc->iv, tc->aad, tc->aad_len);
+                                isal_aes_gcm_pre_256(tc->key, &key);
+                                isal_aes_gcm_init_256(&key, &gctx, tc->iv, tc->aad, tc->aad_len);
                         }
 
                         if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                aes_gcm_enc_256_update(&key, &gctx, tc->ct, tc->pt, tc->pt_len);
+                                isal_aes_gcm_enc_256_update(&key, &gctx, tc->ct, tc->pt,
+                                                            tc->pt_len);
                         else
-                                aes_gcm_dec_256_update(&key, &gctx, tc->pt, tc->ct, tc->ct_len);
+                                isal_aes_gcm_dec_256_update(&key, &gctx, tc->pt, tc->ct,
+                                                            tc->ct_len);
 
                         if (tc->mct_index == ACVP_AES_MCT_INNER - 1) {
                                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                        aes_gcm_enc_256_finalize(&key, &gctx, tc->tag, tc->tag_len);
+                                        isal_aes_gcm_enc_256_finalize(&key, &gctx, tc->tag,
+                                                                      tc->tag_len);
                                 else
-                                        aes_gcm_dec_256_finalize(&key, &gctx, res_tag, tc->tag_len);
+                                        isal_aes_gcm_dec_256_finalize(&key, &gctx, res_tag,
+                                                                      tc->tag_len);
                         }
                 } else {
                         memset(&gctx, 0, sizeof(gctx));
-                        aes_gcm_pre_256(tc->key, &key);
+                        isal_aes_gcm_pre_256(tc->key, &key);
 
                         if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                                aes_gcm_enc_256(&key, &gctx, tc->ct, tc->pt, tc->pt_len, tc->iv,
-                                                tc->aad, tc->aad_len, tc->tag, tc->tag_len);
+                                isal_aes_gcm_enc_256(&key, &gctx, tc->ct, tc->pt, tc->pt_len,
+                                                     tc->iv, tc->aad, tc->aad_len, tc->tag,
+                                                     tc->tag_len);
                         else
-                                aes_gcm_dec_256(&key, &gctx, tc->pt, tc->ct, tc->pt_len, tc->iv,
-                                                tc->aad, tc->aad_len, res_tag, tc->tag_len);
+                                isal_aes_gcm_dec_256(&key, &gctx, tc->pt, tc->ct, tc->pt_len,
+                                                     tc->iv, tc->aad, tc->aad_len, res_tag,
+                                                     tc->tag_len);
                 }
                 break;
         default:

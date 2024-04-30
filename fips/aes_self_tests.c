@@ -40,6 +40,7 @@
 #include "aes_cbc_internal.h"
 #include "aes_xts_internal.h"
 #include "aes_gcm.h"
+#include "aes_gcm_internal.h"
 #include "aes_keyexp_internal.h"
 
 #include "internal_fips.h"
@@ -583,10 +584,10 @@ gcm_self_test_vector(const struct self_test_gcm_vector *v)
         /* Precompute AES and GHASH keys */
         switch (v->cipher_key_size) {
         case 16:
-                aes_gcm_pre_128(v->key, &gkey);
+                _aes_gcm_pre_128(v->key, &gkey);
                 break;
         case 32:
-                aes_gcm_pre_256(v->key, &gkey);
+                _aes_gcm_pre_256(v->key, &gkey);
                 break;
         default:
                 /* invalid key size */
@@ -598,12 +599,12 @@ gcm_self_test_vector(const struct self_test_gcm_vector *v)
         memcpy(scratch, v->plaintext, v->plaintext_size);
         switch (v->cipher_key_size) {
         case 16:
-                aes_gcm_enc_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
-                                v->aad, v->aad_size, result_tag, v->tag_size);
+                _aes_gcm_enc_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                 v->aad, v->aad_size, result_tag, v->tag_size);
                 break;
         case 32:
-                aes_gcm_enc_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
-                                v->aad, v->aad_size, result_tag, v->tag_size);
+                _aes_gcm_enc_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                 v->aad, v->aad_size, result_tag, v->tag_size);
                 break;
         default:
                 /* invalid key size */
@@ -623,14 +624,14 @@ gcm_self_test_vector(const struct self_test_gcm_vector *v)
         memcpy(scratch, v->plaintext, v->plaintext_size);
         switch (v->cipher_key_size) {
         case 16:
-                aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
-                aes_gcm_enc_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
-                aes_gcm_enc_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                _aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                _aes_gcm_enc_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                _aes_gcm_enc_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
                 break;
         case 32:
-                aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
-                aes_gcm_enc_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
-                aes_gcm_enc_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                _aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                _aes_gcm_enc_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                _aes_gcm_enc_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
                 break;
         default:
                 /* invalid key size */
@@ -651,12 +652,12 @@ gcm_self_test_vector(const struct self_test_gcm_vector *v)
 
         switch (v->cipher_key_size) {
         case 16:
-                aes_gcm_dec_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
-                                v->aad, v->aad_size, result_tag, v->tag_size);
+                _aes_gcm_dec_128(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                 v->aad, v->aad_size, result_tag, v->tag_size);
                 break;
         case 32:
-                aes_gcm_dec_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
-                                v->aad, v->aad_size, result_tag, v->tag_size);
+                _aes_gcm_dec_256(&gkey, &gctx, scratch, scratch, v->plaintext_size, v->cipher_iv,
+                                 v->aad, v->aad_size, result_tag, v->tag_size);
                 break;
         default:
                 /* invalid key size */
@@ -676,14 +677,14 @@ gcm_self_test_vector(const struct self_test_gcm_vector *v)
         memcpy(scratch, v->ciphertext, v->plaintext_size);
         switch (v->cipher_key_size) {
         case 16:
-                aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
-                aes_gcm_dec_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
-                aes_gcm_dec_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                _aes_gcm_init_128(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                _aes_gcm_dec_128_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                _aes_gcm_dec_128_finalize(&gkey, &gctx, v->tag, v->tag_size);
                 break;
         case 32:
-                aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
-                aes_gcm_dec_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
-                aes_gcm_dec_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
+                _aes_gcm_init_256(&gkey, &gctx, v->cipher_iv, v->aad, v->aad_size);
+                _aes_gcm_dec_256_update(&gkey, &gctx, scratch, scratch, v->plaintext_size);
+                _aes_gcm_dec_256_finalize(&gkey, &gctx, v->tag, v->tag_size);
                 break;
         default:
                 /* invalid key size */

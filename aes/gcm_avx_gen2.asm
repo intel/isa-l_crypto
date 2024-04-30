@@ -128,17 +128,17 @@
 %endif
 
 %ifdef GCM128_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _128 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
+%define FN_NAME(x,y) _aes_gcm_ %+ x %+ _128 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 9
 %endif
 
 %ifdef GCM192_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _192 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
+%define FN_NAME(x,y) _aes_gcm_ %+ x %+ _192 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 11
 %endif
 
 %ifdef GCM256_MODE
-%define FN_NAME(x,y) aes_gcm_ %+ x %+ _256 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
+%define FN_NAME(x,y) _aes_gcm_ %+ x %+ _256 %+ y %+ avx_gen2 %+ FUNCT_EXTENSION
 %define NROUNDS 13
 %endif
 
@@ -1855,7 +1855,7 @@ vmovdqu  %%T_key, [%%GDATA_KEY+16*j]
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_precomp_128_avx_gen2
+;void   _aes_gcm_precomp_128_avx_gen2
 ;        (struct gcm_key_data *key_data);
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 %ifnidn FUNCT_EXTENSION, _nt
@@ -1920,7 +1920,7 @@ FN_NAME(precomp,_):
 %endif	; _nt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_init_128_avx_gen2(
+;void   _aes_gcm_init_128_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *iv,
@@ -1957,7 +1957,7 @@ ret
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_enc_128_update_avx_gen2(
+;void   _aes_gcm_enc_128_update_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *out,
@@ -1981,7 +1981,7 @@ FN_NAME(enc,_update_):
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_dec_128_update_avx_gen2(
+;void   _aes_gcm_dec_128_update_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *out,
@@ -2005,7 +2005,7 @@ FN_NAME(dec,_update_):
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_enc_128_finalize_avx_gen2(
+;void   _aes_gcm_enc_128_finalize_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *auth_tag,
@@ -2048,7 +2048,7 @@ FN_NAME(enc,_finalize_):
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_dec_128_finalize_avx_gen2(
+;void   _aes_gcm_dec_128_finalize_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *auth_tag,
@@ -2087,7 +2087,7 @@ ret
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_enc_128_avx_gen2(
+;void   _aes_gcm_enc_128_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *out,
@@ -2119,7 +2119,7 @@ FN_NAME(enc,_):
 	ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void   aes_gcm_dec_128_avx_gen2(
+;void   _aes_gcm_dec_128_avx_gen2(
 ;        const struct gcm_key_data *key_data,
 ;        struct gcm_context_data *context_data,
 ;        u8      *out,

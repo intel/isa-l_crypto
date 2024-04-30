@@ -92,20 +92,20 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, &gkey);
+        isal_aes_gcm_pre_128(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_128(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L encrypted tag T(in-place)");
         memset(ct_test, 0, vector->Plen);
@@ -114,8 +114,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_128(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -123,16 +123,16 @@ test_gcm128_std_vectors(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_128(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
-        aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
@@ -167,21 +167,21 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, &gkey);
+        isal_aes_gcm_pre_256(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt
         ////
         memset(ct_test, 0, vector->Plen);
-        aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_256(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L encrypted tag T(in-place)");
         memset(ct_test, 0, vector->Plen);
@@ -190,8 +190,8 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_256(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -199,16 +199,16 @@ test_gcm256_std_vectors(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_256(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
-        aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
@@ -222,7 +222,7 @@ aes_gcm_stream_enc_128(const struct gcm_key_data *key_data, struct gcm_context_d
                        uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
                        uint64_t auth_tag_len)
 {
-        aes_gcm_init_128(key_data, context, iv, aad, aad_len);
+        isal_aes_gcm_init_128(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
                 1, 12, 22, 0, 1, 12, 16
         }; // sum(test_sequence) > max_Plen in vectors
@@ -233,12 +233,12 @@ aes_gcm_stream_enc_128(const struct gcm_key_data *key_data, struct gcm_context_d
                 dist = test_sequence[i];
                 if (offset + dist > len)
                         break;
-                aes_gcm_enc_128_update(key_data, context, out + offset, in + offset, dist);
+                isal_aes_gcm_enc_128_update(key_data, context, out + offset, in + offset, dist);
                 offset += dist;
         }
 
-        aes_gcm_enc_128_update(key_data, context, out + offset, in + offset, len - offset);
-        aes_gcm_enc_128_finalize(key_data, context, auth_tag, auth_tag_len);
+        isal_aes_gcm_enc_128_update(key_data, context, out + offset, in + offset, len - offset);
+        isal_aes_gcm_enc_128_finalize(key_data, context, auth_tag, auth_tag_len);
 }
 
 void
@@ -247,7 +247,7 @@ aes_gcm_stream_dec_128(const struct gcm_key_data *key_data, struct gcm_context_d
                        uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
                        uint64_t auth_tag_len)
 {
-        aes_gcm_init_128(key_data, context, iv, aad, aad_len);
+        isal_aes_gcm_init_128(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
                 1, 12, 22, 0, 1, 12, 16
         }; // sum(test_sequence) > max_Plen in vectors
@@ -258,11 +258,11 @@ aes_gcm_stream_dec_128(const struct gcm_key_data *key_data, struct gcm_context_d
                 dist = test_sequence[i];
                 if (offset + dist > len)
                         break;
-                aes_gcm_dec_128_update(key_data, context, out + offset, in + offset, dist);
+                isal_aes_gcm_dec_128_update(key_data, context, out + offset, in + offset, dist);
                 offset += dist;
         }
-        aes_gcm_dec_128_update(key_data, context, out + offset, in + offset, len - offset);
-        aes_gcm_dec_128_finalize(key_data, context, auth_tag, auth_tag_len);
+        isal_aes_gcm_dec_128_update(key_data, context, out + offset, in + offset, len - offset);
+        isal_aes_gcm_dec_128_finalize(key_data, context, auth_tag, auth_tag_len);
 }
 
 #if !defined(NT_LD) && !defined(NT_ST) && !defined(NT_LDST)
@@ -294,7 +294,7 @@ test_gcm128_std_stream_vectors(gcm_vector const *vector)
 
         // This is only required once for a given key
         memset(gkey.expanded_keys, 0, sizeof(gkey.expanded_keys));
-        aes_gcm_pre_128(vector->K, &gkey);
+        isal_aes_gcm_pre_128(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt
@@ -349,7 +349,7 @@ aes_gcm_stream_enc_256(const struct gcm_key_data *key_data, struct gcm_context_d
                        uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
                        uint64_t auth_tag_len)
 {
-        aes_gcm_init_256(key_data, context, iv, aad, aad_len);
+        isal_aes_gcm_init_256(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
                 1, 12, 22, 0, 1, 12, 16
         }; // sum(test_sequence) > max_Plen in vectors
@@ -360,12 +360,12 @@ aes_gcm_stream_enc_256(const struct gcm_key_data *key_data, struct gcm_context_d
                 dist = test_sequence[i];
                 if (offset + dist > len)
                         break;
-                aes_gcm_enc_256_update(key_data, context, out + offset, in + offset, dist);
+                isal_aes_gcm_enc_256_update(key_data, context, out + offset, in + offset, dist);
                 offset += dist;
         }
 
-        aes_gcm_enc_256_update(key_data, context, out + offset, in + offset, len - offset);
-        aes_gcm_enc_256_finalize(key_data, context, auth_tag, auth_tag_len);
+        isal_aes_gcm_enc_256_update(key_data, context, out + offset, in + offset, len - offset);
+        isal_aes_gcm_enc_256_finalize(key_data, context, auth_tag, auth_tag_len);
 }
 
 void
@@ -374,7 +374,7 @@ aes_gcm_stream_dec_256(const struct gcm_key_data *key_data, struct gcm_context_d
                        uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
                        uint64_t auth_tag_len)
 {
-        aes_gcm_init_256(key_data, context, iv, aad, aad_len);
+        isal_aes_gcm_init_256(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
                 1, 12, 22, 0, 1, 12, 16
         }; // sum(test_sequence) > max_Plen in vectors
@@ -385,12 +385,12 @@ aes_gcm_stream_dec_256(const struct gcm_key_data *key_data, struct gcm_context_d
                 dist = test_sequence[i];
                 if (offset + dist > len)
                         break;
-                aes_gcm_dec_256_update(key_data, context, out + offset, in + offset, dist);
+                isal_aes_gcm_dec_256_update(key_data, context, out + offset, in + offset, dist);
                 offset += dist;
         }
 
-        aes_gcm_dec_256_update(key_data, context, out + offset, in + offset, len - offset);
-        aes_gcm_dec_256_finalize(key_data, context, auth_tag, auth_tag_len);
+        isal_aes_gcm_dec_256_update(key_data, context, out + offset, in + offset, len - offset);
+        isal_aes_gcm_dec_256_finalize(key_data, context, auth_tag, auth_tag_len);
 }
 
 int
@@ -420,7 +420,7 @@ test_gcm256_std_stream_vectors(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, &gkey);
+        isal_aes_gcm_pre_256(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt

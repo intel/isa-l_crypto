@@ -95,22 +95,22 @@ test_gcm128_std_vectors_nt(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, &gkey);
+        isal_aes_gcm_pre_128(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt
         ////
         memset(ct_test, 0, vector->Plen);
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_128_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_128_nt(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128_nt(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         memset(ct_test, 0, vector->Plen);
         memset(T_test, 0, vector->Tlen);
@@ -119,8 +119,8 @@ test_gcm128_std_vectors_nt(gcm_vector const *vector)
         // ISA-l Decrypt
         ////
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_128_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_128_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -128,17 +128,17 @@ test_gcm128_std_vectors_nt(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_128_nt(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_128_nt(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_128_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_128_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T2_test, vector->Tlen);
+        isal_aes_gcm_dec_128_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
 
@@ -174,22 +174,22 @@ test_gcm256_std_vectors_nt(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, &gkey);
+        isal_aes_gcm_pre_256(vector->K, &gkey);
 
         ////
         // ISA-l Encrypt
         ////
         memset(ct_test, 0, vector->Plen);
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_256_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_256_nt(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256_nt(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         memset(ct_test, 0, vector->Plen);
         memset(T_test, 0, vector->Tlen);
@@ -199,8 +199,8 @@ test_gcm256_std_vectors_nt(gcm_vector const *vector)
         ////
         memset(pt_test, 0, vector->Plen);
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_256_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_256_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -208,17 +208,17 @@ test_gcm256_std_vectors_nt(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_256_nt(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_256_nt(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_256_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256_nt(&gkey, &gctx, ct_test, pt_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_256_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
-                           vector->Alen, T2_test, vector->Tlen);
+        isal_aes_gcm_dec_256_nt(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                                vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
         vector_free(alloc_tab, align_tab, DIM(alloc_tab));

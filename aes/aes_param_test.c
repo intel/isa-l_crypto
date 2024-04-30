@@ -62,7 +62,7 @@ typedef int (*aes_gcm_update_func)(const struct gcm_key_data *, struct gcm_conte
                                    uint8_t *, const uint8_t *, const uint64_t);
 typedef int (*aes_gcm_finalize_func)(const struct gcm_key_data *, struct gcm_context_data *,
                                      uint8_t *, const uint64_t);
-typedef int (*aes_gcm_pre_func)(const int *, struct gcm_key_data *);
+typedef int (*aes_gcm_pre_func)(const void *, struct gcm_key_data *);
 
 struct test_func {
         union {

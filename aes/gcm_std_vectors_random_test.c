@@ -187,13 +187,13 @@ check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vecto
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, gkey);
+        isal_aes_gcm_pre_128(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_enc_128(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_128(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         openssl_aes_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen, o_T_test,
                             vector->Tlen, vector->P, vector->Plen, o_ct_test);
         OK |= check_data(vector->C, o_ct_test, vector->Plen, "OpenSSL vs ISA-L cypher text (C)");
@@ -208,13 +208,13 @@ check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vecto
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_128(gkey, gctx, vector->P, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128(gkey, gctx, vector->P, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
 
         const int result =
@@ -272,12 +272,12 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, gkey);
+        isal_aes_gcm_pre_128(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
 
         last_break = 0;
         i = (rand() % test_len / 8) & ALIGNMENT_MASK;
@@ -292,7 +292,8 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
                         }
                         memcpy(stream, vector->P + last_break, i - last_break);
                 }
-                aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, stream, i - last_break);
+                isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, stream,
+                                            i - last_break);
                 if (i - last_break != 0) {
                         aligned_free(stream);
                         stream = NULL;
@@ -306,12 +307,12 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
                 last_break = i;
                 i = (rand() % test_len / 8) & ALIGNMENT_MASK;
         }
-        aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
-                               vector->Plen - last_break);
+        isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
+                                    vector->Plen - last_break);
         if (gctx->in_length != vector->Plen)
                 printf("%llu, %llu\n", (unsigned long long) gctx->in_length,
                        (unsigned long long) vector->Plen);
-        aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
         openssl_aes_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen, o_T_test,
                             vector->Tlen, vector->P, vector->Plen, o_ct_test);
         OK |= check_data(vector->C, o_ct_test, vector->Plen, "OpenSSL vs ISA-L cypher text (C)");
@@ -329,7 +330,7 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
 
         last_break = 0;
         i = 0;
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < (vector->Plen)) {
                 if (rand() % (test_len / 64) == 0) {
                         if (i - last_break != 0) {
@@ -342,8 +343,8 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
                                 }
                                 memcpy(stream, vector->C + last_break, i - last_break);
                         }
-                        aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, stream,
-                                               i - last_break);
+                        isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, stream,
+                                                    i - last_break);
                         if (i - last_break != 0) {
                                 aligned_free(stream);
                                 stream = NULL;
@@ -361,15 +362,15 @@ check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_
                 if (rand() % 1024 != 0)
                         i++;
         }
-        aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
 
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         result = openssl_aes_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                      vector->T, vector->Tlen, vector->C, vector->Plen, pt_test);
@@ -420,14 +421,14 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, gkey);
+        isal_aes_gcm_pre_128(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_enc_128(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_enc_128(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < (vector->Plen)) {
                 if (i - last_break != 0) {
                         const int posix_ret =
@@ -439,7 +440,8 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
                         }
                         memcpy(stream, vector->P + last_break, i - last_break);
                 }
-                aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, stream, i - last_break);
+                isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, stream,
+                                            i - last_break);
                 if (i - last_break != 0) {
                         aligned_free(stream);
                         stream = NULL;
@@ -447,9 +449,9 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
                 last_break = i;
                 i = i + (length - start) / breaks;
         }
-        aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
         openssl_aes_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen, o_T_test,
                             vector->Tlen, vector->P, vector->Plen, o_ct_test);
 
@@ -468,7 +470,7 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
 
         last_break = 0;
         i = length;
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < (vector->Plen)) {
                 if (i - last_break != 0) {
                         const int posix_ret =
@@ -480,7 +482,8 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
                         }
                         memcpy(stream, vector->C + last_break, i - last_break);
                 }
-                aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, stream, i - last_break);
+                isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, stream,
+                                            i - last_break);
                 if (i - last_break != 0) {
                         aligned_free(stream);
                         stream = NULL;
@@ -489,14 +492,14 @@ check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm
                 i = i + (length - start) / breaks;
         }
 
-        aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         result = openssl_aes_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                      vector->T, vector->Tlen, vector->C, vector->Plen, pt_test);
@@ -550,12 +553,12 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, gkey);
+        isal_aes_gcm_pre_128(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < vector->Plen) {
                 if (rand() % 2000 == 0 || i - last_break > PAGE_LEN / 2) {
                         const int posix_ret =
@@ -568,9 +571,9 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
                         i = i & ALIGNMENT_MASK;
                         memcpy(stream + PAGE_LEN - (i - last_break), vector->P + last_break,
                                i - last_break);
-                        aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break,
-                                               stream + PAGE_LEN - (i - last_break),
-                                               i - last_break);
+                        isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break,
+                                                    stream + PAGE_LEN - (i - last_break),
+                                                    i - last_break);
                         aligned_free(stream);
                         stream = NULL;
                         if (rand() % 1024 == 0) {
@@ -583,9 +586,9 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
                 if (rand() % 1024 != 0)
                         i++;
         }
-        aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_128_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_enc_128_finalize(gkey, gctx, vector->T, vector->Tlen);
         openssl_aes_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen, o_T_test,
                             vector->Tlen, vector->P, vector->Plen, o_ct_test);
         OK |= check_data(vector->C, o_ct_test, vector->Plen, "OpenSSL vs ISA-L cypher text (C)");
@@ -603,7 +606,7 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
 
         last_break = 0;
         i = 0;
-        aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_128(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < vector->Plen) {
                 if (rand() % 2000 == 0 || i - last_break > PAGE_LEN / 2) {
                         const int posix_ret =
@@ -616,9 +619,9 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
                         i = i & ALIGNMENT_MASK;
                         memcpy(stream + PAGE_LEN - (i - last_break), vector->C + last_break,
                                i - last_break);
-                        aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break,
-                                               stream + PAGE_LEN - (i - last_break),
-                                               i - last_break);
+                        isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break,
+                                                    stream + PAGE_LEN - (i - last_break),
+                                                    i - last_break);
                         aligned_free(stream);
                         stream = NULL;
                         if (rand() % 1024 == 0) {
@@ -633,15 +636,15 @@ check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gct
                 if (rand() % 1024 != 0)
                         i++;
         }
-        aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_dec_128_finalize(gkey, gctx, vector->T, vector->Tlen);
 
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_128(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         result = openssl_aes_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                      vector->T, vector->Tlen, vector->C, vector->Plen, pt_test);
@@ -688,13 +691,13 @@ check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_v
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, gkey);
+        isal_aes_gcm_pre_256(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_enc_256(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_256(gkey, gctx, vector->C, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         openssl_aes_256_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                 o_T_test, vector->Tlen, vector->P, vector->Plen, o_ct_test);
         OK |= check_data(vector->C, o_ct_test, vector->Plen, "OpenSSL vs ISA-L cypher text (C)");
@@ -709,14 +712,14 @@ check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_v
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_256(gkey, gctx, vector->P, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_256(gkey, gctx, vector->P, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(vector->T, T_test, vector->Tlen, "ISA-L decrypt vs encrypt tag (T)");
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted ISA-L plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_256(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_256(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen,
                          "ISA-L decrypted OpenSSL plain text (P)");
         result = openssl_aes_256_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A,
@@ -772,12 +775,12 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, gkey);
+        isal_aes_gcm_pre_256(vector->K, gkey);
 
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_init_256(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_256(gkey, gctx, IV_c, vector->A, vector->Alen);
 
         last_break = 0;
         i = (rand() % test_len / 8) & ALIGNMENT_MASK;
@@ -793,7 +796,8 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                         memcpy(stream, vector->P + last_break, i - last_break);
                 }
 
-                aes_gcm_enc_256_update(gkey, gctx, vector->C + last_break, stream, i - last_break);
+                isal_aes_gcm_enc_256_update(gkey, gctx, vector->C + last_break, stream,
+                                            i - last_break);
                 if (i - last_break != 0) {
                         aligned_free(stream);
                         stream = NULL;
@@ -807,12 +811,12 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                 last_break = i;
                 i += (rand() % test_len / 8) & ALIGNMENT_MASK;
         }
-        aes_gcm_enc_256_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
-                               vector->Plen - last_break);
+        isal_aes_gcm_enc_256_update(gkey, gctx, vector->C + last_break, vector->P + last_break,
+                                    vector->Plen - last_break);
         if (gctx->in_length != vector->Plen)
                 printf("%llu, %llu\n", (unsigned long long) gctx->in_length,
                        (unsigned long long) vector->Plen);
-        aes_gcm_enc_256_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_enc_256_finalize(gkey, gctx, vector->T, vector->Tlen);
 
         openssl_aes_256_gcm_enc(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                 o_T_test, vector->Tlen, vector->P, vector->Plen, o_ct_test);
@@ -831,7 +835,7 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
 
         last_break = 0;
         i += (rand() % test_len / 8) & ALIGNMENT_MASK;
-        aes_gcm_init_256(gkey, gctx, IV_c, vector->A, vector->Alen);
+        isal_aes_gcm_init_256(gkey, gctx, IV_c, vector->A, vector->Alen);
         while (i < (vector->Plen)) {
                 if (i - last_break != 0) {
                         const int posix_ret =
@@ -844,7 +848,8 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                         memcpy(stream, vector->C + last_break, i - last_break);
                 }
 
-                aes_gcm_dec_256_update(gkey, gctx, vector->P + last_break, stream, i - last_break);
+                isal_aes_gcm_dec_256_update(gkey, gctx, vector->P + last_break, stream,
+                                            i - last_break);
                 if (i - last_break != 0) {
                         aligned_free(stream);
                         stream = NULL;
@@ -860,16 +865,16 @@ check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, 
                 last_break = i;
                 i += (rand() % test_len / 8) & ALIGNMENT_MASK;
         }
-        aes_gcm_dec_256_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
-                               vector->Plen - last_break);
-        aes_gcm_dec_256_finalize(gkey, gctx, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_256_update(gkey, gctx, vector->P + last_break, vector->C + last_break,
+                                    vector->Plen - last_break);
+        isal_aes_gcm_dec_256_finalize(gkey, gctx, vector->T, vector->Tlen);
 
         OK |= check_data(vector->T, T_test, vector->Tlen, "ISA-L decrypt vs encrypt tag (T)");
         OK |= check_data(vector->T, o_T_test, vector->Tlen, "OpenSSL vs ISA-L decrypt tag (T)");
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted ISA-L plain text (P)");
         memset(vector->P, 0, vector->Plen);
-        aes_gcm_dec_256(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
-                        vector->Alen, vector->T, vector->Tlen);
+        isal_aes_gcm_dec_256(gkey, gctx, vector->P, o_ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, vector->T, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen,
                          "ISA-L decrypted OpenSSL plain text (P)");
         result = openssl_aes_256_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A,
@@ -1605,7 +1610,7 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_128(vector->K, &gkey);
+        isal_aes_gcm_pre_128(vector->K, &gkey);
 #ifdef GCM_VECTORS_VERBOSE
         dump_gcm_data(&gkey);
 #endif
@@ -1613,8 +1618,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         ////
         // ISA-l Encrypt
         ////
-        aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
@@ -1623,8 +1628,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         OK |= check_data(pt_test, T_test, vector->Tlen, "OpenSSL vs ISA-L tag (T)");
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_128(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         memset(ct_test, 0, vector->Plen);
         memset(T_test, 0, vector->Tlen);
@@ -1632,8 +1637,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_128(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -1641,16 +1646,16 @@ test_gcm128_std_vectors(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_128(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
-        aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
         // OpenSSl enc -> ISA-L dec
@@ -1658,14 +1663,14 @@ test_gcm128_std_vectors(gcm_vector const *vector)
                             vector->Tlen, vector->P, vector->Plen, ct_test);
         OK |= check_data(ct_test, vector->C, vector->Plen, "OpenSSL encrypted cypher text (C)");
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_128(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen,
                          "OpenSSL->ISA-L decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "OpenSSL->ISA-L decrypted tag (T)");
         // ISA-L enc -> OpenSSl dec
-        aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_128(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
         result = openssl_aes_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A, vector->Alen,
                                      T_test, vector->Tlen, ct_test, vector->Plen, pt_test);
@@ -1712,7 +1717,7 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         memcpy(IV_c, vector->IV, vector->IVlen);
 
         // This is only required once for a given key
-        aes_gcm_pre_256(vector->K, &gkey);
+        isal_aes_gcm_pre_256(vector->K, &gkey);
 #ifdef GCM_VECTORS_VERBOSE
         dump_gcm_data(&gkey);
 #endif
@@ -1721,8 +1726,8 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         // ISA-l Encrypt
         ////
         memset(ct_test, 0, vector->Plen);
-        aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->C, vector->Plen, "ISA-L encrypted cypher text (C)");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L tag (T)");
 
@@ -1733,8 +1738,8 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         OK |= check_data(pt_test, T_test, vector->Tlen, "OpenSSL vs ISA-L - tag (T)");
         // test of in-place encrypt
         memcpy(pt_test, vector->P, vector->Plen);
-        aes_gcm_enc_256(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, pt_test, pt_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->C, vector->Plen, "ISA-L encrypted cypher text(in-place)");
         memset(ct_test, 0, vector->Plen);
         memset(T_test, 0, vector->Tlen);
@@ -1742,8 +1747,8 @@ test_gcm256_std_vectors(gcm_vector const *vector)
         ////
         // ISA-l Decrypt
         ////
-        aes_gcm_dec_256(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt_test, vector->C, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L decrypted plain text (P)");
         // GCM decryption outputs a 16 byte tag value that must be verified against the expected tag
         // value
@@ -1751,16 +1756,16 @@ test_gcm256_std_vectors(gcm_vector const *vector)
 
         // test in in-place decrypt
         memcpy(ct_test, vector->C, vector->Plen);
-        aes_gcm_dec_256(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, ct_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         OK |= check_data(ct_test, vector->P, vector->Plen, "ISA-L plain text (P) - in-place");
         OK |= check_data(T_test, vector->T, vector->Tlen, "ISA-L decrypted tag (T) - in-place");
         // ISA-L enc -> ISA-L dec
-        aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen, "ISA-L self decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "ISA-L self decrypted tag (T)");
         // OpenSSl enc -> ISA-L dec
@@ -1768,14 +1773,14 @@ test_gcm256_std_vectors(gcm_vector const *vector)
                                 T_test, vector->Tlen, vector->P, vector->Plen, ct_test);
         OK |= check_data(ct_test, vector->C, vector->Plen, "OpenSSL encrypted cypher text (C)");
         memset(pt_test, 0, vector->Plen);
-        aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A, vector->Alen,
-                        T2_test, vector->Tlen);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt_test, ct_test, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T2_test, vector->Tlen);
         OK |= check_data(pt_test, vector->P, vector->Plen,
                          "OpenSSL->ISA-L decrypted plain text (P)");
         OK |= check_data(T_test, T2_test, vector->Tlen, "OpenSSL->ISA-L decrypted tag (T)");
         // ISA-L enc -> OpenSSl dec
-        aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
-                        vector->Alen, T_test, vector->Tlen);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct_test, vector->P, vector->Plen, IV_c, vector->A,
+                             vector->Alen, T_test, vector->Tlen);
         memset(pt_test, 0, vector->Plen);
         result = openssl_aes_256_gcm_dec(vector->K, vector->IV, vector->IVlen, vector->A,
                                          vector->Alen, T_test, vector->Tlen, ct_test, vector->Plen,

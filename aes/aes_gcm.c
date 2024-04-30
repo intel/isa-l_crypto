@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include "isal_crypto_api.h"
 #include "aes_gcm.h"
+#include "aes_gcm_internal.h"
 
 int
 isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
@@ -63,8 +64,8 @@ isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                        auth_tag, auth_tag_len);
+        _aes_gcm_enc_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                         auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -101,8 +102,8 @@ isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                        auth_tag, auth_tag_len);
+        _aes_gcm_enc_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                         auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -139,8 +140,8 @@ isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                        auth_tag, auth_tag_len);
+        _aes_gcm_dec_128(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                         auth_tag, auth_tag_len);
         return 0;
 }
 
@@ -176,8 +177,8 @@ isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                        auth_tag, auth_tag_len);
+        _aes_gcm_dec_256(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                         auth_tag, auth_tag_len);
         return 0;
 }
 
@@ -201,7 +202,7 @@ isal_aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_da
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_init_128(key_data, context_data, (uint8_t *) iv, aad, aad_len);
+        _aes_gcm_init_128(key_data, context_data, (uint8_t *) iv, aad, aad_len);
 
         return 0;
 }
@@ -226,7 +227,7 @@ isal_aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_da
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_init_256(key_data, context_data, (uint8_t *) iv, aad, aad_len);
+        _aes_gcm_init_256(key_data, context_data, (uint8_t *) iv, aad, aad_len);
 
         return 0;
 }
@@ -254,7 +255,7 @@ isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_128_update(key_data, context_data, out, (uint8_t *) in, len);
+        _aes_gcm_enc_128_update(key_data, context_data, out, (uint8_t *) in, len);
 
         return 0;
 }
@@ -282,7 +283,7 @@ isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_256_update(key_data, context_data, out, in, len);
+        _aes_gcm_enc_256_update(key_data, context_data, out, in, len);
 
         return 0;
 }
@@ -310,7 +311,7 @@ isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_128_update(key_data, context_data, out, in, len);
+        _aes_gcm_dec_128_update(key_data, context_data, out, in, len);
 
         return 0;
 }
@@ -332,7 +333,7 @@ isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,
         if (len > GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
-        aes_gcm_dec_256_update(key_data, context_data, out, in, len);
+        _aes_gcm_dec_256_update(key_data, context_data, out, in, len);
 
         return 0;
 }
@@ -358,7 +359,7 @@ isal_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
+        _aes_gcm_enc_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -384,7 +385,7 @@ isal_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
+        _aes_gcm_enc_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -410,7 +411,7 @@ isal_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
+        _aes_gcm_dec_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -436,13 +437,13 @@ isal_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
+        _aes_gcm_dec_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 
         return 0;
 }
 
 int
-isal_aes_gcm_pre_128(const int *key, struct gcm_key_data *key_data)
+isal_aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
 {
 #ifdef SAFE_PARAM
         if (key == NULL)
@@ -456,13 +457,13 @@ isal_aes_gcm_pre_128(const int *key, struct gcm_key_data *key_data)
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_pre_128(key, key_data);
+        _aes_gcm_pre_128(key, key_data);
 
         return 0;
 }
 
 int
-isal_aes_gcm_pre_256(const int *key, struct gcm_key_data *key_data)
+isal_aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
 {
 #ifdef SAFE_PARAM
         if (key == NULL)
@@ -476,7 +477,7 @@ isal_aes_gcm_pre_256(const int *key, struct gcm_key_data *key_data)
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_pre_256(key, key_data);
+        _aes_gcm_pre_256(key, key_data);
 
         return 0;
 }
@@ -513,8 +514,8 @@ isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                           auth_tag, auth_tag_len);
+        _aes_gcm_enc_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                            auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -551,8 +552,8 @@ isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                           auth_tag, auth_tag_len);
+        _aes_gcm_enc_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                            auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -589,8 +590,8 @@ isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                           auth_tag, auth_tag_len);
+        _aes_gcm_dec_128_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                            auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -627,8 +628,8 @@ isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
-                           auth_tag, auth_tag_len);
+        _aes_gcm_dec_256_nt(key_data, context_data, out, in, len, (uint8_t *) iv, aad, aad_len,
+                            auth_tag, auth_tag_len);
 
         return 0;
 }
@@ -656,7 +657,7 @@ isal_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_128_update_nt(key_data, context_data, out, in, len);
+        _aes_gcm_enc_128_update_nt(key_data, context_data, out, in, len);
         return 0;
 }
 
@@ -683,7 +684,7 @@ isal_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_enc_256_update_nt(key_data, context_data, out, in, len);
+        _aes_gcm_enc_256_update_nt(key_data, context_data, out, in, len);
 
         return 0;
 }
@@ -711,7 +712,7 @@ isal_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_128_update_nt(key_data, context_data, out, in, len);
+        _aes_gcm_dec_128_update_nt(key_data, context_data, out, in, len);
 
         return 0;
 }
@@ -739,7 +740,189 @@ isal_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_gcm_dec_256_update_nt(key_data, context_data, out, in, len);
+        _aes_gcm_dec_256_update_nt(key_data, context_data, out, in, len);
 
         return 0;
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_128(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                         auth_tag_len);
+}
+
+void
+aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_256(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                         auth_tag_len);
+}
+
+void
+aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_128(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                         auth_tag_len);
+}
+
+void
+aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_256(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                         auth_tag_len);
+}
+
+void
+aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                 uint8_t *iv, uint8_t const *aad, uint64_t aad_len)
+{
+        _aes_gcm_init_128(key_data, context_data, iv, aad, aad_len);
+}
+
+void
+aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                 uint8_t *iv, uint8_t const *aad, uint64_t aad_len)
+{
+        _aes_gcm_init_256(key_data, context_data, iv, aad, aad_len);
+}
+
+void
+aes_gcm_enc_128_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                       uint8_t *out, const uint8_t *in, uint64_t len)
+{
+        _aes_gcm_enc_128_update(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_enc_256_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                       uint8_t *out, const uint8_t *in, uint64_t len)
+{
+        _aes_gcm_enc_256_update(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_dec_128_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                       uint8_t *out, const uint8_t *in, uint64_t len)
+{
+        _aes_gcm_dec_128_update(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_dec_256_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                       uint8_t *out, const uint8_t *in, uint64_t len)
+{
+        _aes_gcm_dec_256_update(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                         uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
+}
+
+void
+aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                         uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
+}
+
+void
+aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                         uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
+}
+
+void
+aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                         uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
+}
+
+/* ---- NT versions ---- */
+
+void
+aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_128_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                            auth_tag_len);
+}
+
+void
+aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_enc_256_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                            auth_tag_len);
+}
+
+void
+aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_128_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                            auth_tag_len);
+}
+
+void
+aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
+                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
+                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+{
+        _aes_gcm_dec_256_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
+                            auth_tag_len);
+}
+
+void
+aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
+                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                          uint64_t len)
+{
+        _aes_gcm_enc_128_update_nt(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
+                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                          uint64_t len)
+{
+        _aes_gcm_enc_256_update_nt(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
+                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                          uint64_t len)
+{
+        _aes_gcm_dec_128_update_nt(key_data, context_data, out, in, len);
+}
+
+void
+aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
+                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                          uint64_t len)
+{
+        _aes_gcm_dec_256_update_nt(key_data, context_data, out, in, len);
 }

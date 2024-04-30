@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+  Copyright(c) 2011-2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -26,6 +26,8 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
+
+#include "types.h"
 
 /**
  *  @file aes_gcm.h
@@ -159,8 +161,10 @@ struct gcm_context_data {
 /**
  * @brief GCM-AES Encryption using 128 bit keys
  *
+ * @deprecated Please use isal_aes_gcm_enc_128() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128() instead.")
 void
 aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                 struct gcm_context_data *context_data, //!< GCM operation context data
@@ -180,8 +184,10 @@ aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
 /**
  * @brief GCM-AES Encryption using 256 bit keys
  *
+ * @deprecated Please use isal_aes_gcm_enc_256() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256() instead.")
 void
 aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                 struct gcm_context_data *context_data, //!< GCM operation context data
@@ -201,8 +207,10 @@ aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
 /**
  * @brief GCM-AES Decryption using 128 bit keys
  *
+ * @deprecated Please use isal_aes_gcm_dec_128() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128() instead.")
 void
 aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                 struct gcm_context_data *context_data, //!< GCM operation context data
@@ -222,8 +230,10 @@ aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
 /**
  * @brief GCM-AES Decryption using 128 bit keys
  *
+ * @deprecated Please use isal_aes_gcm_dec_256() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256() instead.")
 void
 aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                 struct gcm_context_data *context_data, //!< GCM operation context data
@@ -243,8 +253,10 @@ aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
 /**
  * @brief Start a AES-GCM Encryption message 128 bit key
  *
+ * @deprecated Please use isal_aes_gcm_init_128() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_init_128() instead.")
 void
 aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                  struct gcm_context_data *context_data, //!< GCM operation context data
@@ -257,8 +269,10 @@ aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key da
 /**
  * @brief Start a AES-GCM Encryption message 256 bit key
  *
+ * @deprecated Please use isal_aes_gcm_init_256() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_init_256() instead.")
 void
 aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                  struct gcm_context_data *context_data, //!< GCM operation context data
@@ -271,8 +285,10 @@ aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key da
 /**
  * @brief Encrypt a block of a AES-128-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_enc_128_update() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_update() instead.")
 void
 aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                        struct gcm_context_data *context_data, //!< GCM operation context data
@@ -284,8 +300,10 @@ aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
 /**
  * @brief Encrypt a block of a AES-256-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_enc_256_update() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_update() instead.")
 void
 aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                        struct gcm_context_data *context_data, //!< GCM operation context data
@@ -297,8 +315,10 @@ aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
 /**
  * @brief Decrypt a block of a AES-128-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_dec_128_update() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_update() instead.")
 void
 aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                        struct gcm_context_data *context_data, //!< GCM operation context data
@@ -310,8 +330,10 @@ aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
 /**
  * @brief Decrypt a block of a AES-256-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_dec_256_update() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_update() instead.")
 void
 aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                        struct gcm_context_data *context_data, //!< GCM operation context data
@@ -323,8 +345,10 @@ aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
 /**
  * @brief End encryption of a AES-128-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_enc_128_finalize() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_finalize() instead.")
 void
 aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                          struct gcm_context_data *context_data, //!< GCM operation context data
@@ -337,8 +361,10 @@ aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
 /**
  * @brief End encryption of a AES-256-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_enc_256_finalize() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_finalize() instead.")
 void
 aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                          struct gcm_context_data *context_data, //!< GCM operation context data
@@ -351,8 +377,10 @@ aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
 /**
  * @brief End decryption of a AES-128-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_dec_128_finalize() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_finalize() instead.")
 void
 aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                          struct gcm_context_data *context_data, //!< GCM operation context data
@@ -365,8 +393,10 @@ aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
 /**
  * @brief End decryption of a AES-256-GCM Encryption message
  *
+ * @deprecated Please use isal_aes_gcm_dec_256_finalize() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_finalize() instead.")
 void
 aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                          struct gcm_context_data *context_data, //!< GCM operation context data
@@ -382,8 +412,10 @@ aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
  * Prefills the gcm key data with key values for each round and
  * the initial sub hash key for tag encoding
  *
+ * @deprecated Please use isal_aes_gcm_pre_128() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_pre_128() instead.")
 void
 aes_gcm_pre_128(const void *key,              //!< Pointer to key data
                 struct gcm_key_data *key_data //!< GCM expanded key data
@@ -395,8 +427,10 @@ aes_gcm_pre_128(const void *key,              //!< Pointer to key data
  * Prefills the gcm key data with key values for each round and
  * the initial sub hash key for tag encoding
  *
+ * @deprecated Please use isal_aes_gcm_pre_256() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_pre_256() instead.")
 void
 aes_gcm_pre_256(const void *key,              //!< Pointer to key data
                 struct gcm_key_data *key_data //!< GCM expanded key data
@@ -410,8 +444,10 @@ aes_gcm_pre_256(const void *key,              //!< Pointer to key data
  * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_enc_128_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_nt() instead.")
 void
 aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                    struct gcm_context_data *context_data, //!< GCM operation context data
@@ -435,8 +471,10 @@ aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_enc_256_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_nt() instead.")
 void
 aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                    struct gcm_context_data *context_data, //!< GCM operation context data
@@ -460,8 +498,10 @@ aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_dec_128_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_nt() instead.")
 void
 aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                    struct gcm_context_data *context_data, //!< GCM operation context data
@@ -485,8 +525,10 @@ aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  * - The plaintext and ciphertext buffers must be aligned on a 64 byte boundary.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_dec_256_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_nt() instead.")
 void
 aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                    struct gcm_context_data *context_data, //!< GCM operation context data
@@ -512,8 +554,10 @@ aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_enc_128_update_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_update_nt() instead.")
 void
 aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                           struct gcm_context_data *context_data, //!< GCM operation context data
@@ -531,8 +575,10 @@ aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_enc_256_update_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_update_nt() instead.")
 void
 aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                           struct gcm_context_data *context_data, //!< GCM operation context data
@@ -550,8 +596,10 @@ aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_dec_128_update_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_update_nt() instead.")
 void
 aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                           struct gcm_context_data *context_data, //!< GCM operation context data
@@ -569,8 +617,10 @@ aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  *   the last input buffer.
  * - In-place encryption/decryption is not recommended. Performance can be slow.
  *
+ * @deprecated Please use isal_aes_gcm_dec_256_update_nt() instead.
  * @requires SSE4.1 and AESNI
  */
+ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_update_nt() instead.")
 void
 aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
                           struct gcm_context_data *context_data, //!< GCM operation context data
@@ -862,12 +912,12 @@ isal_aes_gcm_dec_256_finalize(
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_pre_128(const int *key,               //!< Pointer to key data
+isal_aes_gcm_pre_128(const void *key,              //!< Pointer to key data
                      struct gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /**
- * @brief Pre-processes GCM key data 128 bit
+ * @brief Pre-processes GCM key data 256 bit
  *
  * Prefills the gcm key data with key values for each round and
  * the initial sub hash key for tag encoding
@@ -879,7 +929,7 @@ isal_aes_gcm_pre_128(const int *key,               //!< Pointer to key data
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_pre_256(const int *key,               //!< Pointer to key data
+isal_aes_gcm_pre_256(const void *key,              //!< Pointer to key data
                      struct gcm_key_data *key_data //!< GCM expanded key data
 );
 

@@ -29,30 +29,30 @@
 
 #include "aarch64_multibinary.h"
 
-mbin_interface     aes_gcm_enc_128
-mbin_interface     aes_gcm_dec_128
-mbin_interface     aes_gcm_precomp_128
-mbin_interface     aes_gcm_enc_256
-mbin_interface     aes_gcm_dec_256
-mbin_interface     aes_gcm_precomp_256
+mbin_interface     _aes_gcm_enc_128
+mbin_interface     _aes_gcm_dec_128
+mbin_interface     _aes_gcm_precomp_128
+mbin_interface     _aes_gcm_enc_256
+mbin_interface     _aes_gcm_dec_256
+mbin_interface     _aes_gcm_precomp_256
 
 
-mbin_interface     aes_gcm_enc_128_update
-mbin_interface     aes_gcm_enc_128_finalize
-mbin_interface     aes_gcm_dec_128_update
-mbin_interface     aes_gcm_dec_128_finalize
-mbin_interface     aes_gcm_enc_256_update
-mbin_interface     aes_gcm_enc_256_finalize
-mbin_interface     aes_gcm_dec_256_update
-mbin_interface     aes_gcm_dec_256_finalize
+mbin_interface     _aes_gcm_enc_128_update
+mbin_interface     _aes_gcm_enc_128_finalize
+mbin_interface     _aes_gcm_dec_128_update
+mbin_interface     _aes_gcm_dec_128_finalize
+mbin_interface     _aes_gcm_enc_256_update
+mbin_interface     _aes_gcm_enc_256_finalize
+mbin_interface     _aes_gcm_dec_256_update
+mbin_interface     _aes_gcm_dec_256_finalize
 
-mbin_interface     aes_gcm_init_256
-mbin_interface     aes_gcm_init_128
-mbin_interface     aes_gcm_enc_128_nt
-mbin_interface     aes_gcm_enc_128_update_nt
-mbin_interface     aes_gcm_dec_128_nt
-mbin_interface     aes_gcm_dec_128_update_nt
-mbin_interface     aes_gcm_enc_256_nt
-mbin_interface     aes_gcm_enc_256_update_nt
-mbin_interface     aes_gcm_dec_256_nt
-mbin_interface     aes_gcm_dec_256_update_nt
+mbin_interface     _aes_gcm_init_256
+mbin_interface     _aes_gcm_init_128
+mbin_interface     _aes_gcm_enc_128_nt
+mbin_interface     _aes_gcm_enc_128_update_nt
+mbin_interface     _aes_gcm_dec_128_nt
+mbin_interface     _aes_gcm_dec_128_update_nt
+mbin_interface     _aes_gcm_enc_256_nt
+mbin_interface     _aes_gcm_enc_256_update_nt
+mbin_interface     _aes_gcm_dec_256_nt
+mbin_interface     _aes_gcm_dec_256_update_nt

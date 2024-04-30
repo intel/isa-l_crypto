@@ -32,80 +32,80 @@ default rel
 
 %include "reg_sizes.asm"
 
-extern aes_gcm_init_128_sse
-extern aes_gcm_init_128_avx_gen4
-extern aes_gcm_init_128_avx_gen2
+extern _aes_gcm_init_128_sse
+extern _aes_gcm_init_128_avx_gen4
+extern _aes_gcm_init_128_avx_gen2
 
-extern aes_gcm_enc_128_sse
-extern aes_gcm_enc_128_avx_gen4
-extern aes_gcm_enc_128_avx_gen2
-extern aes_gcm_enc_128_update_sse
-extern aes_gcm_enc_128_update_avx_gen4
-extern aes_gcm_enc_128_update_avx_gen2
-extern aes_gcm_enc_128_finalize_sse
-extern aes_gcm_enc_128_finalize_avx_gen4
-extern aes_gcm_enc_128_finalize_avx_gen2
+extern _aes_gcm_enc_128_sse
+extern _aes_gcm_enc_128_avx_gen4
+extern _aes_gcm_enc_128_avx_gen2
+extern _aes_gcm_enc_128_update_sse
+extern _aes_gcm_enc_128_update_avx_gen4
+extern _aes_gcm_enc_128_update_avx_gen2
+extern _aes_gcm_enc_128_finalize_sse
+extern _aes_gcm_enc_128_finalize_avx_gen4
+extern _aes_gcm_enc_128_finalize_avx_gen2
 
-extern aes_gcm_dec_128_sse
-extern aes_gcm_dec_128_avx_gen4
-extern aes_gcm_dec_128_avx_gen2
-extern aes_gcm_dec_128_update_sse
-extern aes_gcm_dec_128_update_avx_gen4
-extern aes_gcm_dec_128_update_avx_gen2
-extern aes_gcm_dec_128_finalize_sse
-extern aes_gcm_dec_128_finalize_avx_gen4
-extern aes_gcm_dec_128_finalize_avx_gen2
+extern _aes_gcm_dec_128_sse
+extern _aes_gcm_dec_128_avx_gen4
+extern _aes_gcm_dec_128_avx_gen2
+extern _aes_gcm_dec_128_update_sse
+extern _aes_gcm_dec_128_update_avx_gen4
+extern _aes_gcm_dec_128_update_avx_gen2
+extern _aes_gcm_dec_128_finalize_sse
+extern _aes_gcm_dec_128_finalize_avx_gen4
+extern _aes_gcm_dec_128_finalize_avx_gen2
 
-extern aes_gcm_precomp_128_sse
-extern aes_gcm_precomp_128_avx_gen4
-extern aes_gcm_precomp_128_avx_gen2
+extern _aes_gcm_precomp_128_sse
+extern _aes_gcm_precomp_128_avx_gen4
+extern _aes_gcm_precomp_128_avx_gen2
 
-extern aes_gcm_init_256_sse
-extern aes_gcm_init_256_avx_gen4
-extern aes_gcm_init_256_avx_gen2
+extern _aes_gcm_init_256_sse
+extern _aes_gcm_init_256_avx_gen4
+extern _aes_gcm_init_256_avx_gen2
 
-extern aes_gcm_enc_256_sse
-extern aes_gcm_enc_256_avx_gen4
-extern aes_gcm_enc_256_avx_gen2
-extern aes_gcm_enc_256_update_sse
-extern aes_gcm_enc_256_update_avx_gen4
-extern aes_gcm_enc_256_update_avx_gen2
-extern aes_gcm_enc_256_finalize_sse
-extern aes_gcm_enc_256_finalize_avx_gen4
-extern aes_gcm_enc_256_finalize_avx_gen2
+extern _aes_gcm_enc_256_sse
+extern _aes_gcm_enc_256_avx_gen4
+extern _aes_gcm_enc_256_avx_gen2
+extern _aes_gcm_enc_256_update_sse
+extern _aes_gcm_enc_256_update_avx_gen4
+extern _aes_gcm_enc_256_update_avx_gen2
+extern _aes_gcm_enc_256_finalize_sse
+extern _aes_gcm_enc_256_finalize_avx_gen4
+extern _aes_gcm_enc_256_finalize_avx_gen2
 
-extern aes_gcm_dec_256_sse
-extern aes_gcm_dec_256_avx_gen4
-extern aes_gcm_dec_256_avx_gen2
-extern aes_gcm_dec_256_update_sse
-extern aes_gcm_dec_256_update_avx_gen4
-extern aes_gcm_dec_256_update_avx_gen2
-extern aes_gcm_dec_256_finalize_sse
-extern aes_gcm_dec_256_finalize_avx_gen4
-extern aes_gcm_dec_256_finalize_avx_gen2
+extern _aes_gcm_dec_256_sse
+extern _aes_gcm_dec_256_avx_gen4
+extern _aes_gcm_dec_256_avx_gen2
+extern _aes_gcm_dec_256_update_sse
+extern _aes_gcm_dec_256_update_avx_gen4
+extern _aes_gcm_dec_256_update_avx_gen2
+extern _aes_gcm_dec_256_finalize_sse
+extern _aes_gcm_dec_256_finalize_avx_gen4
+extern _aes_gcm_dec_256_finalize_avx_gen2
 
-extern aes_gcm_precomp_256_sse
-extern aes_gcm_precomp_256_avx_gen4
-extern aes_gcm_precomp_256_avx_gen2
+extern _aes_gcm_precomp_256_sse
+extern _aes_gcm_precomp_256_avx_gen4
+extern _aes_gcm_precomp_256_avx_gen2
 
 %if (AS_FEATURE_LEVEL) >= 10
-extern aes_gcm_precomp_128_vaes_avx512
-extern aes_gcm_init_128_vaes_avx512
-extern aes_gcm_enc_128_update_vaes_avx512
-extern aes_gcm_dec_128_update_vaes_avx512
-extern aes_gcm_enc_128_finalize_vaes_avx512
-extern aes_gcm_dec_128_finalize_vaes_avx512
-extern aes_gcm_enc_128_vaes_avx512
-extern aes_gcm_dec_128_vaes_avx512
+extern _aes_gcm_precomp_128_vaes_avx512
+extern _aes_gcm_init_128_vaes_avx512
+extern _aes_gcm_enc_128_update_vaes_avx512
+extern _aes_gcm_dec_128_update_vaes_avx512
+extern _aes_gcm_enc_128_finalize_vaes_avx512
+extern _aes_gcm_dec_128_finalize_vaes_avx512
+extern _aes_gcm_enc_128_vaes_avx512
+extern _aes_gcm_dec_128_vaes_avx512
 
-extern aes_gcm_precomp_256_vaes_avx512
-extern aes_gcm_init_256_vaes_avx512
-extern aes_gcm_enc_256_update_vaes_avx512
-extern aes_gcm_dec_256_update_vaes_avx512
-extern aes_gcm_enc_256_finalize_vaes_avx512
-extern aes_gcm_dec_256_finalize_vaes_avx512
-extern aes_gcm_enc_256_vaes_avx512
-extern aes_gcm_dec_256_vaes_avx512
+extern _aes_gcm_precomp_256_vaes_avx512
+extern _aes_gcm_init_256_vaes_avx512
+extern _aes_gcm_enc_256_update_vaes_avx512
+extern _aes_gcm_dec_256_update_vaes_avx512
+extern _aes_gcm_enc_256_finalize_vaes_avx512
+extern _aes_gcm_dec_256_finalize_vaes_avx512
+extern _aes_gcm_enc_256_vaes_avx512
+extern _aes_gcm_dec_256_vaes_avx512
 %endif
 
 section .text
@@ -115,70 +115,70 @@ section .text
 ;;;;
 ; instantiate aesni_gcm interfaces init, enc, enc_update, enc_finalize, dec, dec_update, dec_finalize and precomp
 ;;;;
-mbin_interface     aes_gcm_init_128
-mbin_dispatch_init7 aes_gcm_init_128, aes_gcm_init_128_sse, aes_gcm_init_128_sse, aes_gcm_init_128_avx_gen2, aes_gcm_init_128_avx_gen4, aes_gcm_init_128_avx_gen4, aes_gcm_init_128_vaes_avx512
+mbin_interface     _aes_gcm_init_128
+mbin_dispatch_init7 _aes_gcm_init_128, _aes_gcm_init_128_sse, _aes_gcm_init_128_sse, _aes_gcm_init_128_avx_gen2, _aes_gcm_init_128_avx_gen4, _aes_gcm_init_128_avx_gen4, _aes_gcm_init_128_vaes_avx512
 
-mbin_interface     aes_gcm_enc_128
-mbin_dispatch_init7 aes_gcm_enc_128, aes_gcm_enc_128_sse, aes_gcm_enc_128_sse, aes_gcm_enc_128_avx_gen2, aes_gcm_enc_128_avx_gen4, aes_gcm_enc_128_avx_gen4, aes_gcm_enc_128_vaes_avx512
+mbin_interface     _aes_gcm_enc_128
+mbin_dispatch_init7 _aes_gcm_enc_128, _aes_gcm_enc_128_sse, _aes_gcm_enc_128_sse, _aes_gcm_enc_128_avx_gen2, _aes_gcm_enc_128_avx_gen4, _aes_gcm_enc_128_avx_gen4, _aes_gcm_enc_128_vaes_avx512
 
-mbin_interface     aes_gcm_enc_128_update
-mbin_dispatch_init7 aes_gcm_enc_128_update, aes_gcm_enc_128_update_sse, aes_gcm_enc_128_update_sse, aes_gcm_enc_128_update_avx_gen2, aes_gcm_enc_128_update_avx_gen4, aes_gcm_enc_128_update_avx_gen4, aes_gcm_enc_128_update_vaes_avx512
+mbin_interface     _aes_gcm_enc_128_update
+mbin_dispatch_init7 _aes_gcm_enc_128_update, _aes_gcm_enc_128_update_sse, _aes_gcm_enc_128_update_sse, _aes_gcm_enc_128_update_avx_gen2, _aes_gcm_enc_128_update_avx_gen4, _aes_gcm_enc_128_update_avx_gen4, _aes_gcm_enc_128_update_vaes_avx512
 
-mbin_interface     aes_gcm_enc_128_finalize
-mbin_dispatch_init7 aes_gcm_enc_128_finalize, aes_gcm_enc_128_finalize_sse, aes_gcm_enc_128_finalize_sse, aes_gcm_enc_128_finalize_avx_gen2, aes_gcm_enc_128_finalize_avx_gen4, aes_gcm_enc_128_finalize_avx_gen4, aes_gcm_enc_128_finalize_vaes_avx512
+mbin_interface     _aes_gcm_enc_128_finalize
+mbin_dispatch_init7 _aes_gcm_enc_128_finalize, _aes_gcm_enc_128_finalize_sse, _aes_gcm_enc_128_finalize_sse, _aes_gcm_enc_128_finalize_avx_gen2, _aes_gcm_enc_128_finalize_avx_gen4, _aes_gcm_enc_128_finalize_avx_gen4, _aes_gcm_enc_128_finalize_vaes_avx512
 
-mbin_interface     aes_gcm_dec_128
-mbin_dispatch_init7 aes_gcm_dec_128, aes_gcm_dec_128_sse, aes_gcm_dec_128_sse, aes_gcm_dec_128_avx_gen2, aes_gcm_dec_128_avx_gen4, aes_gcm_dec_128_avx_gen4, aes_gcm_dec_128_vaes_avx512
+mbin_interface     _aes_gcm_dec_128
+mbin_dispatch_init7 _aes_gcm_dec_128, _aes_gcm_dec_128_sse, _aes_gcm_dec_128_sse, _aes_gcm_dec_128_avx_gen2, _aes_gcm_dec_128_avx_gen4, _aes_gcm_dec_128_avx_gen4, _aes_gcm_dec_128_vaes_avx512
 
-mbin_interface     aes_gcm_dec_128_update
-mbin_dispatch_init7 aes_gcm_dec_128_update, aes_gcm_dec_128_update_sse, aes_gcm_dec_128_update_sse, aes_gcm_dec_128_update_avx_gen2, aes_gcm_dec_128_update_avx_gen4, aes_gcm_dec_128_update_avx_gen4, aes_gcm_dec_128_update_vaes_avx512
+mbin_interface     _aes_gcm_dec_128_update
+mbin_dispatch_init7 _aes_gcm_dec_128_update, _aes_gcm_dec_128_update_sse, _aes_gcm_dec_128_update_sse, _aes_gcm_dec_128_update_avx_gen2, _aes_gcm_dec_128_update_avx_gen4, _aes_gcm_dec_128_update_avx_gen4, _aes_gcm_dec_128_update_vaes_avx512
 
-mbin_interface     aes_gcm_dec_128_finalize
-mbin_dispatch_init7 aes_gcm_dec_128_finalize, aes_gcm_dec_128_finalize_sse, aes_gcm_dec_128_finalize_sse, aes_gcm_dec_128_finalize_avx_gen2, aes_gcm_dec_128_finalize_avx_gen4, aes_gcm_dec_128_finalize_avx_gen4, aes_gcm_dec_128_finalize_vaes_avx512
+mbin_interface     _aes_gcm_dec_128_finalize
+mbin_dispatch_init7 _aes_gcm_dec_128_finalize, _aes_gcm_dec_128_finalize_sse, _aes_gcm_dec_128_finalize_sse, _aes_gcm_dec_128_finalize_avx_gen2, _aes_gcm_dec_128_finalize_avx_gen4, _aes_gcm_dec_128_finalize_avx_gen4, _aes_gcm_dec_128_finalize_vaes_avx512
 
-mbin_interface     aes_gcm_precomp_128
-mbin_dispatch_init7 aes_gcm_precomp_128, aes_gcm_precomp_128_sse, aes_gcm_precomp_128_sse, aes_gcm_precomp_128_avx_gen2, aes_gcm_precomp_128_avx_gen4, aes_gcm_precomp_128_avx_gen4, aes_gcm_precomp_128_vaes_avx512
+mbin_interface     _aes_gcm_precomp_128
+mbin_dispatch_init7 _aes_gcm_precomp_128, _aes_gcm_precomp_128_sse, _aes_gcm_precomp_128_sse, _aes_gcm_precomp_128_avx_gen2, _aes_gcm_precomp_128_avx_gen4, _aes_gcm_precomp_128_avx_gen4, _aes_gcm_precomp_128_vaes_avx512
 
 ;;;;
 ; instantiate aesni_gcm interfaces init, enc, enc_update, enc_finalize, dec, dec_update, dec_finalize and precomp
 ;;;;
-mbin_interface     aes_gcm_init_256
-mbin_dispatch_init7 aes_gcm_init_256, aes_gcm_init_256_sse, aes_gcm_init_256_sse, aes_gcm_init_256_avx_gen2, aes_gcm_init_256_avx_gen4, aes_gcm_init_256_avx_gen4, aes_gcm_init_256_vaes_avx512
+mbin_interface     _aes_gcm_init_256
+mbin_dispatch_init7 _aes_gcm_init_256, _aes_gcm_init_256_sse, _aes_gcm_init_256_sse, _aes_gcm_init_256_avx_gen2, _aes_gcm_init_256_avx_gen4, _aes_gcm_init_256_avx_gen4, _aes_gcm_init_256_vaes_avx512
 
-mbin_interface     aes_gcm_enc_256
-mbin_dispatch_init7 aes_gcm_enc_256, aes_gcm_enc_256_sse, aes_gcm_enc_256_sse, aes_gcm_enc_256_avx_gen2, aes_gcm_enc_256_avx_gen4, aes_gcm_enc_256_avx_gen4, aes_gcm_enc_256_vaes_avx512
+mbin_interface     _aes_gcm_enc_256
+mbin_dispatch_init7 _aes_gcm_enc_256, _aes_gcm_enc_256_sse, _aes_gcm_enc_256_sse, _aes_gcm_enc_256_avx_gen2, _aes_gcm_enc_256_avx_gen4, _aes_gcm_enc_256_avx_gen4, _aes_gcm_enc_256_vaes_avx512
 
-mbin_interface     aes_gcm_enc_256_update
-mbin_dispatch_init7 aes_gcm_enc_256_update, aes_gcm_enc_256_update_sse, aes_gcm_enc_256_update_sse, aes_gcm_enc_256_update_avx_gen2, aes_gcm_enc_256_update_avx_gen4, aes_gcm_enc_256_update_avx_gen4, aes_gcm_enc_256_update_vaes_avx512
+mbin_interface     _aes_gcm_enc_256_update
+mbin_dispatch_init7 _aes_gcm_enc_256_update, _aes_gcm_enc_256_update_sse, _aes_gcm_enc_256_update_sse, _aes_gcm_enc_256_update_avx_gen2, _aes_gcm_enc_256_update_avx_gen4, _aes_gcm_enc_256_update_avx_gen4, _aes_gcm_enc_256_update_vaes_avx512
 
-mbin_interface     aes_gcm_enc_256_finalize
-mbin_dispatch_init7 aes_gcm_enc_256_finalize, aes_gcm_enc_256_finalize_sse, aes_gcm_enc_256_finalize_sse, aes_gcm_enc_256_finalize_avx_gen2, aes_gcm_enc_256_finalize_avx_gen4, aes_gcm_enc_256_finalize_avx_gen4, aes_gcm_enc_256_finalize_vaes_avx512
+mbin_interface     _aes_gcm_enc_256_finalize
+mbin_dispatch_init7 _aes_gcm_enc_256_finalize, _aes_gcm_enc_256_finalize_sse, _aes_gcm_enc_256_finalize_sse, _aes_gcm_enc_256_finalize_avx_gen2, _aes_gcm_enc_256_finalize_avx_gen4, _aes_gcm_enc_256_finalize_avx_gen4, _aes_gcm_enc_256_finalize_vaes_avx512
 
-mbin_interface     aes_gcm_dec_256
-mbin_dispatch_init7 aes_gcm_dec_256, aes_gcm_dec_256_sse, aes_gcm_dec_256_sse, aes_gcm_dec_256_avx_gen2, aes_gcm_dec_256_avx_gen4, aes_gcm_dec_256_avx_gen4, aes_gcm_dec_256_vaes_avx512
+mbin_interface     _aes_gcm_dec_256
+mbin_dispatch_init7 _aes_gcm_dec_256, _aes_gcm_dec_256_sse, _aes_gcm_dec_256_sse, _aes_gcm_dec_256_avx_gen2, _aes_gcm_dec_256_avx_gen4, _aes_gcm_dec_256_avx_gen4, _aes_gcm_dec_256_vaes_avx512
 
-mbin_interface     aes_gcm_dec_256_update
-mbin_dispatch_init7 aes_gcm_dec_256_update, aes_gcm_dec_256_update_sse, aes_gcm_dec_256_update_sse, aes_gcm_dec_256_update_avx_gen2, aes_gcm_dec_256_update_avx_gen4, aes_gcm_dec_256_update_avx_gen4, aes_gcm_dec_256_update_vaes_avx512
+mbin_interface     _aes_gcm_dec_256_update
+mbin_dispatch_init7 _aes_gcm_dec_256_update, _aes_gcm_dec_256_update_sse, _aes_gcm_dec_256_update_sse, _aes_gcm_dec_256_update_avx_gen2, _aes_gcm_dec_256_update_avx_gen4, _aes_gcm_dec_256_update_avx_gen4, _aes_gcm_dec_256_update_vaes_avx512
 
-mbin_interface     aes_gcm_dec_256_finalize
-mbin_dispatch_init7 aes_gcm_dec_256_finalize, aes_gcm_dec_256_finalize_sse, aes_gcm_dec_256_finalize_sse, aes_gcm_dec_256_finalize_avx_gen2, aes_gcm_dec_256_finalize_avx_gen4, aes_gcm_dec_256_finalize_avx_gen4, aes_gcm_dec_256_finalize_vaes_avx512
+mbin_interface     _aes_gcm_dec_256_finalize
+mbin_dispatch_init7 _aes_gcm_dec_256_finalize, _aes_gcm_dec_256_finalize_sse, _aes_gcm_dec_256_finalize_sse, _aes_gcm_dec_256_finalize_avx_gen2, _aes_gcm_dec_256_finalize_avx_gen4, _aes_gcm_dec_256_finalize_avx_gen4, _aes_gcm_dec_256_finalize_vaes_avx512
 
-mbin_interface     aes_gcm_precomp_256
-mbin_dispatch_init7 aes_gcm_precomp_256, aes_gcm_precomp_256_sse, aes_gcm_precomp_256_sse, aes_gcm_precomp_256_avx_gen2, aes_gcm_precomp_256_avx_gen4, aes_gcm_precomp_256_avx_gen4, aes_gcm_precomp_256_vaes_avx512
+mbin_interface     _aes_gcm_precomp_256
+mbin_dispatch_init7 _aes_gcm_precomp_256, _aes_gcm_precomp_256_sse, _aes_gcm_precomp_256_sse, _aes_gcm_precomp_256_avx_gen2, _aes_gcm_precomp_256_avx_gen4, _aes_gcm_precomp_256_avx_gen4, _aes_gcm_precomp_256_vaes_avx512
 
 
 ;;;       func				core, ver, snum
-slversion aes_gcm_enc_128,		00,   00,  02c0
-slversion aes_gcm_dec_128,		00,   00,  02c1
-slversion aes_gcm_init_128,		00,   00,  02c2
-slversion aes_gcm_enc_128_update,	00,   00,  02c3
-slversion aes_gcm_dec_128_update,	00,   00,  02c4
-slversion aes_gcm_enc_128_finalize,	00,   00,  02c5
-slversion aes_gcm_dec_128_finalize,	00,   00,  02c6
-slversion aes_gcm_enc_256,		00,   00,  02d0
-slversion aes_gcm_dec_256,		00,   00,  02d1
-slversion aes_gcm_init_256,		00,   00,  02d2
-slversion aes_gcm_enc_256_update,	00,   00,  02d3
-slversion aes_gcm_dec_256_update,	00,   00,  02d4
-slversion aes_gcm_enc_256_finalize,	00,   00,  02d5
-slversion aes_gcm_dec_256_finalize,	00,   00,  02d6
+slversion _aes_gcm_enc_128,		00,   00,  02c0
+slversion _aes_gcm_dec_128,		00,   00,  02c1
+slversion _aes_gcm_init_128,		00,   00,  02c2
+slversion _aes_gcm_enc_128_update,	00,   00,  02c3
+slversion _aes_gcm_dec_128_update,	00,   00,  02c4
+slversion _aes_gcm_enc_128_finalize,	00,   00,  02c5
+slversion _aes_gcm_dec_128_finalize,	00,   00,  02c6
+slversion _aes_gcm_enc_256,		00,   00,  02d0
+slversion _aes_gcm_dec_256,		00,   00,  02d1
+slversion _aes_gcm_init_256,		00,   00,  02d2
+slversion _aes_gcm_enc_256_update,	00,   00,  02d3
+slversion _aes_gcm_dec_256_update,	00,   00,  02d4
+slversion _aes_gcm_enc_256_finalize,	00,   00,  02d5
+slversion _aes_gcm_dec_256_finalize,	00,   00,  02d6

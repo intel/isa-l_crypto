@@ -66,9 +66,9 @@ main(void)
         memset(iv, 0, IV_SIZE);
         memset(aad, 0, AAD_SIZE);
 
-        aes_gcm_pre_256(key, &gkey);
-        aes_gcm_enc_256(&gkey, &gctx, ct, pt, TXT_SIZE, iv, aad, AAD_SIZE, tag1, TAG_SIZE);
-        aes_gcm_dec_256(&gkey, &gctx, pt2, ct, TXT_SIZE, iv, aad, AAD_SIZE, tag2, TAG_SIZE);
+        isal_aes_gcm_pre_256(key, &gkey);
+        isal_aes_gcm_enc_256(&gkey, &gctx, ct, pt, TXT_SIZE, iv, aad, AAD_SIZE, tag1, TAG_SIZE);
+        isal_aes_gcm_dec_256(&gkey, &gctx, pt2, ct, TXT_SIZE, iv, aad, AAD_SIZE, tag2, TAG_SIZE);
 
         mprint("  input text:     ", pt, TXT_SIZE);
         mprint("  cipher text:    ", ct, TXT_SIZE);

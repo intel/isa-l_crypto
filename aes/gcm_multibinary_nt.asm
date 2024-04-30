@@ -32,44 +32,44 @@ default rel
 
 %include "reg_sizes.asm"
 
-extern aes_gcm_enc_128_sse_nt
-extern aes_gcm_enc_128_avx_gen4_nt
-extern aes_gcm_enc_128_avx_gen2_nt
-extern aes_gcm_enc_128_update_sse_nt
-extern aes_gcm_enc_128_update_avx_gen4_nt
-extern aes_gcm_enc_128_update_avx_gen2_nt
+extern _aes_gcm_enc_128_sse_nt
+extern _aes_gcm_enc_128_avx_gen4_nt
+extern _aes_gcm_enc_128_avx_gen2_nt
+extern _aes_gcm_enc_128_update_sse_nt
+extern _aes_gcm_enc_128_update_avx_gen4_nt
+extern _aes_gcm_enc_128_update_avx_gen2_nt
 
-extern aes_gcm_dec_128_sse_nt
-extern aes_gcm_dec_128_avx_gen4_nt
-extern aes_gcm_dec_128_avx_gen2_nt
-extern aes_gcm_dec_128_update_sse_nt
-extern aes_gcm_dec_128_update_avx_gen4_nt
-extern aes_gcm_dec_128_update_avx_gen2_nt
+extern _aes_gcm_dec_128_sse_nt
+extern _aes_gcm_dec_128_avx_gen4_nt
+extern _aes_gcm_dec_128_avx_gen2_nt
+extern _aes_gcm_dec_128_update_sse_nt
+extern _aes_gcm_dec_128_update_avx_gen4_nt
+extern _aes_gcm_dec_128_update_avx_gen2_nt
 
-extern aes_gcm_enc_256_sse_nt
-extern aes_gcm_enc_256_avx_gen4_nt
-extern aes_gcm_enc_256_avx_gen2_nt
-extern aes_gcm_enc_256_update_sse_nt
-extern aes_gcm_enc_256_update_avx_gen4_nt
-extern aes_gcm_enc_256_update_avx_gen2_nt
+extern _aes_gcm_enc_256_sse_nt
+extern _aes_gcm_enc_256_avx_gen4_nt
+extern _aes_gcm_enc_256_avx_gen2_nt
+extern _aes_gcm_enc_256_update_sse_nt
+extern _aes_gcm_enc_256_update_avx_gen4_nt
+extern _aes_gcm_enc_256_update_avx_gen2_nt
 
-extern aes_gcm_dec_256_sse_nt
-extern aes_gcm_dec_256_avx_gen4_nt
-extern aes_gcm_dec_256_avx_gen2_nt
-extern aes_gcm_dec_256_update_sse_nt
-extern aes_gcm_dec_256_update_avx_gen4_nt
-extern aes_gcm_dec_256_update_avx_gen2_nt
+extern _aes_gcm_dec_256_sse_nt
+extern _aes_gcm_dec_256_avx_gen4_nt
+extern _aes_gcm_dec_256_avx_gen2_nt
+extern _aes_gcm_dec_256_update_sse_nt
+extern _aes_gcm_dec_256_update_avx_gen4_nt
+extern _aes_gcm_dec_256_update_avx_gen2_nt
 
 %if (AS_FEATURE_LEVEL) >= 10
-extern aes_gcm_enc_128_update_vaes_avx512_nt
-extern aes_gcm_dec_128_update_vaes_avx512_nt
-extern aes_gcm_enc_128_vaes_avx512_nt
-extern aes_gcm_dec_128_vaes_avx512_nt
+extern _aes_gcm_enc_128_update_vaes_avx512_nt
+extern _aes_gcm_dec_128_update_vaes_avx512_nt
+extern _aes_gcm_enc_128_vaes_avx512_nt
+extern _aes_gcm_dec_128_vaes_avx512_nt
 
-extern aes_gcm_enc_256_update_vaes_avx512_nt
-extern aes_gcm_dec_256_update_vaes_avx512_nt
-extern aes_gcm_enc_256_vaes_avx512_nt
-extern aes_gcm_dec_256_vaes_avx512_nt
+extern _aes_gcm_enc_256_update_vaes_avx512_nt
+extern _aes_gcm_dec_256_update_vaes_avx512_nt
+extern _aes_gcm_enc_256_vaes_avx512_nt
+extern _aes_gcm_dec_256_vaes_avx512_nt
 %endif
 
 section .text
@@ -79,40 +79,40 @@ section .text
 ;;;;
 ; instantiate aes_gcm NT interfaces enc, enc_update, dec, dec_update
 ;;;;
-mbin_interface     aes_gcm_enc_128_nt
-mbin_dispatch_init7 aes_gcm_enc_128_nt, aes_gcm_enc_128_sse_nt, aes_gcm_enc_128_sse_nt, aes_gcm_enc_128_avx_gen2_nt, aes_gcm_enc_128_avx_gen4_nt, aes_gcm_enc_128_avx_gen4_nt, aes_gcm_enc_128_vaes_avx512_nt
+mbin_interface     _aes_gcm_enc_128_nt
+mbin_dispatch_init7 _aes_gcm_enc_128_nt, _aes_gcm_enc_128_sse_nt, _aes_gcm_enc_128_sse_nt, _aes_gcm_enc_128_avx_gen2_nt, _aes_gcm_enc_128_avx_gen4_nt, _aes_gcm_enc_128_avx_gen4_nt, _aes_gcm_enc_128_vaes_avx512_nt
 
-mbin_interface     aes_gcm_enc_128_update_nt
-mbin_dispatch_init7 aes_gcm_enc_128_update_nt, aes_gcm_enc_128_update_sse_nt, aes_gcm_enc_128_update_sse_nt, aes_gcm_enc_128_update_avx_gen2_nt, aes_gcm_enc_128_update_avx_gen4_nt, aes_gcm_enc_128_update_avx_gen4_nt, aes_gcm_enc_128_update_vaes_avx512_nt
+mbin_interface     _aes_gcm_enc_128_update_nt
+mbin_dispatch_init7 _aes_gcm_enc_128_update_nt, _aes_gcm_enc_128_update_sse_nt, _aes_gcm_enc_128_update_sse_nt, _aes_gcm_enc_128_update_avx_gen2_nt, _aes_gcm_enc_128_update_avx_gen4_nt, _aes_gcm_enc_128_update_avx_gen4_nt, _aes_gcm_enc_128_update_vaes_avx512_nt
 
-mbin_interface     aes_gcm_dec_128_nt
-mbin_dispatch_init7 aes_gcm_dec_128_nt, aes_gcm_dec_128_sse_nt, aes_gcm_dec_128_sse_nt, aes_gcm_dec_128_avx_gen2_nt, aes_gcm_dec_128_avx_gen4_nt, aes_gcm_dec_128_avx_gen4_nt, aes_gcm_dec_128_vaes_avx512_nt
+mbin_interface     _aes_gcm_dec_128_nt
+mbin_dispatch_init7 _aes_gcm_dec_128_nt, _aes_gcm_dec_128_sse_nt, _aes_gcm_dec_128_sse_nt, _aes_gcm_dec_128_avx_gen2_nt, _aes_gcm_dec_128_avx_gen4_nt, _aes_gcm_dec_128_avx_gen4_nt, _aes_gcm_dec_128_vaes_avx512_nt
 
-mbin_interface     aes_gcm_dec_128_update_nt
-mbin_dispatch_init7 aes_gcm_dec_128_update_nt, aes_gcm_dec_128_update_sse_nt, aes_gcm_dec_128_update_sse_nt, aes_gcm_dec_128_update_avx_gen2_nt, aes_gcm_dec_128_update_avx_gen4_nt, aes_gcm_dec_128_update_avx_gen4_nt, aes_gcm_dec_128_update_vaes_avx512_nt
+mbin_interface     _aes_gcm_dec_128_update_nt
+mbin_dispatch_init7 _aes_gcm_dec_128_update_nt, _aes_gcm_dec_128_update_sse_nt, _aes_gcm_dec_128_update_sse_nt, _aes_gcm_dec_128_update_avx_gen2_nt, _aes_gcm_dec_128_update_avx_gen4_nt, _aes_gcm_dec_128_update_avx_gen4_nt, _aes_gcm_dec_128_update_vaes_avx512_nt
 
 ;;;;
 ; instantiate aesni_gcm interfaces init, enc, enc_update, enc_finalize, dec, dec_update, dec_finalize and precomp
 ;;;;
-mbin_interface     aes_gcm_enc_256_nt
-mbin_dispatch_init7 aes_gcm_enc_256_nt, aes_gcm_enc_256_sse_nt, aes_gcm_enc_256_sse_nt, aes_gcm_enc_256_avx_gen2_nt, aes_gcm_enc_256_avx_gen4_nt, aes_gcm_enc_256_avx_gen4_nt, aes_gcm_enc_256_vaes_avx512_nt
+mbin_interface     _aes_gcm_enc_256_nt
+mbin_dispatch_init7 _aes_gcm_enc_256_nt, _aes_gcm_enc_256_sse_nt, _aes_gcm_enc_256_sse_nt, _aes_gcm_enc_256_avx_gen2_nt, _aes_gcm_enc_256_avx_gen4_nt, _aes_gcm_enc_256_avx_gen4_nt, _aes_gcm_enc_256_vaes_avx512_nt
 
-mbin_interface     aes_gcm_enc_256_update_nt
-mbin_dispatch_init7 aes_gcm_enc_256_update_nt, aes_gcm_enc_256_update_sse_nt, aes_gcm_enc_256_update_sse_nt, aes_gcm_enc_256_update_avx_gen2_nt, aes_gcm_enc_256_update_avx_gen4_nt, aes_gcm_enc_256_update_avx_gen4_nt, aes_gcm_enc_256_update_vaes_avx512_nt
+mbin_interface     _aes_gcm_enc_256_update_nt
+mbin_dispatch_init7 _aes_gcm_enc_256_update_nt, _aes_gcm_enc_256_update_sse_nt, _aes_gcm_enc_256_update_sse_nt, _aes_gcm_enc_256_update_avx_gen2_nt, _aes_gcm_enc_256_update_avx_gen4_nt, _aes_gcm_enc_256_update_avx_gen4_nt, _aes_gcm_enc_256_update_vaes_avx512_nt
 
-mbin_interface     aes_gcm_dec_256_nt
-mbin_dispatch_init7 aes_gcm_dec_256_nt, aes_gcm_dec_256_sse_nt, aes_gcm_dec_256_sse_nt, aes_gcm_dec_256_avx_gen2_nt, aes_gcm_dec_256_avx_gen4_nt, aes_gcm_dec_256_avx_gen4_nt, aes_gcm_dec_256_vaes_avx512_nt
+mbin_interface     _aes_gcm_dec_256_nt
+mbin_dispatch_init7 _aes_gcm_dec_256_nt, _aes_gcm_dec_256_sse_nt, _aes_gcm_dec_256_sse_nt, _aes_gcm_dec_256_avx_gen2_nt, _aes_gcm_dec_256_avx_gen4_nt, _aes_gcm_dec_256_avx_gen4_nt, _aes_gcm_dec_256_vaes_avx512_nt
 
-mbin_interface     aes_gcm_dec_256_update_nt
-mbin_dispatch_init7 aes_gcm_dec_256_update_nt, aes_gcm_dec_256_update_sse_nt, aes_gcm_dec_256_update_sse_nt, aes_gcm_dec_256_update_avx_gen2_nt, aes_gcm_dec_256_update_avx_gen4_nt, aes_gcm_dec_256_update_avx_gen4_nt, aes_gcm_dec_256_update_vaes_avx512_nt
+mbin_interface     _aes_gcm_dec_256_update_nt
+mbin_dispatch_init7 _aes_gcm_dec_256_update_nt, _aes_gcm_dec_256_update_sse_nt, _aes_gcm_dec_256_update_sse_nt, _aes_gcm_dec_256_update_avx_gen2_nt, _aes_gcm_dec_256_update_avx_gen4_nt, _aes_gcm_dec_256_update_avx_gen4_nt, _aes_gcm_dec_256_update_vaes_avx512_nt
 
 
 ;;;       func				core, ver, snum
-slversion aes_gcm_enc_128_nt,		00,   00,  02e1
-slversion aes_gcm_dec_128_nt,		00,   00,  02e2
-slversion aes_gcm_enc_128_update_nt,	00,   00,  02e3
-slversion aes_gcm_dec_128_update_nt,	00,   00,  02e4
-slversion aes_gcm_enc_256_nt,		00,   00,  02e5
-slversion aes_gcm_dec_256_nt,		00,   00,  02e6
-slversion aes_gcm_enc_256_update_nt,	00,   00,  02e7
-slversion aes_gcm_dec_256_update_nt,	00,   00,  02e8
+slversion _aes_gcm_enc_128_nt,		00,   00,  02e1
+slversion _aes_gcm_dec_128_nt,		00,   00,  02e2
+slversion _aes_gcm_enc_128_update_nt,	00,   00,  02e3
+slversion _aes_gcm_dec_128_update_nt,	00,   00,  02e4
+slversion _aes_gcm_enc_256_nt,		00,   00,  02e5
+slversion _aes_gcm_dec_256_nt,		00,   00,  02e6
+slversion _aes_gcm_enc_256_update_nt,	00,   00,  02e7
+slversion _aes_gcm_dec_256_update_nt,	00,   00,  02e8
