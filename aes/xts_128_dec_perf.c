@@ -107,8 +107,8 @@ main(void)
 
         /* Expanded keys perf test */
 
-        aes_keyexp_128(key1, expkey1_enc, expkey1_dec);
-        aes_keyexp_128(key2, expkey2_enc, null_key);
+        isal_aes_keyexp_128(key1, expkey1_enc, expkey1_dec);
+        isal_aes_keyexp_128(key2, expkey2_enc, null_key);
         XTS_AES_128_dec_expanded_key(expkey2_enc, expkey1_dec, tinit, TEST_LEN, ct, pt);
 
         perf_start(&start);
