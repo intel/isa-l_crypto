@@ -31,6 +31,7 @@
 #include <stdlib.h> // for rand
 #include <string.h> // for memcmp
 #include <aes_cbc.h>
+#include <aes_keyexp.h>
 #include <test.h>
 #include "ossl_helper.h"
 #include "types.h"
@@ -98,7 +99,7 @@ aes_128_perf(uint8_t *key)
 
         memcpy(iv, ic, CBC_IV_DATA_LEN);
 
-        aes_cbc_precomp(key, 128, key_data);
+        isal_aes_keyexp_128(key, key_data->enc_keys, key_data->dec_keys);
         isal_aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_128_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
@@ -183,7 +184,7 @@ aes_192_perf(uint8_t *key)
         }
 
         memcpy(iv, ic, CBC_IV_DATA_LEN);
-        aes_cbc_precomp(key, 192, key_data);
+        isal_aes_keyexp_192(key, key_data->enc_keys, key_data->dec_keys);
         isal_aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
@@ -267,7 +268,7 @@ aes_256_perf(uint8_t *key)
                 goto exit;
         }
 
-        aes_cbc_precomp(key, 256, key_data);
+        isal_aes_keyexp_256(key, key_data->enc_keys, key_data->dec_keys);
         memcpy(iv, ic, CBC_IV_DATA_LEN);
         isal_aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);

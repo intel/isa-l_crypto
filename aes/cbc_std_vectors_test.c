@@ -36,6 +36,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <aes_cbc.h>
+#include <aes_keyexp.h>
 #include "types.h"
 #include "cbc_std_vectors.h"
 
@@ -83,16 +84,19 @@ check_vector(struct cbc_vector *vector)
         case CBC_128_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
+                isal_aes_keyexp_128(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
                 DEBUG_PRINT((" CBC128 "));
                 break;
         case CBC_192_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
+                isal_aes_keyexp_192(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
                 DEBUG_PRINT((" CBC192 "));
                 break;
         case CBC_256_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
+                isal_aes_keyexp_256(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
                 DEBUG_PRINT((" CBC256 "));
                 break;
         default:
@@ -107,8 +111,6 @@ check_vector(struct cbc_vector *vector)
                 fprintf(stderr, "Can't allocate ciphertext memory\n");
                 return 1;
         }
-
-        aes_cbc_precomp(vector->K, vector->K_LEN, vector->KEYS);
 
         ////
         // ISA-L CBC Encrypt (out-of-place)

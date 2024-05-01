@@ -63,11 +63,15 @@ struct cbc_key_data { // must be 16 byte aligned
 
 /** @brief CBC-AES key pre-computation done once for a key
  *
+ * @deprecated Please use isal_aes_keyexp_128(), isal_aes_keyexp_192() or isal_aes_keyexp_256()
+ * instead.
  * @requires SSE4.1 and AESNI
  *
  * arg 1: in:   pointer to key
  * arg 2: OUT:  pointer to a key expanded data
  */
+ISAL_DEPRECATED(
+        "Please use isal_aes_keyexp_128(), isal_aes_keyexp_192() or isal_aes_keyexp_256() instead")
 int
 aes_cbc_precomp(uint8_t *key, int key_size, struct cbc_key_data *keys_blk);
 

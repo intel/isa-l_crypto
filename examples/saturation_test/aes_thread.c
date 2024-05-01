@@ -138,7 +138,19 @@ cbc_dec_pre(struct aes_context *p)
 
         mk_rand_data(pCtx->key, sizeof(pCtx->key));
         memcpy(pCtx->iv, ic, CBC_IV_DATA_LEN);
-        aes_cbc_precomp(pCtx->key, pCtx->base.bits, pCtx->key_data);
+        switch (pCtx->base.bits) {
+        case 128:
+                isal_aes_keyexp_128(pCtx->key, pCtx->key_data->enc_keys, pCtx->key_data->dec_keys);
+                break;
+        case 192:
+                isal_aes_keyexp_192(pCtx->key, pCtx->key_data->enc_keys, pCtx->key_data->dec_keys);
+                break;
+        case 256:
+                isal_aes_keyexp_256(pCtx->key, pCtx->key_data->enc_keys, pCtx->key_data->dec_keys);
+                break;
+        default:
+                return 1;
+        }
 
         return 0;
 }

@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <aes_cbc.h>
+#include <aes_keyexp.h>
 #include "types.h"
 #include "ossl_helper.h"
 #include "cbc_std_vectors.h"
@@ -167,18 +168,21 @@ check_vector(struct cbc_vector *vector)
         if (CBC_128_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
+                isal_aes_keyexp_128(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC128 ");
 #endif
         } else if (CBC_192_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
+                isal_aes_keyexp_192(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC192 ");
 #endif
         } else if (CBC_256_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
+                isal_aes_keyexp_256(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC256 ");
 #endif
@@ -195,8 +199,6 @@ check_vector(struct cbc_vector *vector)
                 fail = 1;
                 goto exit;
         }
-
-        aes_cbc_precomp(vector->K, vector->K_LEN, vector->KEYS);
 
 #ifdef CBC_VECTORS_VERBOSE
         fflush(0);
