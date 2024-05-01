@@ -79,14 +79,13 @@ int
 isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
                                   const uint64_t murmur_seed)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_murmur3_x64_128_init(ctx, murmur_seed);
 #endif
 }
@@ -95,16 +94,15 @@ int
 isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
                                     const uint32_t len)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
 #endif
 }
@@ -113,16 +111,15 @@ int
 isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                                       void *murmur3_x64_128_digest)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (mh_sha1_digest == NULL || murmur3_x64_128_digest == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 #endif
 }
