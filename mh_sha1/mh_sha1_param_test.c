@@ -50,13 +50,15 @@ test_mh_sha1_init_api(void)
                 return retval;
         }
 
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        ret = isal_mh_sha1_init(update_ctx);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_init);
+#else
         ret = isal_mh_sha1_init(NULL);
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_init);
 
         ret = isal_mh_sha1_init(update_ctx);
-#ifdef FIPS_MODE
-        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_init);
-#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_init);
 #endif
         retval = 0;
@@ -82,6 +84,11 @@ test_mh_sha1_update_api(void)
                 goto exit_update;
         }
 
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        ret = isal_mh_sha1_update(update_ctx, buff, TEST_LEN);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_update);
+#else
         ret = isal_mh_sha1_update(NULL, buff, TEST_LEN);
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_update);
 
@@ -89,9 +96,6 @@ test_mh_sha1_update_api(void)
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_SRC, func_name, exit_update);
 
         ret = isal_mh_sha1_update(update_ctx, buff, TEST_LEN);
-#ifdef FIPS_MODE
-        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_update);
-#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_update);
 #endif
         retval = 0;
@@ -117,6 +121,11 @@ test_mh_sha1_finalize_api(void)
                 return retval;
         }
 
+#ifdef FIPS_MODE
+        // Check for invalid algorithm error
+        ret = isal_mh_sha1_finalize(update_ctx, hash_test);
+        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_finalize);
+#else
         ret = isal_mh_sha1_finalize(NULL, hash_test);
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_CTX, func_name, exit_finalize);
 
@@ -124,9 +133,6 @@ test_mh_sha1_finalize_api(void)
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NULL_AUTH, func_name, exit_finalize);
 
         ret = isal_mh_sha1_finalize(update_ctx, hash_test);
-#ifdef FIPS_MODE
-        CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, func_name, exit_finalize);
-#else
         CHECK_RETURN_GOTO(ret, ISAL_CRYPTO_ERR_NONE, func_name, exit_finalize);
 #endif
         retval = 0;

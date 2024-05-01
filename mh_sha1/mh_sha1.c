@@ -57,14 +57,13 @@ mh_sha1_init(struct mh_sha1_ctx *ctx)
 int
 isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_init(ctx);
 #endif
 }
@@ -72,16 +71,15 @@ isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
 int
 isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_update(ctx, buffer, len);
 #endif
 }
@@ -89,16 +87,15 @@ isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 int
 isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
 #ifdef SAFE_PARAM
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (mh_sha1_digest == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
 #endif
-
-#ifdef FIPS_MODE
-        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
-#else
         return mh_sha1_finalize(ctx, mh_sha1_digest);
 #endif
 }
