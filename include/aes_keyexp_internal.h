@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2020 Arm Corporation All rights reserved.
+  Copyright(c) 2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -10,7 +10,7 @@
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-    * Neither the name of Arm Corporation nor the names of its
+    * Neither the name of Intel Corporation nor the names of its
       contributors may be used to endorse or promote products derived
       from this software without specific prior written permission.
 
@@ -26,43 +26,35 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
-#include <aarch64_multibinary.h>
 
-#undef PROVIDER_BASIC
-#define PROVIDER_BASIC(a) (void *) 0
+#ifndef _AES_KEYEXP_INTERNAL_H
+#define _AES_KEYEXP_INTERNAL_H
 
-DEFINE_INTERFACE_DISPATCHER(_aes_keyexp_128)
-{
-        unsigned long auxval = getauxval(AT_HWCAP);
-        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-                return PROVIDER_INFO(aes_keyexp_128_aes);
+#include <stdint.h>
 
-        return PROVIDER_BASIC(_aes_keyexp_128);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void
+_aes_keyexp_128(const uint8_t *key,   //!< input key for AES-128, 16 bytes
+                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*11 bytes
+                uint8_t *exp_key_dec  //!< expanded decryption keys, 16*11 bytes
+);
+
+void
+_aes_keyexp_192(const uint8_t *key,   //!< input key for AES-192, 16*1.5 bytes
+                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*13 bytes
+                uint8_t *exp_key_dec  //!< expanded decryption keys, 16*13 bytes
+);
+
+void
+_aes_keyexp_256(const uint8_t *key,   //!< input key for AES-256, 16*2 bytes
+                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*15 bytes
+                uint8_t *exp_key_dec  //!< expanded decryption keys, 16*15 bytes
+);
+
+#ifdef __cplusplus
 }
-
-DEFINE_INTERFACE_DISPATCHER(aes_keyexp_128_enc)
-{
-        unsigned long auxval = getauxval(AT_HWCAP);
-        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-                return PROVIDER_INFO(aes_keyexp_128_enc_aes);
-
-        return PROVIDER_BASIC(aes_keyexp_128_enc);
-}
-
-DEFINE_INTERFACE_DISPATCHER(_aes_keyexp_192)
-{
-        unsigned long auxval = getauxval(AT_HWCAP);
-        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-                return PROVIDER_INFO(aes_keyexp_192_aes);
-
-        return PROVIDER_BASIC(_aes_keyexp_192);
-}
-
-DEFINE_INTERFACE_DISPATCHER(_aes_keyexp_256)
-{
-        unsigned long auxval = getauxval(AT_HWCAP);
-        if ((auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES))
-                return PROVIDER_INFO(aes_keyexp_256_aes);
-
-        return PROVIDER_BASIC(_aes_keyexp_256);
-}
+#endif //__cplusplus
+#endif // ifndef _AES_KEYEXP_INTERNAL_H

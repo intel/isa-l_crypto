@@ -38,14 +38,18 @@
  */
 
 #include <stdint.h>
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** @brief AES key expansion 128 bit
+ *
  * @requires SSE4.1
+ * @deprecated Please use isal_aes_keyexp_128() instead.
  */
+ISAL_DEPRECATED("Please use isal_aes_keyexp_128() instead")
 void
 aes_keyexp_128(const uint8_t *key,   //!< input key for AES-128, 16 bytes
                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*11 bytes
@@ -53,8 +57,11 @@ aes_keyexp_128(const uint8_t *key,   //!< input key for AES-128, 16 bytes
 );
 
 /** @brief AES key expansion 192 bit
+ *
  * @requires SSE4.1
+ * @deprecated Please use isal_aes_keyexp_192() instead.
  */
+ISAL_DEPRECATED("Please use isal_aes_keyexp_192() instead")
 void
 aes_keyexp_192(const uint8_t *key,   //!< input key for AES-192, 16*1.5 bytes
                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*13 bytes
@@ -62,8 +69,11 @@ aes_keyexp_192(const uint8_t *key,   //!< input key for AES-192, 16*1.5 bytes
 );
 
 /** @brief AES key expansion 256 bit
+ *
  * @requires SSE4.1
+ * @deprecated Please use isal_aes_keyexp_256() instead.
  */
+ISAL_DEPRECATED("Please use isal_aes_keyexp_256() instead")
 void
 aes_keyexp_256(const uint8_t *key,   //!< input key for AES-256, 16*2 bytes
                uint8_t *exp_key_enc, //!< expanded encryption keys, 16*15 bytes

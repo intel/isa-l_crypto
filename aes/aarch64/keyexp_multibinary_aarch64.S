@@ -29,7 +29,7 @@
 
 #include "aarch64_multibinary.h"
 
-mbin_interface     aes_keyexp_128
+mbin_interface     _aes_keyexp_128
 mbin_interface     aes_keyexp_128_enc
-mbin_interface     aes_keyexp_192
-mbin_interface     aes_keyexp_256
+mbin_interface     _aes_keyexp_192
+mbin_interface     _aes_keyexp_256

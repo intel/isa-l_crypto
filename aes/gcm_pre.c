@@ -29,6 +29,7 @@
 
 #include <aes_gcm.h>
 #include <aes_keyexp.h>
+#include "aes_keyexp_internal.h"
 
 void
 aes_keyexp_128_enc(const void *, uint8_t *);
@@ -48,7 +49,7 @@ void
 aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
 {
         uint8_t tmp_exp_key[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
-        aes_keyexp_256((const uint8_t *) key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
+        _aes_keyexp_256((const uint8_t *) key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
         aes_gcm_precomp_256(key_data);
 }
 

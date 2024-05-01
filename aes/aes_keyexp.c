@@ -30,6 +30,25 @@
 #include <stdlib.h>
 #include "isal_crypto_api.h"
 #include "aes_keyexp.h"
+#include "aes_keyexp_internal.h"
+
+void
+aes_keyexp_128(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
+{
+        _aes_keyexp_128(key, exp_key_enc, exp_key_dec);
+}
+
+void
+aes_keyexp_192(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
+{
+        _aes_keyexp_192(key, exp_key_enc, exp_key_dec);
+}
+
+void
+aes_keyexp_256(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
+{
+        _aes_keyexp_256(key, exp_key_enc, exp_key_dec);
+}
 
 int
 isal_aes_keyexp_128(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_dec)
@@ -45,8 +64,7 @@ isal_aes_keyexp_128(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_d
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
-
-        aes_keyexp_128(key, exp_key_enc, exp_key_dec);
+        _aes_keyexp_128(key, exp_key_enc, exp_key_dec);
 
         return 0;
 }
@@ -65,8 +83,7 @@ isal_aes_keyexp_192(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_d
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
-
-        aes_keyexp_192(key, exp_key_enc, exp_key_dec);
+        _aes_keyexp_192(key, exp_key_enc, exp_key_dec);
 
         return 0;
 }
@@ -85,8 +102,7 @@ isal_aes_keyexp_256(const uint8_t *key, uint8_t *exp_key_enc, uint8_t *exp_key_d
         if (isal_self_tests())
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
-
-        aes_keyexp_256(key, exp_key_enc, exp_key_dec);
+        _aes_keyexp_256(key, exp_key_enc, exp_key_dec);
 
         return 0;
 }

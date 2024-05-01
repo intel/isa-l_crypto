@@ -40,6 +40,7 @@
 #include "aes_xts.h"
 #include "aes_gcm.h"
 #include "aes_keyexp.h"
+#include "aes_keyexp_internal.h"
 
 #include "internal_fips.h"
 #include "types.h"
@@ -352,17 +353,17 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
 
         switch (v->cipher_key_size) {
         case CBC_128_BITS:
-                aes_keyexp_128(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
+                _aes_keyexp_128(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 aes_cbc_enc_128(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                 v->plaintext_size);
                 break;
         case CBC_192_BITS:
-                aes_keyexp_192(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
+                _aes_keyexp_192(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 aes_cbc_enc_192(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                 v->plaintext_size);
                 break;
         case CBC_256_BITS:
-                aes_keyexp_256(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
+                _aes_keyexp_256(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 aes_cbc_enc_256(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                 v->plaintext_size);
                 break;
@@ -471,14 +472,14 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
         memcpy(scratch, v->plaintext, v->plaintext_size);
         switch (v->cipher_key_size) {
         case 16:
-                aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
-                aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
+                _aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
+                _aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
                 XTS_AES_128_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
                                              v->plaintext_size, scratch, scratch);
                 break;
         case 32:
-                aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
-                aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
+                _aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
+                _aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
                 XTS_AES_256_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
                                              v->plaintext_size, scratch, scratch);
                 break;
@@ -518,14 +519,14 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
         memcpy(scratch, v->ciphertext, v->plaintext_size);
         switch (v->cipher_key_size) {
         case 16:
-                aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
-                aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
+                _aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
+                _aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
                 XTS_AES_128_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
                                              v->plaintext_size, scratch, scratch);
                 break;
         case 32:
-                aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
-                aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
+                _aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
+                _aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
                 XTS_AES_256_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
                                              v->plaintext_size, scratch, scratch);
                 break;

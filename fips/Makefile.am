@@ -37,4 +37,4 @@ lsrc            += fips/sha_self_tests.c
 lsrc_x86_64     += fips/asm_self_tests.asm
 lsrc_x86_32 	+= $(lsrc_x86_64)
 
-other_src   += include/test.h include/types.h include/reg_sizes.asm
+other_src   += include/test.h include/types.h include/reg_sizes.asm include/aes_keyexp_internal.h
