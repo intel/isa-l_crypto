@@ -71,7 +71,7 @@ aes_cbc_handler(ACVP_TEST_CASE *test_case)
 
         switch (tc->key_len) {
         case 128:
-                aes_keyexp_128(tc->key, keys.enc_keys, keys.dec_keys);
+                isal_aes_keyexp_128(tc->key, keys.enc_keys, keys.dec_keys);
 
                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
                         aes_cbc_enc_128(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);
@@ -79,7 +79,7 @@ aes_cbc_handler(ACVP_TEST_CASE *test_case)
                         aes_cbc_dec_128(tc->ct, iv, keys.dec_keys, tc->pt, tc->ct_len);
                 break;
         case 192:
-                aes_keyexp_192(tc->key, keys.enc_keys, keys.dec_keys);
+                isal_aes_keyexp_192(tc->key, keys.enc_keys, keys.dec_keys);
 
                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
                         aes_cbc_enc_192(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);
@@ -87,7 +87,7 @@ aes_cbc_handler(ACVP_TEST_CASE *test_case)
                         aes_cbc_dec_192(tc->ct, iv, keys.dec_keys, tc->pt, tc->ct_len);
                 break;
         case 256:
-                aes_keyexp_256(tc->key, keys.enc_keys, keys.dec_keys);
+                isal_aes_keyexp_256(tc->key, keys.enc_keys, keys.dec_keys);
 
                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
                         aes_cbc_enc_256(tc->pt, iv, keys.enc_keys, tc->ct, tc->pt_len);

@@ -58,8 +58,8 @@ main(void)
                         return ret;
                 }
                 // Pre-expand our keys (will only use the encryption ones here)
-                aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
-                aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
+                isal_aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
+                isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
 
                 XTS_AES_256_enc_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW, vlist[i].ptlen,
                                              vlist[i].PTX, ct_test);
@@ -92,8 +92,8 @@ main(void)
                         goto end;
                 }
                 // Pre-expand keys for the decryption
-                aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
-                aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
+                isal_aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
+                isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
 
                 // Note, encryption key is re-used for the tweak decryption step
                 XTS_AES_256_dec_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW, vlist[i].ptlen,

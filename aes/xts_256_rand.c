@@ -207,7 +207,7 @@ main(void)
                 efence_dt = dt + TEST_LEN - TEST_SIZE + size;
 
                 xts256_mk_rand_data(key1, key2, tinit, efence_pt, TEST_SIZE - size);
-                aes_keyexp_256(key1, key1_exp_enc, key1_exp_dec);
+                isal_aes_keyexp_256(key1, key1_exp_enc, key1_exp_dec);
 
                 XTS_AES_256_enc_expanded_key(key2_exp_tw, key1_exp_enc, tinit, TEST_SIZE - size,
                                              efence_pt, efence_ct);
@@ -238,7 +238,7 @@ main(void)
                 memcpy(origin_ct, efence_ct, TEST_SIZE - size);
                 memcpy(origin_dt, efence_dt, TEST_SIZE - size);
 
-                aes_keyexp_256(key1, key1_exp_enc, key1_exp_dec);
+                isal_aes_keyexp_256(key1, key1_exp_enc, key1_exp_dec);
 
                 XTS_AES_256_enc_expanded_key(key2_exp_tw, key1_exp_enc, tinit, TEST_SIZE - size,
                                              efence_pt, efence_ct);
