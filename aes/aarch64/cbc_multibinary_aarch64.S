@@ -29,10 +29,10 @@
 
 #include "aarch64_multibinary.h"
 
-mbin_interface     aes_cbc_dec_128
-mbin_interface     aes_cbc_dec_192
-mbin_interface     aes_cbc_dec_256
+mbin_interface     _aes_cbc_dec_128
+mbin_interface     _aes_cbc_dec_192
+mbin_interface     _aes_cbc_dec_256
 
-mbin_interface     aes_cbc_enc_128
-mbin_interface     aes_cbc_enc_192
-mbin_interface     aes_cbc_enc_256
+mbin_interface     _aes_cbc_enc_128
+mbin_interface     _aes_cbc_enc_192
+mbin_interface     _aes_cbc_enc_256

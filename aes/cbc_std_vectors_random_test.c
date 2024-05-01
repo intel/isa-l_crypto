@@ -165,20 +165,20 @@ check_vector(struct cbc_vector *vector)
 #endif
 
         if (CBC_128_BITS == vector->K_LEN) {
-                enc = (aes_cbc_generic) &aes_cbc_enc_128;
-                dec = (aes_cbc_generic) &aes_cbc_dec_128;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC128 ");
 #endif
         } else if (CBC_192_BITS == vector->K_LEN) {
-                enc = (aes_cbc_generic) &aes_cbc_enc_192;
-                dec = (aes_cbc_generic) &aes_cbc_dec_192;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC192 ");
 #endif
         } else if (CBC_256_BITS == vector->K_LEN) {
-                enc = (aes_cbc_generic) &aes_cbc_enc_256;
-                dec = (aes_cbc_generic) &aes_cbc_dec_256;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC256 ");
 #endif

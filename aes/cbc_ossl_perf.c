@@ -99,7 +99,7 @@ aes_128_perf(uint8_t *key)
         memcpy(iv, ic, CBC_IV_DATA_LEN);
 
         aes_cbc_precomp(key, 128, key_data);
-        aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+        isal_aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_128_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
         {
@@ -107,7 +107,8 @@ aes_128_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, plaintext, TEST_LEN);
+                        isal_aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, plaintext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);
@@ -132,8 +133,8 @@ aes_128_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_dec_128(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
-                                        TEST_LEN);
+                        isal_aes_cbc_dec_128(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);
@@ -183,7 +184,7 @@ aes_192_perf(uint8_t *key)
 
         memcpy(iv, ic, CBC_IV_DATA_LEN);
         aes_cbc_precomp(key, 192, key_data);
-        aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+        isal_aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
         {
@@ -191,7 +192,8 @@ aes_192_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+                        isal_aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);
@@ -216,8 +218,8 @@ aes_192_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_dec_192(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
-                                        TEST_LEN);
+                        isal_aes_cbc_dec_192(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);
@@ -267,7 +269,7 @@ aes_256_perf(uint8_t *key)
 
         aes_cbc_precomp(key, 256, key_data);
         memcpy(iv, ic, CBC_IV_DATA_LEN);
-        aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+        isal_aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 
         {
@@ -275,7 +277,8 @@ aes_256_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
+                        isal_aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);
@@ -300,8 +303,8 @@ aes_256_perf(uint8_t *key)
 
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
-                        aes_cbc_dec_256(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
-                                        TEST_LEN);
+                        isal_aes_cbc_dec_256(ciphertext, iv, key_data->dec_keys, cbc_plaintext,
+                                             TEST_LEN);
                 }
 
                 perf_stop(&stop);

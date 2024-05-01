@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "aes_cbc.h"
+#include "aes_cbc_internal.h"
 #include "aes_xts.h"
 #include "aes_gcm.h"
 #include "aes_keyexp.h"
@@ -354,18 +355,18 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
         switch (v->cipher_key_size) {
         case CBC_128_BITS:
                 _aes_keyexp_128(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
-                aes_cbc_enc_128(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
-                                v->plaintext_size);
+                _aes_cbc_enc_128(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
+                                 v->plaintext_size);
                 break;
         case CBC_192_BITS:
                 _aes_keyexp_192(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
-                aes_cbc_enc_192(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
-                                v->plaintext_size);
+                _aes_cbc_enc_192(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
+                                 v->plaintext_size);
                 break;
         case CBC_256_BITS:
                 _aes_keyexp_256(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
-                aes_cbc_enc_256(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
-                                v->plaintext_size);
+                _aes_cbc_enc_256(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
+                                 v->plaintext_size);
                 break;
         default:
                 /* invalid key size */
@@ -382,16 +383,16 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
 
         switch (v->cipher_key_size) {
         case CBC_128_BITS:
-                aes_cbc_dec_128(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
-                                v->plaintext_size);
+                _aes_cbc_dec_128(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
+                                 v->plaintext_size);
                 break;
         case CBC_192_BITS:
-                aes_cbc_dec_192(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
-                                v->plaintext_size);
+                _aes_cbc_dec_192(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
+                                 v->plaintext_size);
                 break;
         case CBC_256_BITS:
-                aes_cbc_dec_256(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
-                                v->plaintext_size);
+                _aes_cbc_dec_256(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
+                                 v->plaintext_size);
                 break;
         default:
                 /* invalid key size */

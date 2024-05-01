@@ -30,9 +30,10 @@
 #include <stdlib.h>
 #include "isal_crypto_api.h"
 #include "aes_cbc.h"
+#include "aes_cbc_internal.h"
 
 int
-isal_aes_cbc_enc_128(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_enc_128(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -57,13 +58,13 @@ isal_aes_cbc_enc_128(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_enc_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_enc_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
         return 0;
 }
 
 int
-isal_aes_cbc_enc_192(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_enc_192(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -88,13 +89,13 @@ isal_aes_cbc_enc_192(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_enc_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_enc_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
         return 0;
 }
 
 int
-isal_aes_cbc_enc_256(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_enc_256(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -119,13 +120,13 @@ isal_aes_cbc_enc_256(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_enc_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_enc_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
         return 0;
 }
 
 int
-isal_aes_cbc_dec_128(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_dec_128(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -150,13 +151,13 @@ isal_aes_cbc_dec_128(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_dec_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_dec_128((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
         return 0;
 }
 
 int
-isal_aes_cbc_dec_192(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_dec_192(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -181,13 +182,13 @@ isal_aes_cbc_dec_192(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_dec_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_dec_192((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
         return 0;
 }
 
 int
-isal_aes_cbc_dec_256(const void *in, const uint8_t *iv, const uint8_t *keys, void *out,
+isal_aes_cbc_dec_256(const void *in, const void *iv, const void *keys, void *out,
                      const uint64_t len_bytes)
 {
 #ifdef SAFE_PARAM
@@ -212,7 +213,52 @@ isal_aes_cbc_dec_256(const void *in, const uint8_t *iv, const uint8_t *keys, voi
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        aes_cbc_dec_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
+        _aes_cbc_dec_256((void *) in, (uint8_t *) iv, (uint8_t *) keys, out, (uint64_t) len_bytes);
 
+        return 0;
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+aes_cbc_dec_128(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_dec_128(in, IV, keys, out, len_bytes);
+}
+
+void
+aes_cbc_dec_192(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_dec_192(in, IV, keys, out, len_bytes);
+}
+
+void
+aes_cbc_dec_256(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_dec_256(in, IV, keys, out, len_bytes);
+}
+
+int
+aes_cbc_enc_128(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_enc_128(in, IV, keys, out, len_bytes);
+        return 0;
+}
+
+int
+aes_cbc_enc_192(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_enc_192(in, IV, keys, out, len_bytes);
+        return 0;
+}
+
+int
+aes_cbc_enc_256(void *in, uint8_t *IV, uint8_t *keys, void *out, uint64_t len_bytes)
+{
+        _aes_cbc_enc_256(in, IV, keys, out, len_bytes);
         return 0;
 }

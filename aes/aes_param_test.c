@@ -50,7 +50,7 @@
         } while (0)
 
 typedef int (*aes_keyexp_func)(const uint8_t *, uint8_t *, uint8_t *);
-typedef int (*aes_cbc_func)(const void *, const uint8_t *, const uint8_t *, void *, const uint64_t);
+typedef int (*aes_cbc_func)(const void *, const void *, const void *, void *, const uint64_t);
 typedef int (*aes_xts_func)(const uint8_t *, const uint8_t *, const uint8_t *, const uint64_t,
                             const void *, void *);
 typedef int (*aes_gcm_func)(const struct gcm_key_data *, struct gcm_context_data *, uint8_t *,

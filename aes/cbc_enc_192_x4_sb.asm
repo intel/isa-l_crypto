@@ -44,9 +44,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Updates In and Out pointers at end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;void aes_cbc_enc_192_x4(void      *in,
+;;void _aes_cbc_enc_192_x4(void      *in,
 ;;                        uint8_t   *IV,
-;;                        uint8_t    keys,
+;;                        uint8_t   *keys,
 ;;                        void      *out,
 ;;                        uint64_t   len_bytes);
 ; arg 1: IN:   pointer to input (cipher text)
@@ -129,8 +129,8 @@
 %include "cbc_common.asm"
 
 
-mk_global aes_cbc_enc_192_x4, function
-func(aes_cbc_enc_192_x4)
+mk_global _aes_cbc_enc_192_x4, function, internal
+func(_aes_cbc_enc_192_x4)
 	endbranch
 	FUNC_SAVE
 

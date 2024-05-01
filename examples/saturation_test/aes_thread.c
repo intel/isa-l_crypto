@@ -160,11 +160,14 @@ cbc_dec_proc(struct aes_context *p, char *plaintext, char *ciphertext, uint64_t 
         struct cbc_context *pCtx = (struct cbc_context *) p;
 
         if (pCtx->base.bits == 128)
-                aes_cbc_dec_128(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext, len);
+                isal_aes_cbc_dec_128(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext,
+                                     len);
         else if (pCtx->base.bits == 192)
-                aes_cbc_dec_192(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext, len);
+                isal_aes_cbc_dec_192(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext,
+                                     len);
         else if (pCtx->base.bits == 256)
-                aes_cbc_dec_256(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext, len);
+                isal_aes_cbc_dec_256(ciphertext, pCtx->iv, pCtx->key_data->dec_keys, plaintext,
+                                     len);
         else {
                 printf("unsupported cbc encryption bits %d\n", pCtx->base.bits);
                 exit(1);

@@ -81,18 +81,18 @@ check_vector(struct cbc_vector *vector)
 
         switch (vector->K_LEN) {
         case CBC_128_BITS:
-                enc = (aes_cbc_generic) &aes_cbc_enc_128;
-                dec = (aes_cbc_generic) &aes_cbc_dec_128;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
                 DEBUG_PRINT((" CBC128 "));
                 break;
         case CBC_192_BITS:
-                enc = (aes_cbc_generic) &aes_cbc_enc_192;
-                dec = (aes_cbc_generic) &aes_cbc_dec_192;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
                 DEBUG_PRINT((" CBC192 "));
                 break;
         case CBC_256_BITS:
-                enc = (aes_cbc_generic) &aes_cbc_enc_256;
-                dec = (aes_cbc_generic) &aes_cbc_dec_256;
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
                 DEBUG_PRINT((" CBC256 "));
                 break;
         default:

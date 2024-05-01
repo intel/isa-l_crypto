@@ -76,7 +76,7 @@
     ldp     d8, d9, [sp], stack_size
 .endm
 /*
-void aes_cbc_dec_128(
+void _aes_cbc_dec_128(
 	void     *in,        //!< Input cipher text
 	uint8_t  *IV,        //!< Must be 16 bytes aligned to a 16 byte boundary
 	uint8_t  *keys,      //!< Must be on a 16 byte boundary and length of key size * key rounds or dec_keys of cbc_key_data

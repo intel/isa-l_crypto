@@ -30,9 +30,9 @@
 ; routine to do AES cbc decrypt on 16n bytes doing AES by 8
 ; XMM registers are clobbered. Saving/restoring must be done at a higher level
 
-; void aes_cbc_dec_192_sse(void     *in,
+; void _aes_cbc_dec_192_sse(void     *in,
 ;                          uint8_t  *IV,
-;                          uint8_t   keys,
+;                          uint8_t  *keys,
 ;                          void     *out,
 ;                          uint64_t  len_bytes);
 ;
@@ -103,9 +103,9 @@
 
 section .text
 
-;; aes_cbc_dec_192_sse(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
-mk_global aes_cbc_dec_192_sse, function
-func(aes_cbc_dec_192_sse)
+;; _aes_cbc_dec_192_sse(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
+mk_global _aes_cbc_dec_192_sse, function, internal
+func(_aes_cbc_dec_192_sse)
 	endbranch
 	FUNC_SAVE
 
