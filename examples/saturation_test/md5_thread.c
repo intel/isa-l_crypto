@@ -7,8 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include <openssl/md5.h>
-#include <openssl/sha.h>
+#include <openssl/evp.h>
 
 #include "isal_multithread_perf.h"
 
@@ -20,7 +19,6 @@
 #define HASH_CTX      MD5_HASH_CTX
 
 #define OSSL_THREAD_FUNC md5_ossl_func
-#define OSSL_HASH_FUNC   MD5
 #define MB_THREAD_FUNC   md5_mb_func
 #define CTX_MGR_INIT     md5_ctx_mgr_init
 #define CTX_MGR_SUBMIT   md5_ctx_mgr_submit
@@ -66,6 +64,9 @@ OSSL_THREAD_FUNC(void *arg)
                 }
         }
 
+        /* Initialize OpenSSL Ctx */
+        EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+
         /* Thread sync */
         pthread_mutex_lock(&count_lock);
         count++;
@@ -88,7 +89,9 @@ OSSL_THREAD_FUNC(void *arg)
                                 memcpy(hash_buf[j], carry_buf[j], buflen);
 
                         /* Calculate hash digest */
-                        OSSL_HASH_FUNC((char *) hash_buf[j], buflen, (unsigned char *) &digest);
+                        EVP_DigestInit_ex(ctx, EVP_md5(), NULL);
+                        EVP_DigestUpdate(ctx, hash_buf[j], buflen);
+                        EVP_DigestFinal_ex(ctx, (unsigned char *) digest, NULL);
 
                         /* Post mem-operation */
                         if (postmemcpy)
@@ -106,6 +109,7 @@ out:
                 free(hash_buf[j]);
         }
 
+        EVP_MD_CTX_free(ctx);
         pthread_exit((void *) round);
 }
 
