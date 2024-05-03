@@ -49,9 +49,9 @@
 /**
  *  sha1_ctx_avx512_ni related functions are aiming to utilize Canon Lake.
  *  Since SHANI is still slower than multibuffer for full lanes,
- *  sha1_ctx_mgr_init_avx512_ni and sha1_ctx_mgr_submit_avx512_ni are
+ *  _sha1_ctx_mgr_init_avx512_ni and _sha1_ctx_mgr_submit_avx512_ni are
  *  similar with their avx512 versions.
- *  sha1_ctx_mgr_flush_avx512_ni is different. It will call
+ *  _sha1_ctx_mgr_flush_avx512_ni is different. It will call
  *  _sha1_mb_mgr_flush_avx512_ni which would use shani when lanes are less
  *  than a threshold.
  *
@@ -66,14 +66,14 @@ static SHA1_HASH_CTX *
 sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx);
 
 void
-sha1_ctx_mgr_init_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
 {
         _sha1_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_submit_avx512_ni(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
-                              uint32_t len, HASH_CTX_FLAG flags)
+_sha1_ctx_mgr_submit_avx512_ni(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
+                               uint32_t len, HASH_CTX_FLAG flags)
 {
         if (flags & (~HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -154,7 +154,7 @@ sha1_ctx_mgr_submit_avx512_ni(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const 
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_flush_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_flush_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
 {
         SHA1_HASH_CTX *ctx;
 
@@ -272,14 +272,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha1_ctx_mgr_init_avx512_ni_slver_080002c4;
-struct slver sha1_ctx_mgr_init_avx512_ni_slver = { 0x02c4, 0x00, 0x08 };
+struct slver _sha1_ctx_mgr_init_avx512_ni_slver_080002c4;
+struct slver _sha1_ctx_mgr_init_avx512_ni_slver = { 0x02c4, 0x00, 0x08 };
 
-struct slver sha1_ctx_mgr_submit_avx512_ni_slver_080002c5;
-struct slver sha1_ctx_mgr_submit_avx512_ni_slver = { 0x02c5, 0x00, 0x08 };
+struct slver _sha1_ctx_mgr_submit_avx512_ni_slver_080002c5;
+struct slver _sha1_ctx_mgr_submit_avx512_ni_slver = { 0x02c5, 0x00, 0x08 };
 
-struct slver sha1_ctx_mgr_flush_avx512_ni_slver_080002c6;
-struct slver sha1_ctx_mgr_flush_avx512_ni_slver = { 0x02c6, 0x00, 0x08 };
+struct slver _sha1_ctx_mgr_flush_avx512_ni_slver_080002c6;
+struct slver _sha1_ctx_mgr_flush_avx512_ni_slver = { 0x02c6, 0x00, 0x08 };
 
 #endif // HAVE_AS_KNOWS_AVX512 and HAVE_AS_KNOWS_SHANI
 

@@ -88,13 +88,13 @@ static inline void
 hash_init_digest(SHA1_WORD_T *digest);
 
 void
-sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr)
 {
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
-                         uint32_t len, HASH_CTX_FLAG flags)
+_sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
+                          uint32_t len, HASH_CTX_FLAG flags)
 {
 
         if (flags & (~HASH_ENTIRE)) {
@@ -140,7 +140,7 @@ sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void 
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
@@ -367,11 +367,11 @@ struct slver {
         uint8_t core;
 };
 
-struct slver sha1_ctx_mgr_init_base_slver_00000192;
-struct slver sha1_ctx_mgr_init_base_slver = { 0x0192, 0x00, 0x00 };
+struct slver _sha1_ctx_mgr_init_base_slver_00000192;
+struct slver _sha1_ctx_mgr_init_base_slver = { 0x0192, 0x00, 0x00 };
 
-struct slver sha1_ctx_mgr_submit_base_slver_00000193;
-struct slver sha1_ctx_mgr_submit_base_slver = { 0x0193, 0x00, 0x00 };
+struct slver _sha1_ctx_mgr_submit_base_slver_00000193;
+struct slver _sha1_ctx_mgr_submit_base_slver = { 0x0193, 0x00, 0x00 };
 
-struct slver sha1_ctx_mgr_flush_base_slver_00000194;
-struct slver sha1_ctx_mgr_flush_base_slver = { 0x0194, 0x00, 0x00 };
+struct slver _sha1_ctx_mgr_flush_base_slver_00000194;
+struct slver _sha1_ctx_mgr_flush_base_slver = { 0x0194, 0x00, 0x00 };

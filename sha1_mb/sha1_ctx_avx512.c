@@ -56,14 +56,14 @@ static SHA1_HASH_CTX *
 sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx);
 
 void
-sha1_ctx_mgr_init_avx512(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init_avx512(SHA1_HASH_CTX_MGR *mgr)
 {
         _sha1_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
-                           uint32_t len, HASH_CTX_FLAG flags)
+_sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
+                            uint32_t len, HASH_CTX_FLAG flags)
 {
         if (flags & (~HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -144,7 +144,7 @@ sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const voi
 }
 
 SHA1_HASH_CTX *
-sha1_ctx_mgr_flush_avx512(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_flush_avx512(SHA1_HASH_CTX_MGR *mgr)
 {
         SHA1_HASH_CTX *ctx;
 
@@ -262,14 +262,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha1_ctx_mgr_init_avx512_slver_0600014a;
-struct slver sha1_ctx_mgr_init_avx512_slver = { 0x014a, 0x00, 0x06 };
+struct slver _sha1_ctx_mgr_init_avx512_slver_0600014a;
+struct slver _sha1_ctx_mgr_init_avx512_slver = { 0x014a, 0x00, 0x06 };
 
-struct slver sha1_ctx_mgr_submit_avx512_slver_0600014b;
-struct slver sha1_ctx_mgr_submit_avx512_slver = { 0x014b, 0x00, 0x06 };
+struct slver _sha1_ctx_mgr_submit_avx512_slver_0600014b;
+struct slver _sha1_ctx_mgr_submit_avx512_slver = { 0x014b, 0x00, 0x06 };
 
-struct slver sha1_ctx_mgr_flush_avx512_slver_0600014c;
-struct slver sha1_ctx_mgr_flush_avx512_slver = { 0x014c, 0x00, 0x06 };
+struct slver _sha1_ctx_mgr_flush_avx512_slver_0600014c;
+struct slver _sha1_ctx_mgr_flush_avx512_slver = { 0x014c, 0x00, 0x06 };
 
 #endif // HAVE_AS_KNOWS_AVX512
 
