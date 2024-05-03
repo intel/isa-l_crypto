@@ -31,7 +31,8 @@
 #include <stdlib.h>
 #include "md5_mb.h"
 #include "endian_helper.h"
-#include <openssl/md5.h>
+#include <openssl/evp.h>
+
 #define TEST_LEN       (1024 * 1024ull) // 1M
 #define TEST_BUFS      MD5_MIN_LANES
 #define ROTATION_TIMES 10000 // total length processing = TEST_LEN * ROTATION_TIMES
@@ -49,7 +50,8 @@ struct user_data {
 int
 main(void)
 {
-        MD5_CTX o_ctx; // openSSL
+        /* Initialize OpenSSL Ctx */
+        EVP_MD_CTX *o_ctx = EVP_MD_CTX_new();
         MD5_HASH_CTX_MGR *mgr = NULL;
         MD5_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, k, fail = 0;
@@ -78,11 +80,10 @@ main(void)
         }
 
         // Openssl MD5 update test
-        MD5_Init(&o_ctx);
-        for (k = 0; k < ROTATION_TIMES; k++) {
-                MD5_Update(&o_ctx, bufs[k % TEST_BUFS], TEST_LEN);
-        }
-        MD5_Final(digest_ref_upd, &o_ctx);
+        EVP_DigestInit_ex(o_ctx, EVP_md5(), NULL);
+        for (k = 0; k < ROTATION_TIMES; k++)
+                EVP_DigestUpdate(o_ctx, bufs[k % TEST_BUFS], TEST_LEN);
+        EVP_DigestFinal_ex(o_ctx, (unsigned char *) digest_ref_upd, NULL);
 
         // Initialize pool
         for (i = 0; i < TEST_BUFS; i++) {

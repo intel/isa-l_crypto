@@ -31,7 +31,8 @@
 #include <stdlib.h>
 #include "sha512_mb.h"
 #include "endian_helper.h"
-#include <openssl/sha.h>
+#include <openssl/evp.h>
+
 #define TEST_LEN       (1024 * 1024ull) // 1M
 #define TEST_BUFS      SHA512_MIN_LANES
 #define ROTATION_TIMES 10000 // total length processing = TEST_LEN * ROTATION_TIMES
@@ -49,7 +50,8 @@ struct user_data {
 int
 main(void)
 {
-        SHA512_CTX o_ctx; // openSSL
+        // Initialize OpenSSL Ctx
+        EVP_MD_CTX *o_ctx = EVP_MD_CTX_new();
         SHA512_HASH_CTX_MGR *mgr = NULL;
         SHA512_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, k, fail = 0;
@@ -79,11 +81,10 @@ main(void)
         }
 
         // Openssl SHA512 update test
-        SHA512_Init(&o_ctx);
-        for (k = 0; k < ROTATION_TIMES; k++) {
-                SHA512_Update(&o_ctx, bufs[k % TEST_BUFS], TEST_LEN);
-        }
-        SHA512_Final(digest_ref_upd, &o_ctx);
+        EVP_DigestInit_ex(o_ctx, EVP_sha512(), NULL);
+        for (k = 0; k < ROTATION_TIMES; k++)
+                EVP_DigestUpdate(o_ctx, bufs[k % TEST_BUFS], TEST_LEN);
+        EVP_DigestFinal_ex(o_ctx, (unsigned char *) digest_ref_upd, NULL);
 
         // Initialize pool
         for (i = 0; i < TEST_BUFS; i++) {
