@@ -61,7 +61,7 @@ int
 main(void)
 {
         SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[TEST_BUFS];
+        SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         struct perf start, stop;
@@ -82,7 +82,9 @@ main(void)
                 printf("alloc error: Fail");
                 return -1;
         }
-        sha1_ctx_mgr_init(mgr);
+        ret = isal_sha1_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         // Start OpenSSL tests
         perf_start(&start);
@@ -98,11 +100,18 @@ main(void)
         // Start mb tests
         perf_start(&start);
         for (t = 0; t < TEST_LOOPS; t++) {
-                for (i = 0; i < TEST_BUFS; i++)
-                        sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+                for (i = 0; i < TEST_BUFS; i++) {
+                        ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
+                                                       HASH_ENTIRE);
+                        if (ret)
+                                return 1;
+                }
 
-                while (sha1_ctx_mgr_flush(mgr))
-                        ;
+                do {
+                        ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
+                        if (ret)
+                                return 1;
+                } while (ctx != NULL);
         }
         perf_stop(&stop);
 

@@ -85,14 +85,18 @@ main(void)
                 return 1;
         }
         // Initialize multi-buffer manager
-        sha1_ctx_mgr_init(mgr);
+        ret = isal_sha1_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         for (i = 0; i < n; i++) {
                 hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) expected_digest[i];
 
-                p_job = sha1_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i], strlen((char *) msgs[i]),
-                                            HASH_ENTIRE);
+                ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &p_job, msgs[i],
+                                               strlen((char *) msgs[i]), HASH_ENTIRE);
+                if (ret)
+                        return 1;
 
                 if (p_job) { // If we have finished a job, process it
                         checked++;
@@ -102,10 +106,16 @@ main(void)
         }
 
         // Finish remaining jobs
-        while (NULL != (p_job = sha1_ctx_mgr_flush(mgr))) {
-                checked++;
-                failed += check_job(p_job->job.result_digest, p_job->user_data, SHA1_DIGEST_NWORDS);
-        }
+        do {
+                ret = isal_sha1_ctx_mgr_flush(mgr, &p_job);
+                if (ret)
+                        return 1;
+                if (p_job != NULL) {
+                        checked++;
+                        failed += check_job(p_job->job.result_digest, p_job->user_data,
+                                            SHA1_DIGEST_NWORDS);
+                }
+        } while (p_job != NULL);
 
         printf("Example multi-buffer sha1 completed=%d, failed=%d\n", checked, failed);
         return failed;

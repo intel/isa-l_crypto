@@ -65,7 +65,9 @@ main(void)
                 return 1;
         }
 
-        sha1_ctx_mgr_init(mgr);
+        ret = isal_sha1_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         printf("sha1_large_test\n");
 
@@ -109,20 +111,25 @@ main(void)
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
                         else
-                                ctx = sha1_ctx_mgr_flush(mgr);
+                                isal_sha1_ctx_mgr_flush(mgr, &ctx);
                         continue;
                 } else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
                         len = (LEN_TOTAL - u->processed);
                         update_type = HASH_LAST;
                 }
                 u->processed += len;
-                ctx = sha1_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);
+                ret = isal_sha1_ctx_mgr_submit(mgr, ctx, &ctx, bufs[idx], len, update_type);
+                if (ret)
+                        return 1;
 
                 if (NULL == ctx) {
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
-                        else
-                                ctx = sha1_ctx_mgr_flush(mgr);
+                        else {
+                                ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
+                        }
                 }
         }
 

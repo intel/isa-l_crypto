@@ -72,6 +72,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
 {
         ACVP_RESULT ret = ACVP_SUCCESS;
         ACVP_HASH_TC *tc;
+        int rc;
 
         if (verbose > 2)
                 printf("sha case\n");
@@ -89,28 +90,53 @@ sha_handler(ACVP_TEST_CASE *test_case)
         switch (acvp_get_hash_alg(tc->cipher)) {
         case ACVP_SUB_HASH_SHA1: {
                 SHA1_HASH_CTX_MGR sha1_mgr;
-                SHA1_HASH_CTX sha1_ctx;
-                sha1_ctx_mgr_init(&sha1_mgr);
+                SHA1_HASH_CTX sha1_ctx, *ctx = NULL;
+                rc = isal_sha1_ctx_mgr_init(&sha1_mgr);
+                if (rc)
+                        return EXIT_FAILURE;
                 hash_ctx_init(&sha1_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m1, tc->msg_len, HASH_FIRST);
-                        while (sha1_ctx_mgr_flush(&sha1_mgr))
-                                ;
+                        rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m1,
+                                                      tc->msg_len, HASH_FIRST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m2, tc->msg_len, HASH_UPDATE);
-                        while (sha1_ctx_mgr_flush(&sha1_mgr))
-                                ;
+                        rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m2,
+                                                      tc->msg_len, HASH_UPDATE);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m3, tc->msg_len, HASH_LAST);
-                        while (sha1_ctx_mgr_flush(&sha1_mgr))
-                                ;
+                        rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m3,
+                                                      tc->msg_len, HASH_LAST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
                 } else {
-                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->msg, tc->msg_len,
-                                            HASH_ENTIRE);
+                        rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->msg,
+                                                      tc->msg_len, HASH_ENTIRE);
+                        if (rc)
+                                return EXIT_FAILURE;
 
-                        while (sha1_ctx_mgr_flush(&sha1_mgr))
-                                ;
+                        if (ctx != NULL) {
+                                rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
                 }
                 md_dcpy(tc->md, sha1_ctx.job.result_digest, SHA1_DIGEST_NWORDS);
                 tc->md_len = SHA1_DIGEST_NWORDS * 4;

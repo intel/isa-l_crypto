@@ -58,7 +58,7 @@ int
 main(void)
 {
         SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[TEST_BUFS];
+        SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, fail = 0;
         uint32_t lens[TEST_BUFS];
@@ -75,7 +75,9 @@ main(void)
                 return 1;
         }
 
-        sha1_ctx_mgr_init(mgr);
+        ret = isal_sha1_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate and fill buffer
@@ -94,11 +96,17 @@ main(void)
                 SHA1(bufs[i], TEST_LEN, digest_ssl[i]);
 
                 // sb_sha1 test
-                sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+                ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
+                                               HASH_ENTIRE);
+                if (ret)
+                        return 1;
         }
 
-        while (sha1_ctx_mgr_flush(mgr))
-                ;
+        do {
+                ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
+                if (ret)
+                        return 1;
+        } while (ctx != NULL);
 
         for (i = 0; i < TEST_BUFS; i++) {
                 for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
@@ -117,7 +125,9 @@ main(void)
         for (t = 0; t < RANDOMS; t++) {
                 jobs = rand() % (TEST_BUFS);
 
-                sha1_ctx_mgr_init(mgr);
+                ret = isal_sha1_ctx_mgr_init(mgr);
+                if (ret)
+                        return 1;
 
                 for (i = 0; i < jobs; i++) {
                         // Random buffer with random len and contents
@@ -128,11 +138,17 @@ main(void)
                         SHA1(bufs[i], lens[i], digest_ssl[i]);
 
                         // Run sb_sha1 test
-                        sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                        ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                                       HASH_ENTIRE);
+                        if (ret)
+                                return 1;
                 }
 
-                while (sha1_ctx_mgr_flush(mgr))
-                        ;
+                do {
+                        ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
+                        if (ret)
+                                return 1;
+                } while (ctx != NULL);
 
                 for (i = 0; i < jobs; i++) {
                         for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
