@@ -134,7 +134,7 @@ main(int argc, char **argv)
         for (ret = 0, i = 16; ret == 0 && i < LENGTH_SCAN; i++) {
 
                 /* Encrypt using each method */
-                XTS_AES_128_enc(key2, key1, tinit, i, pt, ct);
+                isal_aes_xts_enc_128(key2, key1, tinit, i, pt, ct);
                 ret |= openssl_aes_128_xts_enc(ctx, keyssl, tinit, i, pt, refct);
 
                 // Compare
@@ -146,7 +146,7 @@ main(int argc, char **argv)
                         printf(" XTS_AES_128_enc size=%d failed at byte %d!\n", i, j);
 
                 /* Decrypt using each method */
-                XTS_AES_128_dec(key2, key1, tinit, i, ct, dt);
+                isal_aes_xts_dec_128(key2, key1, tinit, i, ct, dt);
                 ret |= openssl_aes_128_xts_dec(ctx, keyssl, tinit, i, refct, refdt);
 
                 for (k = 0, j = 0; j < TEST_LEN && ret == 0; j++) {
@@ -178,7 +178,7 @@ main(int argc, char **argv)
                 }
 
                 /* Encrypt using each method */
-                XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
+                isal_aes_xts_enc_128(key2, key1, tinit, TEST_LEN, pt, ct);
                 if (openssl_aes_128_xts_enc(ctx, keyssl, tinit, TEST_LEN, pt, refct))
                         return -1;
 
@@ -194,7 +194,7 @@ main(int argc, char **argv)
                 }
 
                 /* Decrypt using each method */
-                XTS_AES_128_dec(key2, key1, tinit, TEST_LEN, ct, dt);
+                isal_aes_xts_dec_128(key2, key1, tinit, TEST_LEN, ct, dt);
                 if (openssl_aes_128_xts_dec(ctx, keyssl, tinit, TEST_LEN, refct, refdt))
                         return -1;
 
@@ -229,7 +229,7 @@ main(int argc, char **argv)
                 }
 
                 /* Encrypt using each method */
-                XTS_AES_128_enc(key2, key1, tinit, rand_len, pt, ct);
+                isal_aes_xts_enc_128(key2, key1, tinit, rand_len, pt, ct);
                 if (openssl_aes_128_xts_enc(ctx, keyssl, tinit, rand_len, pt, refct))
                         return -1;
 
@@ -245,7 +245,7 @@ main(int argc, char **argv)
                 }
 
                 /* Decrypt using each method */
-                XTS_AES_128_dec(key2, key1, tinit, rand_len, ct, dt);
+                isal_aes_xts_dec_128(key2, key1, tinit, rand_len, ct, dt);
                 if (openssl_aes_128_xts_dec(ctx, keyssl, tinit, rand_len, refct, refdt))
                         return -1;
 

@@ -74,12 +74,12 @@ matching_aes_128_xts_enc(uint8_t *k2, uint8_t *k1, uint8_t *tw, uint64_t len, co
                          uint8_t *ct)
 {
         while (len > OSSL_XTS_MAX_LEN) {
-                XTS_AES_128_enc(k2, k1, tw, OSSL_XTS_MAX_LEN, pt, ct);
+                isal_aes_xts_enc_128(k2, k1, tw, OSSL_XTS_MAX_LEN, pt, ct);
                 ct += OSSL_XTS_MAX_LEN;
                 pt += OSSL_XTS_MAX_LEN;
                 len -= OSSL_XTS_MAX_LEN;
         }
-        XTS_AES_128_enc(k2, k1, tw, len, pt, ct);
+        isal_aes_xts_enc_128(k2, k1, tw, len, pt, ct);
 }
 
 static inline void
@@ -87,12 +87,12 @@ matching_aes_128_xts_dec(uint8_t *k2, uint8_t *k1, uint8_t *tw, uint64_t len, co
                          uint8_t *pt)
 {
         while (len > OSSL_XTS_MAX_LEN) {
-                XTS_AES_128_dec(k2, k1, tw, OSSL_XTS_MAX_LEN, ct, pt);
+                isal_aes_xts_dec_128(k2, k1, tw, OSSL_XTS_MAX_LEN, ct, pt);
                 ct += OSSL_XTS_MAX_LEN;
                 pt += OSSL_XTS_MAX_LEN;
                 len -= OSSL_XTS_MAX_LEN;
         }
-        XTS_AES_128_dec(k2, k1, tw, len, ct, pt);
+        isal_aes_xts_dec_128(k2, k1, tw, len, ct, pt);
 }
 
 int

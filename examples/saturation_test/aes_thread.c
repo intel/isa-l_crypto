@@ -267,9 +267,11 @@ xts_enc_proc(struct aes_context *p, char *plaintext, char *ciphertext, uint64_t 
         struct xts_content *pCtx = (struct xts_content *) p;
 
         if (pCtx->base.bits == 128)
-                XTS_AES_128_enc(pCtx->key2, pCtx->key1, pCtx->tinit, len, plaintext, ciphertext);
+                isal_aes_xts_enc_128(pCtx->key2, pCtx->key1, pCtx->tinit, len, plaintext,
+                                     ciphertext);
         else if (pCtx->base.bits == 256)
-                XTS_AES_256_enc(pCtx->key2, pCtx->key1, pCtx->tinit, len, plaintext, ciphertext);
+                isal_aes_xts_enc_256(pCtx->key2, pCtx->key1, pCtx->tinit, len, plaintext,
+                                     ciphertext);
         else {
                 printf("unsupported xts encryption bits %d\n", pCtx->base.bits);
                 exit(1);

@@ -88,14 +88,14 @@ main(void)
         /* Encode perf test */
 
         mk_rand_data(key1, key2, tinit, pt, TEST_LEN);
-        XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
+        isal_aes_xts_enc_128(key2, key1, tinit, TEST_LEN, pt, ct);
 
         struct perf start, stop;
 
         perf_start(&start);
 
         for (i = 0; i < TEST_LOOPS; i++) {
-                XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
+                isal_aes_xts_enc_128(key2, key1, tinit, TEST_LEN, pt, ct);
         }
 
         perf_stop(&stop);
@@ -107,12 +107,13 @@ main(void)
 
         isal_aes_keyexp_128(key1, expkey1_enc, expkey1_dec);
         isal_aes_keyexp_128(key2, expkey2_enc, null_key);
-        XTS_AES_128_enc_expanded_key(expkey2_enc, expkey1_enc, tinit, TEST_LEN, pt, ct);
+        isal_aes_xts_enc_128_expanded_key(expkey2_enc, expkey1_enc, tinit, TEST_LEN, pt, ct);
 
         perf_start(&start);
 
         for (i = 0; i < TEST_LOOPS; i++) {
-                XTS_AES_128_enc_expanded_key(expkey2_enc, expkey1_enc, tinit, TEST_LEN, pt, ct);
+                isal_aes_xts_enc_128_expanded_key(expkey2_enc, expkey1_enc, tinit, TEST_LEN, pt,
+                                                  ct);
         }
 
         perf_stop(&stop);

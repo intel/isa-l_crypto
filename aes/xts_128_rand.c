@@ -84,8 +84,8 @@ main(void)
         }
 
         mk_rand_data(key1, key2, tinit, pt, TEST_LEN);
-        XTS_AES_128_enc(key2, key1, tinit, TEST_LEN, pt, ct);
-        XTS_AES_128_dec(key2, key1, tinit, TEST_LEN, ct, dt);
+        isal_aes_xts_enc_128(key2, key1, tinit, TEST_LEN, pt, ct);
+        isal_aes_xts_dec_128(key2, key1, tinit, TEST_LEN, ct, dt);
 
         if (memcmp(pt, dt, TEST_LEN)) {
                 printf("fail\n");
@@ -100,8 +100,8 @@ main(void)
                         continue;
 
                 mk_rand_data(key1, key2, tinit, pt, n);
-                XTS_AES_128_enc(key2, key1, tinit, n, pt, ct);
-                XTS_AES_128_dec(key2, key1, tinit, n, ct, dt);
+                isal_aes_xts_enc_128(key2, key1, tinit, n, pt, ct);
+                isal_aes_xts_dec_128(key2, key1, tinit, n, ct, dt);
 
                 if (memcmp(pt, dt, n)) {
                         printf("fail rand %d, size %d\n", t, n);
@@ -119,8 +119,8 @@ main(void)
 
                 mk_rand_data(key1, key2, tinit, pt, n);
                 memcpy(dt, pt, n);
-                XTS_AES_128_enc(key2, key1, tinit, n, dt, dt);
-                XTS_AES_128_dec(key2, key1, tinit, n, dt, dt);
+                isal_aes_xts_enc_128(key2, key1, tinit, n, dt, dt);
+                isal_aes_xts_dec_128(key2, key1, tinit, n, dt, dt);
 
                 if (memcmp(pt, dt, n)) {
                         printf("fail rand %d, size %d\n", t, n);
@@ -141,8 +141,8 @@ main(void)
                 efence_dt = dt + TEST_LEN - TEST_SIZE + size;
 
                 mk_rand_data(key1, key2, tinit, efence_pt, TEST_SIZE - size);
-                XTS_AES_128_enc(key2, key1, tinit, TEST_SIZE - size, efence_pt, efence_ct);
-                XTS_AES_128_dec(key2, key1, tinit, TEST_SIZE - size, efence_ct, efence_dt);
+                isal_aes_xts_enc_128(key2, key1, tinit, TEST_SIZE - size, efence_pt, efence_ct);
+                isal_aes_xts_dec_128(key2, key1, tinit, TEST_SIZE - size, efence_ct, efence_dt);
 
                 if (memcmp(efence_pt, efence_dt, TEST_SIZE - size)) {
                         printf("efence: fail size %d\n", TEST_SIZE - size);
@@ -175,8 +175,8 @@ main(void)
                 memcpy(origin_ct, efence_ct, TEST_SIZE - size);
                 memcpy(origin_dt, efence_dt, TEST_SIZE - size);
 
-                XTS_AES_128_enc(key2, key1, tinit, TEST_SIZE - size, efence_pt, efence_ct);
-                XTS_AES_128_dec(key2, key1, tinit, TEST_SIZE - size, efence_ct, efence_dt);
+                isal_aes_xts_enc_128(key2, key1, tinit, TEST_SIZE - size, efence_pt, efence_ct);
+                isal_aes_xts_dec_128(key2, key1, tinit, TEST_SIZE - size, efence_ct, efence_dt);
 
                 if (memcmp(efence_pt, origin_pt, TEST_SIZE - size)) {
                         printf("efence_pt: fail size %d\n", TEST_SIZE - size);
@@ -208,10 +208,10 @@ main(void)
                 mk_rand_data(key1, key2, tinit, efence_pt, TEST_SIZE - size);
                 isal_aes_keyexp_128(key1, key1_exp_enc, key1_exp_dec);
 
-                XTS_AES_128_enc_expanded_key(key2_exp_tw, key1_exp_enc, tinit, TEST_SIZE - size,
-                                             efence_pt, efence_ct);
-                XTS_AES_128_dec_expanded_key(key2_exp_tw, key1_exp_dec, tinit, TEST_SIZE - size,
-                                             efence_ct, efence_dt);
+                isal_aes_xts_enc_128_expanded_key(key2_exp_tw, key1_exp_enc, tinit,
+                                                  TEST_SIZE - size, efence_pt, efence_ct);
+                isal_aes_xts_dec_128_expanded_key(key2_exp_tw, key1_exp_dec, tinit,
+                                                  TEST_SIZE - size, efence_ct, efence_dt);
 
                 if (memcmp(efence_pt, efence_dt, TEST_SIZE - size)) {
                         printf("efence_expanded_key: fail size %d\n", TEST_SIZE - size);
@@ -239,10 +239,10 @@ main(void)
 
                 isal_aes_keyexp_128(key1, key1_exp_enc, key1_exp_dec);
 
-                XTS_AES_128_enc_expanded_key(key2_exp_tw, key1_exp_enc, tinit, TEST_SIZE - size,
-                                             efence_pt, efence_ct);
-                XTS_AES_128_dec_expanded_key(key2_exp_tw, key1_exp_dec, tinit, TEST_SIZE - size,
-                                             efence_ct, efence_dt);
+                isal_aes_xts_enc_128_expanded_key(key2_exp_tw, key1_exp_enc, tinit,
+                                                  TEST_SIZE - size, efence_pt, efence_ct);
+                isal_aes_xts_dec_128_expanded_key(key2_exp_tw, key1_exp_dec, tinit,
+                                                  TEST_SIZE - size, efence_ct, efence_dt);
 
                 if (memcmp(efence_pt, origin_pt, TEST_SIZE - size)) {
                         printf("efence_expanded_key for pt: fail size %d\n", TEST_SIZE - size);

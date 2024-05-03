@@ -61,8 +61,8 @@ main(void)
                 isal_aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
                 isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
 
-                XTS_AES_256_enc_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW, vlist[i].ptlen,
-                                             vlist[i].PTX, ct_test);
+                isal_aes_xts_enc_256_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW,
+                                                  vlist[i].ptlen, vlist[i].PTX, ct_test);
 
                 // Carry out comparison of the calculated ciphertext with
                 // the reference
@@ -96,8 +96,8 @@ main(void)
                 isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
 
                 // Note, encryption key is re-used for the tweak decryption step
-                XTS_AES_256_dec_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW, vlist[i].ptlen,
-                                             vlist[i].CTX, pt_test);
+                isal_aes_xts_dec_256_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW,
+                                                  vlist[i].ptlen, vlist[i].CTX, pt_test);
 
                 // Carry out comparison of the calculated ciphertext with
                 // the reference

@@ -53,8 +53,8 @@ main(void)
                         goto end;
                 }
 
-                XTS_AES_128_enc(vlist[i].key2, vlist[i].key1, vlist[i].TW, vlist[i].ptlen,
-                                vlist[i].PTX, ct_test);
+                isal_aes_xts_enc_128(vlist[i].key2, vlist[i].key1, vlist[i].TW, vlist[i].ptlen,
+                                     vlist[i].PTX, ct_test);
 
                 // Carry out comparison of the calculated ciphertext with
                 // the reference
@@ -86,8 +86,8 @@ main(void)
                         goto end;
                 }
 
-                XTS_AES_128_dec(vlist[i].key2, vlist[i].key1, vlist[i].TW, vlist[i].ptlen,
-                                vlist[i].CTX, pt_test);
+                isal_aes_xts_dec_128(vlist[i].key2, vlist[i].key1, vlist[i].TW, vlist[i].ptlen,
+                                     vlist[i].CTX, pt_test);
 
                 for (j = 0; j < vlist[i].ptlen; j++) {
 
