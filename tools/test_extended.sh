@@ -99,6 +99,12 @@ time $MAKE -f Makefile.unx -j $cpus $build_opt D="TEST_SEED=$S" other
 test_end "extended_other_tests" $?
 msg+=$'Other tests build: Pass\n'
 
+# Std makefile build extended apps
+test_start "extended_apps"
+time $MAKE -C tests/extended/
+test_end "extended_apps" $?
+msg+=$'Extended apps build: Pass\n'
+
 $MAKE -f Makefile.unx clean
 
 # Std makefile run tests with NT_LDST
