@@ -483,51 +483,6 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
 int
 isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX **ctx_out);
 
-/*******************************************************************
- * Scheduler (internal) level out-of-order function prototypes
- ******************************************************************/
-
-void
-sha1_mb_mgr_init_sse(SHA1_MB_JOB_MGR *state);
-SHA1_JOB *
-sha1_mb_mgr_submit_sse(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_sse(SHA1_MB_JOB_MGR *state);
-
-#define sha1_mb_mgr_init_avx sha1_mb_mgr_init_sse
-SHA1_JOB *
-sha1_mb_mgr_submit_avx(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_avx(SHA1_MB_JOB_MGR *state);
-
-void
-sha1_mb_mgr_init_avx2(SHA1_MB_JOB_MGR *state);
-SHA1_JOB *
-sha1_mb_mgr_submit_avx2(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_avx2(SHA1_MB_JOB_MGR *state);
-
-void
-sha1_mb_mgr_init_avx512(SHA1_MB_JOB_MGR *state);
-SHA1_JOB *
-sha1_mb_mgr_submit_avx512(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_avx512(SHA1_MB_JOB_MGR *state);
-
-void
-sha1_mb_mgr_init_sse_ni(SHA1_MB_JOB_MGR *state);
-SHA1_JOB *
-sha1_mb_mgr_submit_sse_ni(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_sse_ni(SHA1_MB_JOB_MGR *state);
-
-void
-sha1_mb_mgr_init_avx512_ni(SHA1_MB_JOB_MGR *state);
-SHA1_JOB *
-sha1_mb_mgr_submit_avx512_ni(SHA1_MB_JOB_MGR *state, SHA1_JOB *job);
-SHA1_JOB *
-sha1_mb_mgr_flush_avx512_ni(SHA1_MB_JOB_MGR *state);
-
 #ifdef __cplusplus
 }
 #endif

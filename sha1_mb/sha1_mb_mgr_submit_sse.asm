@@ -94,11 +94,11 @@ section .text
 ; STACK_SPACE needs to be an odd multiple of 8
 %define STACK_SPACE     8*4 + 16*10 + 8
 
-; SHA1_JOB* sha1_mb_mgr_submit_sse(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
+; SHA1_JOB* _sha1_mb_mgr_submit_sse(SHA1_MB_JOB_MGR *state, SHA1_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sha1_mb_mgr_submit_sse, function
-sha1_mb_mgr_submit_sse:
+mk_global _sha1_mb_mgr_submit_sse, function, internal
+_sha1_mb_mgr_submit_sse:
 	endbranch
 
 	sub     rsp, STACK_SPACE

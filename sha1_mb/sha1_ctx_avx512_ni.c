@@ -37,7 +37,7 @@
 #pragma GCC target("avx2")
 #endif
 
-#include "sha1_mb.h"
+#include "sha1_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
 
@@ -52,7 +52,7 @@
  *  sha1_ctx_mgr_init_avx512_ni and sha1_ctx_mgr_submit_avx512_ni are
  *  similar with their avx512 versions.
  *  sha1_ctx_mgr_flush_avx512_ni is different. It will call
- *  sha1_mb_mgr_flush_avx512_ni which would use shani when lanes are less
+ *  _sha1_mb_mgr_flush_avx512_ni which would use shani when lanes are less
  *  than a threshold.
  *
  */
@@ -68,7 +68,7 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx);
 void
 sha1_ctx_mgr_init_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
 {
-        sha1_mb_mgr_init_avx512(&mgr->mgr);
+        _sha1_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA1_HASH_CTX *
@@ -146,7 +146,7 @@ sha1_ctx_mgr_submit_avx512_ni(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
 
-                        ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
                 }
         }
 
@@ -159,7 +159,7 @@ sha1_ctx_mgr_flush_avx512_ni(SHA1_HASH_CTX_MGR *mgr)
         SHA1_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_flush_avx512_ni(&mgr->mgr);
+                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_flush_avx512_ni(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -212,8 +212,8 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_avx512(&mgr->mgr,
-                                                                                  &ctx->job);
+                                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr,
+                                                                                   &ctx->job);
                                 continue;
                         }
                 }
@@ -227,7 +227,7 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                                 (HASH_CTX_STS) (HASH_CTX_STS_PROCESSING | HASH_CTX_STS_COMPLETE);
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
                         continue;
                 }
 

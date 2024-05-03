@@ -27,10 +27,10 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha1_mb.h"
+#include "sha1_mb_internal.h"
 
 void
-sha1_mb_mgr_init_sse(SHA1_MB_JOB_MGR *state)
+_sha1_mb_mgr_init_sse(SHA1_MB_JOB_MGR *state)
 {
         unsigned int j;
 

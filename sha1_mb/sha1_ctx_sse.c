@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha1_mb.h"
+#include "sha1_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
 
@@ -46,7 +46,7 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx);
 void
 sha1_ctx_mgr_init_sse(SHA1_HASH_CTX_MGR *mgr)
 {
-        sha1_mb_mgr_init_sse(&mgr->mgr);
+        _sha1_mb_mgr_init_sse(&mgr->mgr);
 }
 
 SHA1_HASH_CTX *
@@ -124,7 +124,7 @@ sha1_ctx_mgr_submit_sse(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
 
-                        ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
+                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
                 }
         }
 
@@ -137,7 +137,7 @@ sha1_ctx_mgr_flush_sse(SHA1_HASH_CTX_MGR *mgr)
         SHA1_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_flush_sse(&mgr->mgr);
+                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_flush_sse(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -191,8 +191,8 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_sse(&mgr->mgr,
-                                                                               &ctx->job);
+                                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_sse(&mgr->mgr,
+                                                                                &ctx->job);
                                 continue;
                         }
                 }
@@ -206,7 +206,7 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                                 (HASH_CTX_STS) (HASH_CTX_STS_PROCESSING | HASH_CTX_STS_COMPLETE);
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (SHA1_HASH_CTX *) sha1_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
+                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
                         continue;
                 }
 
