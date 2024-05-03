@@ -58,7 +58,8 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
                 return ISAL_CRYPTO_ERR_NULL_MGR;
         if (ctx_in == NULL || ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
-        if (buffer == NULL)
+        /* OK to have NULL source buffer when flags is HASH_FIRST or HASH_LAST */
+        if (buffer == NULL && (flags == HASH_UPDATE || flags == HASH_ENTIRE))
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
 

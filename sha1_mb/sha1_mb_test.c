@@ -111,13 +111,17 @@ non_blocksize_updates_test(SHA1_HASH_CTX_MGR *mgr)
         for (int c = 0; c < NUM_CHUNKS; c++) {
                 int chunk = update_chunks[c];
                 hash_ctx_init(&ctx_pool[c]);
+                ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, HASH_FIRST);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
+                ctx = sha1_ctx_mgr_flush(mgr);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
                 for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-                        HASH_CTX_FLAG flags = HASH_UPDATE;
-                        if (i == 0) {
-                                flags = HASH_FIRST;
-                        }
                         ctx = sha1_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
-                                                  flags);
+                                                  HASH_UPDATE);
                         if (ctx && ctx->error) {
                                 return -1;
                         }
