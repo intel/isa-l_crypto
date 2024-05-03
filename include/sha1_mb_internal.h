@@ -47,6 +47,41 @@
 extern "C" {
 #endif
 
+/**
+ * @brief Initialize the SHA1 multi-buffer manager structure.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr Structure holding context level state info
+ * @returns void
+ */
+void
+_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief  Submit a new SHA1 job to the multi-buffer manager.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX *
+_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                     HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA1 jobs and return when complete.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+SHA1_HASH_CTX *
+_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr);
+
 /*******************************************************************
  * Context level API function prototypes
  ******************************************************************/

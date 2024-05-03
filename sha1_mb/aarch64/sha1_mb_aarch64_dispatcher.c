@@ -28,7 +28,7 @@
 **********************************************************************/
 #include <aarch64_multibinary.h>
 
-DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_submit)
+DEFINE_INTERFACE_DISPATCHER(_sha1_ctx_mgr_submit)
 {
 
         unsigned long auxval = getauxval(AT_HWCAP);
@@ -46,10 +46,10 @@ DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_submit)
                 }
         }
 
-        return PROVIDER_BASIC(sha1_ctx_mgr_submit);
+        return PROVIDER_BASIC(_sha1_ctx_mgr_submit);
 }
 
-DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_init)
+DEFINE_INTERFACE_DISPATCHER(_sha1_ctx_mgr_init)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
         if (auxval & HWCAP_SHA1)
@@ -66,10 +66,10 @@ DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_init)
                 }
         }
 
-        return PROVIDER_BASIC(sha1_ctx_mgr_init);
+        return PROVIDER_BASIC(_sha1_ctx_mgr_init);
 }
 
-DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_flush)
+DEFINE_INTERFACE_DISPATCHER(_sha1_ctx_mgr_flush)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
         if (auxval & HWCAP_SHA1)
@@ -86,5 +86,5 @@ DEFINE_INTERFACE_DISPATCHER(sha1_ctx_mgr_flush)
                 }
         }
 
-        return PROVIDER_BASIC(sha1_ctx_mgr_flush);
+        return PROVIDER_BASIC(_sha1_ctx_mgr_flush);
 }

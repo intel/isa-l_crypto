@@ -28,6 +28,7 @@
 **********************************************************************/
 
 #include "sha1_mb.h"
+#include "sha1_mb_internal.h"
 #include "isal_crypto_api.h"
 #include "multi_buffer.h"
 
@@ -44,7 +45,7 @@ isal_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        sha1_ctx_mgr_init(mgr);
+        _sha1_ctx_mgr_init(mgr);
 
         return 0;
 }
@@ -68,7 +69,7 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        *ctx_out = sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+        *ctx_out = _sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
         if (*ctx_out != NULL && (SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
@@ -100,7 +101,32 @@ isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX **ctx_out)
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        *ctx_out = sha1_ctx_mgr_flush(mgr);
+        *ctx_out = _sha1_ctx_mgr_flush(mgr);
 
         return 0;
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
+{
+        _sha1_ctx_mgr_init(mgr);
+}
+
+SHA1_HASH_CTX *
+sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                    HASH_CTX_FLAG flags)
+{
+        return _sha1_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
+}
+
+SHA1_HASH_CTX *
+sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr)
+{
+        return _sha1_ctx_mgr_flush(mgr);
 }

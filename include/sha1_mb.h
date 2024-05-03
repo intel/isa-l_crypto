@@ -191,16 +191,19 @@ typedef struct {
 /**
  * @brief Initialize the SHA1 multi-buffer manager structure.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_sha1_ctx_mgr_init() instead.
  *
  * @param mgr Structure holding context level state info
  * @returns void
  */
+ISAL_DEPRECATED("Please use isal_sha1_ctx_mgr_init() instead")
 void
 sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new SHA1 job to the multi-buffer manager.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_sha1_ctx_mgr_submit() instead.
  *
  * @param  mgr Structure holding context level state info
  * @param  ctx Structure holding ctx job info
@@ -209,6 +212,7 @@ sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
+ISAL_DEPRECATED("Please use isal_sha1_ctx_mgr_submit() instead")
 SHA1_HASH_CTX *
 sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
                     HASH_CTX_FLAG flags);
@@ -216,10 +220,12 @@ sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buff
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_sha1_ctx_mgr_flush() instead.
  *
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
+ISAL_DEPRECATED("Please use isal_sha1_ctx_mgr_flush() instead")
 SHA1_HASH_CTX *
 sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr);
 

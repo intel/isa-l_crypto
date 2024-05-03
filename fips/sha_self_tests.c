@@ -36,7 +36,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "sha1_mb.h"
+#include "sha1_mb_internal.h"
 #include "sha256_mb.h"
 #include "sha512_mb.h"
 
@@ -71,16 +71,16 @@ _sha1_self_test(void)
         SHA1_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
-        sha1_ctx_mgr_init(&mgr);
+        _sha1_ctx_mgr_init(&mgr);
 
         // Init context before first use
         hash_ctx_init(&ctxpool);
 
-        ctx = sha1_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
-                                  HASH_ENTIRE);
+        ctx = _sha1_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
+                                   HASH_ENTIRE);
 
         if (ctx == NULL)
-                ctx = sha1_ctx_mgr_flush(&mgr);
+                ctx = _sha1_ctx_mgr_flush(&mgr);
 
         if (ctx) {
                 for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
