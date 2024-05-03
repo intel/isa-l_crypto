@@ -29,11 +29,11 @@
 
 #include "aarch64_multibinary.h"
 
-mbin_interface     XTS_AES_128_enc
-mbin_interface     XTS_AES_128_dec
-mbin_interface     XTS_AES_128_enc_expanded_key
-mbin_interface     XTS_AES_128_dec_expanded_key
-mbin_interface     XTS_AES_256_enc
-mbin_interface     XTS_AES_256_dec
-mbin_interface     XTS_AES_256_enc_expanded_key
-mbin_interface     XTS_AES_256_dec_expanded_key
+mbin_interface     _XTS_AES_128_enc
+mbin_interface     _XTS_AES_128_dec
+mbin_interface     _XTS_AES_128_enc_expanded_key
+mbin_interface     _XTS_AES_128_dec_expanded_key
+mbin_interface     _XTS_AES_256_enc
+mbin_interface     _XTS_AES_256_dec
+mbin_interface     _XTS_AES_256_enc_expanded_key
+mbin_interface     _XTS_AES_256_dec_expanded_key

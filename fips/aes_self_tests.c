@@ -38,9 +38,8 @@
 
 #include "aes_cbc.h"
 #include "aes_cbc_internal.h"
-#include "aes_xts.h"
+#include "aes_xts_internal.h"
 #include "aes_gcm.h"
-#include "aes_keyexp.h"
 #include "aes_keyexp_internal.h"
 
 #include "internal_fips.h"
@@ -452,12 +451,12 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
 
         switch (v->cipher_key_size) {
         case 16:
-                XTS_AES_128_enc(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
-                                scratch, scratch);
+                _XTS_AES_128_enc(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
+                                 scratch, scratch);
                 break;
         case 32:
-                XTS_AES_256_enc(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
-                                scratch, scratch);
+                _XTS_AES_256_enc(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
+                                 scratch, scratch);
                 break;
         default:
                 /* invalid key size */
@@ -475,14 +474,14 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
         case 16:
                 _aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
                 _aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
-                XTS_AES_128_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
-                                             v->plaintext_size, scratch, scratch);
+                _XTS_AES_128_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
+                                              v->plaintext_size, scratch, scratch);
                 break;
         case 32:
                 _aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
                 _aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
-                XTS_AES_256_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
-                                             v->plaintext_size, scratch, scratch);
+                _XTS_AES_256_enc_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_enc, v->tweak,
+                                              v->plaintext_size, scratch, scratch);
                 break;
         default:
                 /* invalid key size */
@@ -499,12 +498,12 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
 
         switch (v->cipher_key_size) {
         case 16:
-                XTS_AES_128_dec(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
-                                scratch, scratch);
+                _XTS_AES_128_dec(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
+                                 scratch, scratch);
                 break;
         case 32:
-                XTS_AES_256_dec(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
-                                scratch, scratch);
+                _XTS_AES_256_dec(v->cipher_key2, v->cipher_key1, v->tweak, v->plaintext_size,
+                                 scratch, scratch);
                 break;
         default:
                 /* invalid key size */
@@ -522,14 +521,14 @@ xts_self_test_vector(const struct self_test_xts_vector *v)
         case 16:
                 _aes_keyexp_128(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
                 _aes_keyexp_128(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
-                XTS_AES_128_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
-                                             v->plaintext_size, scratch, scratch);
+                _XTS_AES_128_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
+                                              v->plaintext_size, scratch, scratch);
                 break;
         case 32:
                 _aes_keyexp_256(v->cipher_key1, aes_keys.expkey1_enc, aes_keys.expkey1_dec);
                 _aes_keyexp_256(v->cipher_key2, aes_keys.expkey2_enc, aes_keys.expkey2_dec);
-                XTS_AES_256_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
-                                             v->plaintext_size, scratch, scratch);
+                _XTS_AES_256_dec_expanded_key(aes_keys.expkey2_enc, aes_keys.expkey1_dec, v->tweak,
+                                              v->plaintext_size, scratch, scratch);
                 break;
         default:
                 /* invalid key size */

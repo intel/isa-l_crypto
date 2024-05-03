@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+  Copyright(c) 2011-2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -97,6 +97,7 @@
  */
 
 #include <stdint.h>
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,9 +107,11 @@ extern "C" {
 #define ISAL_AES_XTS_MAX_LEN (1 << 24)
 
 /** @brief XTS-AES-128 Encryption
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_enc_128() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_enc_128() instead")
 void
 XTS_AES_128_enc(uint8_t *k2,         //!<  key used for tweaking, 16 bytes
                 uint8_t *k1,         //!<  key used for encryption of tweaked plaintext, 16 bytes
@@ -119,9 +122,11 @@ XTS_AES_128_enc(uint8_t *k2,         //!<  key used for tweaking, 16 bytes
 );
 
 /** @brief XTS-AES-128 Encryption with pre-expanded keys
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_enc_128_expanded_key() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_enc_128_expanded_key() instead")
 void
 XTS_AES_128_enc_expanded_key(
         uint8_t *k2, //!<  expanded key used for tweaking, 16*11 bytes
@@ -133,9 +138,11 @@ XTS_AES_128_enc_expanded_key(
 );
 
 /** @brief XTS-AES-128 Decryption
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_dec_128() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_dec_128() instead")
 void
 XTS_AES_128_dec(uint8_t *k2,         //!<  key used for tweaking, 16 bytes
                 uint8_t *k1,         //!<  key used for decryption of tweaked ciphertext, 16 bytes
@@ -146,9 +153,11 @@ XTS_AES_128_dec(uint8_t *k2,         //!<  key used for tweaking, 16 bytes
 );
 
 /** @brief XTS-AES-128 Decryption with pre-expanded keys
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_dec_128_expanded_key() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_dec_128_expanded_key() instead")
 void
 XTS_AES_128_dec_expanded_key(
         uint8_t *k2, //!<  expanded key used for tweaking, 16*11 bytes - encryption key is used
@@ -161,9 +170,11 @@ XTS_AES_128_dec_expanded_key(
 );
 
 /** @brief XTS-AES-256 Encryption
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_enc_256() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_enc_256() instead")
 void
 XTS_AES_256_enc(uint8_t *k2,         //!<  key used for tweaking, 16*2 bytes
                 uint8_t *k1,         //!<  key used for encryption of tweaked plaintext, 16*2 bytes
@@ -174,9 +185,11 @@ XTS_AES_256_enc(uint8_t *k2,         //!<  key used for tweaking, 16*2 bytes
 );
 
 /** @brief XTS-AES-256 Encryption with pre-expanded keys
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_enc_256_expanded_key() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_enc_256_expanded_key() instead")
 void
 XTS_AES_256_enc_expanded_key(
         uint8_t *k2, //!<  expanded key used for tweaking, 16*15 bytes
@@ -188,9 +201,11 @@ XTS_AES_256_enc_expanded_key(
 );
 
 /** @brief XTS-AES-256 Decryption
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_dec_256() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_dec_256() instead")
 void
 XTS_AES_256_dec(uint8_t *k2, //!<  key used for tweaking, 16*2 bytes
                 uint8_t *k1, //!<  key used for  decryption of tweaked ciphertext, 16*2 bytes
@@ -201,9 +216,11 @@ XTS_AES_256_dec(uint8_t *k2, //!<  key used for tweaking, 16*2 bytes
 );
 
 /** @brief XTS-AES-256 Decryption with pre-expanded keys
+ *
  * @requires AES-NI
+ * @deprecated Please use isal_aes_xts_dec_256_expanded_key() instead.
  */
-
+ISAL_DEPRECATED("Please use isal_aes_xts_dec_256_expanded_key() instead")
 void
 XTS_AES_256_dec_expanded_key(
         uint8_t *k2, //!<  expanded key used for tweaking, 16*15 bytes - encryption key is used

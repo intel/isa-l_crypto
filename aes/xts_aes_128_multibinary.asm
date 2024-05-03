@@ -32,23 +32,23 @@ default rel
 
 %include "reg_sizes.asm"
 
-extern XTS_AES_128_enc_sse
-extern XTS_AES_128_enc_avx
+extern _XTS_AES_128_enc_sse
+extern _XTS_AES_128_enc_avx
 
-extern XTS_AES_128_enc_expanded_key_sse
-extern XTS_AES_128_enc_expanded_key_avx
+extern _XTS_AES_128_enc_expanded_key_sse
+extern _XTS_AES_128_enc_expanded_key_avx
 
-extern XTS_AES_128_dec_sse
-extern XTS_AES_128_dec_avx
+extern _XTS_AES_128_dec_sse
+extern _XTS_AES_128_dec_avx
 
-extern XTS_AES_128_dec_expanded_key_sse
-extern XTS_AES_128_dec_expanded_key_avx
+extern _XTS_AES_128_dec_expanded_key_sse
+extern _XTS_AES_128_dec_expanded_key_avx
 
 %if (AS_FEATURE_LEVEL) >= 10
-extern XTS_AES_128_enc_vaes
-extern XTS_AES_128_enc_expanded_key_vaes
-extern XTS_AES_128_dec_vaes
-extern XTS_AES_128_dec_expanded_key_vaes
+extern _XTS_AES_128_enc_vaes
+extern _XTS_AES_128_enc_expanded_key_vaes
+extern _XTS_AES_128_dec_vaes
+extern _XTS_AES_128_dec_expanded_key_vaes
 %endif
 
 section .text
@@ -56,23 +56,23 @@ section .text
 %include "multibinary.asm"
 
 ;;;;
-; instantiate XTS_AES_128_enc, XTS_AES_128_enc_expanded_key, XTS_AES_128_dec, and XTS_AES_128_dec_expanded_key
+; instantiate _XTS_AES_128_enc, _XTS_AES_128_enc_expanded_key, _XTS_AES_128_dec, and _XTS_AES_128_dec_expanded_key
 ;;;;
-mbin_interface     XTS_AES_128_enc
-mbin_dispatch_init7 XTS_AES_128_enc, XTS_AES_128_enc_sse, XTS_AES_128_enc_sse, XTS_AES_128_enc_avx, XTS_AES_128_enc_avx, XTS_AES_128_enc_avx, XTS_AES_128_enc_vaes
+mbin_interface     _XTS_AES_128_enc
+mbin_dispatch_init7 _XTS_AES_128_enc, _XTS_AES_128_enc_sse, _XTS_AES_128_enc_sse, _XTS_AES_128_enc_avx, _XTS_AES_128_enc_avx, _XTS_AES_128_enc_avx, _XTS_AES_128_enc_vaes
 
-mbin_interface     XTS_AES_128_enc_expanded_key
-mbin_dispatch_init7 XTS_AES_128_enc_expanded_key, XTS_AES_128_enc_expanded_key_sse, XTS_AES_128_enc_expanded_key_sse, XTS_AES_128_enc_expanded_key_avx, XTS_AES_128_enc_expanded_key_avx, XTS_AES_128_enc_expanded_key_avx, XTS_AES_128_enc_expanded_key_vaes
+mbin_interface     _XTS_AES_128_enc_expanded_key
+mbin_dispatch_init7 _XTS_AES_128_enc_expanded_key, _XTS_AES_128_enc_expanded_key_sse, _XTS_AES_128_enc_expanded_key_sse, _XTS_AES_128_enc_expanded_key_avx, _XTS_AES_128_enc_expanded_key_avx, _XTS_AES_128_enc_expanded_key_avx, _XTS_AES_128_enc_expanded_key_vaes
 
-mbin_interface     XTS_AES_128_dec
-mbin_dispatch_init7 XTS_AES_128_dec, XTS_AES_128_dec_sse, XTS_AES_128_dec_sse, XTS_AES_128_dec_avx, XTS_AES_128_dec_avx, XTS_AES_128_dec_avx, XTS_AES_128_dec_vaes
+mbin_interface     _XTS_AES_128_dec
+mbin_dispatch_init7 _XTS_AES_128_dec, _XTS_AES_128_dec_sse, _XTS_AES_128_dec_sse, _XTS_AES_128_dec_avx, _XTS_AES_128_dec_avx, _XTS_AES_128_dec_avx, _XTS_AES_128_dec_vaes
 
-mbin_interface     XTS_AES_128_dec_expanded_key
-mbin_dispatch_init7 XTS_AES_128_dec_expanded_key, XTS_AES_128_dec_expanded_key_sse, XTS_AES_128_dec_expanded_key_sse, XTS_AES_128_dec_expanded_key_avx, XTS_AES_128_dec_expanded_key_avx, XTS_AES_128_dec_expanded_key_avx, XTS_AES_128_dec_expanded_key_vaes
+mbin_interface     _XTS_AES_128_dec_expanded_key
+mbin_dispatch_init7 _XTS_AES_128_dec_expanded_key, _XTS_AES_128_dec_expanded_key_sse, _XTS_AES_128_dec_expanded_key_sse, _XTS_AES_128_dec_expanded_key_avx, _XTS_AES_128_dec_expanded_key_avx, _XTS_AES_128_dec_expanded_key_avx, _XTS_AES_128_dec_expanded_key_vaes
 
 
 ;;;       func            		core, ver, snum
-slversion XTS_AES_128_enc, 01,  04,  0071
-slversion XTS_AES_128_enc_expanded_key, 01,  04,  0072
-slversion XTS_AES_128_dec, 01,  04,  0073
-slversion XTS_AES_128_dec_expanded_key, 01,  04,  0074
+slversion _XTS_AES_128_enc, 01,  04,  0071
+slversion _XTS_AES_128_enc_expanded_key, 01,  04,  0072
+slversion _XTS_AES_128_dec, 01,  04,  0073
+slversion _XTS_AES_128_dec_expanded_key, 01,  04,  0074

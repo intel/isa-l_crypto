@@ -54,7 +54,7 @@ default rel
 %define GHASH_POLY 0x87
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void XTS_AES_128_enc_expanded_key_sse(
+;void _XTS_AES_128_enc_expanded_key_sse(
 ;               UINT8 *k2,      // key used for tweaking, 16*11 bytes
 ;               UINT8 *k1,      // key used for "ECB" encryption, 16*11 bytes
 ;               UINT8 *TW_initial,      // initial tweak value, 16 bytes
@@ -957,8 +957,8 @@ default rel
 
 section .text
 
-mk_global XTS_AES_128_enc_expanded_key_sse, function
-XTS_AES_128_enc_expanded_key_sse:
+mk_global _XTS_AES_128_enc_expanded_key_sse, function, internal
+_XTS_AES_128_enc_expanded_key_sse:
 	endbranch
 
 	sub     rsp, VARIABLE_OFFSET

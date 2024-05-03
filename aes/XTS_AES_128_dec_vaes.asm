@@ -57,7 +57,7 @@ default rel
 %define GHASH_POLY 0x87
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void XTS_AES_128_dec_vaes(
+;void _XTS_AES_128_dec_vaes(
 ;               UINT8 *k2,      // key used for tweaking, 16 bytes
 ;               UINT8 *k1,      // key used for "ECB" decryption, 16 bytes
 ;               UINT8 *TW_initial,      // initial tweak value, 16 bytes
@@ -957,8 +957,8 @@ default rel
 
 section .text
 
-mk_global XTS_AES_128_dec_vaes, function
-XTS_AES_128_dec_vaes:
+mk_global _XTS_AES_128_dec_vaes, function, internal
+_XTS_AES_128_dec_vaes:
 	endbranch
 
 %define ALIGN_STACK

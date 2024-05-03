@@ -73,15 +73,15 @@ aes_xts_handler(ACVP_TEST_CASE *test_case)
         switch (tc->key_len) {
         case 128:
                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                        XTS_AES_128_enc(&key[16], &key[0], tinit, tc->pt_len, tc->pt, tc->ct);
+                        isal_aes_xts_enc_128(&key[16], &key[0], tinit, tc->pt_len, tc->pt, tc->ct);
                 else
-                        XTS_AES_128_dec(&key[16], &key[0], tinit, tc->ct_len, tc->ct, tc->pt);
+                        isal_aes_xts_dec_128(&key[16], &key[0], tinit, tc->ct_len, tc->ct, tc->pt);
                 break;
         case 256:
                 if (tc->direction == ACVP_SYM_CIPH_DIR_ENCRYPT)
-                        XTS_AES_256_enc(&key[32], &key[0], tinit, tc->pt_len, tc->pt, tc->ct);
+                        isal_aes_xts_enc_256(&key[32], &key[0], tinit, tc->pt_len, tc->pt, tc->ct);
                 else
-                        XTS_AES_256_dec(&key[32], &key[0], tinit, tc->ct_len, tc->ct, tc->pt);
+                        isal_aes_xts_dec_256(&key[32], &key[0], tinit, tc->ct_len, tc->ct, tc->pt);
                 break;
         default:
                 fprintf(stderr, "Unsupported AES key length\n");
