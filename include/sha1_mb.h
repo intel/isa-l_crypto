@@ -121,12 +121,9 @@ extern "C" {
 // Hash Constants and Typedefs
 #define SHA1_DIGEST_NWORDS       5
 #define SHA1_MAX_LANES           16
-#define SHA1_X8_LANES            8
 #define SHA1_MIN_LANES           4
 #define SHA1_BLOCK_SIZE          64
-#define SHA1_LOG2_BLOCK_SIZE     6
 #define SHA1_PADLENGTHFIELD_SIZE 8
-#define SHA1_INITIAL_DIGEST      0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0
 
 typedef uint32_t sha1_digest_array[SHA1_DIGEST_NWORDS][SHA1_MAX_LANES];
 typedef uint32_t SHA1_WORD_T;

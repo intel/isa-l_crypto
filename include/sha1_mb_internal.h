@@ -47,6 +47,12 @@
 extern "C" {
 #endif
 
+/* Hash Constants and Typedefs */
+#define SHA1_LOG2_BLOCK_SIZE     6
+#define SHA1_PADLENGTHFIELD_SIZE 8
+#define SHA1_INITIAL_DIGEST      0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0
+#define SHA1_X8_LANES            8
+
 /**
  * @brief Initialize the SHA1 multi-buffer manager structure.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
