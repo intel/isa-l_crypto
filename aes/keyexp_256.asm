@@ -98,7 +98,7 @@ section .text
 ; arg 2: rdx: pointer to expanded key array for encrypt
 ; arg 3: r8:  pointer to expanded key array for decrypt
 ;
-mk_global aes_keyexp_256_sse, function
+mk_global aes_keyexp_256_sse, function, internal
 aes_keyexp_256_sse:
 	endbranch
         movdqu	xmm1, [KEY]			; loading the AES key
@@ -192,7 +192,7 @@ aes_keyexp_256_sse:
 	ret
 
 
-mk_global aes_keyexp_256_avx, function
+mk_global aes_keyexp_256_avx, function, internal
 aes_keyexp_256_avx:
 	endbranch
         vmovdqu	xmm1, [KEY]			; loading the AES key
