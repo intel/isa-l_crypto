@@ -88,7 +88,7 @@ void
 sha1_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
         uint32_t i, j;
-        uint8_t buf[2 * SHA1_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA1_BLOCK_SIZE];
 
         digest[0] = H0;
         digest[1] = H1;
@@ -97,27 +97,27 @@ sha1_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
         digest[4] = H4;
 
         i = len;
-        while (i >= SHA1_BLOCK_SIZE) {
+        while (i >= ISAL_SHA1_BLOCK_SIZE) {
                 sha1_single(input_data, digest);
-                input_data += SHA1_BLOCK_SIZE;
-                i -= SHA1_BLOCK_SIZE;
+                input_data += ISAL_SHA1_BLOCK_SIZE;
+                i -= ISAL_SHA1_BLOCK_SIZE;
         }
 
         memcpy(buf, input_data, i);
         buf[i++] = 0x80;
-        for (j = i; j < ((2 * SHA1_BLOCK_SIZE) - SHA1_PADLENGTHFIELD_SIZE); j++)
+        for (j = i; j < ((2 * ISAL_SHA1_BLOCK_SIZE) - ISAL_SHA1_PADLENGTHFIELD_SIZE); j++)
                 buf[j] = 0;
 
-        if (i > SHA1_BLOCK_SIZE - SHA1_PADLENGTHFIELD_SIZE)
-                i = 2 * SHA1_BLOCK_SIZE;
+        if (i > ISAL_SHA1_BLOCK_SIZE - ISAL_SHA1_PADLENGTHFIELD_SIZE)
+                i = 2 * ISAL_SHA1_BLOCK_SIZE;
         else
-                i = SHA1_BLOCK_SIZE;
+                i = ISAL_SHA1_BLOCK_SIZE;
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 
         sha1_single(buf, digest);
-        if (i == (2 * SHA1_BLOCK_SIZE))
-                sha1_single(buf + SHA1_BLOCK_SIZE, digest);
+        if (i == (2 * ISAL_SHA1_BLOCK_SIZE))
+                sha1_single(buf + ISAL_SHA1_BLOCK_SIZE, digest);
 }
 
 void

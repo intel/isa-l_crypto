@@ -92,7 +92,7 @@
 .endm
 
 /*
- *  void sha1_mb_asimd_x4(SHA1_JOB *j0, SHA1_JOB*j1, SHA1_JOB*j2, SHA1_JOB *j3, int blocks)
+ *  void sha1_mb_asimd_x4(ISAL_SHA1_JOB *j0, ISAL_SHA1_JOB*j1, ISAL_SHA1_JOB*j2, ISAL_SHA1_JOB *j3, int blocks)
  */
 	job0	.req	x0
 	job1	.req	x1

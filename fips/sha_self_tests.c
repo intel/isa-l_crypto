@@ -44,7 +44,7 @@
 #include "types.h"
 #include "test.h"
 
-typedef uint32_t DigestSHA1[SHA1_DIGEST_NWORDS];
+typedef uint32_t DigestSHA1[ISAL_SHA1_DIGEST_NWORDS];
 typedef uint32_t DigestSHA256[SHA256_DIGEST_NWORDS];
 typedef uint64_t DigestSHA512[SHA512_DIGEST_NWORDS];
 
@@ -67,8 +67,8 @@ static int
 _sha1_self_test(void)
 {
 
-        SHA1_HASH_CTX_MGR mgr;
-        SHA1_HASH_CTX ctxpool, *ctx = NULL;
+        ISAL_SHA1_HASH_CTX_MGR mgr;
+        ISAL_SHA1_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
         _sha1_ctx_mgr_init(&mgr);
@@ -83,7 +83,7 @@ _sha1_self_test(void)
                 ctx = _sha1_ctx_mgr_flush(&mgr);
 
         if (ctx) {
-                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                         if (expResultDigest_sha1[j] != ctxpool.job.result_digest[j])
                                 return -1;
                 }

@@ -388,7 +388,8 @@ my_CFLAGS="\
 -Wstrict-prototypes \
 -Wtype-limits \
 -fstack-protector \
--D_FORTIFY_SOURCE=2
+-D_FORTIFY_SOURCE=2 \
+-DNO_COMPAT_ISAL_CRYPTO_API_2_24
 "
 AC_SUBST([my_CFLAGS])
 

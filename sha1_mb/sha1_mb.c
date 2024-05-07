@@ -33,7 +33,7 @@
 #include "multi_buffer.h"
 
 int
-isal_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
+isal_sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
@@ -51,8 +51,9 @@ isal_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
 }
 
 int
-isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HASH_CTX **ctx_out,
-                         const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags)
+isal_sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx_in,
+                         ISAL_SHA1_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+                         const HASH_CTX_FLAG flags)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
@@ -72,8 +73,8 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
         *ctx_out = _sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
-                SHA1_HASH_CTX *cp = (SHA1_HASH_CTX *) (*ctx_out);
+        if (*ctx_out != NULL && (ISAL_SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+                ISAL_SHA1_HASH_CTX *cp = (ISAL_SHA1_HASH_CTX *) (*ctx_out);
 
                 if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
@@ -87,7 +88,7 @@ isal_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx_in, SHA1_HAS
 }
 
 int
-isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX **ctx_out)
+isal_sha1_ctx_mgr_flush(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX **ctx_out)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
@@ -113,20 +114,20 @@ isal_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX **ctx_out)
  */
 
 void
-sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
+sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         _sha1_ctx_mgr_init(mgr);
 }
 
-SHA1_HASH_CTX *
-sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                    HASH_CTX_FLAG flags)
+ISAL_SHA1_HASH_CTX *
+sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
+                    uint32_t len, HASH_CTX_FLAG flags)
 {
         return _sha1_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
 }
 
-SHA1_HASH_CTX *
-sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr)
+ISAL_SHA1_HASH_CTX *
+sha1_ctx_mgr_flush(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         return _sha1_ctx_mgr_flush(mgr);
 }

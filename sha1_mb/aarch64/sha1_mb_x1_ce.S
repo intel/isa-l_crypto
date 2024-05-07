@@ -85,7 +85,7 @@ Temporary variables
 	declare_var_vector_reg	tmp_1,6
 
 /*
-	void sha1_mb_ce_x1(SHA1_JOB * job, int len);
+	void sha1_mb_ce_x1(ISAL_SHA1_JOB * job, int len);
 */
 /*
 Arguments list

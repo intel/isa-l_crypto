@@ -49,21 +49,21 @@
 #ifdef HAVE_AS_KNOWS_AVX512
 
 static inline void
-hash_init_digest(SHA1_WORD_T *digest);
+hash_init_digest(ISAL_SHA1_WORD_T *digest);
 static inline uint32_t
-hash_pad(uint8_t padblock[SHA1_BLOCK_SIZE * 2], uint64_t total_len);
-static SHA1_HASH_CTX *
-sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx);
+hash_pad(uint8_t padblock[ISAL_SHA1_BLOCK_SIZE * 2], uint64_t total_len);
+static ISAL_SHA1_HASH_CTX *
+sha1_ctx_mgr_resubmit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx);
 
 void
-_sha1_ctx_mgr_init_avx512(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init_avx512(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         _sha1_mb_mgr_init_avx512(&mgr->mgr);
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
-                            uint32_t len, HASH_CTX_FLAG flags)
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_submit_avx512(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx,
+                            const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
 {
         if (flags & (~HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -111,9 +111,9 @@ _sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const vo
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (len < SHA1_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (len < ISAL_SHA1_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = SHA1_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_SHA1_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (len < copy_len)
                         copy_len = len;
 
@@ -127,29 +127,30 @@ _sha1_ctx_mgr_submit_avx512(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const vo
                         ctx->incoming_buffer_length = len - copy_len;
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= SHA1_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_SHA1_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= SHA1_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_SHA1_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
 
-                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = (ISAL_SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr,
+                                                                                &ctx->job);
                 }
         }
 
         return sha1_ctx_mgr_resubmit(mgr, ctx);
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_flush_avx512(SHA1_HASH_CTX_MGR *mgr)
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_flush_avx512(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
-        SHA1_HASH_CTX *ctx;
+        ISAL_SHA1_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_flush_avx512(&mgr->mgr);
+                ctx = (ISAL_SHA1_HASH_CTX *) _sha1_mb_mgr_flush_avx512(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -163,13 +164,13 @@ _sha1_ctx_mgr_flush_avx512(SHA1_HASH_CTX_MGR *mgr)
                 if (ctx)
                         return ctx;
 
-                // Otherwise, all jobs currently being managed by the SHA1_HASH_CTX_MGR still need
-                // processing. Loop.
+                // Otherwise, all jobs currently being managed by the ISAL_SHA1_HASH_CTX_MGR still
+                // need processing. Loop.
         }
 }
 
-static SHA1_HASH_CTX *
-sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
+static ISAL_SHA1_HASH_CTX *
+sha1_ctx_mgr_resubmit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx)
 {
         while (ctx) {
                 if (ctx->status & HASH_CTX_STS_COMPLETE) {
@@ -182,7 +183,7 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                         uint32_t len = ctx->incoming_buffer_length;
 
                         // Only entire blocks can be hashed. Copy remainder to extra blocks buffer.
-                        uint32_t copy_len = len & (SHA1_BLOCK_SIZE - 1);
+                        uint32_t copy_len = len & (ISAL_SHA1_BLOCK_SIZE - 1);
 
                         if (copy_len) {
                                 len -= copy_len;
@@ -194,16 +195,16 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                         ctx->incoming_buffer_length = 0;
 
                         // len should be a multiple of the block size now
-                        assert((len % SHA1_BLOCK_SIZE) == 0);
+                        assert((len % ISAL_SHA1_BLOCK_SIZE) == 0);
 
                         // Set len to the number of blocks to be hashed in the user's buffer
-                        len >>= SHA1_LOG2_BLOCK_SIZE;
+                        len >>= ISAL_SHA1_LOG2_BLOCK_SIZE;
 
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr,
-                                                                                   &ctx->job);
+                                ctx = (ISAL_SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr,
+                                                                                        &ctx->job);
                                 continue;
                         }
                 }
@@ -217,7 +218,8 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
                                 (HASH_CTX_STS) (HASH_CTX_STS_PROCESSING | HASH_CTX_STS_COMPLETE);
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = (ISAL_SHA1_HASH_CTX *) _sha1_mb_mgr_submit_avx512(&mgr->mgr,
+                                                                                &ctx->job);
                         continue;
                 }
 
@@ -230,31 +232,33 @@ sha1_ctx_mgr_resubmit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx)
 }
 
 static inline void
-hash_init_digest(SHA1_WORD_T *digest)
+hash_init_digest(ISAL_SHA1_WORD_T *digest)
 {
-        static const SHA1_WORD_T hash_initial_digest[SHA1_DIGEST_NWORDS] = { SHA1_INITIAL_DIGEST };
+        static const ISAL_SHA1_WORD_T hash_initial_digest[ISAL_SHA1_DIGEST_NWORDS] = {
+                ISAL_SHA1_INITIAL_DIGEST
+        };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
 static inline uint32_t
-hash_pad(uint8_t padblock[SHA1_BLOCK_SIZE * 2], uint64_t total_len)
+hash_pad(uint8_t padblock[ISAL_SHA1_BLOCK_SIZE * 2], uint64_t total_len)
 {
-        uint32_t i = (uint32_t) (total_len & (SHA1_BLOCK_SIZE - 1));
+        uint32_t i = (uint32_t) (total_len & (ISAL_SHA1_BLOCK_SIZE - 1));
 
-        memclr_fixedlen(&padblock[i], SHA1_BLOCK_SIZE);
+        memclr_fixedlen(&padblock[i], ISAL_SHA1_BLOCK_SIZE);
         padblock[i] = 0x80;
 
         // Move i to the end of either 1st or 2nd extra block depending on length
-        i += ((SHA1_BLOCK_SIZE - 1) & (0 - (total_len + SHA1_PADLENGTHFIELD_SIZE + 1))) + 1 +
-             SHA1_PADLENGTHFIELD_SIZE;
+        i += ((ISAL_SHA1_BLOCK_SIZE - 1) & (0 - (total_len + ISAL_SHA1_PADLENGTHFIELD_SIZE + 1))) +
+             1 + ISAL_SHA1_PADLENGTHFIELD_SIZE;
 
-#if SHA1_PADLENGTHFIELD_SIZE == 16
+#if ISAL_SHA1_PADLENGTHFIELD_SIZE == 16
         *((uint64_t *) &padblock[i - 16]) = 0;
 #endif
 
         *((uint64_t *) &padblock[i - 8]) = to_be64((uint64_t) total_len << 3);
 
-        return i >> SHA1_LOG2_BLOCK_SIZE; // Number of extra blocks to hash
+        return i >> ISAL_SHA1_LOG2_BLOCK_SIZE; // Number of extra blocks to hash
 }
 
 struct slver {

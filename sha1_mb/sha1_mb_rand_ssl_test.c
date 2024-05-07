@@ -43,7 +43,7 @@
 #endif
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * SHA1_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_SHA1_DIGEST_NWORDS];
 
 // Generates pseudo-random data
 void
@@ -57,8 +57,8 @@ rand_buffer(unsigned char *buf, const long buffer_size)
 int
 main(void)
 {
-        SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        ISAL_SHA1_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, fail = 0;
         uint32_t lens[TEST_BUFS];
@@ -69,7 +69,7 @@ main(void)
 
         srand(TEST_SEED);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA1_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -109,7 +109,7 @@ main(void)
         } while (ctx != NULL);
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_be32(((uint32_t *) digest_ssl[i])[j])) {
                                 fail++;
@@ -151,7 +151,7 @@ main(void)
                 } while (ctx != NULL);
 
                 for (i = 0; i < jobs; i++) {
-                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] !=
                                     to_be32(((uint32_t *) digest_ssl[i])[j])) {
                                         fail++;

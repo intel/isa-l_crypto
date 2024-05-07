@@ -89,8 +89,8 @@ sha_handler(ACVP_TEST_CASE *test_case)
 
         switch (acvp_get_hash_alg(tc->cipher)) {
         case ACVP_SUB_HASH_SHA1: {
-                SHA1_HASH_CTX_MGR sha1_mgr;
-                SHA1_HASH_CTX sha1_ctx, *ctx = NULL;
+                ISAL_SHA1_HASH_CTX_MGR sha1_mgr;
+                ISAL_SHA1_HASH_CTX sha1_ctx, *ctx = NULL;
                 rc = isal_sha1_ctx_mgr_init(&sha1_mgr);
                 if (rc)
                         return EXIT_FAILURE;
@@ -138,8 +138,8 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                         return EXIT_FAILURE;
                         }
                 }
-                md_dcpy(tc->md, sha1_ctx.job.result_digest, SHA1_DIGEST_NWORDS);
-                tc->md_len = SHA1_DIGEST_NWORDS * 4;
+                md_dcpy(tc->md, sha1_ctx.job.result_digest, ISAL_SHA1_DIGEST_NWORDS);
+                tc->md_len = ISAL_SHA1_DIGEST_NWORDS * 4;
 
                 break;
         }

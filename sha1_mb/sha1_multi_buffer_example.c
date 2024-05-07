@@ -72,14 +72,14 @@ check_job(uint32_t *ref, uint32_t *good, int words)
 int
 main(void)
 {
-        SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[MAX_MSGS];
-        SHA1_HASH_CTX *p_job;
+        ISAL_SHA1_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA1_HASH_CTX ctxpool[MAX_MSGS];
+        ISAL_SHA1_HASH_CTX *p_job;
         int i, checked = 0, failed = 0;
         int n = sizeof(msgs) / sizeof(msgs[0]);
         int ret;
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA1_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -101,7 +101,7 @@ main(void)
                 if (p_job) { // If we have finished a job, process it
                         checked++;
                         failed += check_job(p_job->job.result_digest, p_job->user_data,
-                                            SHA1_DIGEST_NWORDS);
+                                            ISAL_SHA1_DIGEST_NWORDS);
                 }
         }
 
@@ -113,7 +113,7 @@ main(void)
                 if (p_job != NULL) {
                         checked++;
                         failed += check_job(p_job->job.result_digest, p_job->user_data,
-                                            SHA1_DIGEST_NWORDS);
+                                            ISAL_SHA1_DIGEST_NWORDS);
                 }
         } while (p_job != NULL);
 

@@ -33,7 +33,7 @@
 #include "sha1_mb.h"
 #include "endian_helper.h"
 
-typedef uint32_t DigestSHA1[SHA1_DIGEST_NWORDS];
+typedef uint32_t DigestSHA1[ISAL_SHA1_DIGEST_NWORDS];
 
 #define MSGS     7
 #define NUM_JOBS 1000
@@ -85,11 +85,11 @@ static uint32_t *expResultDigest[MSGS] = { expResultDigest1, expResultDigest2, e
 #define NUM_CHUNKS   4
 #define DATA_BUF_LEN 4096
 static int
-non_blocksize_updates_test(SHA1_HASH_CTX_MGR *mgr)
+non_blocksize_updates_test(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
-        SHA1_HASH_CTX ctx_refer;
-        SHA1_HASH_CTX ctx_pool[NUM_CHUNKS];
-        SHA1_HASH_CTX *ctx = NULL;
+        ISAL_SHA1_HASH_CTX ctx_refer;
+        ISAL_SHA1_HASH_CTX ctx_pool[NUM_CHUNKS];
+        ISAL_SHA1_HASH_CTX *ctx = NULL;
         int rc;
 
         const int update_chunks[NUM_CHUNKS] = { 32, 64, 128, 256 };
@@ -138,7 +138,7 @@ non_blocksize_updates_test(SHA1_HASH_CTX_MGR *mgr)
                 if (ctx_pool[c].status != HASH_CTX_STS_COMPLETE) {
                         return -1;
                 }
-                for (int i = 0; i < SHA1_DIGEST_NWORDS; i++) {
+                for (int i = 0; i < ISAL_SHA1_DIGEST_NWORDS; i++) {
                         if (ctx_refer.job.result_digest[i] != ctx_pool[c].job.result_digest[i]) {
                                 printf("sm3 calc error! chunk %d, digest[%d], (%d) != (%d)\n",
                                        update_chunks[c], i, ctx_refer.job.result_digest[i],
@@ -153,13 +153,13 @@ non_blocksize_updates_test(SHA1_HASH_CTX_MGR *mgr)
 int
 main(void)
 {
-        SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
+        ISAL_SHA1_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA1_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
         uint32_t i, j, k, t, checked = 0;
         uint32_t *good;
         int rc, ret = -1;
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA1_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -185,7 +185,7 @@ main(void)
                         t = (uint32_t) ((uintptr_t) (ctx->user_data));
                         good = expResultDigest[t];
                         checked++;
-                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
                                         printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
                                                ctxpool[t].job.result_digest[j], good[j]);
@@ -209,7 +209,7 @@ main(void)
                         t = (uint32_t) ((uintptr_t) (ctx->user_data));
                         good = expResultDigest[t];
                         checked++;
-                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
                                         printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
                                                ctxpool[t].job.result_digest[j], good[j]);
@@ -248,7 +248,7 @@ main(void)
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
-                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
                                         printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
                                                ctxpool[t].job.result_digest[j], good[j]);
@@ -277,7 +277,7 @@ main(void)
                         k = PSEUDO_RANDOM_NUM(t);
                         good = expResultDigest[k];
                         checked++;
-                        for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                                 if (good[j] != ctxpool[t].job.result_digest[j]) {
                                         printf("Test %d, digest %d is %08X, should be %08X\n", t, j,
                                                ctxpool[t].job.result_digest[j], good[j]);

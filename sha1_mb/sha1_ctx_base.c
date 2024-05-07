@@ -77,23 +77,23 @@
         b = rol32(b, 30)
 
 static void
-sha1_init(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha1_init(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha1_update(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha1_final(SHA1_HASH_CTX *ctx);
+sha1_final(ISAL_SHA1_HASH_CTX *ctx);
 static void OPT_FIX
 sha1_single(const void *data, uint32_t digest[]);
 static inline void
-hash_init_digest(SHA1_WORD_T *digest);
+hash_init_digest(ISAL_SHA1_WORD_T *digest);
 
 void
-_sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init_base(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_submit_base(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
                           uint32_t len, HASH_CTX_FLAG flags)
 {
 
@@ -139,14 +139,14 @@ _sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void
         return ctx;
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr)
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_flush_base(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
 
 static void
-sha1_init(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha1_init(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         // Init digest
         hash_init_digest(ctx->job.result_digest);
@@ -165,7 +165,7 @@ sha1_init(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha1_update(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         uint32_t remain_len = len;
         uint32_t *digest = ctx->job.result_digest;
@@ -176,9 +176,9 @@ sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (remain_len < SHA1_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (remain_len < ISAL_SHA1_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = SHA1_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_SHA1_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (remain_len < copy_len) {
                         copy_len = remain_len;
                 }
@@ -194,20 +194,20 @@ sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
                         buffer = (void *) ((uint8_t *) buffer + copy_len);
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= SHA1_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_SHA1_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= SHA1_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_SHA1_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
                         sha1_single(ctx->partial_block_buffer, digest);
                 }
         }
         // If the extra blocks are empty, begin hashing what remains in the user's buffer.
         if (ctx->partial_block_buffer_length == 0) {
-                while (remain_len >= SHA1_BLOCK_SIZE) {
+                while (remain_len >= ISAL_SHA1_BLOCK_SIZE) {
                         sha1_single(buffer, digest);
-                        buffer = (void *) ((uint8_t *) buffer + SHA1_BLOCK_SIZE);
-                        remain_len -= SHA1_BLOCK_SIZE;
+                        buffer = (void *) ((uint8_t *) buffer + ISAL_SHA1_BLOCK_SIZE);
+                        remain_len -= ISAL_SHA1_BLOCK_SIZE;
                 }
         }
 
@@ -221,30 +221,30 @@ sha1_update(SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha1_final(SHA1_HASH_CTX *ctx)
+sha1_final(ISAL_SHA1_HASH_CTX *ctx)
 {
         const void *buffer = ctx->partial_block_buffer;
         uint32_t i = ctx->partial_block_buffer_length;
-        uint8_t buf[2 * SHA1_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA1_BLOCK_SIZE];
         uint32_t *digest = ctx->job.result_digest;
 
         memcpy(buf, buffer, i);
         buf[i++] = 0x80;
-        for (uint32_t j = i; j < (2 * SHA1_BLOCK_SIZE); j++) {
+        for (uint32_t j = i; j < (2 * ISAL_SHA1_BLOCK_SIZE); j++) {
                 buf[j] = 0;
         }
 
-        if (i > SHA1_BLOCK_SIZE - SHA1_PADLENGTHFIELD_SIZE) {
-                i = 2 * SHA1_BLOCK_SIZE;
+        if (i > ISAL_SHA1_BLOCK_SIZE - ISAL_SHA1_PADLENGTHFIELD_SIZE) {
+                i = 2 * ISAL_SHA1_BLOCK_SIZE;
         } else {
-                i = SHA1_BLOCK_SIZE;
+                i = ISAL_SHA1_BLOCK_SIZE;
         }
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) ctx->total_length * 8);
 
         sha1_single(buf, digest);
-        if (i == 2 * SHA1_BLOCK_SIZE) {
-                sha1_single(buf + SHA1_BLOCK_SIZE, digest);
+        if (i == 2 * ISAL_SHA1_BLOCK_SIZE) {
+                sha1_single(buf + ISAL_SHA1_BLOCK_SIZE, digest);
         }
 
         ctx->status = HASH_CTX_STS_COMPLETE;
@@ -355,9 +355,11 @@ sha1_single(const void *data, uint32_t digest[])
 }
 
 static inline void
-hash_init_digest(SHA1_WORD_T *digest)
+hash_init_digest(ISAL_SHA1_WORD_T *digest)
 {
-        static const SHA1_WORD_T hash_initial_digest[SHA1_DIGEST_NWORDS] = { SHA1_INITIAL_DIGEST };
+        static const ISAL_SHA1_WORD_T hash_initial_digest[ISAL_SHA1_DIGEST_NWORDS] = {
+                ISAL_SHA1_INITIAL_DIGEST
+        };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 

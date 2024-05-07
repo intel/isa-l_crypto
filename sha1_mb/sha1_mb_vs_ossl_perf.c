@@ -55,13 +55,13 @@
 #define TEST_MEM TEST_LEN *TEST_BUFS *TEST_LOOPS
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * SHA1_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_SHA1_DIGEST_NWORDS];
 
 int
 main(void)
 {
-        SHA1_HASH_CTX_MGR *mgr = NULL;
-        SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        ISAL_SHA1_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA1_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         struct perf start, stop;
@@ -77,7 +77,7 @@ main(void)
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
-        int ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        int ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA1_HASH_CTX_MGR));
         if (ret) {
                 printf("alloc error: Fail");
                 return -1;
@@ -119,7 +119,7 @@ main(void)
         perf_print(stop, start, (long long) TEST_LEN * i * t);
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA1_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_be32(((uint32_t *) digest_ssl[i])[j])) {
                                 fail++;

@@ -100,7 +100,7 @@ lane variables
 	declare_var_vector_reg	l1_msg_3,23
 
 /*
-	void sha1_mb_ce_x2(SHA1_JOB * job_0, SHA1_JOB * job_1,int len);
+	void sha1_mb_ce_x2(ISAL_SHA1_JOB * job_0, ISAL_SHA1_JOB * job_1,int len);
 */
 	l0_job .req x0
 	l1_job .req x1
