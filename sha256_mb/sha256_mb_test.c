@@ -119,20 +119,23 @@ non_blocksize_updates_test(SHA256_HASH_CTX_MGR *mgr)
         for (int c = 0; c < NUM_CHUNKS; c++) {
                 int chunk = update_chunks[c];
                 isal_hash_ctx_init(&ctx_pool[c]);
+                ctx = sha256_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_FIRST);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
+                ctx = sha256_ctx_mgr_flush(mgr);
+                if (ctx && ctx->error) {
+                        return -1;
+                }
                 for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-                        ISAL_HASH_CTX_FLAG flags = ISAL_HASH_UPDATE;
-                        if (i == 0) {
-                                flags = ISAL_HASH_FIRST;
-                        }
                         ctx = sha256_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
-                                                    flags);
-                        if (ctx && ctx->error) {
+                                                    ISAL_HASH_UPDATE);
+                        if (ctx && ctx->error)
                                 return -1;
-                        }
+
                         ctx = sha256_ctx_mgr_flush(mgr);
-                        if (ctx && ctx->error) {
+                        if (ctx && ctx->error)
                                 return -1;
-                        }
                 }
         }
 
