@@ -53,6 +53,41 @@ extern "C" {
         0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab,        \
                 0x5be0cd19
 
+/**
+ * @brief Initialize the SHA256 multi-buffer manager structure.
+ * @requires SSE4.1 or AVX or AVX2
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns void
+ */
+void
+_sha256_ctx_mgr_init(ISAL_SHA256_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief  Submit a new SHA256 job to the multi-buffer manager.
+ * @requires SSE4.1 or AVX or AVX2
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+ISAL_SHA256_HASH_CTX *
+_sha256_ctx_mgr_submit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx, const void *buffer,
+                       uint32_t len, ISAL_HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA256 jobs and return when complete.
+ * @requires SSE4.1 or AVX or AVX2
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+ISAL_SHA256_HASH_CTX *
+_sha256_ctx_mgr_flush(ISAL_SHA256_HASH_CTX_MGR *mgr);
+
 /*******************************************************************
  * CTX level API function prototypes
  ******************************************************************/

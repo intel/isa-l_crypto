@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha256_mb.h"
+#include "sha256_mb_internal.h"
 #include "isal_crypto_api.h"
 #include "multi_buffer.h"
 
@@ -44,7 +44,7 @@ isal_sha256_ctx_mgr_init(ISAL_SHA256_HASH_CTX_MGR *mgr)
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        sha256_ctx_mgr_init(mgr);
+        _sha256_ctx_mgr_init(mgr);
 
         return 0;
 }
@@ -69,7 +69,7 @@ isal_sha256_ctx_mgr_submit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        *ctx_out = sha256_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+        *ctx_out = _sha256_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
         if (*ctx_out != NULL &&
@@ -102,7 +102,32 @@ isal_sha256_ctx_mgr_flush(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX **
                 return ISAL_CRYPTO_ERR_SELF_TEST;
 #endif
 
-        *ctx_out = sha256_ctx_mgr_flush(mgr);
+        *ctx_out = _sha256_ctx_mgr_flush(mgr);
 
         return 0;
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+sha256_ctx_mgr_init(ISAL_SHA256_HASH_CTX_MGR *mgr)
+{
+        _sha256_ctx_mgr_init(mgr);
+}
+
+ISAL_SHA256_HASH_CTX *
+sha256_ctx_mgr_submit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx, const void *buffer,
+                      uint32_t len, ISAL_HASH_CTX_FLAG flags)
+{
+        return _sha256_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
+}
+
+ISAL_SHA256_HASH_CTX *
+sha256_ctx_mgr_flush(ISAL_SHA256_HASH_CTX_MGR *mgr)
+{
+        return _sha256_ctx_mgr_flush(mgr);
 }

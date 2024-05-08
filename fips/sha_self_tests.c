@@ -37,7 +37,7 @@
 #include <string.h>
 
 #include "sha1_mb_internal.h"
-#include "sha256_mb.h"
+#include "sha256_mb_internal.h"
 #include "sha512_mb.h"
 
 #include "internal_fips.h"
@@ -101,16 +101,16 @@ _sha256_self_test(void)
         ISAL_SHA256_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
-        sha256_ctx_mgr_init(&mgr);
+        _sha256_ctx_mgr_init(&mgr);
 
         // Init context before first use
         isal_hash_ctx_init(&ctxpool);
 
-        ctx = sha256_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
-                                    ISAL_HASH_ENTIRE);
+        ctx = _sha256_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
+                                     ISAL_HASH_ENTIRE);
 
         if (ctx == NULL)
-                ctx = sha256_ctx_mgr_flush(&mgr);
+                ctx = _sha256_ctx_mgr_flush(&mgr);
 
         if (ctx) {
                 for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
