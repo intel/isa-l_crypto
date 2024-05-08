@@ -323,15 +323,15 @@ section .text
 
 align 32
 
-;void mh_sha1_block_sse(const uint8_t * input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+;void _mh_sha1_block_sse(const uint8_t * input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
 ;		uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 ; arg 0 pointer to input data
 ; arg 1 pointer to digests, include segments digests(uint32_t digests[16][5])
 ; arg 2 pointer to aligned_frame_buffer which is used to save the big_endian data.
 ; arg 3 number  of 1KB blocks
 ;
-mk_global mh_sha1_block_sse, function, internal
-func(mh_sha1_block_sse)
+mk_global _mh_sha1_block_sse, function, internal
+func(_mh_sha1_block_sse)
 	endbranch
 	FUNC_SAVE
 	; save rsp

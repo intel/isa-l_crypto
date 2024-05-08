@@ -39,9 +39,9 @@
 #include <string.h>
 #include "mh_sha1_internal.h"
 
-#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_base
-#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_base
-#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_base
+#define MH_SHA1_FINALIZE_FUNCTION _mh_sha1_finalize_base
+#define MH_SHA1_TAIL_FUNCTION     _mh_sha1_tail_base
+#define MH_SHA1_BLOCK_FUNCTION    _mh_sha1_block_base
 #define MH_SHA1_FINALIZE_SLVER
 #endif
 
@@ -71,8 +71,8 @@ MH_SHA1_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
         MH_SHA1_BLOCK_FUNCTION(partial_buffer, mh_sha1_segs_digests, frame_buffer, 1);
 
         // Calculate multi-hash SHA1 digests (segment digests as input message)
-        sha1_for_mh_sha1((uint8_t *) mh_sha1_segs_digests, digests,
-                         4 * SHA1_DIGEST_WORDS * HASH_SEGS);
+        _sha1_for_mh_sha1((uint8_t *) mh_sha1_segs_digests, digests,
+                          4 * SHA1_DIGEST_WORDS * HASH_SEGS);
 
         return;
 }
@@ -118,6 +118,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha1_finalize_base_slver_0000027b;
-struct slver mh_sha1_finalize_base_slver = { 0x027b, 0x00, 0x00 };
+struct slver _mh_sha1_finalize_base_slver_0000027b;
+struct slver _mh_sha1_finalize_base_slver = { 0x027b, 0x00, 0x00 };
 #endif

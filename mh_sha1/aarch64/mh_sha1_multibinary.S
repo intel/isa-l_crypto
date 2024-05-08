@@ -31,5 +31,5 @@
 #include "aarch64_multibinary.h"
 
 
-mbin_interface mh_sha1_update
-mbin_interface mh_sha1_finalize
+mbin_interface _mh_sha1_update
+mbin_interface _mh_sha1_finalize

@@ -383,8 +383,8 @@ mh_sha1_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *fr
 }
 
 void
-mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
+_mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i;
 

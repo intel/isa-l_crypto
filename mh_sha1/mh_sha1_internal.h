@@ -75,6 +75,206 @@ extern "C" {
 
 #define rol32(x, r) (((x) << (r)) ^ ((x) >> (32 - (r))))
 
+/**
+ * @brief Initialize the mh_sha1_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha1 info
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_init(struct mh_sha1_ctx *ctx);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for multi-hash sha1.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+
+/*******************************************************************
+ * multi-types of mh_sha1 internal API
+ *
+ * XXXX		The multi-binary version
+ * XXXX_base	The C code version which used to display the algorithm
+ * XXXX_sse	The version uses a ASM function optimized for SSE
+ * XXXX_avx	The version uses a ASM function optimized for AVX
+ * XXXX_avx2	The version uses a ASM function optimized for AVX2
+ * XXXX_avx512	The version uses a ASM function optimized for AVX512
+ *
+ ******************************************************************/
+
+/**
+ * @brief Multi-hash sha1 update base implementation.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires SSE
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_update_sse(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_update_avx(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX2
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_update_avx2(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha1 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX512
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_update_avx512(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires SSE
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_finalize_sse(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_finalize_avx(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX2
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_finalize_avx2(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha1_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX512
+ *
+ * @param   ctx Structure holding mh_sha1 info
+ * @param   mh_sha1_digest The digest of mh_sha1
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_finalize_avx512(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 /*******************************************************************
  * SHA1 API internal function prototypes
  ******************************************************************/
@@ -88,7 +288,7 @@ extern "C" {
  * @returns None
  */
 void
-sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len);
+_sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len);
 
 /*******************************************************************
  * mh_sha1 API internal function prototypes
@@ -113,9 +313,9 @@ sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len
  *
  */
 void
-mh_sha1_tail(uint8_t *partial_buffer, uint32_t total_len,
-             uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-             uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail(uint8_t *partial_buffer, uint32_t total_len,
+              uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+              uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
@@ -132,9 +332,9 @@ mh_sha1_tail(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_tail_base(uint8_t *partial_buffer, uint32_t total_len,
-                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail_base(uint8_t *partial_buffer, uint32_t total_len,
+                   uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
@@ -153,9 +353,9 @@ mh_sha1_tail_base(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
-                 uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                 uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
+                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
@@ -174,9 +374,9 @@ mh_sha1_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
-                 uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                 uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
+                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
@@ -195,9 +395,9 @@ mh_sha1_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
-                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
+                   uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
@@ -216,9 +416,9 @@ mh_sha1_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
-                    uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                    uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+_mh_sha1_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
+                     uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                     uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -234,8 +434,8 @@ mh_sha1_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha1_block(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-              uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+               uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -248,8 +448,8 @@ mh_sha1_block(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HAS
  *
  */
 void
-mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -263,8 +463,8 @@ mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS
  *
  */
 void
-mh_sha1_block_sse(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                  uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_sse(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -279,8 +479,8 @@ mh_sha1_block_sse(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS]
  *
  */
 void
-mh_sha1_block_avx(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                  uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -295,8 +495,8 @@ mh_sha1_block_avx(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS]
  *
  */
 void
-mh_sha1_block_avx2(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx2(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
@@ -311,8 +511,8 @@ mh_sha1_block_avx2(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS
  *
  */
 void
-mh_sha1_block_avx512(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                     uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx512(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                      uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 #ifdef __cplusplus
 }

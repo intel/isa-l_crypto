@@ -36,8 +36,8 @@
 #include "mh_sha1_internal.h"
 #include <string.h>
 
-#define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_base
-#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_base
+#define MH_SHA1_UPDATE_FUNCTION _mh_sha1_update_base
+#define MH_SHA1_BLOCK_FUNCTION  _mh_sha1_block_base
 #define MH_SHA1_UPDATE_SLVER
 #endif
 
@@ -105,6 +105,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha1_update_base_slver_0000027a;
-struct slver mh_sha1_update_base_slver = { 0x027a, 0x00, 0x00 };
+struct slver _mh_sha1_update_base_slver_0000027a;
+struct slver _mh_sha1_update_base_slver = { 0x027a, 0x00, 0x00 };
 #endif

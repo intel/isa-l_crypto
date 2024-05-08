@@ -68,7 +68,7 @@
         b = rol32(b, 30)
 
 static void OPT_FIX
-sha1_single_for_mh_sha1(const uint8_t *data, uint32_t digest[])
+_sha1_single_for_mh_sha1(const uint8_t *data, uint32_t digest[])
 {
         uint32_t a, b, c, d, e;
         uint32_t w[16] = { 0 };
@@ -172,7 +172,7 @@ sha1_single_for_mh_sha1(const uint8_t *data, uint32_t digest[])
 }
 
 void
-sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
+_sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
         uint32_t i, j;
         uint8_t buf[2 * SHA1_BLOCK_SIZE];
@@ -185,7 +185,7 @@ sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len
 
         i = len;
         while (i >= SHA1_BLOCK_SIZE) {
-                sha1_single_for_mh_sha1(input_data, digest);
+                _sha1_single_for_mh_sha1(input_data, digest);
                 input_data += SHA1_BLOCK_SIZE;
                 i -= SHA1_BLOCK_SIZE;
         }
@@ -202,7 +202,7 @@ sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t len
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 
-        sha1_single_for_mh_sha1(buf, digest);
+        _sha1_single_for_mh_sha1(buf, digest);
         if (i == (2 * SHA1_BLOCK_SIZE))
-                sha1_single_for_mh_sha1(buf + SHA1_BLOCK_SIZE, digest);
+                _sha1_single_for_mh_sha1(buf + SHA1_BLOCK_SIZE, digest);
 }

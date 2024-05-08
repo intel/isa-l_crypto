@@ -243,15 +243,15 @@ section .text
 section .text
 align 32
 
-;void mh_sha1_block_avx512(const uint8_t * input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+;void _mh_sha1_block_avx512(const uint8_t * input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
 ;		uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 ; arg 0 pointer to input data
 ; arg 1 pointer to digests, include segments digests(uint32_t digests[16][5])
 ; arg 2 pointer to aligned_frame_buffer which is used to save the big_endian data.
 ; arg 3 number  of 1KB blocks
 ;
-global mh_sha1_block_avx512
-func(mh_sha1_block_avx512)
+mk_global _mh_sha1_block_avx512, function, internal
+func(_mh_sha1_block_avx512)
 	endbranch
 	FUNC_SAVE
 
@@ -400,7 +400,7 @@ K60_79:			dq  0xCA62C1D6CA62C1D6
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64
-global no_mh_sha1_block_avx512
-no_mh_sha1_block_avx512:
+mk_global _no_mh_sha1_block_avx512, function, internal
+_no_mh_sha1_block_avx512:
 %endif
 %endif ; HAVE_AS_KNOWS_AVX512

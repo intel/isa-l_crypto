@@ -67,7 +67,7 @@ mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
                                    uint32_t num_blocks)
 {
 
-        mh_sha1_block_base(input_data, mh_sha1_digests, frame_buffer, num_blocks);
+        _mh_sha1_block_base(input_data, mh_sha1_digests, frame_buffer, num_blocks);
 
         murmur3_x64_128_block(input_data, num_blocks * MH_SHA1_BLOCK_SIZE / MUR_BLOCK_SIZE,
                               murmur3_x64_128_digests);
@@ -151,21 +151,21 @@ isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, v
 /***************mh_sha1_murmur3_x64_128_finalize***********/
 // mh_sha1_murmur3_x64_128_finalize_sse.c
 #define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_sse
-#define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_sse
+#define MH_SHA1_TAIL_FUNCTION _mh_sha1_tail_sse
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 
 // mh_sha1_murmur3_x64_128_finalize_avx.c
 #define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_avx
-#define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_avx
+#define MH_SHA1_TAIL_FUNCTION _mh_sha1_tail_avx
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 
 // mh_sha1_murmur3_x64_128_finalize_avx2.c
 #define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_avx2
-#define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_avx2
+#define MH_SHA1_TAIL_FUNCTION _mh_sha1_tail_avx2
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION

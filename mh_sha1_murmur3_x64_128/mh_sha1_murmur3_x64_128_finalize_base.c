@@ -32,7 +32,7 @@
 #include "mh_sha1_murmur3_x64_128_internal.h"
 
 #define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_base
-#define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_base
+#define MH_SHA1_TAIL_FUNCTION _mh_sha1_tail_base
 #define FINALIZE_FUNCTION_SLVER
 #endif
 

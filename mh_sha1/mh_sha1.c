@@ -32,7 +32,7 @@
 #include "mh_sha1_internal.h"
 
 int
-mh_sha1_init(struct mh_sha1_ctx *ctx)
+_mh_sha1_init(struct mh_sha1_ctx *ctx)
 {
         uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
         uint32_t i;
@@ -64,7 +64,7 @@ isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-        return mh_sha1_init(ctx);
+        return _mh_sha1_init(ctx);
 #endif
 }
 
@@ -80,7 +80,7 @@ isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-        return mh_sha1_update(ctx, buffer, len);
+        return _mh_sha1_update(ctx, buffer, len);
 #endif
 }
 
@@ -96,8 +96,44 @@ isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
         if (mh_sha1_digest == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
 #endif
-        return mh_sha1_finalize(ctx, mh_sha1_digest);
+        return _mh_sha1_finalize(ctx, mh_sha1_digest);
 #endif
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+int
+mh_sha1_init(struct mh_sha1_ctx *ctx)
+{
+        return _mh_sha1_init(ctx);
+}
+
+int
+mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+{
+        return _mh_sha1_update(ctx, buffer, len);
+}
+
+int
+mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+{
+        return _mh_sha1_finalize(ctx, mh_sha1_digest);
+}
+
+int
+mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+{
+        return _mh_sha1_update_base(ctx, buffer, len);
+}
+
+int
+mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+{
+        return _mh_sha1_finalize_base(ctx, mh_sha1_digest);
 }
 
 #if (!defined(NOARCH)) &&                                                                          \
@@ -105,22 +141,22 @@ isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
 
 /***************mh_sha1_update***********/
 // mh_sha1_update_sse.c
-#define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_sse
-#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_sse
+#define MH_SHA1_UPDATE_FUNCTION _mh_sha1_update_sse
+#define MH_SHA1_BLOCK_FUNCTION  _mh_sha1_block_sse
 #include "mh_sha1_update_base.c"
 #undef MH_SHA1_UPDATE_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
 
 // mh_sha1_update_avx.c
-#define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_avx
-#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_avx
+#define MH_SHA1_UPDATE_FUNCTION _mh_sha1_update_avx
+#define MH_SHA1_BLOCK_FUNCTION  _mh_sha1_block_avx
 #include "mh_sha1_update_base.c"
 #undef MH_SHA1_UPDATE_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
 
 // mh_sha1_update_avx2.c
-#define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_avx2
-#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_avx2
+#define MH_SHA1_UPDATE_FUNCTION _mh_sha1_update_avx2
+#define MH_SHA1_BLOCK_FUNCTION  _mh_sha1_block_avx2
 #include "mh_sha1_update_base.c"
 #undef MH_SHA1_UPDATE_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
@@ -130,27 +166,27 @@ isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
 // mh_sha1_finalize is a mh_sha1_ctx wrapper of mh_sha1_tail
 
 // mh_sha1_finalize_sse.c and mh_sha1_tail_sse.c
-#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_sse
-#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_sse
-#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_sse
+#define MH_SHA1_FINALIZE_FUNCTION _mh_sha1_finalize_sse
+#define MH_SHA1_TAIL_FUNCTION     _mh_sha1_tail_sse
+#define MH_SHA1_BLOCK_FUNCTION    _mh_sha1_block_sse
 #include "mh_sha1_finalize_base.c"
 #undef MH_SHA1_FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
 
 // mh_sha1_finalize_avx.c and mh_sha1_tail_avx.c
-#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_avx
-#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_avx
-#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_avx
+#define MH_SHA1_FINALIZE_FUNCTION _mh_sha1_finalize_avx
+#define MH_SHA1_TAIL_FUNCTION     _mh_sha1_tail_avx
+#define MH_SHA1_BLOCK_FUNCTION    _mh_sha1_block_avx
 #include "mh_sha1_finalize_base.c"
 #undef MH_SHA1_FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
 
 // mh_sha1_finalize_avx2.c and mh_sha1_tail_avx2.c
-#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_avx2
-#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_avx2
-#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_avx2
+#define MH_SHA1_FINALIZE_FUNCTION _mh_sha1_finalize_avx2
+#define MH_SHA1_TAIL_FUNCTION     _mh_sha1_tail_avx2
+#define MH_SHA1_BLOCK_FUNCTION    _mh_sha1_block_avx2
 #include "mh_sha1_finalize_base.c"
 #undef MH_SHA1_FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
@@ -164,27 +200,27 @@ struct slver {
         uint8_t core;
 };
 // Version info
-struct slver mh_sha1_init_slver_00000271;
-struct slver mh_sha1_init_slver = { 0x0271, 0x00, 0x00 };
+struct slver _mh_sha1_init_slver_00000271;
+struct slver _mh_sha1_init_slver = { 0x0271, 0x00, 0x00 };
 
 // mh_sha1_update version info
-struct slver mh_sha1_update_sse_slver_00000274;
-struct slver mh_sha1_update_sse_slver = { 0x0274, 0x00, 0x00 };
+struct slver _mh_sha1_update_sse_slver_00000274;
+struct slver _mh_sha1_update_sse_slver = { 0x0274, 0x00, 0x00 };
 
-struct slver mh_sha1_update_avx_slver_02000276;
-struct slver mh_sha1_update_avx_slver = { 0x0276, 0x00, 0x02 };
+struct slver _mh_sha1_update_avx_slver_02000276;
+struct slver _mh_sha1_update_avx_slver = { 0x0276, 0x00, 0x02 };
 
-struct slver mh_sha1_update_avx2_slver_04000278;
-struct slver mh_sha1_update_avx2_slver = { 0x0278, 0x00, 0x04 };
+struct slver _mh_sha1_update_avx2_slver_04000278;
+struct slver _mh_sha1_update_avx2_slver = { 0x0278, 0x00, 0x04 };
 
 // mh_sha1_finalize version info
-struct slver mh_sha1_finalize_sse_slver_00000275;
-struct slver mh_sha1_finalize_sse_slver = { 0x0275, 0x00, 0x00 };
+struct slver _mh_sha1_finalize_sse_slver_00000275;
+struct slver _mh_sha1_finalize_sse_slver = { 0x0275, 0x00, 0x00 };
 
-struct slver mh_sha1_finalize_avx_slver_02000277;
-struct slver mh_sha1_finalize_avx_slver = { 0x0277, 0x00, 0x02 };
+struct slver _mh_sha1_finalize_avx_slver_02000277;
+struct slver _mh_sha1_finalize_avx_slver = { 0x0277, 0x00, 0x02 };
 
-struct slver mh_sha1_finalize_avx2_slver_04000279;
-struct slver mh_sha1_finalize_avx2_slver = { 0x0279, 0x00, 0x04 };
+struct slver _mh_sha1_finalize_avx2_slver_04000279;
+struct slver _mh_sha1_finalize_avx2_slver = { 0x0279, 0x00, 0x04 };
 
 #endif

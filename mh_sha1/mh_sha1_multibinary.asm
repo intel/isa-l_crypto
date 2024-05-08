@@ -37,41 +37,41 @@
  default rel
  [bits 64]
 
- extern mh_sha1_update_sse
- extern mh_sha1_update_avx
- extern mh_sha1_update_avx2
- extern mh_sha1_finalize_sse
- extern mh_sha1_finalize_avx
- extern mh_sha1_finalize_avx2
+ extern _mh_sha1_update_sse
+ extern _mh_sha1_update_avx
+ extern _mh_sha1_update_avx2
+ extern _mh_sha1_finalize_sse
+ extern _mh_sha1_finalize_avx
+ extern _mh_sha1_finalize_avx2
 
  %ifdef HAVE_AS_KNOWS_AVX512
-  extern mh_sha1_update_avx512
-  extern mh_sha1_finalize_avx512
+  extern _mh_sha1_update_avx512
+  extern _mh_sha1_finalize_avx512
  %endif
 
 %endif
 
-extern mh_sha1_update_base
-extern mh_sha1_finalize_base
+extern _mh_sha1_update_base
+extern _mh_sha1_finalize_base
 
-mbin_interface mh_sha1_update
-mbin_interface mh_sha1_finalize
+mbin_interface _mh_sha1_update
+mbin_interface _mh_sha1_finalize
 
 %ifidn __OUTPUT_FORMAT__, elf64
 
  %ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 mh_sha1_update, mh_sha1_update_base, mh_sha1_update_sse, mh_sha1_update_avx, mh_sha1_update_avx2, mh_sha1_update_avx512
-  mbin_dispatch_init6 mh_sha1_finalize, mh_sha1_finalize_base, mh_sha1_finalize_sse, mh_sha1_finalize_avx, mh_sha1_finalize_avx2, mh_sha1_finalize_avx512
+  mbin_dispatch_init6 _mh_sha1_update, _mh_sha1_update_base, _mh_sha1_update_sse, _mh_sha1_update_avx, _mh_sha1_update_avx2, _mh_sha1_update_avx512
+  mbin_dispatch_init6 _mh_sha1_finalize, _mh_sha1_finalize_base, _mh_sha1_finalize_sse, _mh_sha1_finalize_avx, _mh_sha1_finalize_avx2, _mh_sha1_finalize_avx512
  %else
-  mbin_dispatch_init5 mh_sha1_update, mh_sha1_update_base, mh_sha1_update_sse, mh_sha1_update_avx, mh_sha1_update_avx2
-  mbin_dispatch_init5 mh_sha1_finalize, mh_sha1_finalize_base, mh_sha1_finalize_sse, mh_sha1_finalize_avx, mh_sha1_finalize_avx2
+  mbin_dispatch_init5 _mh_sha1_update, _mh_sha1_update_base, _mh_sha1_update_sse, _mh_sha1_update_avx, _mh_sha1_update_avx2
+  mbin_dispatch_init5 _mh_sha1_finalize, _mh_sha1_finalize_base, _mh_sha1_finalize_sse, _mh_sha1_finalize_avx, _mh_sha1_finalize_avx2
  %endif
 
 %else
- mbin_dispatch_init2 mh_sha1_update, mh_sha1_update_base
- mbin_dispatch_init2 mh_sha1_finalize, mh_sha1_finalize_base
+ mbin_dispatch_init2 _mh_sha1_update, _mh_sha1_update_base
+ mbin_dispatch_init2 _mh_sha1_finalize, _mh_sha1_finalize_base
 %endif
 
 ;;;       func                 				core, ver, snum
-slversion mh_sha1_update,				00, 02, 0272
-slversion mh_sha1_finalize,				00, 02, 0273
+slversion _mh_sha1_update,				00, 02, 0272
+slversion _mh_sha1_finalize,				00, 02, 0273
