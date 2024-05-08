@@ -95,10 +95,10 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 %define APPEND(a,b) a %+ b
 
-; SHA256_JOB* sha256_mb_mgr_flush_sse_ni(SHA256_MB_JOB_MGR *state)
+; SHA256_JOB* _sha256_mb_mgr_flush_sse_ni(SHA256_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sha256_mb_mgr_flush_sse_ni, function
-sha256_mb_mgr_flush_sse_ni:
+mk_global _sha256_mb_mgr_flush_sse_ni, function, internal
+_sha256_mb_mgr_flush_sse_ni:
 	endbranch
 
 	sub     rsp, STACK_SPACE
@@ -255,7 +255,7 @@ three:  dq  3
 
 %else
  %ifidn __OUTPUT_FORMAT__, win64
-  global no_sha256_mb_mgr_flush_sse_ni
-  no_sha256_mb_mgr_flush_sse_ni:
+  global no__sha256_mb_mgr_flush_sse_ni
+  no__sha256_mb_mgr_flush_sse_ni:
  %endif
 %endif ; HAVE_AS_KNOWS_SHANI

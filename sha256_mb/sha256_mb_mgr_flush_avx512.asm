@@ -97,10 +97,10 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 %define APPEND(a,b) a %+ b
 
-; SHA256_JOB* sha256_mb_mgr_flush_avx512(SHA256_MB_JOB_MGR *state)
+; SHA256_JOB* _sha256_mb_mgr_flush_avx512(SHA256_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sha256_mb_mgr_flush_avx512, function
-sha256_mb_mgr_flush_avx512:
+mk_global _sha256_mb_mgr_flush_avx512, function, internal
+_sha256_mb_mgr_flush_avx512:
 	endbranch
 	sub     rsp, STACK_SPACE
 	mov     [rsp + _GPR_SAVE + 8*0], rbx
@@ -282,7 +282,7 @@ lane_15:    dq  15
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64
-global no_sha256_mb_mgr_flush_avx512
-no_sha256_mb_mgr_flush_avx512:
+global no__sha256_mb_mgr_flush_avx512
+no__sha256_mb_mgr_flush_avx512:
 %endif
 %endif ; HAVE_AS_KNOWS_AVX512

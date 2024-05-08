@@ -94,10 +94,10 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 %define APPEND(a,b) a %+ b
 
-; SHA256_JOB* sha256_mb_mgr_flush_avx(SHA256_MB_JOB_MGR *state)
+; SHA256_JOB* _sha256_mb_mgr_flush_avx(SHA256_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sha256_mb_mgr_flush_avx, function
-sha256_mb_mgr_flush_avx:
+mk_global _sha256_mb_mgr_flush_avx, function, internal
+_sha256_mb_mgr_flush_avx:
 	endbranch
 
 	sub     rsp, STACK_SPACE

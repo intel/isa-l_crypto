@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha256_mb.h"
+#include "sha256_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
 
@@ -49,7 +49,7 @@ void
 sha256_ctx_mgr_init_sse_ni(SHA256_HASH_CTX_MGR *mgr)
 {
         // Same with sse
-        sha256_mb_mgr_init_sse(&mgr->mgr);
+        _sha256_mb_mgr_init_sse(&mgr->mgr);
 }
 
 SHA256_HASH_CTX *
@@ -127,7 +127,8 @@ sha256_ctx_mgr_submit_sse_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, con
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
-                        ctx = (SHA256_HASH_CTX *) sha256_mb_mgr_submit_sse_ni(&mgr->mgr, &ctx->job);
+                        ctx = (SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
+                                                                               &ctx->job);
                 }
         }
 
@@ -140,7 +141,7 @@ sha256_ctx_mgr_flush_sse_ni(SHA256_HASH_CTX_MGR *mgr)
         SHA256_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (SHA256_HASH_CTX *) sha256_mb_mgr_flush_sse_ni(&mgr->mgr);
+                ctx = (SHA256_HASH_CTX *) _sha256_mb_mgr_flush_sse_ni(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -193,8 +194,8 @@ sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (SHA256_HASH_CTX *) sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
-                                                                                      &ctx->job);
+                                ctx = (SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
+                                                                                       &ctx->job);
                                 continue;
                         }
                 }
@@ -209,7 +210,8 @@ sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx)
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
 
-                        ctx = (SHA256_HASH_CTX *) sha256_mb_mgr_submit_sse_ni(&mgr->mgr, &ctx->job);
+                        ctx = (SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
+                                                                               &ctx->job);
                         continue;
                 }
 

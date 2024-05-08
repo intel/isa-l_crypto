@@ -350,4 +350,4 @@ _sha1_mb_mgr_flush_avx512_ni(ISAL_SHA1_MB_JOB_MGR *state);
 }
 #endif
 
-#endif // _ISAL_SHA1_MB_INERNAL_H_
+#endif // _SHA1_MB_INTERNAL_H_

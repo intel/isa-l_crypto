@@ -483,52 +483,6 @@ isal_sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx_in,
  */
 int
 isal_sha256_ctx_mgr_flush(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX **ctx_out);
-
-/*******************************************************************
- * Scheduler (internal) level out-of-order function prototypes
- ******************************************************************/
-
-void
-sha256_mb_mgr_init_sse(SHA256_MB_JOB_MGR *state);
-SHA256_JOB *
-sha256_mb_mgr_submit_sse(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_sse(SHA256_MB_JOB_MGR *state);
-
-#define sha256_mb_mgr_init_avx sha256_mb_mgr_init_sse
-SHA256_JOB *
-sha256_mb_mgr_submit_avx(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_avx(SHA256_MB_JOB_MGR *state);
-
-void
-sha256_mb_mgr_init_avx2(SHA256_MB_JOB_MGR *state);
-SHA256_JOB *
-sha256_mb_mgr_submit_avx2(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_avx2(SHA256_MB_JOB_MGR *state);
-
-void
-sha256_mb_mgr_init_avx512(SHA256_MB_JOB_MGR *state);
-SHA256_JOB *
-sha256_mb_mgr_submit_avx512(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_avx512(SHA256_MB_JOB_MGR *state);
-
-void
-sha256_mb_mgr_init_sse_ni(SHA256_MB_JOB_MGR *state);
-SHA256_JOB *
-sha256_mb_mgr_submit_sse_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_sse_ni(SHA256_MB_JOB_MGR *state);
-
-void
-sha256_mb_mgr_init_avx512_ni(SHA256_MB_JOB_MGR *state);
-SHA256_JOB *
-sha256_mb_mgr_submit_avx512_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job);
-SHA256_JOB *
-sha256_mb_mgr_flush_avx512_ni(SHA256_MB_JOB_MGR *state);
-
 #ifdef __cplusplus
 }
 #endif

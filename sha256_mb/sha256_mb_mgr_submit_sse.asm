@@ -97,11 +97,11 @@ section .text
 %define _GPR_SAVE       8*5
 %define STACK_SPACE     _GPR_SAVE + _XMM_SAVE
 
-; SHA256_JOB* sha256_mb_mgr_submit_sse(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
+; SHA256_JOB* _sha256_mb_mgr_submit_sse(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sha256_mb_mgr_submit_sse, function
-sha256_mb_mgr_submit_sse:
+mk_global _sha256_mb_mgr_submit_sse, function, internal
+_sha256_mb_mgr_submit_sse:
 	endbranch
 
 	sub     rsp, STACK_SPACE

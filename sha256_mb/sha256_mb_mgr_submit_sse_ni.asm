@@ -98,11 +98,11 @@ section .text
 %define _GPR_SAVE       8*7
 %define STACK_SPACE     _GPR_SAVE + _XMM_SAVE
 
-; SHA256_JOB* sha256_mb_mgr_submit_sse_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
+; SHA256_JOB* _sha256_mb_mgr_submit_sse_ni(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sha256_mb_mgr_submit_sse_ni, function
-sha256_mb_mgr_submit_sse_ni:
+mk_global _sha256_mb_mgr_submit_sse_ni, function, internal
+_sha256_mb_mgr_submit_sse_ni:
 	endbranch
 
 	sub     rsp, STACK_SPACE
@@ -293,9 +293,4 @@ H5:     dd  0x9b05688c
 H6:     dd  0x1f83d9ab
 H7:     dd  0x5be0cd19
 
-%else
- %ifidn __OUTPUT_FORMAT__, win64
-  global no_sha256_mb_mgr_submit_sse_ni
-  no_sha256_mb_mgr_submit_sse_ni:
- %endif
 %endif ; HAVE_AS_KNOWS_SHANI

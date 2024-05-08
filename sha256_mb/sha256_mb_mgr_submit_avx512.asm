@@ -86,11 +86,11 @@ section .text
 ; STACK_SPACE needs to be an odd multiple of 8
 %define STACK_SPACE	8*8 + 16*10 + 8
 
-; SHA256_JOB* sha256_mb_mgr_submit_avx512(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
+; SHA256_JOB* _sha256_mb_mgr_submit_avx512(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sha256_mb_mgr_submit_avx512, function
-sha256_mb_mgr_submit_avx512:
+mk_global _sha256_mb_mgr_submit_avx512, function, internal
+_sha256_mb_mgr_submit_avx512:
 	endbranch
 
 	sub     rsp, STACK_SPACE
@@ -253,9 +253,4 @@ clear_low_nibble:
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
 
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sha256_mb_mgr_submit_avx512
-no_sha256_mb_mgr_submit_avx512:
-%endif
 %endif ; HAVE_AS_KNOWS_AVX512
