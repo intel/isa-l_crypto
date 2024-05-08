@@ -75,7 +75,7 @@ main(void)
                         printf("malloc failed test aborted\n");
                         return 1;
                 }
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) &udata[i];
         }
 
@@ -97,14 +97,14 @@ main(void)
         ctx = &ctxpool[highest_pool_idx++];
         while (ctx) {
                 int len = UPDATE_SIZE;
-                int update_type = HASH_UPDATE;
+                int update_type = ISAL_HASH_UPDATE;
                 struct user_data *u = (struct user_data *) ctx->user_data;
                 int idx = u->idx;
 
                 if (u->processed == 0)
-                        update_type = HASH_FIRST;
+                        update_type = ISAL_HASH_FIRST;
 
-                else if (hash_ctx_complete(ctx)) {
+                else if (isal_hash_ctx_complete(ctx)) {
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
                         else
@@ -112,7 +112,7 @@ main(void)
                         continue;
                 } else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
                         len = (LEN_TOTAL - u->processed);
-                        update_type = HASH_LAST;
+                        update_type = ISAL_HASH_LAST;
                 }
                 u->processed += len;
                 ctx = md5_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);

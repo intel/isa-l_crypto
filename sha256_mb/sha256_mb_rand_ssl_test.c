@@ -87,14 +87,14 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // SSL test
                 SHA256(bufs[i], TEST_LEN, digest_ssl[i]);
 
                 // sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
         }
 
         while (sha256_ctx_mgr_flush(mgr))
@@ -128,7 +128,7 @@ main(void)
                         SHA256(bufs[i], lens[i], digest_ssl[i]);
 
                         // Run sb_sha256 test
-                        sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                        sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
                 }
 
                 while (sha256_ctx_mgr_flush(mgr))

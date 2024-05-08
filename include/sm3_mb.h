@@ -67,8 +67,8 @@ typedef struct {
         uint8_t *buffer; //!< pointer to data buffer for this job
         uint64_t len;    //!< length of buffer for this job in blocks.
         DECLARE_ALIGNED(uint32_t result_digest[SM3_DIGEST_NWORDS], 64);
-        JOB_STS status;  //!< output job status
-        void *user_data; //!< pointer for user's job-related data
+        ISAL_JOB_STS status; //!< output job status
+        void *user_data;     //!< pointer for user's job-related data
 } SM3_JOB;
 
 /** @brief Scheduler layer -  Holds arguments for submitted SM3 job */
@@ -106,8 +106,8 @@ typedef struct {
 
 typedef struct {
         SM3_JOB job;                     // Must be at struct offset 0.
-        HASH_CTX_STS status;             //!< Context status flag
-        HASH_CTX_ERROR error;            //!< Context error flag
+        ISAL_HASH_CTX_STS status;        //!< Context status flag
+        ISAL_HASH_CTX_ERROR error;       //!< Context error flag
         uint64_t total_length;           //!< Running counter of length processed for this CTX's job
         const void *incoming_buffer;     //!< pointer to data input buffer for this CTX's job
         uint32_t incoming_buffer_length; //!< length of buffer for this job in bytes.
@@ -139,7 +139,7 @@ sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr);
  */
 SM3_HASH_CTX *
 sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                   HASH_CTX_FLAG flags);
+                   ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SM3 jobs and return when complete.
@@ -178,7 +178,7 @@ isal_sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr);
  */
 int
 isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CTX **ctx_out,
-                        const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags);
+                        const void *buffer, const uint32_t len, const ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SM3 jobs and return when complete.

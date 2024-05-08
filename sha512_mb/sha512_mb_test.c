@@ -116,24 +116,24 @@ non_blocksize_updates_test(SHA512_HASH_CTX_MGR *mgr)
         memset(data_buf, 0xA, DATA_BUF_LEN);
 
         // Init contexts before first use
-        hash_ctx_init(&ctx_refer);
+        isal_hash_ctx_init(&ctx_refer);
 
-        ctx = sha512_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, HASH_ENTIRE);
+        ctx = sha512_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, ISAL_HASH_ENTIRE);
         if (ctx && ctx->error) {
                 return -1;
         }
         ctx = sha512_ctx_mgr_flush(mgr);
-        if ((ctx && ctx->error) || (ctx_refer.status != HASH_CTX_STS_COMPLETE)) {
+        if ((ctx && ctx->error) || (ctx_refer.status != ISAL_HASH_CTX_STS_COMPLETE)) {
                 return -1;
         }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
                 int chunk = update_chunks[c];
-                hash_ctx_init(&ctx_pool[c]);
+                isal_hash_ctx_init(&ctx_pool[c]);
                 for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-                        HASH_CTX_FLAG flags = HASH_UPDATE;
+                        ISAL_HASH_CTX_FLAG flags = ISAL_HASH_UPDATE;
                         if (i == 0) {
-                                flags = HASH_FIRST;
+                                flags = ISAL_HASH_FIRST;
                         }
                         ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
                                                     flags);
@@ -148,7 +148,7 @@ non_blocksize_updates_test(SHA512_HASH_CTX_MGR *mgr)
         }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
-                ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, HASH_LAST);
+                ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_LAST);
                 if (ctx && ctx->error) {
                         return -1;
                 }
@@ -156,7 +156,7 @@ non_blocksize_updates_test(SHA512_HASH_CTX_MGR *mgr)
                 if (ctx && ctx->error) {
                         return -1;
                 }
-                if (ctx_pool[c].status != HASH_CTX_STS_COMPLETE) {
+                if (ctx_pool[c].status != ISAL_HASH_CTX_STS_COMPLETE) {
                         return -1;
                 }
                 for (int i = 0; i < SHA512_DIGEST_NWORDS; i++) {
@@ -199,13 +199,13 @@ main(void)
 
         // Init contexts before first use
         for (i = 0; i < MSGS; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
         for (i = 0; i < MSGS; i++) {
                 ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
-                                            (uint32_t) strlen((char *) msgs[i]), HASH_ENTIRE);
+                                            (uint32_t) strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -264,7 +264,7 @@ main(void)
 
         // Init contexts before first use
         for (i = 0; i < NUM_JOBS; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
@@ -273,7 +273,7 @@ main(void)
                 j = PSEUDO_RANDOM_NUM(i);
 
                 ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
-                                            (uint32_t) strlen((char *) msgs[j]), HASH_ENTIRE);
+                                            (uint32_t) strlen((char *) msgs[j]), ISAL_HASH_ENTIRE);
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);

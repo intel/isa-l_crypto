@@ -52,7 +52,7 @@ isal_sha512_ctx_mgr_init(SHA512_HASH_CTX_MGR *mgr)
 int
 isal_sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx_in,
                            SHA512_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
-                           const HASH_CTX_FLAG flags)
+                           const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
@@ -71,14 +71,14 @@ isal_sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx_in,
         *ctx_out = sha512_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (SHA512_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+        if (*ctx_out != NULL && (SHA512_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
                 SHA512_HASH_CTX *cp = (SHA512_HASH_CTX *) (*ctx_out);
 
-                if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
+                if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING)
                         return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED)
                         return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
         }
 #endif

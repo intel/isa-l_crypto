@@ -104,7 +104,7 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // Run reference test
@@ -118,15 +118,16 @@ main(void)
 
                 if (len_done == 0)
                         ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 HASH_FIRST);
+                                                 ISAL_HASH_FIRST);
                 else if (len_rem <= UPDATE_SIZE)
-                        ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem, HASH_LAST);
+                        ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
+                                                 ISAL_HASH_LAST);
                 else
                         ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 HASH_UPDATE);
+                                                 ISAL_HASH_UPDATE);
 
                 // Add jobs while available or finished
-                if ((ctx == NULL) || hash_ctx_complete(ctx)) {
+                if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
                         i++;
                         continue;
                 }
@@ -138,7 +139,7 @@ main(void)
         // Start flushing finished jobs, end on last flushed
         ctx = md5_ctx_mgr_flush(mgr);
         while (ctx) {
-                if (hash_ctx_complete(ctx)) {
+                if (isal_hash_ctx_complete(ctx)) {
                         debug_char('-');
                         ctx = md5_ctx_mgr_flush(mgr);
                         continue;
@@ -151,10 +152,11 @@ main(void)
                 len_rem = TEST_LEN - len_done;
 
                 if (len_rem <= UPDATE_SIZE)
-                        ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem, HASH_LAST);
+                        ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
+                                                 ISAL_HASH_LAST);
                 else
                         ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 HASH_UPDATE);
+                                                 ISAL_HASH_UPDATE);
 
                 if (ctx == NULL)
                         ctx = md5_ctx_mgr_flush(mgr);
@@ -195,10 +197,10 @@ main(void)
 
                         if (lens[i] > len_rand)
                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                         HASH_FIRST);
+                                                         ISAL_HASH_FIRST);
                         else
                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], lens[i],
-                                                         HASH_ENTIRE);
+                                                         ISAL_HASH_ENTIRE);
 
                         // Returned ctx could be:
                         //  - null context (we are just getting started and lanes aren't full yet),
@@ -207,14 +209,14 @@ main(void)
                         //  returned), or
                         //  - an unfinished ctx, we will resubmit
 
-                        if ((ctx == NULL) || hash_ctx_complete(ctx)) {
+                        if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
                                 i++;
                                 continue;
                         } else {
                                 // unfinished ctx returned, choose another random update length and
                                 // submit either UPDATE or LAST depending on the amount of buffer
                                 // remaining
-                                while ((ctx != NULL) && !(hash_ctx_complete(ctx))) {
+                                while ((ctx != NULL) && !(isal_hash_ctx_complete(ctx))) {
                                         j = (uint32_t) (uintptr_t) (ctx->user_data); // Get index of
                                                                                      // the returned
                                                                                      // ctx
@@ -227,11 +229,11 @@ main(void)
                                             len_rand) // submit the rest of the job as LAST
                                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[j],
                                                                          buf_ptr[j], len_rem,
-                                                                         HASH_LAST);
+                                                                         ISAL_HASH_LAST);
                                         else // submit the random update length as UPDATE
                                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[j],
                                                                          buf_ptr[j], len_rand,
-                                                                         HASH_UPDATE);
+                                                                         ISAL_HASH_UPDATE);
                                 } // Either continue submitting any contexts returned here as
                                   // UPDATE/LAST, or
                                 // go back to submitting new jobs using the index i.
@@ -243,7 +245,7 @@ main(void)
                 // Start flushing finished jobs, end on last flushed
                 ctx = md5_ctx_mgr_flush(mgr);
                 while (ctx) {
-                        if (hash_ctx_complete(ctx)) {
+                        if (isal_hash_ctx_complete(ctx)) {
                                 debug_char('-');
                                 ctx = md5_ctx_mgr_flush(mgr);
                                 continue;
@@ -256,10 +258,10 @@ main(void)
                         debug_char('+');
                         if (len_rem <= len_rand)
                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                         HASH_LAST);
+                                                         ISAL_HASH_LAST);
                         else
                                 ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                         HASH_UPDATE);
+                                                         ISAL_HASH_UPDATE);
 
                         if (ctx == NULL)
                                 ctx = md5_ctx_mgr_flush(mgr);

@@ -49,7 +49,7 @@ isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
 
 int
 isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CTX **ctx_out,
-                        const void *buffer, const uint32_t len, const HASH_CTX_FLAG flags)
+                        const void *buffer, const uint32_t len, const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -67,14 +67,14 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
         *ctx_out = md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (MD5_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+        if (*ctx_out != NULL && (MD5_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
                 MD5_HASH_CTX *cp = (MD5_HASH_CTX *) (*ctx_out);
 
-                if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
+                if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING)
                         return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED)
                         return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
         }
 #endif

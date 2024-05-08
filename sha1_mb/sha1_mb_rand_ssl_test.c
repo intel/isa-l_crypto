@@ -89,7 +89,7 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // SSL test
@@ -97,7 +97,7 @@ main(void)
 
                 // sb_sha1 test
                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
-                                               HASH_ENTIRE);
+                                               ISAL_HASH_ENTIRE);
                 if (ret)
                         return 1;
         }
@@ -139,7 +139,7 @@ main(void)
 
                         // Run sb_sha1 test
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
-                                                       HASH_ENTIRE);
+                                                       ISAL_HASH_ENTIRE);
                         if (ret)
                                 return 1;
                 }

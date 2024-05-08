@@ -107,7 +107,7 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // Run reference test
@@ -121,18 +121,18 @@ main(void)
 
                 if (len_done == 0)
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                       UPDATE_SIZE, HASH_FIRST);
+                                                       UPDATE_SIZE, ISAL_HASH_FIRST);
                 else if (len_rem <= UPDATE_SIZE)
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i], len_rem,
-                                                       HASH_LAST);
+                                                       ISAL_HASH_LAST);
                 else
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                       UPDATE_SIZE, HASH_UPDATE);
+                                                       UPDATE_SIZE, ISAL_HASH_UPDATE);
                 if (ret)
                         return 1;
 
                 // Add jobs while available or finished
-                if ((ctx == NULL) || hash_ctx_complete(ctx)) {
+                if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
                         i++;
                         continue;
                 }
@@ -146,7 +146,7 @@ main(void)
         if (ret)
                 return 1;
         while (ctx) {
-                if (hash_ctx_complete(ctx)) {
+                if (isal_hash_ctx_complete(ctx)) {
                         debug_char('-');
                         ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
                         if (ret)
@@ -162,10 +162,10 @@ main(void)
 
                 if (len_rem <= UPDATE_SIZE)
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i], len_rem,
-                                                       HASH_LAST);
+                                                       ISAL_HASH_LAST);
                 else
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                       UPDATE_SIZE, HASH_UPDATE);
+                                                       UPDATE_SIZE, ISAL_HASH_UPDATE);
                 if (ret)
                         return 1;
 
@@ -213,10 +213,10 @@ main(void)
 
                         if (lens[i] > len_rand)
                                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                               len_rand, HASH_FIRST);
+                                                               len_rand, ISAL_HASH_FIRST);
                         else
                                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                               lens[i], HASH_ENTIRE);
+                                                               lens[i], ISAL_HASH_ENTIRE);
                         if (ret)
                                 return 1;
 
@@ -227,14 +227,14 @@ main(void)
                         //  returned), or
                         //  - an unfinished ctx, we will resubmit
 
-                        if ((ctx == NULL) || hash_ctx_complete(ctx)) {
+                        if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
                                 i++;
                                 continue;
                         } else {
                                 // unfinished ctx returned, choose another random update length and
                                 // submit either UPDATE or LAST depending on the amount of buffer
                                 // remaining
-                                while ((ctx != NULL) && !(hash_ctx_complete(ctx))) {
+                                while ((ctx != NULL) && !(isal_hash_ctx_complete(ctx))) {
                                         j = (uint32_t) (uintptr_t) (ctx->user_data); // Get index of
                                                                                      // the returned
                                                                                      // ctx
@@ -245,13 +245,13 @@ main(void)
 
                                         if (len_rem <=
                                             len_rand) // submit the rest of the job as LAST
-                                                ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[j],
-                                                                               &ctx, buf_ptr[j],
-                                                                               len_rem, HASH_LAST);
+                                                ret = isal_sha1_ctx_mgr_submit(
+                                                        mgr, &ctxpool[j], &ctx, buf_ptr[j], len_rem,
+                                                        ISAL_HASH_LAST);
                                         else // submit the random update length as UPDATE
                                                 ret = isal_sha1_ctx_mgr_submit(
                                                         mgr, &ctxpool[j], &ctx, buf_ptr[j],
-                                                        len_rand, HASH_UPDATE);
+                                                        len_rand, ISAL_HASH_UPDATE);
                                         if (ret)
                                                 return 1;
                                 } // Either continue submitting any contexts returned here as
@@ -267,7 +267,7 @@ main(void)
                 if (ret)
                         return 1;
                 while (ctx) {
-                        if (hash_ctx_complete(ctx)) {
+                        if (isal_hash_ctx_complete(ctx)) {
                                 debug_char('-');
                                 ret = isal_sha1_ctx_mgr_flush(mgr, &ctx);
                                 if (ret)
@@ -283,10 +283,10 @@ main(void)
                         debug_char('+');
                         if (len_rem <= len_rand)
                                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                               len_rem, HASH_LAST);
+                                                               len_rem, ISAL_HASH_LAST);
                         else
                                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
-                                                               len_rand, HASH_UPDATE);
+                                                               len_rand, ISAL_HASH_UPDATE);
                         if (ret)
                                 return 1;
 

@@ -93,7 +93,7 @@ setup_chunk_processing(void)
         sha256_ctx_mgr_init(&mb_hash_mgr);
 
         for (i = 0; i < HASH_POOL_SIZE; i++)
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
 
         last_ctx = &ctxpool[0];
 }
@@ -104,11 +104,11 @@ get_next_job_ctx(void)
         int i;
         SHA256_HASH_CTX *ctx;
 
-        if (last_ctx && hash_ctx_complete(last_ctx))
+        if (last_ctx && isal_hash_ctx_complete(last_ctx))
                 return last_ctx;
 
         for (i = 0; i < HASH_POOL_SIZE; i++) {
-                if (hash_ctx_complete(&ctxpool[i]))
+                if (isal_hash_ctx_complete(&ctxpool[i]))
                         return &ctxpool[i];
         }
         ctx = sha256_ctx_mgr_flush(&mb_hash_mgr);
@@ -119,7 +119,7 @@ get_next_job_ctx(void)
 void
 put_next_job_ctx(SHA256_HASH_CTX *ctx)
 {
-        if (ctx && hash_ctx_complete(ctx))
+        if (ctx && isal_hash_ctx_complete(ctx))
                 last_ctx = ctx;
 
         run_fragment(ctx);
@@ -131,7 +131,7 @@ process_chunk(uint8_t *buff, int len)
         SHA256_HASH_CTX *ctx;
 
         ctx = get_next_job_ctx();
-        ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, HASH_ENTIRE);
+        ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, ISAL_HASH_ENTIRE);
 
         if (ctx)
                 put_next_job_ctx(ctx);

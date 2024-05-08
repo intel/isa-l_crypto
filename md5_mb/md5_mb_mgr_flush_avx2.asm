@@ -182,7 +182,7 @@ len_is_0:
 	mov	job_rax, [lane_data + _job_in_lane]
 	mov	unused_lanes, [state + _unused_lanes]
 	mov	qword [lane_data + _job_in_lane], 0
-	mov	dword [job_rax + _status], STS_COMPLETED
+	mov	dword [job_rax + _status], ISAL_STS_COMPLETED
 	shl	unused_lanes, 4
 	or	unused_lanes, idx
 	mov	[state + _unused_lanes], unused_lanes

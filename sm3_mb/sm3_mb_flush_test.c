@@ -110,14 +110,14 @@ main(void)
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Init ctx contexts
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // Run reference test
                 sm3_ossl(bufs[i], lens[i], digest_ref[i]);
 
                 // Run sb_sm3 test
-                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
         }
 
         printf("Changes of lens inside mgr:\n");

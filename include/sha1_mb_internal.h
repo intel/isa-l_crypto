@@ -75,7 +75,7 @@ _sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                     uint32_t len, HASH_CTX_FLAG flags);
+                     uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -114,7 +114,7 @@ _sha1_ctx_mgr_init_sse(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_sse(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                         uint32_t len, HASH_CTX_FLAG flags);
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -149,7 +149,7 @@ _sha1_ctx_mgr_init_sse_ni(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_sse_ni(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx,
-                            const void *buffer, uint32_t len, HASH_CTX_FLAG flags);
+                            const void *buffer, uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -184,7 +184,7 @@ _sha1_ctx_mgr_init_avx(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_avx(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                         uint32_t len, HASH_CTX_FLAG flags);
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -219,7 +219,7 @@ _sha1_ctx_mgr_init_avx2(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_avx2(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, HASH_CTX_FLAG flags);
+                          uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -254,7 +254,7 @@ _sha1_ctx_mgr_init_avx512(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_avx512(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx,
-                            const void *buffer, uint32_t len, HASH_CTX_FLAG flags);
+                            const void *buffer, uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.
@@ -289,7 +289,7 @@ _sha1_ctx_mgr_init_avx512_ni(ISAL_SHA1_HASH_CTX_MGR *mgr);
  */
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_avx512_ni(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx,
-                               const void *buffer, uint32_t len, HASH_CTX_FLAG flags);
+                               const void *buffer, uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA1 jobs and return when complete.

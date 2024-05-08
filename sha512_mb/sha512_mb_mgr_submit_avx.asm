@@ -134,7 +134,7 @@ sha512_mb_mgr_submit_avx:
 	movzx   lane, BYTE(unused_lanes)
 	shr     unused_lanes, 8
 	imul    lane_data, lane, _LANE_DATA_size
-	mov     dword [job + _status], STS_BEING_PROCESSED
+	mov     dword [job + _status], ISAL_STS_BEING_PROCESSED
 	lea     lane_data, [state + _ldata + lane_data]
 	mov     [state + _unused_lanes], unused_lanes
 	mov     DWORD(len), [job + _len]
@@ -199,7 +199,7 @@ len_is_0:
 
 	mov     unused_lanes, [state + _unused_lanes]
 	mov     qword [lane_data + _job_in_lane], 0
-	mov     dword [job_rax + _status], STS_COMPLETED
+	mov     dword [job_rax + _status], ISAL_STS_COMPLETED
 	shl     unused_lanes, 8
 	or      unused_lanes, idx
 	mov     [state + _unused_lanes], unused_lanes

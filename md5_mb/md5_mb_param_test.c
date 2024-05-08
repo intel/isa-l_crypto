@@ -86,7 +86,8 @@ test_md5_mb_submit_api(void)
 #ifdef FIPS_MODE
         // check for invalid algorithm
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO, fn_name, end_submit);
 #else
         rc = isal_md5_ctx_mgr_init(mgr);
@@ -94,32 +95,36 @@ test_md5_mb_submit_api(void)
                 goto end_submit;
 
         // Init context before first use
-        hash_ctx_init(&ctx);
+        isal_hash_ctx_init(&ctx);
 
         // check null mgr
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(NULL, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_MGR, fn_name, end_submit);
 
         // check null input ctx
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, NULL, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
         // check null output ctx
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, NULL, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_CTX, fn_name, end_submit);
 
         // check null source ptr
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, NULL,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
         // check invalid len
-        CHECK_RETURN_GOTO(
-                isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, MD5_MAX_LEN + 1, HASH_ENTIRE),
-                ISAL_CRYPTO_ERR_AUTH_LEN, fn_name, end_submit);
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, MD5_MAX_LEN + 1,
+                                                  ISAL_HASH_ENTIRE),
+                          ISAL_CRYPTO_ERR_AUTH_LEN, fn_name, end_submit);
 
         // check invalid flag
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
@@ -127,28 +132,33 @@ test_md5_mb_submit_api(void)
                           ISAL_CRYPTO_ERR_INVALID_FLAGS, fn_name, end_submit);
 
         // simulate internal error (submit in progress job)
-        ctx_ptr->status = HASH_CTX_STS_PROCESSING;
+        ctx_ptr->status = ISAL_HASH_CTX_STS_PROCESSING;
 
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_ALREADY_PROCESSING, fn_name, end_submit);
 
-        CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_PROCESSING, fn_name, end_submit);
+        CHECK_RETURN_GOTO(ctx_ptr->error, ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING, fn_name,
+                          end_submit);
 
         // simulate internal error (submit completed job)
-        ctx_ptr->error = HASH_CTX_ERROR_NONE;
-        ctx_ptr->status = HASH_CTX_STS_COMPLETE;
+        ctx_ptr->error = ISAL_HASH_CTX_ERROR_NONE;
+        ctx_ptr->status = ISAL_HASH_CTX_STS_COMPLETE;
 
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_UPDATE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_UPDATE),
                           ISAL_CRYPTO_ERR_ALREADY_COMPLETED, fn_name, end_submit);
 
-        CHECK_RETURN_GOTO(ctx_ptr->error, HASH_CTX_ERROR_ALREADY_COMPLETED, fn_name, end_submit);
+        CHECK_RETURN_GOTO(ctx_ptr->error, ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED, fn_name,
+                          end_submit);
 
         // check valid args
-        hash_ctx_init(&ctx);
+        isal_hash_ctx_init(&ctx);
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
-                                                  (uint32_t) strlen((char *) msg), HASH_ENTIRE),
+                                                  (uint32_t) strlen((char *) msg),
+                                                  ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NONE, fn_name, end_submit);
 #endif
         ret = 0;
@@ -183,7 +193,7 @@ test_md5_mb_flush_api(void)
                 goto end_flush;
 
         // Init context before first use
-        hash_ctx_init(&ctx);
+        isal_hash_ctx_init(&ctx);
 
         // check null mgr
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_flush(NULL, &ctx_ptr), ISAL_CRYPTO_ERR_NULL_MGR, fn_name,

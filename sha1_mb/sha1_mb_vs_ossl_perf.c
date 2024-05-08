@@ -73,7 +73,7 @@ main(void)
                         return 1;
                 }
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
@@ -102,7 +102,7 @@ main(void)
         for (t = 0; t < TEST_LOOPS; t++) {
                 for (i = 0; i < TEST_BUFS; i++) {
                         ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
-                                                       HASH_ENTIRE);
+                                                       ISAL_HASH_ENTIRE);
                         if (ret)
                                 return 1;
                 }

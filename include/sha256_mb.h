@@ -47,9 +47,9 @@
  * entered by the user and add them to the multi-buffer manager. The lower level "scheduler"
  * layer then processes the jobs in an out-of-order manner. The scheduler layer functions
  * are internal and are not intended to be invoked directly. Jobs can be submitted
- * to a CTX as a complete buffer to be hashed, using the HASH_ENTIRE flag, or as partial
- * jobs which can be started using the HASH_FIRST flag, and later resumed or finished
- * using the HASH_UPDATE and HASH_LAST flags respectively.
+ * to a CTX as a complete buffer to be hashed, using the ISAL_HASH_ENTIRE flag, or as partial
+ * jobs which can be started using the ISAL_HASH_FIRST flag, and later resumed or finished
+ * using the ISAL_HASH_UPDATE and ISAL_HASH_LAST flags respectively.
  *
  * <b>Note:</b> The submit function does not require data buffers to be block sized.
  *
@@ -64,26 +64,26 @@
  * resources, with up to 4 SHA256_HASH_CTX objects (or 8 in the AVX2 case, 16 in the AVX512)
  * being processed at a time.
  *
- * Each SHA256_HASH_CTX must be initialized before first use by the hash_ctx_init macro
+ * Each SHA256_HASH_CTX must be initialized before first use by the isal_hash_ctx_init macro
  * defined in multi_buffer.h. After initialization, the application may begin computing
  * a hash by giving the SHA256_HASH_CTX to a SHA256_HASH_CTX_MGR using the submit functions
- * sha256_ctx_mgr_submit*() with the HASH_FIRST flag set. When the SHA256_HASH_CTX is
+ * sha256_ctx_mgr_submit*() with the ISAL_HASH_FIRST flag set. When the SHA256_HASH_CTX is
  * returned to the application (via this or a later call to sha256_ctx_mgr_submit*() or
  * sha256_ctx_mgr_flush*()), the application can then re-submit it with another call to
- * sha256_ctx_mgr_submit*(), but without the HASH_FIRST flag set.
+ * sha256_ctx_mgr_submit*(), but without the ISAL_HASH_FIRST flag set.
  *
  * Ideally, on the last buffer for that hash, sha256_ctx_mgr_submit_sse is called with
- * HASH_LAST, although it is also possible to submit the hash with HASH_LAST and a zero
+ * ISAL_HASH_LAST, although it is also possible to submit the hash with ISAL_HASH_LAST and a zero
  * length if necessary. When a SHA256_HASH_CTX is returned after having been submitted with
- * HASH_LAST, it will contain a valid hash. The SHA256_HASH_CTX can be reused immediately
- * by submitting with HASH_FIRST.
+ * ISAL_HASH_LAST, it will contain a valid hash. The SHA256_HASH_CTX can be reused immediately
+ * by submitting with ISAL_HASH_FIRST.
  *
  * For example, you would submit hashes with the following flags for the following numbers
  * of buffers:
  * <ul>
- *  <li> one buffer: HASH_FIRST | HASH_LAST  (or, equivalently, HASH_ENTIRE)
- *  <li> two buffers: HASH_FIRST, HASH_LAST
- *  <li> three buffers: HASH_FIRST, HASH_UPDATE, HASH_LAST
+ *  <li> one buffer: ISAL_HASH_FIRST | ISAL_HASH_LAST  (or, equivalently, ISAL_HASH_ENTIRE)
+ *  <li> two buffers: ISAL_HASH_FIRST, ISAL_HASH_LAST
+ *  <li> three buffers: ISAL_HASH_FIRST, ISAL_HASH_UPDATE, ISAL_HASH_LAST
  * etc.
  * </ul>
  *
@@ -94,7 +94,7 @@
  * <ul>
  *  <li> Submitting flags other than the allowed entire/first/update/last values
  *  <li> Submitting a context that is currently being managed by a SHA256_HASH_CTX_MGR.
- *  <li> Submitting a context after HASH_LAST is used but before HASH_FIRST is set.
+ *  <li> Submitting a context after ISAL_HASH_LAST is used but before ISAL_HASH_FIRST is set.
  * </ul>
  *
  *  These error conditions are reported by returning the SHA256_HASH_CTX immediately after
@@ -139,8 +139,8 @@ typedef struct {
         uint8_t *buffer; //!< pointer to data buffer for this job
         uint64_t len;    //!< length of buffer for this job in blocks.
         DECLARE_ALIGNED(uint32_t result_digest[SHA256_DIGEST_NWORDS], 64);
-        JOB_STS status;  //!< output job status
-        void *user_data; //!< pointer for user's job-related data
+        ISAL_JOB_STS status; //!< output job status
+        void *user_data;     //!< pointer for user's job-related data
 } SHA256_JOB;
 
 /** @brief Scheduler layer -  Holds arguments for submitted SHA256 job */
@@ -178,8 +178,8 @@ typedef struct {
 
 typedef struct {
         SHA256_JOB job;                  // Must be at struct offset 0.
-        HASH_CTX_STS status;             //!< Context status flag
-        HASH_CTX_ERROR error;            //!< Context error flag
+        ISAL_HASH_CTX_STS status;        //!< Context status flag
+        ISAL_HASH_CTX_ERROR error;       //!< Context error flag
         uint64_t total_length;           //!< Running counter of length processed for this CTX's job
         const void *incoming_buffer;     //!< pointer to data input buffer for this CTX's job
         uint32_t incoming_buffer_length; //!< length of buffer for this job in bytes.
@@ -213,7 +213,7 @@ sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                      uint32_t len, HASH_CTX_FLAG flags);
+                      uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -252,7 +252,7 @@ sha256_ctx_mgr_init_sse(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_sse(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, HASH_CTX_FLAG flags);
+                          uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -287,7 +287,7 @@ sha256_ctx_mgr_init_sse_ni(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_sse_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                             uint32_t len, HASH_CTX_FLAG flags);
+                             uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -322,7 +322,7 @@ sha256_ctx_mgr_init_avx(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_avx(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, HASH_CTX_FLAG flags);
+                          uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -357,7 +357,7 @@ sha256_ctx_mgr_init_avx2(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_avx2(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                           uint32_t len, HASH_CTX_FLAG flags);
+                           uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -392,7 +392,7 @@ sha256_ctx_mgr_init_avx512(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                             uint32_t len, HASH_CTX_FLAG flags);
+                             uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -427,7 +427,7 @@ sha256_ctx_mgr_init_avx512_ni(SHA256_HASH_CTX_MGR *mgr);
  */
 SHA256_HASH_CTX *
 sha256_ctx_mgr_submit_avx512_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                                uint32_t len, HASH_CTX_FLAG flags);
+                                uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.
@@ -470,7 +470,7 @@ isal_sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR *mgr);
 int
 isal_sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx_in,
                            SHA256_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
-                           const HASH_CTX_FLAG flags);
+                           const ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted SHA256 jobs and return when complete.

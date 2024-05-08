@@ -82,43 +82,43 @@ md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
 
 MD5_HASH_CTX *
 md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        HASH_CTX_FLAG flags)
+                        ISAL_HASH_CTX_FLAG flags)
 {
 
-        if (flags & (~HASH_ENTIRE)) {
+        if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
-                ctx->error = HASH_CTX_ERROR_INVALID_FLAGS;
+                ctx->error = ISAL_HASH_CTX_ERROR_INVALID_FLAGS;
                 return ctx;
         }
 
-        if ((ctx->status & HASH_CTX_STS_PROCESSING) && (flags == HASH_ENTIRE)) {
+        if ((ctx->status & ISAL_HASH_CTX_STS_PROCESSING) && (flags == ISAL_HASH_ENTIRE)) {
                 // Cannot submit a new entire job to a currently processing job.
-                ctx->error = HASH_CTX_ERROR_ALREADY_PROCESSING;
+                ctx->error = ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING;
                 return ctx;
         }
 
-        if ((ctx->status & HASH_CTX_STS_COMPLETE) && !(flags & HASH_FIRST)) {
+        if ((ctx->status & ISAL_HASH_CTX_STS_COMPLETE) && !(flags & ISAL_HASH_FIRST)) {
                 // Cannot update a finished job.
-                ctx->error = HASH_CTX_ERROR_ALREADY_COMPLETED;
+                ctx->error = ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED;
                 return ctx;
         }
 
-        if (flags == HASH_FIRST) {
+        if (flags == ISAL_HASH_FIRST) {
 
                 md5_init(ctx, buffer, len);
                 md5_update(ctx, buffer, len);
         }
 
-        if (flags == HASH_UPDATE) {
+        if (flags == ISAL_HASH_UPDATE) {
                 md5_update(ctx, buffer, len);
         }
 
-        if (flags == HASH_LAST) {
+        if (flags == ISAL_HASH_LAST) {
                 md5_update(ctx, buffer, len);
                 md5_final(ctx);
         }
 
-        if (flags == HASH_ENTIRE) {
+        if (flags == ISAL_HASH_ENTIRE) {
                 md5_init(ctx, buffer, len);
                 md5_update(ctx, buffer, len);
                 md5_final(ctx);
@@ -146,10 +146,10 @@ md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
         ctx->partial_block_buffer_length = 0;
 
         // If we made it here, there were no errors during this call to submit
-        ctx->error = HASH_CTX_ERROR_NONE;
+        ctx->error = ISAL_HASH_CTX_ERROR_NONE;
 
         // Mark it as processing
-        ctx->status = HASH_CTX_STS_PROCESSING;
+        ctx->status = ISAL_HASH_CTX_STS_PROCESSING;
 }
 
 static void
@@ -204,7 +204,7 @@ md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
                 ctx->partial_block_buffer_length = remain_len;
         }
 
-        ctx->status = HASH_CTX_STS_IDLE;
+        ctx->status = ISAL_HASH_CTX_STS_IDLE;
         return;
 }
 
@@ -235,7 +235,7 @@ md5_final(MD5_HASH_CTX *ctx)
                 md5_single(buf + MD5_BLOCK_SIZE, digest);
         }
 
-        ctx->status = HASH_CTX_STS_COMPLETE;
+        ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
 }
 
 static void

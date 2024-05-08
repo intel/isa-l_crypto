@@ -53,15 +53,15 @@ isal_sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr)
 int
 isal_sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx_in,
                          ISAL_SHA1_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
-                         const HASH_CTX_FLAG flags)
+                         const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
         if (ctx_in == NULL || ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
-        /* OK to have NULL source buffer when flags is HASH_FIRST or HASH_LAST */
-        if (buffer == NULL && (flags == HASH_UPDATE || flags == HASH_ENTIRE))
+        /* OK to have NULL source buffer when flags is ISAL_HASH_FIRST or ISAL_HASH_LAST */
+        if (buffer == NULL && (flags == ISAL_HASH_UPDATE || flags == ISAL_HASH_ENTIRE))
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
 
@@ -73,14 +73,15 @@ isal_sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx_in
         *ctx_out = _sha1_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (ISAL_SHA1_HASH_CTX *) (*ctx_out)->error != HASH_CTX_ERROR_NONE) {
+        if (*ctx_out != NULL &&
+            (ISAL_SHA1_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
                 ISAL_SHA1_HASH_CTX *cp = (ISAL_SHA1_HASH_CTX *) (*ctx_out);
 
-                if (cp->error == HASH_CTX_ERROR_INVALID_FLAGS)
+                if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_PROCESSING)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING)
                         return ISAL_CRYPTO_ERR_ALREADY_PROCESSING;
-                if (cp->error == HASH_CTX_ERROR_ALREADY_COMPLETED)
+                if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED)
                         return ISAL_CRYPTO_ERR_ALREADY_COMPLETED;
         }
 #endif
@@ -121,7 +122,7 @@ sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr)
 
 ISAL_SHA1_HASH_CTX *
 sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                    uint32_t len, HASH_CTX_FLAG flags)
+                    uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         return _sha1_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
 }

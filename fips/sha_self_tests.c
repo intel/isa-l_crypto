@@ -74,10 +74,10 @@ _sha1_self_test(void)
         _sha1_ctx_mgr_init(&mgr);
 
         // Init context before first use
-        hash_ctx_init(&ctxpool);
+        isal_hash_ctx_init(&ctxpool);
 
         ctx = _sha1_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
-                                   HASH_ENTIRE);
+                                   ISAL_HASH_ENTIRE);
 
         if (ctx == NULL)
                 ctx = _sha1_ctx_mgr_flush(&mgr);
@@ -104,10 +104,10 @@ _sha256_self_test(void)
         sha256_ctx_mgr_init(&mgr);
 
         // Init context before first use
-        hash_ctx_init(&ctxpool);
+        isal_hash_ctx_init(&ctxpool);
 
         ctx = sha256_ctx_mgr_submit(&mgr, &ctxpool, msg, (uint32_t) strlen((char *) msg),
-                                    HASH_ENTIRE);
+                                    ISAL_HASH_ENTIRE);
 
         if (ctx == NULL)
                 ctx = sha256_ctx_mgr_flush(&mgr);
@@ -134,10 +134,10 @@ _sha512_self_test(void)
         sha512_ctx_mgr_init(&mgr);
 
         // Init context before first use
-        hash_ctx_init(&ctxpool);
+        isal_hash_ctx_init(&ctxpool);
 
         ctx = sha512_ctx_mgr_submit(&mgr, &ctxpool, msg_sha512,
-                                    (uint32_t) strlen((char *) msg_sha512), HASH_ENTIRE);
+                                    (uint32_t) strlen((char *) msg_sha512), ISAL_HASH_ENTIRE);
 
         if (ctx == NULL)
                 ctx = sha512_ctx_mgr_flush(&mgr);

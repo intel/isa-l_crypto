@@ -33,9 +33,9 @@
 ;;;; Define constants
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-%define STS_UNKNOWN		0
-%define STS_BEING_PROCESSED	1
-%define STS_COMPLETED		2
+%define ISAL_STS_UNKNOWN		0
+%define ISAL_STS_BEING_PROCESSED	1
+%define ISAL_STS_COMPLETED		2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Threshold constants

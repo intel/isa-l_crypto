@@ -94,43 +94,43 @@ _sha1_ctx_mgr_init_base(ISAL_SHA1_HASH_CTX_MGR *mgr)
 
 ISAL_SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_base(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, HASH_CTX_FLAG flags)
+                          uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
 
-        if (flags & (~HASH_ENTIRE)) {
+        if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
-                ctx->error = HASH_CTX_ERROR_INVALID_FLAGS;
+                ctx->error = ISAL_HASH_CTX_ERROR_INVALID_FLAGS;
                 return ctx;
         }
 
-        if ((ctx->status & HASH_CTX_STS_PROCESSING) && (flags == HASH_ENTIRE)) {
+        if ((ctx->status & ISAL_HASH_CTX_STS_PROCESSING) && (flags == ISAL_HASH_ENTIRE)) {
                 // Cannot submit a new entire job to a currently processing job.
-                ctx->error = HASH_CTX_ERROR_ALREADY_PROCESSING;
+                ctx->error = ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING;
                 return ctx;
         }
 
-        if ((ctx->status & HASH_CTX_STS_COMPLETE) && !(flags & HASH_FIRST)) {
+        if ((ctx->status & ISAL_HASH_CTX_STS_COMPLETE) && !(flags & ISAL_HASH_FIRST)) {
                 // Cannot update a finished job.
-                ctx->error = HASH_CTX_ERROR_ALREADY_COMPLETED;
+                ctx->error = ISAL_HASH_CTX_ERROR_ALREADY_COMPLETED;
                 return ctx;
         }
 
-        if (flags == HASH_FIRST) {
+        if (flags == ISAL_HASH_FIRST) {
 
                 sha1_init(ctx, buffer, len);
                 sha1_update(ctx, buffer, len);
         }
 
-        if (flags == HASH_UPDATE) {
+        if (flags == ISAL_HASH_UPDATE) {
                 sha1_update(ctx, buffer, len);
         }
 
-        if (flags == HASH_LAST) {
+        if (flags == ISAL_HASH_LAST) {
                 sha1_update(ctx, buffer, len);
                 sha1_final(ctx);
         }
 
-        if (flags == HASH_ENTIRE) {
+        if (flags == ISAL_HASH_ENTIRE) {
                 sha1_init(ctx, buffer, len);
                 sha1_update(ctx, buffer, len);
                 sha1_final(ctx);
@@ -158,10 +158,10 @@ sha1_init(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
         ctx->partial_block_buffer_length = 0;
 
         // If we made it here, there were no errors during this call to submit
-        ctx->error = HASH_CTX_ERROR_NONE;
+        ctx->error = ISAL_HASH_CTX_ERROR_NONE;
 
         // Mark it as processing
-        ctx->status = HASH_CTX_STS_PROCESSING;
+        ctx->status = ISAL_HASH_CTX_STS_PROCESSING;
 }
 
 static void
@@ -216,7 +216,7 @@ sha1_update(ISAL_SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len)
                 ctx->partial_block_buffer_length = remain_len;
         }
 
-        ctx->status = HASH_CTX_STS_IDLE;
+        ctx->status = ISAL_HASH_CTX_STS_IDLE;
         return;
 }
 
@@ -247,7 +247,7 @@ sha1_final(ISAL_SHA1_HASH_CTX *ctx)
                 sha1_single(buf + ISAL_SHA1_BLOCK_SIZE, digest);
         }
 
-        ctx->status = HASH_CTX_STS_COMPLETE;
+        ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
 }
 
 void

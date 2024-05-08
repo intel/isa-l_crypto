@@ -94,10 +94,10 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 rc = isal_sha1_ctx_mgr_init(&sha1_mgr);
                 if (rc)
                         return EXIT_FAILURE;
-                hash_ctx_init(&sha1_ctx);
+                isal_hash_ctx_init(&sha1_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
                         rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m1,
-                                                      tc->msg_len, HASH_FIRST);
+                                                      tc->msg_len, ISAL_HASH_FIRST);
                         if (rc)
                                 return EXIT_FAILURE;
                         if (ctx != NULL) {
@@ -107,7 +107,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         }
 
                         rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m2,
-                                                      tc->msg_len, HASH_UPDATE);
+                                                      tc->msg_len, ISAL_HASH_UPDATE);
                         if (rc)
                                 return EXIT_FAILURE;
                         if (ctx != NULL) {
@@ -117,7 +117,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         }
 
                         rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->m3,
-                                                      tc->msg_len, HASH_LAST);
+                                                      tc->msg_len, ISAL_HASH_LAST);
                         if (rc)
                                 return EXIT_FAILURE;
                         if (ctx != NULL) {
@@ -128,7 +128,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
 
                 } else {
                         rc = isal_sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, &ctx, tc->msg,
-                                                      tc->msg_len, HASH_ENTIRE);
+                                                      tc->msg_len, ISAL_HASH_ENTIRE);
                         if (rc)
                                 return EXIT_FAILURE;
 
@@ -147,26 +147,26 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 SHA256_HASH_CTX_MGR sha256_mgr;
                 SHA256_HASH_CTX sha256_ctx;
                 sha256_ctx_mgr_init(&sha256_mgr);
-                hash_ctx_init(&sha256_ctx);
+                isal_hash_ctx_init(&sha256_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
                         sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m1, tc->msg_len,
-                                              HASH_FIRST);
+                                              ISAL_HASH_FIRST);
                         while (sha256_ctx_mgr_flush(&sha256_mgr))
                                 ;
 
                         sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m2, tc->msg_len,
-                                              HASH_UPDATE);
+                                              ISAL_HASH_UPDATE);
                         while (sha256_ctx_mgr_flush(&sha256_mgr))
                                 ;
 
                         sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m3, tc->msg_len,
-                                              HASH_LAST);
+                                              ISAL_HASH_LAST);
                         while (sha256_ctx_mgr_flush(&sha256_mgr))
                                 ;
 
                 } else {
                         sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->msg, tc->msg_len,
-                                              HASH_ENTIRE);
+                                              ISAL_HASH_ENTIRE);
                         while (sha256_ctx_mgr_flush(&sha256_mgr))
                                 ;
                 }
@@ -178,26 +178,26 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 SHA512_HASH_CTX_MGR sha512_mgr;
                 SHA512_HASH_CTX sha512_ctx;
                 sha512_ctx_mgr_init(&sha512_mgr);
-                hash_ctx_init(&sha512_ctx);
+                isal_hash_ctx_init(&sha512_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
                         sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m1, tc->msg_len,
-                                              HASH_FIRST);
+                                              ISAL_HASH_FIRST);
                         while (sha512_ctx_mgr_flush(&sha512_mgr))
                                 ;
 
                         sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m2, tc->msg_len,
-                                              HASH_UPDATE);
+                                              ISAL_HASH_UPDATE);
                         while (sha512_ctx_mgr_flush(&sha512_mgr))
                                 ;
 
                         sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m3, tc->msg_len,
-                                              HASH_LAST);
+                                              ISAL_HASH_LAST);
                         while (sha512_ctx_mgr_flush(&sha512_mgr))
                                 ;
 
                 } else {
                         sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->msg, tc->msg_len,
-                                              HASH_ENTIRE);
+                                              ISAL_HASH_ENTIRE);
                         while (sha512_ctx_mgr_flush(&sha512_mgr))
                                 ;
                 }

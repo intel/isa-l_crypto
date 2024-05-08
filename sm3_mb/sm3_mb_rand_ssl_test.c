@@ -89,14 +89,14 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contents
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // SSL test
                 sm3_ossl(bufs[i], TEST_LEN, digest_ssl[i]);
 
                 // sb_sm3 test
-                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
         }
 
         while (sm3_ctx_mgr_flush(mgr))
@@ -130,7 +130,7 @@ main(void)
                         sm3_ossl(bufs[i], lens[i], digest_ssl[i]);
 
                         // Run sb_sm3 test
-                        sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                        sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
                 }
 
                 while (sm3_ctx_mgr_flush(mgr))

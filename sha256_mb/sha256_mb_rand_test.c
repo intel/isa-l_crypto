@@ -91,14 +91,14 @@ main(void)
                 rand_buffer(bufs[i], TEST_LEN);
 
                 // Init ctx contexts
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
 
                 // Run reference test
                 sha256_ref(bufs[i], digest_ref[i], TEST_LEN);
 
                 // Run sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, HASH_ENTIRE);
+                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
         }
 
         while (sha256_ctx_mgr_flush(mgr))
@@ -134,7 +134,7 @@ main(void)
                         sha256_ref(bufs[i], digest_ref[i], lens[i]);
 
                         // Run sha256_mb test
-                        sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                        sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
                 }
 
                 while (sha256_ctx_mgr_flush(mgr))
@@ -184,7 +184,7 @@ main(void)
                 sha256_ref(bufs[i], digest_ref[i], lens[i]);
 
                 // sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
         }
         // Clear bufs
         memset(bufs, 0, sizeof(bufs));

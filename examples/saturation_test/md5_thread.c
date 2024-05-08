@@ -155,7 +155,7 @@ MB_THREAD_FUNC(void *arg)
 
         ctxpool = (HASH_CTX *) calloc(rounds_buf, sizeof(HASH_CTX));
         for (i = 0; i < rounds_buf; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
         ret = posix_memalign((void *) &mgr, 16, sizeof(HASH_CTX_MGR));
@@ -189,7 +189,7 @@ MB_THREAD_FUNC(void *arg)
                                         memcpy(hash_buf[j + i], carry_buf[j + i], buflen);
 
                                 CTX_MGR_SUBMIT(mgr, &ctxpool[j + i], hash_buf[j + i], buflen,
-                                               HASH_ENTIRE);
+                                               ISAL_HASH_ENTIRE);
                         }
 
                         /* Calculate hash digest */

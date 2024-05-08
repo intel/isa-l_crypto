@@ -133,7 +133,7 @@ md5_mb_mgr_submit_avx512:
 	and	lane, 0x3F
 	MEM_VPSRLDDQ (state + _unused_lanes), unused_lanes
 	imul	lane_data, lane, _LANE_DATA_size
-	mov	dword [job + _status], STS_BEING_PROCESSED
+	mov	dword [job + _status], ISAL_STS_BEING_PROCESSED
 	lea	lane_data, [state + _ldata + lane_data]
 	mov	DWORD(len), [job + _len]
 
@@ -217,7 +217,7 @@ len_is_0:
 	mov	job_rax, [lane_data + _job_in_lane]
 	mov	lane, [state + _unused_lanes]
 	mov	qword [lane_data + _job_in_lane], 0
-	mov	dword [job_rax + _status], STS_COMPLETED
+	mov	dword [job_rax + _status], ISAL_STS_COMPLETED
 
 	shl	lane, 8
 	or	 lane, idx

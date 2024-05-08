@@ -74,13 +74,13 @@ main(void)
 
         // Init contexts before first use
         for (i = 0; i < MSGS; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
         for (i = 0; i < MSGS; i++) {
                 ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
-                                         (uint32_t) strlen((char *) msgs[i]), HASH_ENTIRE);
+                                         (uint32_t) strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
 
                 if (ctx) {
                         t = (uint32_t) ((uintptr_t) ctx->user_data);
@@ -135,7 +135,7 @@ main(void)
 
         // Init contexts before first use
         for (i = 0; i < NUM_JOBS; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
@@ -143,7 +143,7 @@ main(void)
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
                 ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
-                                         (uint32_t) strlen((char *) msgs[j]), HASH_ENTIRE);
+                                         (uint32_t) strlen((char *) msgs[j]), ISAL_HASH_ENTIRE);
                 if (ctx) {
                         t = (unsigned long) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);

@@ -125,7 +125,7 @@ sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR *state)
                         state->unused_lanes |= i;
                         state->num_lanes_inuse--;
                         ret = state->ldata[i].job_in_lane;
-                        ret->status = STS_COMPLETED;
+                        ret->status = ISAL_STS_COMPLETED;
                         state->ldata[i].job_in_lane = NULL;
                         break;
                 }

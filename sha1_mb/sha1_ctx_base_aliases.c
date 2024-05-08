@@ -35,7 +35,7 @@ extern void
 _sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr);
 extern SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, HASH_CTX_FLAG flags);
+                          uint32_t len, ISAL_HASH_CTX_FLAG flags);
 extern SHA1_HASH_CTX *
 _sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr);
 
@@ -47,7 +47,7 @@ _sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
 
 SHA1_HASH_CTX *
 _sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                     HASH_CTX_FLAG flags)
+                     ISAL_HASH_CTX_FLAG flags)
 {
         return _sha1_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }

@@ -90,11 +90,11 @@ main(void)
                 return 1;
 
         for (i = 0; i < n; i++) {
-                hash_ctx_init(&ctxpool[i]);
+                isal_hash_ctx_init(&ctxpool[i]);
                 ctxpool[i].user_data = (void *) expected_digest[i];
 
                 ret = isal_sha1_ctx_mgr_submit(mgr, &ctxpool[i], &p_job, msgs[i],
-                                               strlen((char *) msgs[i]), HASH_ENTIRE);
+                                               strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
                 if (ret)
                         return 1;
 
