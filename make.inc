@@ -232,7 +232,7 @@ $(O)/%.o: %.asm
 	@$(AS) $(ASFLAGS) -o $@ $<
 
 
-$(O)/%.o %.o: %.c
+$(O)/%.o: %.c
 	@echo "  ---> Building $< $(msg)"
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 
