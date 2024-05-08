@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha256_mb.h"
+#include "sha256_mb_internal.h"
 
 void
 _sha256_mb_mgr_init_avx2(SHA256_MB_JOB_MGR *state)

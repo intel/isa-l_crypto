@@ -29,7 +29,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include "sha256_mb.h"
+#include "sha256_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
 

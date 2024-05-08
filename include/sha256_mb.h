@@ -120,14 +120,9 @@ extern "C" {
 // Hash Constants and Typedefs
 #define SHA256_DIGEST_NWORDS       8
 #define SHA256_MAX_LANES           16
-#define SHA256_X8_LANES            8
 #define SHA256_MIN_LANES           4
 #define SHA256_BLOCK_SIZE          64
-#define SHA256_LOG2_BLOCK_SIZE     6
 #define SHA256_PADLENGTHFIELD_SIZE 8
-#define SHA256_INITIAL_DIGEST                                                                      \
-        0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab,        \
-                0x5be0cd19
 
 typedef uint32_t sha256_digest_array[SHA256_DIGEST_NWORDS][SHA256_MAX_LANES];
 typedef uint32_t SHA256_WORD_T;
