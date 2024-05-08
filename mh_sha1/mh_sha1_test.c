@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "isal_crypto_api.h"
 #include "mh_sha1.h"
 
 #define TEST_LEN  16 * 1024
@@ -48,13 +49,13 @@
 #define MH_SHA1_FUNC_TYPE
 #endif
 
-#define TEST_UPDATE_FUNCTION FUNC_TOKEN(mh_sha1_update, MH_SHA1_FUNC_TYPE)
-#define TEST_FINAL_FUNCTION  FUNC_TOKEN(mh_sha1_finalize, MH_SHA1_FUNC_TYPE)
+#define TEST_UPDATE_FUNCTION FUNC_TOKEN(isal_mh_sha1_update, MH_SHA1_FUNC_TYPE)
+#define TEST_FINAL_FUNCTION  FUNC_TOKEN(isal_mh_sha1_finalize, MH_SHA1_FUNC_TYPE)
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != MH_SHA1_CTX_ERROR_NONE) {                                           \
-                        printf("The mh_sha1 function is failed.\n");                               \
+                if ((state) != ISAL_CRYPTO_ERR_NONE) {                                             \
+                        printf("The mh_sha1 function failed.\n");                                  \
                         return 1;                                                                  \
                 }                                                                                  \
         } while (0)
@@ -111,6 +112,7 @@ int
 main(int argc, char *argv[])
 {
         int fail = 0;
+#ifndef FIPS_MODE
         uint32_t hash_test[SHA1_DIGEST_WORDS], hash_ref[SHA1_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
@@ -132,7 +134,7 @@ main(int argc, char *argv[])
         rand_buffer(buff, TEST_LEN);
 
         MH_SHA1_REF(buff, TEST_LEN, hash_ref);
-        CHECK_RETURN(mh_sha1_init(update_ctx));
+        CHECK_RETURN(isal_mh_sha1_init(update_ctx));
         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
         CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -151,7 +153,7 @@ main(int argc, char *argv[])
                 rand_buffer(buff, size);
 
                 MH_SHA1_REF(buff, size, hash_ref);
-                CHECK_RETURN(mh_sha1_init(update_ctx));
+                CHECK_RETURN(isal_mh_sha1_init(update_ctx));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, size));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -174,7 +176,7 @@ main(int argc, char *argv[])
                 for (offset = 0; offset < 256; offset++) {
                         MH_SHA1_REF(buff + offset, size, hash_ref);
 
-                        CHECK_RETURN(mh_sha1_init(update_ctx));
+                        CHECK_RETURN(isal_mh_sha1_init(update_ctx));
                         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff + offset, size));
                         CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -198,7 +200,7 @@ main(int argc, char *argv[])
 
                 MH_SHA1_REF(buff + offset, size, hash_ref);
 
-                CHECK_RETURN(mh_sha1_init(update_ctx));
+                CHECK_RETURN(isal_mh_sha1_init(update_ctx));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff + offset, size));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -223,6 +225,8 @@ end:
 
         printf(xstr(TEST_UPDATE_FUNCTION) "_test:");
         printf(" %s\n", fail == 0 ? "Pass" : "Fail");
-
+#else
+        printf("Not Executed\n");
+#endif /* FIPS_MODE */
         return fail;
 }

@@ -60,6 +60,7 @@
  */
 
 #include <stdint.h>
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -110,7 +111,9 @@ enum mh_sha1_ctx_error {
  *
  * @param  ctx Structure holding mh_sha1 info
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_init() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_init() instead")
 int
 mh_sha1_init(struct mh_sha1_ctx *ctx);
 
@@ -125,7 +128,9 @@ mh_sha1_init(struct mh_sha1_ctx *ctx);
  * @param  buffer Pointer to buffer to be processed
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_update() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_update() instead")
 int
 mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
@@ -140,7 +145,9 @@ mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  * @param   ctx Structure holding mh_sha1 info
  * @param   mh_sha1_digest The digest of mh_sha1
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_finalize() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_finalize() instead")
 int
 mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
@@ -154,7 +161,7 @@ mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  * @param   buffer Pointer to buffer to be processed
  * @param   len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha1_update() instead.
  */
 int
 mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
@@ -169,7 +176,7 @@ mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  * @param   ctx Structure holding mh_sha1 info
  * @param   mh_sha1_digest The digest of mh_sha1
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha1_finalize() instead.
  */
 int
 mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
