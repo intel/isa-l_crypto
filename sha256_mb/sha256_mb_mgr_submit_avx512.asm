@@ -86,7 +86,7 @@ section .text
 ; STACK_SPACE needs to be an odd multiple of 8
 %define STACK_SPACE	8*8 + 16*10 + 8
 
-; SHA256_JOB* _sha256_mb_mgr_submit_avx512(SHA256_MB_JOB_MGR *state, SHA256_JOB *job)
+; ISAL_SHA256_JOB* _sha256_mb_mgr_submit_avx512(ISAL_SHA256_MB_JOB_MGR *state, ISAL_SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
 mk_global _sha256_mb_mgr_submit_avx512, function, internal

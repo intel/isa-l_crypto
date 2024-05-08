@@ -45,7 +45,7 @@
 #include "test.h"
 
 typedef uint32_t DigestSHA1[ISAL_SHA1_DIGEST_NWORDS];
-typedef uint32_t DigestSHA256[SHA256_DIGEST_NWORDS];
+typedef uint32_t DigestSHA256[ISAL_SHA256_DIGEST_NWORDS];
 typedef uint64_t DigestSHA512[SHA512_DIGEST_NWORDS];
 
 static const uint8_t msg[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
@@ -97,8 +97,8 @@ static int
 _sha256_self_test(void)
 {
 
-        SHA256_HASH_CTX_MGR mgr;
-        SHA256_HASH_CTX ctxpool, *ctx = NULL;
+        ISAL_SHA256_HASH_CTX_MGR mgr;
+        ISAL_SHA256_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
         sha256_ctx_mgr_init(&mgr);
@@ -113,7 +113,7 @@ _sha256_self_test(void)
                 ctx = sha256_ctx_mgr_flush(&mgr);
 
         if (ctx) {
-                for (j = 0; j < SHA256_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                         if (expResultDigest_sha256[j] != ctxpool.job.result_digest[j])
                                 return -1;
                 }

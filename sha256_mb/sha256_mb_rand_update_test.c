@@ -40,8 +40,8 @@
 #define TEST_SEED 0x1234
 #endif
 
-#define UPDATE_SIZE            13 * SHA256_BLOCK_SIZE
-#define MAX_RAND_UPDATE_BLOCKS (TEST_LEN / (16 * SHA256_BLOCK_SIZE))
+#define UPDATE_SIZE            13 * ISAL_SHA256_BLOCK_SIZE
+#define MAX_RAND_UPDATE_BLOCKS (TEST_LEN / (16 * ISAL_SHA256_BLOCK_SIZE))
 
 #ifdef DEBUG
 #define debug_char(x) putchar(x)
@@ -52,7 +52,7 @@
 #endif
 
 /* Reference digest global to reduce stack usage */
-static uint32_t digest_ref[TEST_BUFS][SHA256_DIGEST_NWORDS];
+static uint32_t digest_ref[TEST_BUFS][ISAL_SHA256_DIGEST_NWORDS];
 
 extern void
 sha256_ref(uint8_t *input_data, uint32_t *digest, uint32_t len);
@@ -70,8 +70,8 @@ rand_buffer(unsigned char *buf, const long buffer_size)
 int
 main(void)
 {
-        SHA256_HASH_CTX_MGR *mgr = NULL;
-        SHA256_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
         uint32_t len_done, len_rem, len_rand;
         unsigned char *bufs[TEST_BUFS] = { 0 };
@@ -85,7 +85,7 @@ main(void)
 
         srand(TEST_SEED);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA256_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA256_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -165,7 +165,7 @@ main(void)
 
         // Check digests
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SHA256_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
                                 printf("Test%d fixed size, digest%d fail %8X <=> %8X", i, j,
@@ -193,8 +193,8 @@ main(void)
                 i = 0;
                 while (i < jobs) {
                         // Submit a new job
-                        len_rand = SHA256_BLOCK_SIZE +
-                                   SHA256_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
+                        len_rand = ISAL_SHA256_BLOCK_SIZE +
+                                   ISAL_SHA256_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
 
                         if (lens[i] > len_rand)
                                 ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
@@ -222,7 +222,7 @@ main(void)
                                                                                      // the returned
                                                                                      // ctx
                                         buf_ptr[j] = bufs[j] + ctx->total_length;
-                                        len_rand = (rand() % SHA256_BLOCK_SIZE) *
+                                        len_rand = (rand() % ISAL_SHA256_BLOCK_SIZE) *
                                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
                                         len_rem = lens[j] - (uint32_t) ctx->total_length;
 
@@ -255,7 +255,8 @@ main(void)
                         i = (uint32_t) (uintptr_t) (ctx->user_data);
                         buf_ptr[i] = bufs[i] + ctx->total_length; // update buffer pointer
                         len_rem = lens[i] - (uint32_t) ctx->total_length;
-                        len_rand = (rand() % SHA256_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
+                        len_rand = (rand() % ISAL_SHA256_BLOCK_SIZE) *
+                                   (rand() % MAX_RAND_UPDATE_BLOCKS);
                         debug_char('+');
                         if (len_rem <= len_rand)
                                 ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
@@ -270,7 +271,7 @@ main(void)
 
                 // Check result digest
                 for (i = 0; i < jobs; i++) {
-                        for (j = 0; j < SHA256_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                         fail++;
                                         printf("Test%d, digest%d fail %8X <=> %8X\n", i, j,

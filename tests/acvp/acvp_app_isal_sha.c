@@ -144,8 +144,8 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 break;
         }
         case ACVP_SUB_HASH_SHA2_256: {
-                SHA256_HASH_CTX_MGR sha256_mgr;
-                SHA256_HASH_CTX sha256_ctx;
+                ISAL_SHA256_HASH_CTX_MGR sha256_mgr;
+                ISAL_SHA256_HASH_CTX sha256_ctx;
                 sha256_ctx_mgr_init(&sha256_mgr);
                 isal_hash_ctx_init(&sha256_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
@@ -170,8 +170,8 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         while (sha256_ctx_mgr_flush(&sha256_mgr))
                                 ;
                 }
-                md_dcpy(tc->md, sha256_ctx.job.result_digest, SHA256_DIGEST_NWORDS);
-                tc->md_len = SHA256_DIGEST_NWORDS * 4;
+                md_dcpy(tc->md, sha256_ctx.job.result_digest, ISAL_SHA256_DIGEST_NWORDS);
+                tc->md_len = ISAL_SHA256_DIGEST_NWORDS * 4;
                 break;
         }
         case ACVP_SUB_HASH_SHA2_512: {
@@ -203,7 +203,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 }
 
                 md_qcpy(tc->md, sha512_ctx.job.result_digest, SHA512_DIGEST_NWORDS);
-                tc->md_len = SHA256_DIGEST_NWORDS * 8;
+                tc->md_len = ISAL_SHA256_DIGEST_NWORDS * 8;
                 break;
         }
         default:

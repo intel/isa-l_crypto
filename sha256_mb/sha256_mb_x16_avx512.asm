@@ -452,7 +452,7 @@ FIELD	_rsp,		8,	8
 
 align 64
 
-;; void sha256_mb_x16_avx512(SHA256_MB_ARGS_X16, uint32_t size)
+;; void sha256_mb_x16_avx512(ISAL_SHA256_MB_ARGS_X16, uint32_t size)
 ; arg 1 : pointer to input data
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 local_func_decl(sha256_mb_x16_avx512)

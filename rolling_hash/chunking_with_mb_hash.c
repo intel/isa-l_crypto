@@ -38,7 +38,7 @@
 #include "test.h"
 
 #define MAX_BUFFER_SIZE 128 * 1024 * 1024
-#define HASH_POOL_SIZE  SHA256_MAX_LANES
+#define HASH_POOL_SIZE  ISAL_SHA256_MAX_LANES
 
 #ifndef TEST_SEED
 #define TEST_SEED 0x1234
@@ -52,8 +52,8 @@
 #define MASK_TO_INDEX_LONG ((1 << BITS_TO_INDEX_LONG) - 1)
 
 // Globals
-SHA256_HASH_CTX ctxpool[SHA256_MAX_LANES], *last_ctx;
-SHA256_HASH_CTX_MGR mb_hash_mgr;
+ISAL_SHA256_HASH_CTX ctxpool[ISAL_SHA256_MAX_LANES], *last_ctx;
+ISAL_SHA256_HASH_CTX_MGR mb_hash_mgr;
 uint64_t filter_table[FILTER_SIZE];
 unsigned long chunks_created = 0;
 unsigned long filter_hits = 0;
@@ -61,7 +61,7 @@ unsigned long filter_hits = 0;
 // Example function to run on each chunk
 
 void
-run_fragment(SHA256_HASH_CTX *ctx)
+run_fragment(ISAL_SHA256_HASH_CTX *ctx)
 {
         uint64_t lookup, set_hash;
         unsigned int lookup_hash;
@@ -98,11 +98,11 @@ setup_chunk_processing(void)
         last_ctx = &ctxpool[0];
 }
 
-SHA256_HASH_CTX *
+ISAL_SHA256_HASH_CTX *
 get_next_job_ctx(void)
 {
         int i;
-        SHA256_HASH_CTX *ctx;
+        ISAL_SHA256_HASH_CTX *ctx;
 
         if (last_ctx && isal_hash_ctx_complete(last_ctx))
                 return last_ctx;
@@ -117,7 +117,7 @@ get_next_job_ctx(void)
 }
 
 void
-put_next_job_ctx(SHA256_HASH_CTX *ctx)
+put_next_job_ctx(ISAL_SHA256_HASH_CTX *ctx)
 {
         if (ctx && isal_hash_ctx_complete(ctx))
                 last_ctx = ctx;
@@ -128,7 +128,7 @@ put_next_job_ctx(SHA256_HASH_CTX *ctx)
 void
 process_chunk(uint8_t *buff, int len)
 {
-        SHA256_HASH_CTX *ctx;
+        ISAL_SHA256_HASH_CTX *ctx;
 
         ctx = get_next_job_ctx();
         ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, ISAL_HASH_ENTIRE);
@@ -140,7 +140,7 @@ process_chunk(uint8_t *buff, int len)
 void
 finish_chunk_processing(void)
 {
-        SHA256_HASH_CTX *ctx;
+        ISAL_SHA256_HASH_CTX *ctx;
 
         while ((ctx = sha256_ctx_mgr_flush(&mb_hash_mgr)) != NULL)
                 run_fragment(ctx);

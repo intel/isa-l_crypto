@@ -66,24 +66,24 @@
         h = t1 + t2;
 
 static void
-sha256_init(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha256_init(ISAL_SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha256_update(ISAL_SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha256_final(SHA256_HASH_CTX *ctx);
+sha256_final(ISAL_SHA256_HASH_CTX *ctx);
 static void OPT_FIX
 sha256_single(const void *data, uint32_t digest[]);
 static inline void
-hash_init_digest(SHA256_WORD_T *digest);
+hash_init_digest(ISAL_SHA256_WORD_T *digest);
 
 void
-_sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_init_base(ISAL_SHA256_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA256_HASH_CTX *
-_sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                            uint32_t len, ISAL_HASH_CTX_FLAG flags)
+ISAL_SHA256_HASH_CTX *
+_sha256_ctx_mgr_submit_base(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx,
+                            const void *buffer, uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
 
         if (flags & (~ISAL_HASH_ENTIRE)) {
@@ -128,14 +128,14 @@ _sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, cons
         return ctx;
 }
 
-SHA256_HASH_CTX *
-_sha256_ctx_mgr_flush_base(SHA256_HASH_CTX_MGR *mgr)
+ISAL_SHA256_HASH_CTX *
+_sha256_ctx_mgr_flush_base(ISAL_SHA256_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
 
 static void
-sha256_init(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha256_init(ISAL_SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         // Init digest
         hash_init_digest(ctx->job.result_digest);
@@ -154,7 +154,7 @@ sha256_init(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha256_update(ISAL_SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         uint32_t remain_len = len;
         uint32_t *digest = ctx->job.result_digest;
@@ -165,9 +165,9 @@ sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (remain_len < SHA256_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (remain_len < ISAL_SHA256_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = SHA256_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_SHA256_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (remain_len < copy_len) {
                         copy_len = remain_len;
                 }
@@ -183,20 +183,20 @@ sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
                         buffer = (void *) ((uint8_t *) buffer + copy_len);
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= SHA256_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_SHA256_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= SHA256_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_SHA256_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
                         sha256_single(ctx->partial_block_buffer, digest);
                 }
         }
         // If the extra blocks are empty, begin hashing what remains in the user's buffer.
         if (ctx->partial_block_buffer_length == 0) {
-                while (remain_len >= SHA256_BLOCK_SIZE) {
+                while (remain_len >= ISAL_SHA256_BLOCK_SIZE) {
                         sha256_single(buffer, digest);
-                        buffer = (void *) ((uint8_t *) buffer + SHA256_BLOCK_SIZE);
-                        remain_len -= SHA256_BLOCK_SIZE;
+                        buffer = (void *) ((uint8_t *) buffer + ISAL_SHA256_BLOCK_SIZE);
+                        remain_len -= ISAL_SHA256_BLOCK_SIZE;
                 }
         }
 
@@ -210,31 +210,31 @@ sha256_update(SHA256_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha256_final(SHA256_HASH_CTX *ctx)
+sha256_final(ISAL_SHA256_HASH_CTX *ctx)
 {
 
         const void *buffer = ctx->partial_block_buffer;
         uint32_t i = ctx->partial_block_buffer_length;
-        uint8_t buf[2 * SHA256_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA256_BLOCK_SIZE];
         uint32_t *digest = ctx->job.result_digest;
 
         memcpy(buf, buffer, i);
         buf[i++] = 0x80;
-        for (uint32_t j = i; j < (2 * SHA256_BLOCK_SIZE); j++) {
+        for (uint32_t j = i; j < (2 * ISAL_SHA256_BLOCK_SIZE); j++) {
                 buf[j] = 0;
         }
 
-        if (i > SHA256_BLOCK_SIZE - SHA256_PADLENGTHFIELD_SIZE) {
-                i = 2 * SHA256_BLOCK_SIZE;
+        if (i > ISAL_SHA256_BLOCK_SIZE - ISAL_SHA256_PADLENGTHFIELD_SIZE) {
+                i = 2 * ISAL_SHA256_BLOCK_SIZE;
         } else {
-                i = SHA256_BLOCK_SIZE;
+                i = ISAL_SHA256_BLOCK_SIZE;
         }
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) ctx->total_length * 8);
 
         sha256_single(buf, digest);
-        if (i == 2 * SHA256_BLOCK_SIZE) {
-                sha256_single(buf + SHA256_BLOCK_SIZE, digest);
+        if (i == 2 * ISAL_SHA256_BLOCK_SIZE) {
+                sha256_single(buf + ISAL_SHA256_BLOCK_SIZE, digest);
         }
 
         ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
@@ -332,10 +332,10 @@ sha256_single(const void *data, uint32_t digest[])
 }
 
 static inline void
-hash_init_digest(SHA256_WORD_T *digest)
+hash_init_digest(ISAL_SHA256_WORD_T *digest)
 {
-        static const SHA256_WORD_T hash_initial_digest[SHA256_DIGEST_NWORDS] = {
-                SHA256_INITIAL_DIGEST
+        static const ISAL_SHA256_WORD_T hash_initial_digest[ISAL_SHA256_DIGEST_NWORDS] = {
+                ISAL_SHA256_INITIAL_DIGEST
         };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }

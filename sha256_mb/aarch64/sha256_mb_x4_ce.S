@@ -151,7 +151,7 @@ Message variables
 
 
 /*
-	void sha256_mb_ce_x4(SHA256_JOB *, SHA256_JOB *, SHA256_JOB *, SHA256_JOB *, int);
+	void sha256_mb_ce_x4(ISAL_SHA256_JOB *, ISAL_SHA256_JOB *, ISAL_SHA256_JOB *, ISAL_SHA256_JOB *, int);
 */
 /*
 Arguments list

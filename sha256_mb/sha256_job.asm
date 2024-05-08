@@ -49,10 +49,10 @@
 %define SHA256_NI_SB_THRESHOLD_AVX512	6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Define SHA256_JOB structure
+;;;; Define ISAL_SHA256_JOB structure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-START_FIELDS	; SHA256_JOB
+START_FIELDS	; ISAL_SHA256_JOB
 
 ;;;	name				size	align
 FIELD	_buffer,			8,	8	; pointer to buffer
@@ -61,5 +61,5 @@ FIELD	_result_digest,			8*4,	64	; Digest (output)
 FIELD	_status,			4,	4
 FIELD	_user_data,			8,	8
 
-%assign _SHA256_JOB_size	_FIELD_OFFSET
-%assign _SHA256_JOB_align	_STRUCT_ALIGN
+%assign _ISAL_SHA256_JOB_size	_FIELD_OFFSET
+%assign _ISAL_SHA256_JOB_align	_STRUCT_ALIGN

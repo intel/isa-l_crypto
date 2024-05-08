@@ -34,7 +34,7 @@
 #include "test.h"
 
 // Set number of outstanding jobs
-#define TEST_BUFS SHA256_MAX_LANES
+#define TEST_BUFS ISAL_SHA256_MAX_LANES
 
 #ifndef GT_L3_CACHE
 #define GT_L3_CACHE 32 * 1024 * 1024 /* some number > last level cache */
@@ -55,13 +55,13 @@
 #define TEST_MEM TEST_LEN *TEST_BUFS *TEST_LOOPS
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * SHA256_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_SHA256_DIGEST_NWORDS];
 
 int
 main(void)
 {
-        SHA256_HASH_CTX_MGR *mgr = NULL;
-        SHA256_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS];
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         uint32_t nlanes;
@@ -78,7 +78,7 @@ main(void)
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
-        int ret = posix_memalign((void *) &mgr, 16, sizeof(SHA256_HASH_CTX_MGR));
+        int ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA256_HASH_CTX_MGR));
         if (ret) {
                 printf("alloc error: Fail");
                 return -1;
@@ -113,7 +113,7 @@ main(void)
                 perf_print(stop, start, (long long) TEST_LEN * i * t);
 
                 for (i = 0; i < nlanes; i++) {
-                        for (j = 0; j < SHA256_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] !=
                                     to_be32(((uint32_t *) digest_ssl[i])[j])) {
                                         fail++;

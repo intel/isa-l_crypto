@@ -32,7 +32,7 @@
 #include "multi_buffer.h"
 
 int
-isal_sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR *mgr)
+isal_sha256_ctx_mgr_init(ISAL_SHA256_HASH_CTX_MGR *mgr)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)
@@ -50,8 +50,8 @@ isal_sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR *mgr)
 }
 
 int
-isal_sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx_in,
-                           SHA256_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+isal_sha256_ctx_mgr_submit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx_in,
+                           ISAL_SHA256_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
                            const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef SAFE_PARAM
@@ -72,8 +72,9 @@ isal_sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx_in,
         *ctx_out = sha256_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (SHA256_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
-                SHA256_HASH_CTX *cp = (SHA256_HASH_CTX *) (*ctx_out);
+        if (*ctx_out != NULL &&
+            (ISAL_SHA256_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
+                ISAL_SHA256_HASH_CTX *cp = (ISAL_SHA256_HASH_CTX *) (*ctx_out);
 
                 if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
@@ -87,7 +88,7 @@ isal_sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx_in,
 }
 
 int
-isal_sha256_ctx_mgr_flush(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX **ctx_out)
+isal_sha256_ctx_mgr_flush(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX **ctx_out)
 {
 #ifdef SAFE_PARAM
         if (mgr == NULL)

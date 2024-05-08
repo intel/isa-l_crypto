@@ -32,12 +32,12 @@
 #include "sha256_mb.h"
 
 #define TEST_LEN  (1024 * 1024)
-#define TEST_BUFS (SHA256_MAX_LANES - 1)
+#define TEST_BUFS (ISAL_SHA256_MAX_LANES - 1)
 #ifndef TEST_SEED
 #define TEST_SEED 0x1234
 #endif
 
-static uint32_t digest_ref[TEST_BUFS][SHA256_DIGEST_NWORDS];
+static uint32_t digest_ref[TEST_BUFS][ISAL_SHA256_DIGEST_NWORDS];
 
 // Compare against reference function
 extern void
@@ -53,13 +53,13 @@ rand_buffer(unsigned char *buf, const long buffer_size)
 }
 
 uint8_t
-lens_print_and_check(SHA256_HASH_CTX_MGR *mgr)
+lens_print_and_check(ISAL_SHA256_HASH_CTX_MGR *mgr)
 {
-        static int32_t last_lens[SHA256_MAX_LANES] = { 0 };
+        static int32_t last_lens[ISAL_SHA256_MAX_LANES] = { 0 };
         int32_t len;
         uint8_t num_unchanged = 0;
         int i;
-        for (i = 0; i < SHA256_MAX_LANES; i++) {
+        for (i = 0; i < ISAL_SHA256_MAX_LANES; i++) {
                 len = (int32_t) mgr->mgr.lens[i];
                 // len[i] in mgr consists of byte_length<<4 | lane_index
                 len = (len >= 16) ? (len >> 4 << 6) : 0;
@@ -75,8 +75,8 @@ lens_print_and_check(SHA256_HASH_CTX_MGR *mgr)
 int
 main(void)
 {
-        SHA256_HASH_CTX_MGR *mgr = NULL;
-        SHA256_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS];
         uint32_t i, j, fail = 0;
         unsigned char *bufs[TEST_BUFS];
         uint32_t lens[TEST_BUFS];
@@ -85,7 +85,7 @@ main(void)
 
         printf("sha256_mb flush test, %d buffers with %d length: \n", TEST_BUFS, TEST_LEN);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA256_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA256_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -97,7 +97,7 @@ main(void)
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate  and fill buffer
-                lens[i] = TEST_LEN / SHA256_MAX_LANES * (i + 1);
+                lens[i] = TEST_LEN / ISAL_SHA256_MAX_LANES * (i + 1);
                 bufs[i] = (unsigned char *) malloc(lens[i]);
                 if (bufs[i] == NULL) {
                         printf("malloc failed test aborted\n");
@@ -127,7 +127,7 @@ main(void)
         printf("Info of sha256_mb lens prints over\n");
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SHA256_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
                                 printf("Test%d fixed size, digest%d "
