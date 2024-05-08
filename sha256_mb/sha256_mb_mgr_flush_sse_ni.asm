@@ -255,7 +255,7 @@ three:  dq  3
 
 %else
  %ifidn __OUTPUT_FORMAT__, win64
-  global no__sha256_mb_mgr_flush_sse_ni
-  no__sha256_mb_mgr_flush_sse_ni:
+  global no_sha256_mb_mgr_flush_sse_ni
+  no_sha256_mb_mgr_flush_sse_ni:
  %endif
 %endif ; HAVE_AS_KNOWS_SHANI

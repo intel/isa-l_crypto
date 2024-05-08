@@ -54,14 +54,14 @@ static SHA256_HASH_CTX *
 sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx);
 
 void
-sha256_ctx_mgr_init_avx2(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_init_avx2(SHA256_HASH_CTX_MGR *mgr)
 {
         _sha256_mb_mgr_init_avx2(&mgr->mgr);
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_submit_avx2(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                           uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha256_ctx_mgr_submit_avx2(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                            uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -141,7 +141,7 @@ sha256_ctx_mgr_submit_avx2(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_flush_avx2(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_flush_avx2(SHA256_HASH_CTX_MGR *mgr)
 {
         SHA256_HASH_CTX *ctx;
 
@@ -261,14 +261,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha256_ctx_mgr_init_avx2_slver_04020157;
-struct slver sha256_ctx_mgr_init_avx2_slver = { 0x0157, 0x02, 0x04 };
+struct slver _sha256_ctx_mgr_init_avx2_slver_04020157;
+struct slver _sha256_ctx_mgr_init_avx2_slver = { 0x0157, 0x02, 0x04 };
 
-struct slver sha256_ctx_mgr_submit_avx2_slver_04020158;
-struct slver sha256_ctx_mgr_submit_avx2_slver = { 0x0158, 0x02, 0x04 };
+struct slver _sha256_ctx_mgr_submit_avx2_slver_04020158;
+struct slver _sha256_ctx_mgr_submit_avx2_slver = { 0x0158, 0x02, 0x04 };
 
-struct slver sha256_ctx_mgr_flush_avx2_slver_04020159;
-struct slver sha256_ctx_mgr_flush_avx2_slver = { 0x0159, 0x02, 0x04 };
+struct slver _sha256_ctx_mgr_flush_avx2_slver_04020159;
+struct slver _sha256_ctx_mgr_flush_avx2_slver = { 0x0159, 0x02, 0x04 };
 
 #if defined(__clang__)
 #pragma clang attribute pop

@@ -56,14 +56,14 @@ static SHA256_HASH_CTX *
 sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx);
 
 void
-sha256_ctx_mgr_init_avx512(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_init_avx512(SHA256_HASH_CTX_MGR *mgr)
 {
         _sha256_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                             uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                              uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -144,7 +144,7 @@ sha256_ctx_mgr_submit_avx512(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, con
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_flush_avx512(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_flush_avx512(SHA256_HASH_CTX_MGR *mgr)
 {
         SHA256_HASH_CTX *ctx;
 
@@ -265,14 +265,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha256_ctx_mgr_init_avx512_slver_0600015a;
-struct slver sha256_ctx_mgr_init_avx512_slver = { 0x015a, 0x00, 0x06 };
+struct slver _sha256_ctx_mgr_init_avx512_slver_0600015a;
+struct slver _sha256_ctx_mgr_init_avx512_slver = { 0x015a, 0x00, 0x06 };
 
-struct slver sha256_ctx_mgr_submit_avx512_slver_0600015b;
-struct slver sha256_ctx_mgr_submit_avx512_slver = { 0x015b, 0x00, 0x06 };
+struct slver _sha256_ctx_mgr_submit_avx512_slver_0600015b;
+struct slver _sha256_ctx_mgr_submit_avx512_slver = { 0x015b, 0x00, 0x06 };
 
-struct slver sha256_ctx_mgr_flush_avx512_slver_0600015c;
-struct slver sha256_ctx_mgr_flush_avx512_slver = { 0x015c, 0x00, 0x06 };
+struct slver _sha256_ctx_mgr_flush_avx512_slver_0600015c;
+struct slver _sha256_ctx_mgr_flush_avx512_slver = { 0x015c, 0x00, 0x06 };
 
 #endif // HAVE_AS_KNOWS_AVX512
 

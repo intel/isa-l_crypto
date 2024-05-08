@@ -282,7 +282,7 @@ lane_15:    dq  15
 
 %else
 %ifidn __OUTPUT_FORMAT__, win64
-global no__sha256_mb_mgr_flush_avx512
-no__sha256_mb_mgr_flush_avx512:
+global no_sha256_mb_mgr_flush_avx512
+no_sha256_mb_mgr_flush_avx512:
 %endif
 %endif ; HAVE_AS_KNOWS_AVX512

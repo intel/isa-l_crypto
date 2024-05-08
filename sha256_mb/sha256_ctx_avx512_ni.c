@@ -49,9 +49,9 @@
 /**
  *  sha256_ctx_avx512_ni related functions are aiming to utilize Canon Lake.
  *  Since SHANI is still slower than multibuffer for full lanes,
- *  sha256_ctx_mgr_init_avx512_ni and sha256_ctx_mgr_submit_avx512_ni are
+ *  _sha256_ctx_mgr_init_avx512_ni and _sha256_ctx_mgr_submit_avx512_ni are
  *  similar with their avx512 versions.
- *  sha256_ctx_mgr_flush_avx512_ni is different. It will call
+ *  _sha256_ctx_mgr_flush_avx512_ni is different. It will call
  *  _sha256_mb_mgr_flush_avx512_ni which would use shani when lanes are less
  *  than a threshold.
  *
@@ -66,14 +66,14 @@ static SHA256_HASH_CTX *
 sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx);
 
 void
-sha256_ctx_mgr_init_avx512_ni(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_init_avx512_ni(SHA256_HASH_CTX_MGR *mgr)
 {
         _sha256_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_submit_avx512_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                                uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha256_ctx_mgr_submit_avx512_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                                 uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -154,7 +154,7 @@ sha256_ctx_mgr_submit_avx512_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, 
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_flush_avx512_ni(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_flush_avx512_ni(SHA256_HASH_CTX_MGR *mgr)
 {
         SHA256_HASH_CTX *ctx;
 
@@ -275,14 +275,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha256_ctx_mgr_init_avx512_ni_slver_080002ca;
-struct slver sha256_ctx_mgr_init_avx512_ni_slver = { 0x02ca, 0x00, 0x08 };
+struct slver _sha256_ctx_mgr_init_avx512_ni_slver_080002ca;
+struct slver _sha256_ctx_mgr_init_avx512_ni_slver = { 0x02ca, 0x00, 0x08 };
 
-struct slver sha256_ctx_mgr_submit_avx512_ni_slver_080002cb;
-struct slver sha256_ctx_mgr_submit_avx512_ni_slver = { 0x02cb, 0x00, 0x08 };
+struct slver _sha256_ctx_mgr_submit_avx512_ni_slver_080002cb;
+struct slver _sha256_ctx_mgr_submit_avx512_ni_slver = { 0x02cb, 0x00, 0x08 };
 
-struct slver sha256_ctx_mgr_flush_avx512_ni_slver_080002cc;
-struct slver sha256_ctx_mgr_flush_avx512_ni_slver = { 0x02cc, 0x00, 0x08 };
+struct slver _sha256_ctx_mgr_flush_avx512_ni_slver_080002cc;
+struct slver _sha256_ctx_mgr_flush_avx512_ni_slver = { 0x02cc, 0x00, 0x08 };
 
 #endif // HAVE_AS_KNOWS_AVX512 and HAVE_AS_KNOWS_SHANI
 

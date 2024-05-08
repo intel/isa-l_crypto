@@ -46,15 +46,15 @@ static SHA256_HASH_CTX *
 sha256_ctx_mgr_resubmit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx);
 
 void
-sha256_ctx_mgr_init_sse_ni(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_init_sse_ni(SHA256_HASH_CTX_MGR *mgr)
 {
         // Same with sse
         _sha256_mb_mgr_init_sse(&mgr->mgr);
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_submit_sse_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
-                             uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha256_ctx_mgr_submit_sse_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                              uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
 
         if (flags & (~ISAL_HASH_ENTIRE)) {
@@ -136,7 +136,7 @@ sha256_ctx_mgr_submit_sse_ni(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, con
 }
 
 SHA256_HASH_CTX *
-sha256_ctx_mgr_flush_sse_ni(SHA256_HASH_CTX_MGR *mgr)
+_sha256_ctx_mgr_flush_sse_ni(SHA256_HASH_CTX_MGR *mgr)
 {
         SHA256_HASH_CTX *ctx;
 
@@ -258,13 +258,13 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha256_ctx_mgr_init_sse_ni_slver_070002c7;
-struct slver sha256_ctx_mgr_init_sse_ni_slver = { 0x02c7, 0x00, 0x07 };
+struct slver _sha256_ctx_mgr_init_sse_ni_slver_070002c7;
+struct slver _sha256_ctx_mgr_init_sse_ni_slver = { 0x02c7, 0x00, 0x07 };
 
-struct slver sha256_ctx_mgr_submit_sse_ni_slver_070002c8;
-struct slver sha256_ctx_mgr_submit_sse_ni_slver = { 0x02c8, 0x00, 0x07 };
+struct slver _sha256_ctx_mgr_submit_sse_ni_slver_070002c8;
+struct slver _sha256_ctx_mgr_submit_sse_ni_slver = { 0x02c8, 0x00, 0x07 };
 
-struct slver sha256_ctx_mgr_flush_sse_ni_slver_070002c9;
-struct slver sha256_ctx_mgr_flush_sse_ni_slver = { 0x02c9, 0x00, 0x07 };
+struct slver _sha256_ctx_mgr_flush_sse_ni_slver_070002c9;
+struct slver _sha256_ctx_mgr_flush_sse_ni_slver = { 0x02c9, 0x00, 0x07 };
 
 #endif // HAVE_AS_KNOWS_SHANI
