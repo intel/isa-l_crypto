@@ -46,15 +46,15 @@
 #define rol32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
 
 static void
-sm3_init(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sm3_init(ISAL_SM3_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void OPT_FIX
-sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sm3_update(ISAL_SM3_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void OPT_FIX
-sm3_final(SM3_HASH_CTX *ctx);
+sm3_final(ISAL_SM3_HASH_CTX *ctx);
 static void OPT_FIX
 sm3_single(const volatile void *data, uint32_t digest[]);
 static inline void
-hash_init_digest(SM3_WORD_T *digest);
+hash_init_digest(ISAL_SM3_WORD_T *digest);
 
 static inline uint32_t
 P0(uint32_t X)
@@ -131,13 +131,13 @@ sm3_compress_step_func(int j, volatile uint32_t *a_p, volatile uint32_t *b_p,
 }
 
 void
-sm3_ctx_mgr_init_base(SM3_HASH_CTX_MGR *mgr)
+_sm3_ctx_mgr_init_base(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
 }
 
-SM3_HASH_CTX *
-sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags)
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_submit_base(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, const void *buffer,
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
 
         if (flags & (~ISAL_HASH_ENTIRE)) {
@@ -181,14 +181,14 @@ sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *bu
         return ctx;
 }
 
-SM3_HASH_CTX *
-sm3_ctx_mgr_flush_base(SM3_HASH_CTX_MGR *mgr)
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_flush_base(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
 
 static void
-sm3_init(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sm3_init(ISAL_SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         // Init digest
         hash_init_digest(ctx->job.result_digest);
@@ -207,7 +207,7 @@ sm3_init(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sm3_update(ISAL_SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         uint32_t remain_len = len;
         uint32_t *digest = ctx->job.result_digest;
@@ -218,9 +218,9 @@ sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (remain_len < SM3_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (remain_len < ISAL_SM3_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = SM3_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_SM3_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (remain_len < copy_len) {
                         copy_len = remain_len;
                 }
@@ -236,20 +236,20 @@ sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
                         buffer = (void *) ((uint8_t *) buffer + copy_len);
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= SM3_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_SM3_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= SM3_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_SM3_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
                         sm3_single(ctx->partial_block_buffer, digest);
                 }
         }
         // If the extra blocks are empty, begin hashing what remains in the user's buffer.
         if (ctx->partial_block_buffer_length == 0) {
-                while (remain_len >= SM3_BLOCK_SIZE) {
+                while (remain_len >= ISAL_SM3_BLOCK_SIZE) {
                         sm3_single(buffer, digest);
-                        buffer = (void *) ((uint8_t *) buffer + SM3_BLOCK_SIZE);
-                        remain_len -= SM3_BLOCK_SIZE;
+                        buffer = (void *) ((uint8_t *) buffer + ISAL_SM3_BLOCK_SIZE);
+                        remain_len -= ISAL_SM3_BLOCK_SIZE;
                 }
         }
 
@@ -263,35 +263,35 @@ sm3_update(SM3_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sm3_final(SM3_HASH_CTX *ctx)
+sm3_final(ISAL_SM3_HASH_CTX *ctx)
 {
         const void *buffer = ctx->partial_block_buffer;
         uint32_t i = ctx->partial_block_buffer_length;
-        uint8_t buf[2 * SM3_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SM3_BLOCK_SIZE];
         uint32_t *digest = ctx->job.result_digest;
         uint32_t j;
 
         memcpy(buf, buffer, i);
         buf[i++] = 0x80;
-        for (j = i; j < (2 * SM3_BLOCK_SIZE); j++) {
+        for (j = i; j < (2 * ISAL_SM3_BLOCK_SIZE); j++) {
                 buf[j] = 0;
         }
 
-        if (i > SM3_BLOCK_SIZE - SM3_PADLENGTHFIELD_SIZE) {
-                i = 2 * SM3_BLOCK_SIZE;
+        if (i > ISAL_SM3_BLOCK_SIZE - ISAL_SM3_PADLENGTHFIELD_SIZE) {
+                i = 2 * ISAL_SM3_BLOCK_SIZE;
         } else {
-                i = SM3_BLOCK_SIZE;
+                i = ISAL_SM3_BLOCK_SIZE;
         }
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) ctx->total_length * 8);
 
         sm3_single(buf, digest);
-        if (i == 2 * SM3_BLOCK_SIZE) {
-                sm3_single(buf + SM3_BLOCK_SIZE, digest);
+        if (i == 2 * ISAL_SM3_BLOCK_SIZE) {
+                sm3_single(buf + ISAL_SM3_BLOCK_SIZE, digest);
         }
 
         /* convert to small-endian for words */
-        for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+        for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                 digest[j] = byteswap32(digest[j]);
         }
         ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
@@ -341,9 +341,11 @@ sm3_single(const volatile void *data, uint32_t digest[])
 }
 
 static inline void
-hash_init_digest(SM3_WORD_T *digest)
+hash_init_digest(ISAL_SM3_WORD_T *digest)
 {
-        static const SM3_WORD_T hash_initial_digest[SM3_DIGEST_NWORDS] = { SM3_INITIAL_DIGEST };
+        static const ISAL_SM3_WORD_T hash_initial_digest[ISAL_SM3_DIGEST_NWORDS] = {
+                ISAL_SM3_INITIAL_DIGEST
+        };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 

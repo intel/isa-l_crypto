@@ -91,10 +91,10 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 %define APPEND(a,b) a %+ b
 
 
-; SM3_JOB* sm3_mb_mgr_flush_avx512(SM3_MB_JOB_MGR *state)
+; ISAL_SM3_JOB* _sm3_mb_mgr_flush_avx512(ISAL_SM3_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sm3_mb_mgr_flush_avx512, function
-sm3_mb_mgr_flush_avx512:
+mk_global _sm3_mb_mgr_flush_avx512, function, internal
+_sm3_mb_mgr_flush_avx512:
 	endbranch
 
 	; Save the stack

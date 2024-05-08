@@ -372,7 +372,7 @@ FIELD	_rsp,		8,	8
 	vporq TMP0,TMP1
 %endmacro
 
-;; void sm3_mb_x16_avx512(SM3_MB_ARGS_X16, uint32_t size)
+;; void sm3_mb_x16_avx512(ISAL_SM3_MB_ARGS_X8, uint32_t size)
 ; arg 1 : pointer to input data
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 local_func_decl(sm3_mb_x16_avx512)

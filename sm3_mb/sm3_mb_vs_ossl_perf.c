@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include "sm3_mb.h"
 #include "test.h"
 
@@ -56,13 +58,15 @@
 extern void
 sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest);
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * SM3_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_SM3_DIGEST_NWORDS];
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
-        SM3_HASH_CTX_MGR *mgr = NULL;
-        SM3_HASH_CTX ctxpool[TEST_BUFS];
+#ifndef FIPS_MODE
+        ISAL_SM3_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SM3_HASH_CTX ctxpool[TEST_BUFS];
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         struct perf start, stop;
@@ -78,12 +82,12 @@ main(void)
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
-        int ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        int ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SM3_HASH_CTX_MGR));
         if (ret) {
                 printf("alloc error: Fail");
                 return -1;
         }
-        sm3_ctx_mgr_init(mgr);
+        isal_sm3_ctx_mgr_init(mgr);
 
         // Start OpenSSL tests
         perf_start(&start);
@@ -99,11 +103,15 @@ main(void)
         // Start mb tests
         perf_start(&start);
         for (t = 0; t < TEST_LOOPS; t++) {
-                for (i = 0; i < TEST_BUFS; i++)
-                        sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
+                ISAL_SM3_HASH_CTX *ctx = NULL;
 
-                while (sm3_ctx_mgr_flush(mgr))
-                        ;
+                for (i = 0; i < TEST_BUFS; i++)
+                        isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
+                                                ISAL_HASH_ENTIRE);
+
+                while (isal_sm3_ctx_mgr_flush(mgr, &ctx) == 0)
+                        if (ctx == NULL)
+                                break;
         }
         perf_stop(&stop);
 
@@ -111,7 +119,7 @@ main(void)
         perf_print(stop, start, (long long) TEST_LEN * i * t);
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ssl[i])[j])) {
                                 fail++;
@@ -132,4 +140,8 @@ main(void)
                 printf(" multibinary_sm3_ossl_perf: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }

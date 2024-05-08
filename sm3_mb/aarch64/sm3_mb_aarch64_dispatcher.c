@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2019-2022 Arm Corporation All rights reserved.
+  Copyright(c) 2019-2024 Arm Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -55,7 +55,7 @@ sve_capable(unsigned long auxval)
         return CAP_NOSVE;
 }
 
-DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_submit)
+DEFINE_INTERFACE_DISPATCHER(_sm3_ctx_mgr_submit)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
 
@@ -73,10 +73,10 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_submit)
 
         if (auxval & HWCAP_ASIMD)
                 return PROVIDER_INFO(sm3_ctx_mgr_submit_asimd);
-        return PROVIDER_BASIC(sm3_ctx_mgr_submit);
+        return PROVIDER_BASIC(_sm3_ctx_mgr_submit);
 }
 
-DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_init)
+DEFINE_INTERFACE_DISPATCHER(_sm3_ctx_mgr_init)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
 
@@ -94,10 +94,10 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_init)
 
         if (auxval & HWCAP_ASIMD)
                 return PROVIDER_INFO(sm3_ctx_mgr_init_asimd);
-        return PROVIDER_BASIC(sm3_ctx_mgr_init);
+        return PROVIDER_BASIC(_sm3_ctx_mgr_init);
 }
 
-DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_flush)
+DEFINE_INTERFACE_DISPATCHER(_sm3_ctx_mgr_flush)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
 
@@ -115,5 +115,5 @@ DEFINE_INTERFACE_DISPATCHER(sm3_ctx_mgr_flush)
 
         if (auxval & HWCAP_ASIMD)
                 return PROVIDER_INFO(sm3_ctx_mgr_flush_asimd);
-        return PROVIDER_BASIC(sm3_ctx_mgr_flush);
+        return PROVIDER_BASIC(_sm3_ctx_mgr_flush);
 }

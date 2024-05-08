@@ -29,6 +29,8 @@
 #define ISAL_UNIT_TEST
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include "sm3_mb.h"
 #include "endian_helper.h"
 
@@ -42,7 +44,7 @@
 #endif
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * SM3_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_SM3_DIGEST_NWORDS];
 
 extern void
 sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest);
@@ -55,12 +57,15 @@ rand_buffer(unsigned char *buf, const long buffer_size)
         for (i = 0; i < buffer_size; i++)
                 buf[i] = rand();
 }
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
-        SM3_HASH_CTX_MGR *mgr = NULL;
-        SM3_HASH_CTX ctxpool[TEST_BUFS];
+#ifndef FIPS_MODE
+        ISAL_SM3_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SM3_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SM3_HASH_CTX *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, fail = 0;
         uint32_t lens[TEST_BUFS];
@@ -71,13 +76,13 @@ main(void)
 
         srand(TEST_SEED);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SM3_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
 
-        sm3_ctx_mgr_init(mgr);
+        isal_sm3_ctx_mgr_init(mgr);
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate and fill buffer
@@ -96,14 +101,16 @@ main(void)
                 sm3_ossl(bufs[i], TEST_LEN, digest_ssl[i]);
 
                 // sb_sm3 test
-                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
+                isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
+                                        ISAL_HASH_ENTIRE);
         }
 
-        while (sm3_ctx_mgr_flush(mgr))
-                ;
+        while (isal_sm3_ctx_mgr_flush(mgr, &ctx) == 0)
+                if (ctx == NULL)
+                        break;
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ssl[i])[j])) {
                                 fail++;
@@ -119,7 +126,7 @@ main(void)
         for (t = 0; t < RANDOMS; t++) {
                 jobs = rand() % (TEST_BUFS);
 
-                sm3_ctx_mgr_init(mgr);
+                isal_sm3_ctx_mgr_init(mgr);
 
                 for (i = 0; i < jobs; i++) {
                         // Random buffer with random len and contents
@@ -130,14 +137,16 @@ main(void)
                         sm3_ossl(bufs[i], lens[i], digest_ssl[i]);
 
                         // Run sb_sm3 test
-                        sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
+                        isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                                ISAL_HASH_ENTIRE);
                 }
 
-                while (sm3_ctx_mgr_flush(mgr))
-                        ;
+                while (isal_sm3_ctx_mgr_flush(mgr, &ctx) == 0)
+                        if (ctx == NULL)
+                                break;
 
                 for (i = 0; i < jobs; i++) {
-                        for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] !=
                                     to_le32(((uint32_t *) digest_ssl[i])[j])) {
                                         fail++;
@@ -162,4 +171,8 @@ main(void)
                 printf(" multibinary_sm3_ssl rand: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }

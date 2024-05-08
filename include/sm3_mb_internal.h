@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2020 Arm Corporation All rights reserved.
+  Copyright(c) 2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -10,7 +10,7 @@
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-    * Neither the name of Arm Corporation nor the names of its
+    * Neither the name of Intel Corporation nor the names of its
       contributors may be used to endorse or promote products derived
       from this software without specific prior written permission.
 
@@ -27,10 +27,59 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
+#ifndef _SM3_MB_INTERNAL_H_
+#define _SM3_MB_INTERNAL_H_
 
-#include "aarch64_multibinary.h"
+/**
+ *  @file sm3_mb_internal.h
+ *  @brief Internal multi-buffer CTX API SM3 function prototypes and structures
+ */
 
+#include <stdint.h>
+#include "multi_buffer.h"
+#include "types.h"
 
-mbin_interface _sm3_ctx_mgr_submit
-mbin_interface _sm3_ctx_mgr_init
-mbin_interface _sm3_ctx_mgr_flush
+#ifndef _MSC_VER
+#include <stdbool.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief Initialize the SM3 multi-buffer manager structure.
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns void
+ */
+void
+_sm3_ctx_mgr_init(ISAL_SM3_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief  Submit a new SM3 job to the multi-buffer manager.
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_submit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, const void *buffer,
+                    uint32_t len, ISAL_HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SM3 jobs and return when complete.
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_flush(ISAL_SM3_HASH_CTX_MGR *mgr);
+
+#ifdef __cplusplus
+}
+#endif
+#endif

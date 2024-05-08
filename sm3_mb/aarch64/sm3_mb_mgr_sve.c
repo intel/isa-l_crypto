@@ -39,11 +39,11 @@
 #endif
 
 extern void
-sm3_mb_sve(int blocks, int total_lanes, SM3_JOB **);
+sm3_mb_sve(int blocks, int total_lanes, ISAL_SM3_JOB **);
 extern void
-sm3_mb_asimd_x4(SM3_JOB *, SM3_JOB *, SM3_JOB *, SM3_JOB *, int);
+sm3_mb_asimd_x4(ISAL_SM3_JOB *, ISAL_SM3_JOB *, ISAL_SM3_JOB *, ISAL_SM3_JOB *, int);
 extern void
-sm3_mb_asimd_x1(SM3_JOB *, int);
+sm3_mb_asimd_x1(ISAL_SM3_JOB *, int);
 extern int
 sm3_mb_sve_max_lanes(void);
 
@@ -56,13 +56,13 @@ sm3_mb_sve_max_lanes(void);
 #define LANE_IS_INVALID(state, i)                                                                  \
         (((state->lens[i] & (~0xf)) != 0) && state->ldata[i].job_in_lane == NULL)
 void
-sm3_mb_mgr_init_sve(SM3_MB_JOB_MGR *state)
+sm3_mb_mgr_init_sve(ISAL_SM3_MB_JOB_MGR *state)
 {
         unsigned int i;
         int maxjobs = sm3_mb_sve_max_lanes();
 
-        if (maxjobs > SM3_MAX_LANES)
-                maxjobs = SM3_MAX_LANES;
+        if (maxjobs > ISAL_SM3_MAX_LANES)
+                maxjobs = ISAL_SM3_MAX_LANES;
         state->unused_lanes = 0xf;
         state->num_lanes_inuse = 0;
 
@@ -73,17 +73,17 @@ sm3_mb_mgr_init_sve(SM3_MB_JOB_MGR *state)
                 state->ldata[i].job_in_lane = 0;
         }
 
-        for (; i < SM3_MAX_LANES; i++) {
+        for (; i < ISAL_SM3_MAX_LANES; i++) {
                 state->lens[i] = 0xf;
                 state->ldata[i].job_in_lane = 0;
         }
 }
 
 static int
-sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR *state)
+sm3_mb_mgr_do_jobs(ISAL_SM3_MB_JOB_MGR *state)
 {
         int lane_idx, len, i, lanes, blocks;
-        SM3_JOB *job_vecs[SM3_MAX_LANES];
+        ISAL_SM3_JOB *job_vecs[ISAL_SM3_MAX_LANES];
         int maxjobs;
 
         if (state->num_lanes_inuse == 0) {
@@ -91,12 +91,12 @@ sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR *state)
         }
 
         maxjobs = sm3_mb_sve_max_lanes();
-        if (maxjobs > SM3_MAX_LANES)
-                maxjobs = SM3_MAX_LANES;
+        if (maxjobs > ISAL_SM3_MAX_LANES)
+                maxjobs = ISAL_SM3_MAX_LANES;
 
         lanes = 0;
         len = 0;
-        for (i = 0; i < SM3_MAX_LANES && lanes < state->num_lanes_inuse; i++) {
+        for (i = 0; i < ISAL_SM3_MAX_LANES && lanes < state->num_lanes_inuse; i++) {
                 if (LANE_IS_NOT_FINISHED(state, i)) {
                         if (lanes)
                                 len = min(len, state->lens[i]);
@@ -126,7 +126,7 @@ sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR *state)
                         sm3_mb_asimd_x1(job_vecs[i++], blocks);
                 }
         }
-        for (i = 0; i < SM3_MAX_LANES; i++) {
+        for (i = 0; i < ISAL_SM3_MAX_LANES; i++) {
                 if (LANE_IS_NOT_FINISHED(state, i)) {
                         state->lens[i] -= len;
                         state->ldata[i].job_in_lane->len -= len;
@@ -137,13 +137,13 @@ sm3_mb_mgr_do_jobs(SM3_MB_JOB_MGR *state)
         return lane_idx;
 }
 
-static SM3_JOB *
-sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR *state)
+static ISAL_SM3_JOB *
+sm3_mb_mgr_free_lane(ISAL_SM3_MB_JOB_MGR *state)
 {
         int i;
-        SM3_JOB *ret = NULL;
+        ISAL_SM3_JOB *ret = NULL;
 
-        for (i = 0; i < SM3_MAX_LANES; i++) {
+        for (i = 0; i < ISAL_SM3_MAX_LANES; i++) {
                 if (LANE_IS_FINISHED(state, i)) {
                         state->unused_lanes <<= 4;
                         state->unused_lanes |= i;
@@ -158,7 +158,7 @@ sm3_mb_mgr_free_lane(SM3_MB_JOB_MGR *state)
 }
 
 static void
-sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR *state, SM3_JOB *job)
+sm3_mb_mgr_insert_job(ISAL_SM3_MB_JOB_MGR *state, ISAL_SM3_JOB *job)
 {
         int lane_idx;
 
@@ -170,17 +170,17 @@ sm3_mb_mgr_insert_job(SM3_MB_JOB_MGR *state, SM3_JOB *job)
         state->num_lanes_inuse++;
 }
 
-SM3_JOB *
-sm3_mb_mgr_submit_sve(SM3_MB_JOB_MGR *state, SM3_JOB *job)
+ISAL_SM3_JOB *
+sm3_mb_mgr_submit_sve(ISAL_SM3_MB_JOB_MGR *state, ISAL_SM3_JOB *job)
 {
 #ifndef NDEBUG
         int lane_idx;
 #endif
-        SM3_JOB *ret;
+        ISAL_SM3_JOB *ret;
         int maxjobs = sm3_mb_sve_max_lanes();
 
-        if (maxjobs > SM3_MAX_LANES)
-                maxjobs = SM3_MAX_LANES;
+        if (maxjobs > ISAL_SM3_MAX_LANES)
+                maxjobs = ISAL_SM3_MAX_LANES;
 
         // add job into lanes
         sm3_mb_mgr_insert_job(state, job);
@@ -204,10 +204,10 @@ sm3_mb_mgr_submit_sve(SM3_MB_JOB_MGR *state, SM3_JOB *job)
         return ret;
 }
 
-SM3_JOB *
-sm3_mb_mgr_flush_sve(SM3_MB_JOB_MGR *state)
+ISAL_SM3_JOB *
+sm3_mb_mgr_flush_sve(ISAL_SM3_MB_JOB_MGR *state)
 {
-        SM3_JOB *ret;
+        ISAL_SM3_JOB *ret;
 
         ret = sm3_mb_mgr_free_lane(state);
         if (ret) {

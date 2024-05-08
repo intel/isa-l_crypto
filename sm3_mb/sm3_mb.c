@@ -28,10 +28,11 @@
 **********************************************************************/
 
 #include "sm3_mb.h"
+#include "sm3_mb_internal.h"
 #include "isal_crypto_api.h"
 
 int
-isal_sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr)
+isal_sm3_ctx_mgr_init(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -40,15 +41,16 @@ isal_sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr)
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
 #endif
-        sm3_ctx_mgr_init(mgr);
+        _sm3_ctx_mgr_init(mgr);
 
         return 0;
 #endif
 }
 
 int
-isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CTX **ctx_out,
-                        const void *buffer, const uint32_t len, const ISAL_HASH_CTX_FLAG flags)
+isal_sm3_ctx_mgr_submit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx_in,
+                        ISAL_SM3_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+                        const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -58,15 +60,15 @@ isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CT
                 return ISAL_CRYPTO_ERR_NULL_MGR;
         if (ctx_in == NULL || ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
-        if (buffer == NULL)
+        if (buffer == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-        *ctx_out = sm3_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+        ISAL_SM3_HASH_CTX *cp = _sm3_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+
+        *ctx_out = cp;
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (SM3_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
-                SM3_HASH_CTX *cp = (SM3_HASH_CTX *) (*ctx_out);
-
+        if (cp != NULL && cp->error != ISAL_HASH_CTX_ERROR_NONE) {
                 if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
                 if (cp->error == ISAL_HASH_CTX_ERROR_ALREADY_PROCESSING)
@@ -80,7 +82,7 @@ isal_sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx_in, SM3_HASH_CT
 }
 
 int
-isal_sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX **ctx_out)
+isal_sm3_ctx_mgr_flush(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX **ctx_out)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -91,8 +93,33 @@ isal_sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX **ctx_out)
         if (ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-        *ctx_out = sm3_ctx_mgr_flush(mgr);
+        *ctx_out = _sm3_ctx_mgr_flush(mgr);
 
         return 0;
 #endif
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+sm3_ctx_mgr_init(ISAL_SM3_HASH_CTX_MGR *mgr)
+{
+        _sm3_ctx_mgr_init(mgr);
+}
+
+ISAL_SM3_HASH_CTX *
+sm3_ctx_mgr_submit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, const void *buffer,
+                   uint32_t len, ISAL_HASH_CTX_FLAG flags)
+{
+        return _sm3_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
+}
+
+ISAL_SM3_HASH_CTX *
+sm3_ctx_mgr_flush(ISAL_SM3_HASH_CTX_MGR *mgr)
+{
+        return _sm3_ctx_mgr_flush(mgr);
 }

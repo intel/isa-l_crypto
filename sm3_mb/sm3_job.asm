@@ -61,5 +61,5 @@ FIELD	_result_digest,			8*4,	64	; Digest (output)
 FIELD	_status,			4,	4
 FIELD	_user_data,			8,	8
 
-%assign _SM3_JOB_size	_FIELD_OFFSET
-%assign _SM3_JOB_align	_STRUCT_ALIGN
+%assign _ISAL_SM3_JOB_size	_FIELD_OFFSET
+%assign _ISAL_SM3_JOB_align	_STRUCT_ALIGN

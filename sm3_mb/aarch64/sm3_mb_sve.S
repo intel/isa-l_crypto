@@ -70,7 +70,7 @@ sm3_mb_sve_max_lanes:
 	ret
 	.size sm3_mb_sve_max_lanes, .-sm3_mb_sve_max_lanes
 /*
- *  void sm3_mb_sve/sve2(int blocks, int total_lanes, SM3_JOB **job_vec)
+ *  void sm3_mb_sve/sve2(int blocks, int total_lanes, ISAL_SM3_JOB **job_vec)
  */
 	num_blocks	.req	w0
 	total_lanes	.req	w1

@@ -32,28 +32,28 @@
 #include "memcpy_inline.h"
 
 extern void
-sm3_ctx_mgr_init_base(SM3_HASH_CTX_MGR *mgr);
-extern SM3_HASH_CTX *
-sm3_ctx_mgr_submit_base(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags);
-extern SM3_HASH_CTX *
-sm3_ctx_mgr_flush_base(SM3_HASH_CTX_MGR *mgr);
+_sm3_ctx_mgr_init_base(ISAL_SM3_HASH_CTX_MGR *mgr);
+extern ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_submit_base(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, const void *buffer,
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags);
+extern ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_flush_base(ISAL_SM3_HASH_CTX_MGR *mgr);
 
 void
-sm3_ctx_mgr_init(SM3_HASH_CTX_MGR *mgr)
+_sm3_ctx_mgr_init(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
-        return sm3_ctx_mgr_init_base(mgr);
+        _sm3_ctx_mgr_init_base(mgr);
 }
 
-SM3_HASH_CTX *
-sm3_ctx_mgr_submit(SM3_HASH_CTX_MGR *mgr, SM3_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                   ISAL_HASH_CTX_FLAG flags)
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_submit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, const void *buffer,
+                    uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
-        return sm3_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
+        return _sm3_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }
 
-SM3_HASH_CTX *
-sm3_ctx_mgr_flush(SM3_HASH_CTX_MGR *mgr)
+ISAL_SM3_HASH_CTX *
+_sm3_ctx_mgr_flush(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
-        return sm3_ctx_mgr_flush_base(mgr);
+        return _sm3_ctx_mgr_flush_base(mgr);
 }

@@ -29,16 +29,18 @@
 #define ISAL_UNIT_TEST
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include "sm3_mb.h"
 #include "endian_helper.h"
 
 #define TEST_LEN  (1024 * 1024)
-#define TEST_BUFS (SM3_MAX_LANES - 1)
+#define TEST_BUFS (ISAL_SM3_MAX_LANES - 1)
 #ifndef TEST_SEED
 #define TEST_SEED 0x1234
 #endif
 
-static uint8_t digest_ref[TEST_BUFS][4 * SM3_DIGEST_NWORDS];
+static uint8_t digest_ref[TEST_BUFS][4 * ISAL_SM3_DIGEST_NWORDS];
 
 // Compare against reference function
 extern void
@@ -54,13 +56,13 @@ rand_buffer(unsigned char *buf, const long buffer_size)
 }
 
 uint8_t
-lens_print_and_check(SM3_HASH_CTX_MGR *mgr)
+lens_print_and_check(ISAL_SM3_HASH_CTX_MGR *mgr)
 {
-        static int32_t last_lens[SM3_MAX_LANES] = { 0 };
+        static int32_t last_lens[ISAL_SM3_MAX_LANES] = { 0 };
         int32_t len;
         uint8_t num_unchanged = 0;
         int i;
-        for (i = 0; i < SM3_MAX_LANES; i++) {
+        for (i = 0; i < ISAL_SM3_MAX_LANES; i++) {
                 len = (int32_t) mgr->mgr.lens[i];
                 // len[i] in mgr consists of byte_length<<4 | lane_index
                 len = (len >= 16) ? (len >> 4 << 6) : 0;
@@ -72,12 +74,15 @@ lens_print_and_check(SM3_HASH_CTX_MGR *mgr)
         printf("\n");
         return num_unchanged;
 }
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
-        SM3_HASH_CTX_MGR *mgr = NULL;
-        SM3_HASH_CTX ctxpool[TEST_BUFS];
+#ifndef FIPS_MODE
+        ISAL_SM3_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SM3_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SM3_HASH_CTX *ctx = NULL;
         uint32_t i, j, fail = 0;
         unsigned char *bufs[TEST_BUFS];
         uint32_t lens[TEST_BUFS];
@@ -86,19 +91,23 @@ main(void)
 
         printf("sm3_mb flush test, %d buffers with %d length: \n", TEST_BUFS, TEST_LEN);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SM3_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
 
-        sm3_ctx_mgr_init(mgr);
+        if (isal_sm3_ctx_mgr_init(mgr) != 0) {
+                printf("init failed test aborted\n");
+                fail++;
+                goto end;
+        }
 
         srand(TEST_SEED);
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate  and fill buffer
-                lens[i] = TEST_LEN / SM3_MAX_LANES * (i + 1);
+                lens[i] = TEST_LEN / ISAL_SM3_MAX_LANES * (i + 1);
                 bufs[i] = (unsigned char *) malloc(lens[i]);
                 if (bufs[i] == NULL) {
                         printf("malloc failed test aborted\n");
@@ -117,19 +126,26 @@ main(void)
                 sm3_ossl(bufs[i], lens[i], digest_ref[i]);
 
                 // Run sb_sm3 test
-                sm3_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
+                if (isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                            ISAL_HASH_ENTIRE) != 0) {
+                        printf("submit failed test aborted\n");
+                        fail++;
+                        goto end;
+                }
         }
 
         printf("Changes of lens inside mgr:\n");
         lens_print_and_check(mgr);
-        while (sm3_ctx_mgr_flush(mgr)) {
+        while (isal_sm3_ctx_mgr_flush(mgr, &ctx) == 0) {
+                if (ctx == NULL)
+                        break;
                 num_ret = lens_print_and_check(mgr);
                 num_unchanged = num_unchanged > num_ret ? num_unchanged : num_ret;
         }
         printf("Info of sm3_mb lens prints over\n");
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ref[i])[j])) {
                                 fail++;
@@ -141,15 +157,19 @@ main(void)
                 }
         }
 
+end:
         if (fail)
                 printf("Test failed function check %d\n", fail);
         else
                 printf("Pass\n");
 
-end:
         for (i = 0; i < TEST_BUFS; i++)
                 free(bufs[i]);
         aligned_free(mgr);
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }

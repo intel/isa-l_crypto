@@ -29,6 +29,8 @@
 #define ISAL_UNIT_TEST
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include "sm3_mb.h"
 #include "endian_helper.h"
 
@@ -41,8 +43,8 @@
 #define TEST_SEED 0x1234
 #endif
 
-#define UPDATE_SIZE            13 * SM3_BLOCK_SIZE
-#define MAX_RAND_UPDATE_BLOCKS (TEST_LEN / (16 * SM3_BLOCK_SIZE))
+#define UPDATE_SIZE            13 * ISAL_SM3_BLOCK_SIZE
+#define MAX_RAND_UPDATE_BLOCKS (TEST_LEN / (16 * ISAL_SM3_BLOCK_SIZE))
 
 #ifdef DEBUG
 #define debug_char(x) putchar(x)
@@ -53,7 +55,7 @@
 #endif
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ref[TEST_BUFS][4 * SM3_DIGEST_NWORDS];
+static uint8_t digest_ref[TEST_BUFS][4 * ISAL_SM3_DIGEST_NWORDS];
 extern void
 sm3_ossl(const unsigned char *buf, size_t length, unsigned char *digest);
 
@@ -65,12 +67,14 @@ rand_buffer(unsigned char *buf, const long buffer_size)
         for (i = 0; i < buffer_size; i++)
                 buf[i] = rand();
 }
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
-        SM3_HASH_CTX_MGR *mgr = NULL;
-        SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+#ifndef FIPS_MODE
+        ISAL_SM3_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
         int len_done, len_rem, len_rand;
         unsigned char *bufs[TEST_BUFS];
@@ -83,13 +87,13 @@ main(void)
 
         srand(TEST_SEED);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SM3_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
 
-        sm3_ctx_mgr_init(mgr);
+        isal_sm3_ctx_mgr_init(mgr);
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate and fill buffer
@@ -114,18 +118,20 @@ main(void)
                 len_done = (int) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
                 len_rem = TEST_LEN - len_done;
 
+                int errc = 0;
+
                 if (len_done == 0)
-                        ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 ISAL_HASH_FIRST);
+                        errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                       UPDATE_SIZE, ISAL_HASH_FIRST);
                 else if (len_rem <= UPDATE_SIZE)
-                        ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                 ISAL_HASH_LAST);
+                        errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i], len_rem,
+                                                       ISAL_HASH_LAST);
                 else
-                        ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 ISAL_HASH_UPDATE);
+                        errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                       UPDATE_SIZE, ISAL_HASH_UPDATE);
 
                 // Add jobs while available or finished
-                if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
+                if ((errc == 0) && ((ctx == NULL) || isal_hash_ctx_complete(ctx))) {
                         i++;
                         continue;
                 }
@@ -135,11 +141,12 @@ main(void)
         }
 
         // Start flushing finished jobs, end on last flushed
-        ctx = sm3_ctx_mgr_flush(mgr);
+        isal_sm3_ctx_mgr_flush(mgr, &ctx);
+
         while (ctx) {
                 if (isal_hash_ctx_complete(ctx)) {
                         debug_char('-');
-                        ctx = sm3_ctx_mgr_flush(mgr);
+                        isal_sm3_ctx_mgr_flush(mgr, &ctx);
                         continue;
                 }
                 // Resubmit unfinished job
@@ -149,20 +156,22 @@ main(void)
                 len_done = (int) ((uintptr_t) buf_ptr[i] - (uintptr_t) bufs[i]);
                 len_rem = TEST_LEN - len_done;
 
-                if (len_rem <= UPDATE_SIZE)
-                        ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                 ISAL_HASH_LAST);
-                else
-                        ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                 ISAL_HASH_UPDATE);
+                int errc = 0;
 
-                if (ctx == NULL)
-                        ctx = sm3_ctx_mgr_flush(mgr);
+                if (len_rem <= UPDATE_SIZE)
+                        errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i], len_rem,
+                                                       ISAL_HASH_LAST);
+                else
+                        errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                       UPDATE_SIZE, ISAL_HASH_UPDATE);
+
+                if (errc == 0 && ctx == NULL)
+                        isal_sm3_ctx_mgr_flush(mgr, &ctx);
         }
 
         // Check digests
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ref[i])[j])) {
                                 fail++;
@@ -186,21 +195,23 @@ main(void)
                         sm3_ossl(bufs[i], lens[i], digest_ref[i]);
                 }
 
-                sm3_ctx_mgr_init(mgr);
+                isal_sm3_ctx_mgr_init(mgr);
 
                 // Run sm3_sb jobs
                 i = 0;
                 while (i < jobs) {
                         // Submit a new job
-                        len_rand =
-                                SM3_BLOCK_SIZE + SM3_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
+                        len_rand = ISAL_SM3_BLOCK_SIZE +
+                                   ISAL_SM3_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
+
+                        int errc = 0;
 
                         if (lens[i] > len_rand)
-                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                         ISAL_HASH_FIRST);
+                                errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                               len_rand, ISAL_HASH_FIRST);
                         else
-                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], lens[i],
-                                                         ISAL_HASH_ENTIRE);
+                                errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                               lens[i], ISAL_HASH_ENTIRE);
 
                         // Returned ctx could be:
                         //  - null context (we are just getting started and lanes aren't full yet),
@@ -209,7 +220,7 @@ main(void)
                         //  returned), or
                         //  - an unfinished ctx, we will resubmit
 
-                        if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
+                        if ((errc == 0) && ((ctx == NULL) || isal_hash_ctx_complete(ctx))) {
                                 i++;
                                 continue;
                         } else {
@@ -217,25 +228,24 @@ main(void)
                                 // submit either UPDATE or LAST depending on the amount of buffer
                                 // remaining
                                 while ((ctx != NULL) && !(isal_hash_ctx_complete(ctx))) {
-                                        j = (unsigned long) (uintptr_t) (ctx->user_data); // Get
-                                                                                          // index
-                                                                                          // of the
-                                                                                          // returned
-                                                                                          // ctx
+                                        // Get index of the returned ctx
+                                        j = (unsigned long) (uintptr_t) (ctx->user_data);
                                         buf_ptr[j] = bufs[j] + ctx->total_length;
-                                        len_rand = (rand() % SM3_BLOCK_SIZE) *
+                                        len_rand = (rand() % ISAL_SM3_BLOCK_SIZE) *
                                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
                                         len_rem = lens[j] - ctx->total_length;
 
-                                        if (len_rem <=
-                                            len_rand) // submit the rest of the job as LAST
-                                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[j],
-                                                                         buf_ptr[j], len_rem,
-                                                                         ISAL_HASH_LAST);
+                                        if (len_rem <= len_rand)
+                                                // submit the rest of the job as LAST
+                                                errc = isal_sm3_ctx_mgr_submit(
+                                                        mgr, &ctxpool[j], &ctx, buf_ptr[j], len_rem,
+                                                        ISAL_HASH_LAST);
                                         else // submit the random update length as UPDATE
-                                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[j],
-                                                                         buf_ptr[j], len_rand,
-                                                                         ISAL_HASH_UPDATE);
+                                                errc = isal_sm3_ctx_mgr_submit(
+                                                        mgr, &ctxpool[j], &ctx, buf_ptr[j],
+                                                        len_rand, ISAL_HASH_UPDATE);
+                                        if (errc)
+                                                return 1;
                                 } // Either continue submitting any contexts returned here as
                                   // UPDATE/LAST, or
                                 // go back to submitting new jobs using the index i.
@@ -245,33 +255,42 @@ main(void)
                 }
 
                 // Start flushing finished jobs, end on last flushed
-                ctx = sm3_ctx_mgr_flush(mgr);
+                if (isal_sm3_ctx_mgr_flush(mgr, &ctx) != 0)
+                        return 1;
                 while (ctx) {
                         if (isal_hash_ctx_complete(ctx)) {
                                 debug_char('-');
-                                ctx = sm3_ctx_mgr_flush(mgr);
+                                if (isal_sm3_ctx_mgr_flush(mgr, &ctx) != 0)
+                                        return 1;
                                 continue;
                         }
                         // Resubmit unfinished job
                         i = (unsigned long) (uintptr_t) (ctx->user_data);
                         buf_ptr[i] = bufs[i] + ctx->total_length; // update buffer pointer
                         len_rem = lens[i] - ctx->total_length;
-                        len_rand = (rand() % SM3_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
+                        len_rand =
+                                (rand() % ISAL_SM3_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
                         debug_char('+');
-                        if (len_rem <= len_rand)
-                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                         ISAL_HASH_LAST);
-                        else
-                                ctx = sm3_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                         ISAL_HASH_UPDATE);
 
+                        int errc = 0;
+
+                        if (len_rem <= len_rand)
+                                errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                               len_rem, ISAL_HASH_LAST);
+                        else
+                                errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                               len_rand, ISAL_HASH_UPDATE);
+
+                        if (errc)
+                                return 1;
                         if (ctx == NULL)
-                                ctx = sm3_ctx_mgr_flush(mgr);
+                                if (isal_sm3_ctx_mgr_flush(mgr, &ctx) != 0)
+                                        return 1;
                 }
 
                 // Check result digest
                 for (i = 0; i < jobs; i++) {
-                        for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] !=
                                     to_le32(((uint32_t *) digest_ref[i])[j])) {
                                         fail++;
@@ -296,4 +315,8 @@ main(void)
                 printf(" multibinary_sm3_update rand: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }

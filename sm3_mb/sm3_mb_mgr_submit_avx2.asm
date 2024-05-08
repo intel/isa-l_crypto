@@ -84,11 +84,11 @@ section .text
 ; STACK_SPACE needs to be an odd multiple of 8
 %define STACK_SPACE	8*8 + 16*10 + 8
 
-; SM3_JOB* sm3_mb_mgr_submit_avx2(SM3_MB_JOB_MGR *state, SM3_JOB *job)
+; ISAL_SM3_JOB* _sm3_mb_mgr_submit_avx2(ISAL_SM3_MB_JOB_MGR *state, ISAL_SM3_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sm3_mb_mgr_submit_avx2, function
-sm3_mb_mgr_submit_avx2:
+mk_global _sm3_mb_mgr_submit_avx2, function, internal
+_sm3_mb_mgr_submit_avx2:
 	endbranch
 
 	sub     rsp, STACK_SPACE

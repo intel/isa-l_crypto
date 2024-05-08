@@ -34,13 +34,13 @@
 #include <openssl/evp.h>
 
 #define TEST_LEN       (1024 * 1024ull) // 1M
-#define TEST_BUFS      SM3_MAX_LANES
+#define TEST_BUFS      ISAL_SM3_MAX_LANES
 #define ROTATION_TIMES 10000 // total length processing = TEST_LEN * ROTATION_TIMES
-#define UPDATE_SIZE    (13 * SM3_BLOCK_SIZE)
+#define UPDATE_SIZE    (13 * ISAL_SM3_BLOCK_SIZE)
 #define LEN_TOTAL      (TEST_LEN * ROTATION_TIMES)
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ref_upd[4 * SM3_DIGEST_NWORDS];
+static uint8_t digest_ref_upd[4 * ISAL_SM3_DIGEST_NWORDS];
 
 struct user_data {
         int idx;
@@ -50,8 +50,8 @@ struct user_data {
 int
 main(void)
 {
-        SM3_HASH_CTX_MGR *mgr = NULL;
-        SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        ISAL_SM3_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, k, fail = 0;
         unsigned char *bufs[TEST_BUFS];
         struct user_data udata[TEST_BUFS];
@@ -60,13 +60,13 @@ main(void)
         unsigned int md_len;
         int ret;
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SM3_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
 
-        sm3_ctx_mgr_init(mgr);
+        isal_sm3_ctx_mgr_init(mgr);
 
         printf("sm3_large_test\n");
 
@@ -114,39 +114,41 @@ main(void)
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
                         else
-                                ctx = sm3_ctx_mgr_flush(mgr);
+                                isal_sm3_ctx_mgr_flush(mgr, &ctx);
                         continue;
                 } else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
                         len = (LEN_TOTAL - u->processed);
                         update_type = ISAL_HASH_LAST;
                 }
                 u->processed += len;
-                ctx = sm3_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);
 
-                if (NULL == ctx) {
+                const int errc =
+                        isal_sm3_ctx_mgr_submit(mgr, ctx, &ctx, bufs[idx], len, update_type);
+
+                if (errc == 0 && NULL == ctx) {
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
                         else
-                                ctx = sm3_ctx_mgr_flush(mgr);
+                                isal_sm3_ctx_mgr_flush(mgr, &ctx);
                 }
         }
 
         printf("multibuffer SM3 digest: \n");
         for (i = 0; i < TEST_BUFS; i++) {
                 printf("Total processing size of buf[%d] is %ld \n", i, ctxpool[i].total_length);
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         printf("digest%d : %08X\n", j, ctxpool[i].job.result_digest[j]);
                 }
         }
         printf("\n");
 
         printf("openssl SM3 update digest: \n");
-        for (i = 0; i < SM3_DIGEST_NWORDS; i++)
+        for (i = 0; i < ISAL_SM3_DIGEST_NWORDS; i++)
                 printf("%08X - ", to_le32(((uint32_t *) digest_ref_upd)[i]));
         printf("\n");
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SM3_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ref_upd)[j])) {
                                 fail++;
