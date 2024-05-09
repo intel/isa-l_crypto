@@ -143,7 +143,7 @@ void
 sha256_for_mh_sha256(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
         uint32_t i, j;
-        uint8_t buf[2 * SHA256_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA256_BLOCK_SIZE];
 
         digest[0] = MH_SHA256_H0;
         digest[1] = MH_SHA256_H1;
@@ -155,25 +155,25 @@ sha256_for_mh_sha256(const uint8_t *input_data, uint32_t *digest, const uint32_t
         digest[7] = MH_SHA256_H7;
 
         i = len;
-        while (i >= SHA256_BLOCK_SIZE) {
+        while (i >= ISAL_SHA256_BLOCK_SIZE) {
                 sha256_single_for_mh_sha256(input_data, digest);
-                input_data += SHA256_BLOCK_SIZE;
-                i -= SHA256_BLOCK_SIZE;
+                input_data += ISAL_SHA256_BLOCK_SIZE;
+                i -= ISAL_SHA256_BLOCK_SIZE;
         }
 
         memcpy(buf, input_data, i);
         buf[i++] = 0x80;
-        for (j = i; j < ((2 * SHA256_BLOCK_SIZE) - 8); j++)
+        for (j = i; j < ((2 * ISAL_SHA256_BLOCK_SIZE) - 8); j++)
                 buf[j] = 0;
 
-        if (i > SHA256_BLOCK_SIZE - 8)
-                i = 2 * SHA256_BLOCK_SIZE;
+        if (i > ISAL_SHA256_BLOCK_SIZE - 8)
+                i = 2 * ISAL_SHA256_BLOCK_SIZE;
         else
-                i = SHA256_BLOCK_SIZE;
+                i = ISAL_SHA256_BLOCK_SIZE;
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 
         sha256_single_for_mh_sha256(buf, digest);
-        if (i == (2 * SHA256_BLOCK_SIZE))
-                sha256_single_for_mh_sha256(buf + SHA256_BLOCK_SIZE, digest);
+        if (i == (2 * ISAL_SHA256_BLOCK_SIZE))
+                sha256_single_for_mh_sha256(buf + ISAL_SHA256_BLOCK_SIZE, digest);
 }

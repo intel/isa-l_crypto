@@ -38,7 +38,7 @@ mh_sha256_init(struct mh_sha256_ctx *ctx)
         uint32_t i;
 
         if (ctx == NULL)
-                return MH_SHA256_CTX_ERROR_NULL;
+                return ISAL_MH_SHA256_CTX_ERROR_NULL;
 
         memset(ctx, 0, sizeof(*ctx));
 
@@ -54,7 +54,7 @@ mh_sha256_init(struct mh_sha256_ctx *ctx)
                 mh_sha256_segs_digests[7][i] = MH_SHA256_H7;
         }
 
-        return MH_SHA256_CTX_ERROR_NONE;
+        return ISAL_MH_SHA256_CTX_ERROR_NONE;
 }
 
 int

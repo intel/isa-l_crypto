@@ -92,7 +92,7 @@ void
 sha256_for_mh_sha256(const uint8_t *input_data, uint32_t *digest, const uint32_t len);
 
 /**
- * @brief Calculate sha256 digest of blocks which size is SHA256_BLOCK_SIZE
+ * @brief Calculate sha256 digest of blocks which size is ISAL_SHA256_BLOCK_SIZE
  *
  * @param data   Pointer to data buffer containing the input message.
  * @param digest Pointer to sha256 digest.
@@ -110,7 +110,7 @@ sha256_single_for_mh_sha256(const uint8_t *data, uint32_t digest[]);
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * This function determines what instruction sets are enabled and selects the
@@ -126,12 +126,12 @@ sha256_single_for_mh_sha256(const uint8_t *data, uint32_t digest[]);
 void
 mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
                uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-               uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+               uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * @param  partial_buffer Pointer to the start addr of remainder
@@ -145,12 +145,12 @@ mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
                     uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                    uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * @requires SSE
@@ -166,12 +166,12 @@ mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+                   uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * @requires AVX
@@ -187,12 +187,12 @@ mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+                   uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * @requires AVX2
@@ -208,12 +208,12 @@ mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
                     uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                    uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
  *
- * Calculate the remainder of input data which is less than MH_SHA256_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA256_BLOCK_SIZE.
  * It will output the final SHA256 digest based on mh_sha256_segs_digests.
  *
  * @requires AVX512
@@ -229,10 +229,10 @@ mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
 void
 mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
                       uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                      uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
+                      uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * This function determines what instruction sets are enabled and selects the
  * appropriate version at runtime.
@@ -245,11 +245,12 @@ mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_block(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+mh_sha256_block(const uint8_t *input_data,
+                uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * @param  input_data Pointer to input data to be processed
  * @param  digests 16 segments digests
@@ -260,11 +261,11 @@ mh_sha256_block(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS]
  */
 void
 mh_sha256_block_base(const uint8_t *input_data,
-                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * @requires SSE
  * @param  input_data Pointer to input data to be processed
@@ -276,11 +277,11 @@ mh_sha256_block_base(const uint8_t *input_data,
  */
 void
 mh_sha256_block_sse(const uint8_t *input_data,
-                    uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+                    uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                    uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * @requires AVX
  *
@@ -293,11 +294,11 @@ mh_sha256_block_sse(const uint8_t *input_data,
  */
 void
 mh_sha256_block_avx(const uint8_t *input_data,
-                    uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+                    uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                    uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * @requires AVX2
  *
@@ -310,11 +311,11 @@ mh_sha256_block_avx(const uint8_t *input_data,
  */
 void
 mh_sha256_block_avx2(const uint8_t *input_data,
-                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha256 digest of blocks which size is MH_SHA256_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
  *
  * @requires AVX512
  *
@@ -327,8 +328,8 @@ mh_sha256_block_avx2(const uint8_t *input_data,
  */
 void
 mh_sha256_block_avx512(const uint8_t *input_data,
-                       uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                       uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+                       uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                       uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 #ifdef __cplusplus
 }

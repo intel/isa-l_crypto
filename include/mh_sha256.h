@@ -49,7 +49,7 @@
  *
  * Example
  * \code
- * uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS];
+ * uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS];
  * struct mh_sha256_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha256_ctx));
@@ -65,12 +65,29 @@
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define HASH_SEGS            ISAL_HASH_SEGS
+#define SHA256_BLOCK_SIZE    ISAL_SHA256_BLOCK_SIZE
+#define MH_SHA256_BLOCK_SIZE ISAL_MH_SHA256_BLOCK_SIZE
+#define SHA256_DIGEST_WORDS  ISAL_SHA256_DIGEST_WORDS
+#define AVX512_ALIGNED       ISAL_AVX512_ALIGNED
+
+#define MH_SHA256_CTX_ERROR_NONE ISAL_MH_SHA256_CTX_ERROR_NONE
+#define MH_SHA256_CTX_ERROR_NULL ISAL_MH_SHA256_CTX_ERROR_NULL
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 // External Interface Definition
-#define ISAL_HASH_SEGS       16
-#define SHA256_BLOCK_SIZE    64
-#define MH_SHA256_BLOCK_SIZE (ISAL_HASH_SEGS * SHA256_BLOCK_SIZE)
-#define SHA256_DIGEST_WORDS  8
-#define ISAL_AVX512_ALIGNED  64
+#define ISAL_HASH_SEGS            16
+#define ISAL_SHA256_BLOCK_SIZE    64
+#define ISAL_MH_SHA256_BLOCK_SIZE (ISAL_HASH_SEGS * ISAL_SHA256_BLOCK_SIZE)
+#define ISAL_SHA256_DIGEST_WORDS  8
+#define ISAL_AVX512_ALIGNED       64
 
 /** @brief Holds info describing a single mh_sha256
  *
@@ -78,16 +95,17 @@ extern "C" {
  *
  */
 struct mh_sha256_ctx {
-        uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]; //!< the digest of multi-hash SHA256
+        uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]; //!< the digest of multi-hash SHA256
 
         uint64_t total_length;
         //!<  Parameters for update feature, describe the lengths of input buffers in bytes
-        uint8_t partial_block_buffer[MH_SHA256_BLOCK_SIZE * 2];
+        uint8_t partial_block_buffer[ISAL_MH_SHA256_BLOCK_SIZE * 2];
         //!<  Padding the tail of input data for SHA256
-        uint8_t mh_sha256_interim_digests[sizeof(uint32_t) * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS];
+        uint8_t mh_sha256_interim_digests[sizeof(uint32_t) * ISAL_SHA256_DIGEST_WORDS *
+                                          ISAL_HASH_SEGS];
         //!<  Storing the SHA256 interim digests of  all 16 segments. Each time, it will be copied
         //!<  to stack for 64-byte alignment purpose.
-        uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE + ISAL_AVX512_ALIGNED];
+        uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE + ISAL_AVX512_ALIGNED];
         //!<  Re-structure sha256 block data from different segments to fit big endian. Use
         //!<  ISAL_AVX512_ALIGNED for 64-byte alignment purpose.
 };
@@ -97,8 +115,8 @@ struct mh_sha256_ctx {
  *  @brief CTX error flags
  */
 enum mh_sha256_ctx_error {
-        MH_SHA256_CTX_ERROR_NONE = 0,  //!< MH_SHA256_CTX_ERROR_NONE
-        MH_SHA256_CTX_ERROR_NULL = -1, //!< MH_SHA256_CTX_ERROR_NULL
+        ISAL_MH_SHA256_CTX_ERROR_NONE = 0,  //!< ISAL_MH_SHA256_CTX_ERROR_NONE
+        ISAL_MH_SHA256_CTX_ERROR_NULL = -1, //!< ISAL_MH_SHA256_CTX_ERROR_NULL
 };
 
 /*******************************************************************

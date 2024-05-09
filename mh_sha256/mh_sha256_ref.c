@@ -148,7 +148,7 @@ void
 sha256_for_mh_sha256_ref(const uint8_t *input_data, uint32_t *digest, const uint32_t len)
 {
         uint32_t i, j;
-        uint8_t buf[2 * SHA256_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA256_BLOCK_SIZE];
 
         digest[0] = MH_SHA256_H0;
         digest[1] = MH_SHA256_H1;
@@ -160,27 +160,27 @@ sha256_for_mh_sha256_ref(const uint8_t *input_data, uint32_t *digest, const uint
         digest[7] = MH_SHA256_H7;
 
         i = len;
-        while (i >= SHA256_BLOCK_SIZE) {
+        while (i >= ISAL_SHA256_BLOCK_SIZE) {
                 sha256_single_for_mh_sha256_ref(input_data, digest);
-                input_data += SHA256_BLOCK_SIZE;
-                i -= SHA256_BLOCK_SIZE;
+                input_data += ISAL_SHA256_BLOCK_SIZE;
+                i -= ISAL_SHA256_BLOCK_SIZE;
         }
 
         memcpy(buf, input_data, i);
         buf[i++] = 0x80;
-        for (j = i; j < ((2 * SHA256_BLOCK_SIZE) - 8); j++)
+        for (j = i; j < ((2 * ISAL_SHA256_BLOCK_SIZE) - 8); j++)
                 buf[j] = 0;
 
-        if (i > SHA256_BLOCK_SIZE - 8)
-                i = 2 * SHA256_BLOCK_SIZE;
+        if (i > ISAL_SHA256_BLOCK_SIZE - 8)
+                i = 2 * ISAL_SHA256_BLOCK_SIZE;
         else
-                i = SHA256_BLOCK_SIZE;
+                i = ISAL_SHA256_BLOCK_SIZE;
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 
         sha256_single_for_mh_sha256_ref(buf, digest);
-        if (i == (2 * SHA256_BLOCK_SIZE))
-                sha256_single_for_mh_sha256_ref(buf + SHA256_BLOCK_SIZE, digest);
+        if (i == (2 * ISAL_SHA256_BLOCK_SIZE))
+                sha256_single_for_mh_sha256_ref(buf + ISAL_SHA256_BLOCK_SIZE, digest);
 }
 
 /*
@@ -233,7 +233,7 @@ transform_input_single(uint32_t *new_data, uint32_t *input, uint32_t segment)
 static inline void
 transform_input(uint32_t *new_data, uint32_t *input, uint32_t block)
 {
-        uint32_t *current_input = input + block * MH_SHA256_BLOCK_SIZE / 4;
+        uint32_t *current_input = input + block * ISAL_MH_SHA256_BLOCK_SIZE / 4;
 
         transform_input_single(new_data, current_input, 0);
         transform_input_single(new_data, current_input, 1);
@@ -267,7 +267,8 @@ transform_input(uint32_t *new_data, uint32_t *input, uint32_t block)
  *
  */
 static inline void
-sha256_update_all_segs(uint32_t *new_data, uint32_t (*mh_sha256_seg_digests)[SHA256_DIGEST_WORDS])
+sha256_update_all_segs(uint32_t *new_data,
+                       uint32_t (*mh_sha256_seg_digests)[ISAL_SHA256_DIGEST_WORDS])
 {
         sha256_update_one_seg(&(new_data)[16 * 0], mh_sha256_seg_digests[0]);
         sha256_update_one_seg(&(new_data)[16 * 1], mh_sha256_seg_digests[1]);
@@ -289,21 +290,21 @@ sha256_update_all_segs(uint32_t *new_data, uint32_t (*mh_sha256_seg_digests)[SHA
 
 void
 mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[ISAL_HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
+                    uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i, j;
         uint32_t *temp_buffer = (uint32_t *) frame_buffer;
-        uint32_t(*trans_digests)[SHA256_DIGEST_WORDS];
+        uint32_t(*trans_digests)[ISAL_SHA256_DIGEST_WORDS];
 
-        trans_digests = (uint32_t(*)[SHA256_DIGEST_WORDS]) digests;
+        trans_digests = (uint32_t(*)[ISAL_SHA256_DIGEST_WORDS]) digests;
 
         // Re-structure seg_digests from 5*16 to 16*5
         for (j = 0; j < ISAL_HASH_SEGS; j++) {
-                for (i = 0; i < SHA256_DIGEST_WORDS; i++) {
-                        temp_buffer[j * SHA256_DIGEST_WORDS + i] = digests[i][j];
+                for (i = 0; i < ISAL_SHA256_DIGEST_WORDS; i++) {
+                        temp_buffer[j * ISAL_SHA256_DIGEST_WORDS + i] = digests[i][j];
                 }
         }
-        memcpy(trans_digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
+        memcpy(trans_digests, temp_buffer, 4 * ISAL_SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         // Calculate digests for all segments, leveraging sha256 API
         for (i = 0; i < num_blocks; i++) {
@@ -313,11 +314,11 @@ mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[ISAL_HASH_SEG
 
         // Re-structure seg_digests from 16*5 to 5*16
         for (j = 0; j < ISAL_HASH_SEGS; j++) {
-                for (i = 0; i < SHA256_DIGEST_WORDS; i++) {
+                for (i = 0; i < ISAL_SHA256_DIGEST_WORDS; i++) {
                         temp_buffer[i * ISAL_HASH_SEGS + j] = trans_digests[j][i];
                 }
         }
-        memcpy(digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
+        memcpy(digests, temp_buffer, 4 * ISAL_SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
@@ -325,31 +326,32 @@ mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[ISAL_HASH_SEG
 void
 mh_sha256_tail_ref(uint8_t *partial_buffer, uint32_t total_len,
                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t digests[SHA256_DIGEST_WORDS])
+                   uint32_t digests[ISAL_SHA256_DIGEST_WORDS])
 {
         uint64_t partial_buffer_len, len_in_bit;
 
-        partial_buffer_len = total_len % MH_SHA256_BLOCK_SIZE;
+        partial_buffer_len = total_len % ISAL_MH_SHA256_BLOCK_SIZE;
 
         // Padding the first block
         partial_buffer[partial_buffer_len] = 0x80;
         partial_buffer_len++;
-        memset(partial_buffer + partial_buffer_len, 0, MH_SHA256_BLOCK_SIZE - partial_buffer_len);
+        memset(partial_buffer + partial_buffer_len, 0,
+               ISAL_MH_SHA256_BLOCK_SIZE - partial_buffer_len);
 
         // Calculate the first block without total_length if padding needs 2 block
-        if (partial_buffer_len > (MH_SHA256_BLOCK_SIZE - 8)) {
+        if (partial_buffer_len > (ISAL_MH_SHA256_BLOCK_SIZE - 8)) {
                 mh_sha256_block_ref(partial_buffer, mh_sha256_segs_digests, frame_buffer, 1);
                 // Padding the second block
-                memset(partial_buffer, 0, MH_SHA256_BLOCK_SIZE);
+                memset(partial_buffer, 0, ISAL_MH_SHA256_BLOCK_SIZE);
         }
         // Padding the block
         len_in_bit = to_be64((uint64_t) total_len * 8);
-        *(uint64_t *) (partial_buffer + MH_SHA256_BLOCK_SIZE - 8) = len_in_bit;
+        *(uint64_t *) (partial_buffer + ISAL_MH_SHA256_BLOCK_SIZE - 8) = len_in_bit;
         mh_sha256_block_ref(partial_buffer, mh_sha256_segs_digests, frame_buffer, 1);
 
         // Calculate multi-hash SHA256 digests (segment digests as input message)
         sha256_for_mh_sha256_ref((uint8_t *) mh_sha256_segs_digests, digests,
-                                 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
+                                 4 * ISAL_SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
@@ -358,10 +360,10 @@ void
 mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
 {
         uint64_t total_len;
-        uint32_t num_blocks, mh_sha256_segs_digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS];
-        uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE];
-        uint8_t partial_block_buffer[MH_SHA256_BLOCK_SIZE * 2];
-        uint32_t mh_sha256_hash_dword[SHA256_DIGEST_WORDS];
+        uint32_t num_blocks, mh_sha256_segs_digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS];
+        uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE];
+        uint8_t partial_block_buffer[ISAL_MH_SHA256_BLOCK_SIZE * 2];
+        uint32_t mh_sha256_hash_dword[ISAL_SHA256_DIGEST_WORDS];
         uint32_t i;
         const uint8_t *input_data = (const uint8_t *) buffer;
 
@@ -380,12 +382,12 @@ mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
         total_len = len;
 
         // Calculate blocks
-        num_blocks = len / MH_SHA256_BLOCK_SIZE;
+        num_blocks = len / ISAL_MH_SHA256_BLOCK_SIZE;
         if (num_blocks > 0) {
                 // do num_blocks process
                 mh_sha256_block_ref(input_data, mh_sha256_segs_digests, frame_buffer, num_blocks);
-                len -= num_blocks * MH_SHA256_BLOCK_SIZE;
-                input_data += num_blocks * MH_SHA256_BLOCK_SIZE;
+                len -= num_blocks * ISAL_MH_SHA256_BLOCK_SIZE;
+                input_data += num_blocks * ISAL_MH_SHA256_BLOCK_SIZE;
         }
         // Store the partial block
         if (len != 0) {

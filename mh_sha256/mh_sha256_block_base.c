@@ -85,7 +85,7 @@ step(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uin
 }
 
 static inline void
-init_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
+init_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         uint8_t s;
         for (s = 0; s < ISAL_HASH_SEGS; s++)
@@ -93,7 +93,7 @@ init_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][IS
 }
 
 static inline void
-add_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
+add_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         uint8_t s;
         for (s = 0; s < ISAL_HASH_SEGS; s++)
@@ -169,14 +169,14 @@ mh_sha256_single(const uint8_t *input, uint32_t (*digests)[ISAL_HASH_SEGS], uint
 
 void
 mh_sha256_block_base(const uint8_t *input_data,
-                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
+                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i;
 
         for (i = 0; i < num_blocks; i++) {
                 mh_sha256_single(input_data, digests, frame_buffer);
-                input_data += MH_SHA256_BLOCK_SIZE;
+                input_data += ISAL_MH_SHA256_BLOCK_SIZE;
         }
 
         return;

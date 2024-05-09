@@ -113,7 +113,7 @@ test_mh_sha256_finalize_api(void)
 {
         int ret, retval = 1;
         struct mh_sha256_ctx *update_ctx = NULL;
-        uint32_t hash_test[SHA256_DIGEST_WORDS] = { 0 };
+        uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS] = { 0 };
         const char *func_name = "isal_mh_sha256_finalize";
 
         update_ctx = malloc(sizeof(*update_ctx));

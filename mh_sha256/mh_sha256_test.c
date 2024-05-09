@@ -53,7 +53,7 @@
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != MH_SHA256_CTX_ERROR_NONE) {                                         \
+                if ((state) != ISAL_MH_SHA256_CTX_ERROR_NONE) {                                    \
                         printf("The mh_sha256 function is failed.\n");                             \
                         return 1;                                                                  \
                 }                                                                                  \
@@ -86,12 +86,13 @@ dump(char *buf, int len)
 }
 
 int
-compare_digests(uint32_t hash_ref[SHA256_DIGEST_WORDS], uint32_t hash_test[SHA256_DIGEST_WORDS])
+compare_digests(uint32_t hash_ref[ISAL_SHA256_DIGEST_WORDS],
+                uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS])
 {
         int i;
         int mh_sha256_fail = 0;
 
-        for (i = 0; i < SHA256_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_SHA256_DIGEST_WORDS; i++) {
                 if (hash_test[i] != hash_ref[i])
                         mh_sha256_fail++;
         }
@@ -111,7 +112,7 @@ int
 main(int argc, char *argv[])
 {
         int fail = 0;
-        uint32_t hash_test[SHA256_DIGEST_WORDS], hash_ref[SHA256_DIGEST_WORDS];
+        uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS], hash_ref[ISAL_SHA256_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
         struct mh_sha256_ctx *update_ctx = NULL;

@@ -341,8 +341,8 @@ section .text
 
 align 32
 
-;void mh_sha256_block_avx(const uint8_t * input_data, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-;		uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+;void mh_sha256_block_avx(const uint8_t * input_data, uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+;		uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 ; arg 0 pointer to input data
 ; arg 1 pointer to digests, include segments digests(uint32_t digests[16][8])
 ; arg 2 pointer to aligned_frame_buffer which is used to save the big_endian data.
