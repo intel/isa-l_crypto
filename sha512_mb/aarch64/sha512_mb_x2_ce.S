@@ -192,7 +192,7 @@ Message variables
 
 
 /*
-	void sha512_mb_ce_x2(SHA512_JOB *, SHA512_JOB *, int);
+	void sha512_mb_ce_x2(ISAL_SHA512_JOB *, ISAL_SHA512_JOB *, int);
 */
 /*
 Arguments list

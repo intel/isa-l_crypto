@@ -46,7 +46,7 @@
 
 typedef uint32_t DigestSHA1[ISAL_SHA1_DIGEST_NWORDS];
 typedef uint32_t DigestSHA256[ISAL_SHA256_DIGEST_NWORDS];
-typedef uint64_t DigestSHA512[SHA512_DIGEST_NWORDS];
+typedef uint64_t DigestSHA512[ISAL_SHA512_DIGEST_NWORDS];
 
 static const uint8_t msg[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
 static const DigestSHA1 expResultDigest_sha1 = { 0x84983E44, 0x1C3BD26E, 0xBAAE4AA1, 0xF95129E5,
@@ -127,8 +127,8 @@ static int
 _sha512_self_test(void)
 {
 
-        SHA512_HASH_CTX_MGR mgr;
-        SHA512_HASH_CTX ctxpool, *ctx = NULL;
+        ISAL_SHA512_HASH_CTX_MGR mgr;
+        ISAL_SHA512_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
         sha512_ctx_mgr_init(&mgr);
@@ -143,7 +143,7 @@ _sha512_self_test(void)
                 ctx = sha512_ctx_mgr_flush(&mgr);
 
         if (ctx) {
-                for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA512_DIGEST_NWORDS; j++) {
                         if (expResultDigest_sha512[j] != ctxpool.job.result_digest[j])
                                 return -1;
                 }

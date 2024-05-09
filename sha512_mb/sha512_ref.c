@@ -53,7 +53,7 @@ void
 sha512_ref(uint8_t *input_data, uint64_t *digest, uint32_t len)
 {
         uint32_t i, j;
-        uint8_t buf[2 * SHA512_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA512_BLOCK_SIZE];
 
         /* 128 bit lengths not needed as len is uint32_t, so use 64 bit length
          * and pad the first 64 bits with zeros. */
@@ -69,10 +69,10 @@ sha512_ref(uint8_t *input_data, uint64_t *digest, uint32_t len)
 
         i = len;
         /* Hash the complete blocks */
-        while (i >= SHA512_BLOCK_SIZE) {
+        while (i >= ISAL_SHA512_BLOCK_SIZE) {
                 sha512_single(input_data, digest);
-                input_data += SHA512_BLOCK_SIZE;
-                i -= SHA512_BLOCK_SIZE;
+                input_data += ISAL_SHA512_BLOCK_SIZE;
+                i -= ISAL_SHA512_BLOCK_SIZE;
         }
 
         /* Copy remainder to a buffer to be padded */
@@ -80,13 +80,13 @@ sha512_ref(uint8_t *input_data, uint64_t *digest, uint32_t len)
         buf[i++] = 0x80;
 
         // Pad more than required here and overwrite with length
-        for (j = i; j < (2 * SHA512_BLOCK_SIZE); j++)
+        for (j = i; j < (2 * ISAL_SHA512_BLOCK_SIZE); j++)
                 buf[j] = 0;
 
-        if (i > SHA512_BLOCK_SIZE - SHA512_PADLENGTHFIELD_SIZE)
-                i = 2 * SHA512_BLOCK_SIZE;
+        if (i > ISAL_SHA512_BLOCK_SIZE - ISAL_SHA512_PADLENGTHFIELD_SIZE)
+                i = 2 * ISAL_SHA512_BLOCK_SIZE;
         else
-                i = SHA512_BLOCK_SIZE;
+                i = ISAL_SHA512_BLOCK_SIZE;
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
 

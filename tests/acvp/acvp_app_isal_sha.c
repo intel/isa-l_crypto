@@ -198,8 +198,8 @@ sha_handler(ACVP_TEST_CASE *test_case)
                 break;
         }
         case ACVP_SUB_HASH_SHA2_512: {
-                SHA512_HASH_CTX_MGR sha512_mgr;
-                SHA512_HASH_CTX sha512_ctx;
+                ISAL_SHA512_HASH_CTX_MGR sha512_mgr;
+                ISAL_SHA512_HASH_CTX sha512_ctx;
                 sha512_ctx_mgr_init(&sha512_mgr);
                 isal_hash_ctx_init(&sha512_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
@@ -225,7 +225,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                 ;
                 }
 
-                md_qcpy(tc->md, sha512_ctx.job.result_digest, SHA512_DIGEST_NWORDS);
+                md_qcpy(tc->md, sha512_ctx.job.result_digest, ISAL_SHA512_DIGEST_NWORDS);
                 tc->md_len = ISAL_SHA256_DIGEST_NWORDS * 8;
                 break;
         }

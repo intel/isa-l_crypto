@@ -43,10 +43,10 @@
 
 #if SHA512_MB_CE_MAX_LANES >= 2
 void
-sha512_mb_ce_x2(SHA512_JOB *, SHA512_JOB *, int);
+sha512_mb_ce_x2(ISAL_SHA512_JOB *, ISAL_SHA512_JOB *, int);
 #endif
 void
-sha512_mb_ce_x1(SHA512_JOB *, int);
+sha512_mb_ce_x1(ISAL_SHA512_JOB *, int);
 
 #define LANE_IS_NOT_FINISHED(state, i)                                                             \
         (((state->lens[i] & (~0xf)) != 0) && state->ldata[i].job_in_lane != NULL)
@@ -57,7 +57,7 @@ sha512_mb_ce_x1(SHA512_JOB *, int);
 #define LANE_IS_INVALID(state, i)                                                                  \
         (((state->lens[i] & (~0xf)) != 0) && state->ldata[i].job_in_lane == NULL)
 void
-sha512_mb_mgr_init_ce(SHA512_MB_JOB_MGR *state)
+sha512_mb_mgr_init_ce(ISAL_SHA512_MB_JOB_MGR *state)
 {
         int i;
         //~ state->unused_lanes = 0xf3210;
@@ -71,18 +71,18 @@ sha512_mb_mgr_init_ce(SHA512_MB_JOB_MGR *state)
         }
 
         // lanes > SHA1_MB_CE_MAX_LANES is invalid lane
-        for (i = SHA512_MB_CE_MAX_LANES; i < SHA512_MAX_LANES; i++) {
+        for (i = SHA512_MB_CE_MAX_LANES; i < ISAL_SHA512_MAX_LANES; i++) {
                 state->lens[i] = 0xf;
                 state->ldata[i].job_in_lane = 0;
         }
 }
 
 static int
-sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR *state)
+sha512_mb_mgr_do_jobs(ISAL_SHA512_MB_JOB_MGR *state)
 {
         int lane_idx, len, i, lanes;
 
-        int lane_idx_array[SHA512_MAX_LANES];
+        int lane_idx_array[ISAL_SHA512_MAX_LANES];
 
         if (state->num_lanes_inuse == 0) {
                 return -1;
@@ -99,7 +99,7 @@ sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR *state)
 #endif
         {
                 lanes = 0, len = 0;
-                for (i = 0; i < SHA512_MAX_LANES && lanes < state->num_lanes_inuse; i++) {
+                for (i = 0; i < ISAL_SHA512_MAX_LANES && lanes < state->num_lanes_inuse; i++) {
                         if (LANE_IS_NOT_FINISHED(state, i)) {
                                 if (lanes)
                                         len = min(len, state->lens[i]);
@@ -125,7 +125,7 @@ sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR *state)
                 }
         }
         // only return the min length job
-        for (i = 0; i < SHA512_MAX_LANES; i++) {
+        for (i = 0; i < ISAL_SHA512_MAX_LANES; i++) {
                 if (LANE_IS_NOT_FINISHED(state, i)) {
                         state->lens[i] -= len;
                         state->ldata[i].job_in_lane->len -= len;
@@ -136,11 +136,11 @@ sha512_mb_mgr_do_jobs(SHA512_MB_JOB_MGR *state)
         return lane_idx;
 }
 
-static SHA512_JOB *
-sha512_mb_mgr_free_lane(SHA512_MB_JOB_MGR *state)
+static ISAL_SHA512_JOB *
+sha512_mb_mgr_free_lane(ISAL_SHA512_MB_JOB_MGR *state)
 {
         int i;
-        SHA512_JOB *ret = NULL;
+        ISAL_SHA512_JOB *ret = NULL;
 
         for (i = 0; i < SHA512_MB_CE_MAX_LANES; i++) {
                 if (LANE_IS_FINISHED(state, i)) {
@@ -158,7 +158,7 @@ sha512_mb_mgr_free_lane(SHA512_MB_JOB_MGR *state)
 }
 
 static void
-sha512_mb_mgr_insert_job(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
+sha512_mb_mgr_insert_job(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job)
 {
         int lane_idx;
         // add job into lanes
@@ -171,13 +171,13 @@ sha512_mb_mgr_insert_job(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
         state->num_lanes_inuse++;
 }
 
-SHA512_JOB *
-sha512_mb_mgr_submit_ce(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
+ISAL_SHA512_JOB *
+sha512_mb_mgr_submit_ce(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job)
 {
 #ifndef NDEBUG
         int lane_idx;
 #endif
-        SHA512_JOB *ret;
+        ISAL_SHA512_JOB *ret;
 
         // add job into lanes
         sha512_mb_mgr_insert_job(state, job);
@@ -201,10 +201,10 @@ sha512_mb_mgr_submit_ce(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
         return ret;
 }
 
-SHA512_JOB *
-sha512_mb_mgr_flush_ce(SHA512_MB_JOB_MGR *state)
+ISAL_SHA512_JOB *
+sha512_mb_mgr_flush_ce(ISAL_SHA512_MB_JOB_MGR *state)
 {
-        SHA512_JOB *ret;
+        ISAL_SHA512_JOB *ret;
         ret = sha512_mb_mgr_free_lane(state);
         if (ret) {
                 return ret;

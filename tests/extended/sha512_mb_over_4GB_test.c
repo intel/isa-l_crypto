@@ -34,13 +34,13 @@
 #include <openssl/evp.h>
 
 #define TEST_LEN       (1024 * 1024ull) // 1M
-#define TEST_BUFS      SHA512_MIN_LANES
+#define TEST_BUFS      ISAL_SHA512_MIN_LANES
 #define ROTATION_TIMES 10000 // total length processing = TEST_LEN * ROTATION_TIMES
-#define UPDATE_SIZE    (13 * SHA512_BLOCK_SIZE)
+#define UPDATE_SIZE    (13 * ISAL_SHA512_BLOCK_SIZE)
 #define LEN_TOTAL      (TEST_LEN * ROTATION_TIMES)
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ref_upd[8 * SHA512_DIGEST_NWORDS];
+static uint8_t digest_ref_upd[8 * ISAL_SHA512_DIGEST_NWORDS];
 
 struct user_data {
         int idx;
@@ -52,14 +52,14 @@ main(void)
 {
         // Initialize OpenSSL Ctx
         EVP_MD_CTX *o_ctx = EVP_MD_CTX_new();
-        SHA512_HASH_CTX_MGR *mgr = NULL;
-        SHA512_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        ISAL_SHA512_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA512_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, k, fail = 0;
         unsigned char *bufs[TEST_BUFS];
         struct user_data udata[TEST_BUFS];
         int ret;
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -129,19 +129,19 @@ main(void)
         printf("multibuffer sha512 digest: \n");
         for (i = 0; i < TEST_BUFS; i++) {
                 printf("Total processing size of buf[%d] is %ld \n", i, ctxpool[i].total_length);
-                for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA512_DIGEST_NWORDS; j++) {
                         printf("digest%d : %016lX\n", j, ctxpool[i].job.result_digest[j]);
                 }
         }
         printf("\n");
 
         printf("openssl sha512 update digest: \n");
-        for (i = 0; i < SHA512_DIGEST_NWORDS; i++)
+        for (i = 0; i < ISAL_SHA512_DIGEST_NWORDS; i++)
                 printf("%016lX - ", to_be64(((uint64_t *) digest_ref_upd)[i]));
         printf("\n");
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < SHA512_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_SHA512_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_be64(((uint64_t *) digest_ref_upd)[j])) {
                                 fail++;

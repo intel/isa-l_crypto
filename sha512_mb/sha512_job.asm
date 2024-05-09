@@ -38,7 +38,7 @@
 %define ISAL_STS_COMPLETED		2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Define SHA512_JOB structure
+;;;; Define ISAL_SHA512_JOB structure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 START_FIELDS	; JOB_SHA512
@@ -50,5 +50,5 @@ FIELD	_result_digest,			8*8,	64	; Digest (output)
 FIELD	_status,			4,	4
 FIELD	_user_data,			8,	8
 
-%assign _SHA512_JOB_size	_FIELD_OFFSET
-%assign _SHA512_JOB_align	_STRUCT_ALIGN
+%assign _ISAL_SHA512_JOB_size	_FIELD_OFFSET
+%assign _ISAL_SHA512_JOB_align	_STRUCT_ALIGN

@@ -49,11 +49,11 @@
  * Argument: state - not really used.
  *           job - contained message, digest, message length information, etc.
  *
- * Return: SHA512_JOB pointer.
+ * Return: ISAL_SHA512_JOB pointer.
  *
  **/
-SHA512_JOB *
-_sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
+ISAL_SHA512_JOB *
+_sha512_sb_mgr_submit_sse4(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job)
 {
         assert(job != NULL);
 

@@ -30,7 +30,7 @@
 #include "sha512_mb.h"
 
 void
-_sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR *state)
+_sha512_mb_mgr_init_sse(ISAL_SHA512_MB_JOB_MGR *state)
 {
         unsigned int j;
 
@@ -39,7 +39,7 @@ _sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR *state)
         state->lens[1] = 1;
         state->unused_lanes = 0xFF0100;
         state->num_lanes_inuse = 0;
-        for (j = 0; j < SHA512_MIN_LANES; j++) {
+        for (j = 0; j < ISAL_SHA512_MIN_LANES; j++) {
                 state->ldata[j].job_in_lane = 0;
         }
 }

@@ -30,7 +30,7 @@
 #include "sha512_mb_internal.h"
 
 void
-_sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state)
+_sha512_mb_mgr_init_avx2(ISAL_SHA512_MB_JOB_MGR *state)
 {
         unsigned int j;
 
@@ -41,7 +41,7 @@ _sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state)
         state->lens[3] = 3;
         state->unused_lanes = 0xFF03020100;
         state->num_lanes_inuse = 0;
-        for (j = 0; j < SHA512_X4_LANES; j++) {
+        for (j = 0; j < ISAL_SHA512_X4_LANES; j++) {
                 state->ldata[j].job_in_lane = 0;
         }
 }

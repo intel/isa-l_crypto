@@ -71,24 +71,24 @@
         h = t1 + t2;
 
 static void
-sha512_init(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha512_init(ISAL_SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len);
+sha512_update(ISAL_SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-sha512_final(SHA512_HASH_CTX *ctx);
+sha512_final(ISAL_SHA512_HASH_CTX *ctx);
 static void
 sha512_single(const void *data, uint64_t digest[]);
 static inline void
-hash_init_digest(SHA512_WORD_T *digest);
+hash_init_digest(ISAL_SHA512_WORD_T *digest);
 
 void
-_sha512_ctx_mgr_init_base(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_init_base(ISAL_SHA512_HASH_CTX_MGR *mgr)
 {
 }
 
-SHA512_HASH_CTX *
-_sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
-                            uint32_t len, ISAL_HASH_CTX_FLAG flags)
+ISAL_SHA512_HASH_CTX *
+_sha512_ctx_mgr_submit_base(ISAL_SHA512_HASH_CTX_MGR *mgr, ISAL_SHA512_HASH_CTX *ctx,
+                            const void *buffer, uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -132,14 +132,14 @@ _sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, cons
         return ctx;
 }
 
-SHA512_HASH_CTX *
-_sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR *mgr)
+ISAL_SHA512_HASH_CTX *
+_sha512_ctx_mgr_flush_base(ISAL_SHA512_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
 
 static void
-sha512_init(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha512_init(ISAL_SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         // Init digest
         hash_init_digest(ctx->job.result_digest);
@@ -158,7 +158,7 @@ sha512_init(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
+sha512_update(ISAL_SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         uint32_t remain_len = len;
         uint64_t *digest = ctx->job.result_digest;
@@ -169,9 +169,9 @@ sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (remain_len < SHA512_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (remain_len < ISAL_SHA512_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = SHA512_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_SHA512_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (remain_len < copy_len) {
                         copy_len = remain_len;
                 }
@@ -186,20 +186,20 @@ sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
                         buffer = (void *) ((uint8_t *) buffer + copy_len);
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= SHA512_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_SHA512_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= SHA512_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_SHA512_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
                         sha512_single(ctx->partial_block_buffer, digest);
                 }
         }
         // If the extra blocks are empty, begin hashing what remains in the user's buffer.
         if (ctx->partial_block_buffer_length == 0) {
-                while (remain_len >= SHA512_BLOCK_SIZE) {
+                while (remain_len >= ISAL_SHA512_BLOCK_SIZE) {
                         sha512_single(buffer, digest);
-                        buffer = (void *) ((uint8_t *) buffer + SHA512_BLOCK_SIZE);
-                        remain_len -= SHA512_BLOCK_SIZE;
+                        buffer = (void *) ((uint8_t *) buffer + ISAL_SHA512_BLOCK_SIZE);
+                        remain_len -= ISAL_SHA512_BLOCK_SIZE;
                 }
         }
 
@@ -213,30 +213,30 @@ sha512_update(SHA512_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-sha512_final(SHA512_HASH_CTX *ctx)
+sha512_final(ISAL_SHA512_HASH_CTX *ctx)
 {
         const void *buffer = ctx->partial_block_buffer;
         uint32_t i = ctx->partial_block_buffer_length;
-        uint8_t buf[2 * SHA512_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_SHA512_BLOCK_SIZE];
         uint64_t *digest = ctx->job.result_digest;
 
         memcpy(buf, buffer, i);
         buf[i++] = 0x80;
-        for (uint32_t j = i; j < (2 * SHA512_BLOCK_SIZE); j++) {
+        for (uint32_t j = i; j < (2 * ISAL_SHA512_BLOCK_SIZE); j++) {
                 buf[j] = 0;
         }
 
-        if (i > SHA512_BLOCK_SIZE - SHA512_PADLENGTHFIELD_SIZE) {
-                i = 2 * SHA512_BLOCK_SIZE;
+        if (i > ISAL_SHA512_BLOCK_SIZE - ISAL_SHA512_PADLENGTHFIELD_SIZE) {
+                i = 2 * ISAL_SHA512_BLOCK_SIZE;
         } else {
-                i = SHA512_BLOCK_SIZE;
+                i = ISAL_SHA512_BLOCK_SIZE;
         }
 
         *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) ctx->total_length * 8);
 
         sha512_single(buf, digest);
-        if (i == 2 * SHA512_BLOCK_SIZE) {
-                sha512_single(buf + SHA512_BLOCK_SIZE, digest);
+        if (i == 2 * ISAL_SHA512_BLOCK_SIZE) {
+                sha512_single(buf + ISAL_SHA512_BLOCK_SIZE, digest);
         }
 
         ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
@@ -351,10 +351,10 @@ sha512_single(const void *data, uint64_t digest[])
 }
 
 static inline void
-hash_init_digest(SHA512_WORD_T *digest)
+hash_init_digest(ISAL_SHA512_WORD_T *digest)
 {
-        static const SHA512_WORD_T hash_initial_digest[SHA512_DIGEST_NWORDS] = {
-                SHA512_INITIAL_DIGEST
+        static const ISAL_SHA512_WORD_T hash_initial_digest[ISAL_SHA512_DIGEST_NWORDS] = {
+                ISAL_SHA512_INITIAL_DIGEST
         };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }

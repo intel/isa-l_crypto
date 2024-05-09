@@ -98,7 +98,7 @@ endstruc
 %define _GPR_SAVE       stack_frame.rsp
 %define STACK_SPACE     stack_frame_size
 
-; SHA512_JOB* _sha512_mb_mgr_submit_avx2(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
+; ISAL_SHA512_JOB* _sha512_mb_mgr_submit_avx2(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
 mk_global _sha512_mb_mgr_submit_avx2, function, internal

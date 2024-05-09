@@ -33,7 +33,7 @@
 // This function is required, to comply with the usage of
 // multi-buffer APIs.
 void
-_sha512_sb_mgr_init_sse4(SHA512_MB_JOB_MGR *state)
+_sha512_sb_mgr_init_sse4(ISAL_SHA512_MB_JOB_MGR *state)
 {
         return;
 }

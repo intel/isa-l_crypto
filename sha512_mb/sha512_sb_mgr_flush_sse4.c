@@ -40,8 +40,8 @@
  * Return: always NULL.
  *
  * */
-SHA512_JOB *
-_sha512_sb_mgr_flush_sse4(SHA512_MB_JOB_MGR *state)
+ISAL_SHA512_JOB *
+_sha512_sb_mgr_flush_sse4(ISAL_SHA512_MB_JOB_MGR *state)
 {
         return NULL;
 }

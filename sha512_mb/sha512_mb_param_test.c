@@ -37,10 +37,10 @@
 static int
 test_sha512_mb_init_api(void)
 {
-        SHA512_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA512_HASH_CTX_MGR *mgr = NULL;
         int rc, ret = -1;
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -63,13 +63,13 @@ end_init:
 static int
 test_sha512_mb_submit_api(void)
 {
-        SHA512_HASH_CTX_MGR *mgr = NULL;
-        SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        ISAL_SHA512_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
         int rc, ret = -1;
         const char *fn_name = "isal_sha512_ctx_mgr_submit";
         static uint8_t msg[] = "Test message";
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -151,12 +151,12 @@ end_submit:
 static int
 test_sha512_mb_flush_api(void)
 {
-        SHA512_HASH_CTX_MGR *mgr = NULL;
-        SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        ISAL_SHA512_HASH_CTX_MGR *mgr = NULL;
+        ISAL_SHA512_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
         int rc, ret = -1;
         const char *fn_name = "isal_sha512_ctx_mgr_flush";
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(SHA512_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
