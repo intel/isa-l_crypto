@@ -36,8 +36,8 @@
 #include "mh_sha256_internal.h"
 #include <string.h>
 
-#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_base
-#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_base
+#define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_base
+#define MH_SHA256_BLOCK_FUNCTION  _mh_sha256_block_base
 #define MH_SHA256_UPDATE_SLVER
 #endif
 
@@ -105,6 +105,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha256_update_base_slver_000002ba;
-struct slver mh_sha256_update_base_slver = { 0x02ba, 0x00, 0x00 };
+struct slver _mh_sha256_update_base_slver_000002ba;
+struct slver _mh_sha256_update_base_slver = { 0x02ba, 0x00, 0x00 };
 #endif

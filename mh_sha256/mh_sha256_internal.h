@@ -81,6 +81,211 @@ extern "C" {
  ******************************************************************/
 
 /**
+ * @brief Initialize the mh_sha256_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha256 info
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha256_init(struct mh_sha256_ctx *ctx);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha256 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for multi-hash sha256.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/*******************************************************************
+ * multi-types of mh_sha256 internal API
+ *
+ * XXXX		The multi-binary version
+ * XXXX_base	The C code version which used to display the algorithm
+ * XXXX_sse	The version uses a ASM function optimized for SSE
+ * XXXX_avx	The version uses a ASM function optimized for AVX
+ * XXXX_avx2	The version uses a ASM function optimized for AVX2
+ * XXXX_avx512	The version uses a ASM function optimized for AVX512
+ *
+ ******************************************************************/
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * Base update() function that does not require SIMD support.
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for multi-hash sha256.
+ *
+ * Place the message digests in mh_sha256_digest,
+ * which must have enough space for the outputs.
+ * Base Finalize() function that does not require SIMD support.
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires SSE
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_update_sse(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_update_avx(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX2
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_update_avx2(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Multi-hash sha256 update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX512
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   buffer Pointer to buffer to be processed
+ * @param   len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_update_avx512(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires SSE
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_finalize_sse(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_finalize_avx(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX2
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_finalize_avx2(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digest in mh_sha256_digest which must have enough space
+ * for the outputs.
+ *
+ * @requires AVX512
+ *
+ * @param   ctx Structure holding mh_sha256 info
+ * @param   mh_sha256_digest The digest of mh_sha256
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha256_finalize_avx512(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+
+/**
  * @brief Performs complete SHA256 algorithm.
  *
  * @param input  Pointer to buffer containing the input message.
@@ -124,9 +329,9 @@ sha256_single_for_mh_sha256(const uint8_t *data, uint32_t digest[]);
  *
  */
 void
-mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
-               uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-               uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
+                uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
@@ -143,9 +348,9 @@ mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
-                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
+                     uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                     uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
@@ -164,9 +369,9 @@ mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
+                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
@@ -185,9 +390,9 @@ mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
+                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
@@ -206,9 +411,9 @@ mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
-                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                    uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
+                     uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                     uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha256.
@@ -227,9 +432,9 @@ mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
-                      uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
-                      uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
+_mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
+                       uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                       uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -245,9 +450,9 @@ mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_block(const uint8_t *input_data,
-                uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block(const uint8_t *input_data,
+                 uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                 uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -260,9 +465,9 @@ mh_sha256_block(const uint8_t *input_data,
  *
  */
 void
-mh_sha256_block_base(const uint8_t *input_data,
-                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block_base(const uint8_t *input_data,
+                      uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                      uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -276,9 +481,9 @@ mh_sha256_block_base(const uint8_t *input_data,
  *
  */
 void
-mh_sha256_block_sse(const uint8_t *input_data,
-                    uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                    uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block_sse(const uint8_t *input_data,
+                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -293,9 +498,9 @@ mh_sha256_block_sse(const uint8_t *input_data,
  *
  */
 void
-mh_sha256_block_avx(const uint8_t *input_data,
-                    uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                    uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block_avx(const uint8_t *input_data,
+                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -310,9 +515,9 @@ mh_sha256_block_avx(const uint8_t *input_data,
  *
  */
 void
-mh_sha256_block_avx2(const uint8_t *input_data,
-                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block_avx2(const uint8_t *input_data,
+                      uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                      uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
  * @brief  Calculate mh_sha256 digest of blocks which size is ISAL_MH_SHA256_BLOCK_SIZE*N.
@@ -327,9 +532,9 @@ mh_sha256_block_avx2(const uint8_t *input_data,
  *
  */
 void
-mh_sha256_block_avx512(const uint8_t *input_data,
-                       uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                       uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha256_block_avx512(const uint8_t *input_data,
+                        uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                        uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 #ifdef __cplusplus
 }

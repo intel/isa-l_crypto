@@ -32,7 +32,7 @@
 #include "isal_crypto_api.h"
 
 int
-mh_sha256_init(struct mh_sha256_ctx *ctx)
+_mh_sha256_init(struct mh_sha256_ctx *ctx)
 {
         uint32_t(*mh_sha256_segs_digests)[ISAL_HASH_SEGS];
         uint32_t i;
@@ -67,7 +67,7 @@ isal_mh_sha256_init(struct mh_sha256_ctx *ctx)
         if (ctx == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-        return mh_sha256_init(ctx);
+        return _mh_sha256_init(ctx);
 #endif
 }
 
@@ -83,7 +83,7 @@ isal_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t le
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-        return mh_sha256_update(ctx, buffer, len);
+        return _mh_sha256_update(ctx, buffer, len);
 #endif
 }
 
@@ -99,30 +99,66 @@ isal_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
         if (mh_sha256_digest == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
 #endif
-        return mh_sha256_finalize(ctx, mh_sha256_digest);
+        return _mh_sha256_finalize(ctx, mh_sha256_digest);
 #endif
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+int
+mh_sha256_init(struct mh_sha256_ctx *ctx)
+{
+        return _mh_sha256_init(ctx);
+}
+
+int
+mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+{
+        return _mh_sha256_update(ctx, buffer, len);
+}
+
+int
+mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+{
+        return _mh_sha256_finalize(ctx, mh_sha256_digest);
+}
+
+int
+mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+{
+        return _mh_sha256_update_base(ctx, buffer, len);
+}
+
+int
+mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+{
+        return _mh_sha256_finalize_base(ctx, mh_sha256_digest);
 }
 
 #if (!defined(NOARCH)) &&                                                                          \
         (defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86))
 /***************mh_sha256_update***********/
 // mh_sha256_update_sse.c
-#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_sse
-#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_sse
+#define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_sse
+#define MH_SHA256_BLOCK_FUNCTION  _mh_sha256_block_sse
 #include "mh_sha256_update_base.c"
 #undef MH_SHA256_UPDATE_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
 
 // mh_sha256_update_avx.c
-#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_avx
-#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_avx
+#define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_avx
+#define MH_SHA256_BLOCK_FUNCTION  _mh_sha256_block_avx
 #include "mh_sha256_update_base.c"
 #undef MH_SHA256_UPDATE_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
 
 // mh_sha256_update_avx2.c
-#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_avx2
-#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_avx2
+#define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_avx2
+#define MH_SHA256_BLOCK_FUNCTION  _mh_sha256_block_avx2
 #include "mh_sha256_update_base.c"
 #undef MH_SHA256_UPDATE_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
@@ -132,27 +168,27 @@ isal_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
 // mh_sha256_finalize is a mh_sha256_ctx wrapper of mh_sha256_tail
 
 // mh_sha256_finalize_sse.c and mh_sha256_tail_sse.c
-#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_sse
-#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_sse
-#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_sse
+#define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_sse
+#define MH_SHA256_TAIL_FUNCTION     _mh_sha256_tail_sse
+#define MH_SHA256_BLOCK_FUNCTION    _mh_sha256_block_sse
 #include "mh_sha256_finalize_base.c"
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
 
 // mh_sha256_finalize_avx.c and mh_sha256_tail_avx.c
-#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_avx
-#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_avx
-#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_avx
+#define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_avx
+#define MH_SHA256_TAIL_FUNCTION     _mh_sha256_tail_avx
+#define MH_SHA256_BLOCK_FUNCTION    _mh_sha256_block_avx
 #include "mh_sha256_finalize_base.c"
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
 
 // mh_sha256_finalize_avx2.c and mh_sha256_tail_avx2.c
-#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_avx2
-#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_avx2
-#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_avx2
+#define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_avx2
+#define MH_SHA256_TAIL_FUNCTION     _mh_sha256_tail_avx2
+#define MH_SHA256_BLOCK_FUNCTION    _mh_sha256_block_avx2
 #include "mh_sha256_finalize_base.c"
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
@@ -170,22 +206,22 @@ struct slver mh_sha256_init_slver_000002b1;
 struct slver mh_sha256_init_slver = { 0x02b1, 0x00, 0x00 };
 
 // mh_sha256_update version info
-struct slver mh_sha256_update_sse_slver_000002b4;
-struct slver mh_sha256_update_sse_slver = { 0x02b4, 0x00, 0x00 };
+struct slver _mh_sha256_update_sse_slver_000002b4;
+struct slver _mh_sha256_update_sse_slver = { 0x02b4, 0x00, 0x00 };
 
-struct slver mh_sha256_update_avx_slver_020002b6;
-struct slver mh_sha256_update_avx_slver = { 0x02b6, 0x00, 0x02 };
+struct slver _mh_sha256_update_avx_slver_020002b6;
+struct slver _mh_sha256_update_avx_slver = { 0x02b6, 0x00, 0x02 };
 
-struct slver mh_sha256_update_avx2_slver_040002b8;
-struct slver mh_sha256_update_avx2_slver = { 0x02b8, 0x00, 0x04 };
+struct slver _mh_sha256_update_avx2_slver_040002b8;
+struct slver _mh_sha256_update_avx2_slver = { 0x02b8, 0x00, 0x04 };
 
 // mh_sha256_finalize version info
-struct slver mh_sha256_finalize_sse_slver_000002b5;
-struct slver mh_sha256_finalize_sse_slver = { 0x02b5, 0x00, 0x00 };
+struct slver _mh_sha256_finalize_sse_slver_000002b5;
+struct slver _mh_sha256_finalize_sse_slver = { 0x02b5, 0x00, 0x00 };
 
-struct slver mh_sha256_finalize_avx_slver_020002b7;
-struct slver mh_sha256_finalize_avx_slver = { 0x02b7, 0x00, 0x02 };
+struct slver _mh_sha256_finalize_avx_slver_020002b7;
+struct slver _mh_sha256_finalize_avx_slver = { 0x02b7, 0x00, 0x02 };
 
-struct slver mh_sha256_finalize_avx2_slver_040002b9;
-struct slver mh_sha256_finalize_avx2_slver = { 0x02b9, 0x00, 0x04 };
+struct slver _mh_sha256_finalize_avx2_slver_040002b9;
+struct slver _mh_sha256_finalize_avx2_slver = { 0x02b9, 0x00, 0x04 };
 #endif

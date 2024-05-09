@@ -39,9 +39,9 @@
 #include <string.h>
 #include "mh_sha256_internal.h"
 
-#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_base
-#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_base
-#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_base
+#define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_base
+#define MH_SHA256_TAIL_FUNCTION     _mh_sha256_tail_base
+#define MH_SHA256_BLOCK_FUNCTION    _mh_sha256_block_base
 #define MH_SHA256_FINALIZE_SLVER
 #endif
 
@@ -117,6 +117,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha256_finalize_base_slver_000002bb;
-struct slver mh_sha256_finalize_base_slver = { 0x02bb, 0x00, 0x00 };
+struct slver _mh_sha256_finalize_base_slver_000002bb;
+struct slver _mh_sha256_finalize_base_slver = { 0x02bb, 0x00, 0x00 };
 #endif

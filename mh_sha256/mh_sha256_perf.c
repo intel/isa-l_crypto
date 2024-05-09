@@ -144,13 +144,13 @@ main(int argc, char *argv[])
         // mh_sha256 base version
         CHECK_RETURN(mh_sha256_init(update_ctx_base));
         CHECK_RETURN(mh_sha256_update_base(update_ctx_base, buff, TEST_LEN));
-        CHECK_RETURN(mh_sha256_finalize_base(update_ctx_base, hash_base));
+        CHECK_RETURN(isal_mh_sha256_finalize_base(update_ctx_base, hash_base));
 
         perf_start(&start);
         for (i = 0; i < TEST_LOOPS / 10; i++) {
                 mh_sha256_init(update_ctx_base);
                 mh_sha256_update_base(update_ctx_base, buff, TEST_LEN);
-                mh_sha256_finalize_base(update_ctx_base, hash_base);
+                isal_mh_sha256_finalize_base(update_ctx_base, hash_base);
         }
         perf_stop(&stop);
         printf("mh_sha256_update_base" TEST_TYPE_STR ": ");

@@ -34,8 +34,8 @@
 
 /***************mh_sha256_update***********/
 // mh_sha256_update_avx512.c
-#define MH_SHA256_UPDATE_FUNCTION mh_sha256_update_avx512
-#define MH_SHA256_BLOCK_FUNCTION  mh_sha256_block_avx512
+#define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_avx512
+#define MH_SHA256_BLOCK_FUNCTION  _mh_sha256_block_avx512
 #include "mh_sha256_update_base.c"
 #undef MH_SHA256_UPDATE_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
@@ -44,9 +44,9 @@
 // mh_sha256_tail is used to calculate the last incomplete src data block
 // mh_sha256_finalize is a mh_sha256_ctx wrapper of mh_sha256_tail
 // mh_sha256_finalize_avx512.c and mh_sha256_tail_avx512.c
-#define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_avx512
-#define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_avx512
-#define MH_SHA256_BLOCK_FUNCTION    mh_sha256_block_avx512
+#define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_avx512
+#define MH_SHA256_TAIL_FUNCTION     _mh_sha256_tail_avx512
+#define MH_SHA256_BLOCK_FUNCTION    _mh_sha256_block_avx512
 #include "mh_sha256_finalize_base.c"
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
@@ -60,11 +60,11 @@ struct slver {
 };
 
 // mh_sha256_update version info
-struct slver mh_sha256_update_avx512_slver_060002bc;
-struct slver mh_sha256_update_avx512_slver = { 0x02bc, 0x00, 0x06 };
+struct slver _mh_sha256_update_avx512_slver_060002bc;
+struct slver _mh_sha256_update_avx512_slver = { 0x02bc, 0x00, 0x06 };
 
 // mh_sha256_finalize version info
-struct slver mh_sha256_finalize_avx512_slver_060002bd;
-struct slver mh_sha256_finalize_avx512_slver = { 0x02bd, 0x00, 0x06 };
+struct slver _mh_sha256_finalize_avx512_slver_060002bd;
+struct slver _mh_sha256_finalize_avx512_slver = { 0x02bd, 0x00, 0x06 };
 
 #endif // HAVE_AS_KNOWS_AVX512

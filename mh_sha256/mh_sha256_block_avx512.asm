@@ -289,15 +289,15 @@ section .text
 section .text
 align 32
 
-;void mh_sha256_block_avx512(const uint8_t * input_data, uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+;void _mh_sha256_block_avx512(const uint8_t * input_data, uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
 ;		uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 ; arg 0 pointer to input data
 ; arg 1 pointer to digests, include segments digests(uint32_t digests[16][8])
 ; arg 2 pointer to aligned_frame_buffer which is used to save the big_endian data.
 ; arg 3 number  of 1KB blocks
 ;
-global mh_sha256_block_avx512
-func(mh_sha256_block_avx512)
+mk_global _mh_sha256_block_avx512, function, internal
+func(_mh_sha256_block_avx512)
 	endbranch
 	FUNC_SAVE
 	; save rsp
@@ -672,11 +672,5 @@ PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_mh_sha256_block_avx512
-no_mh_sha256_block_avx512:
-%endif
 %endif ; HAVE_AS_KNOWS_AVX512
 

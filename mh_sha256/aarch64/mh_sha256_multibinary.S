@@ -31,5 +31,5 @@
 #include "aarch64_multibinary.h"
 
 
-mbin_interface mh_sha256_update
-mbin_interface mh_sha256_finalize
+mbin_interface _mh_sha256_update
+mbin_interface _mh_sha256_finalize

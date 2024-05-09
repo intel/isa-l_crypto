@@ -168,9 +168,9 @@ mh_sha256_single(const uint8_t *input, uint32_t (*digests)[ISAL_HASH_SEGS], uint
 }
 
 void
-mh_sha256_block_base(const uint8_t *input_data,
-                     uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
-                     uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
+_mh_sha256_block_base(const uint8_t *input_data,
+                      uint32_t digests[ISAL_SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
+                      uint8_t frame_buffer[ISAL_MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i;
 

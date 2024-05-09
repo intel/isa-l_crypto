@@ -53,9 +53,9 @@
  * struct mh_sha256_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha256_ctx));
- * mh_sha256_init(ctx);
- * mh_sha256_update(ctx, buff, block_len);
- * mh_sha256_finalize(ctx, mh_sha256_digest);
+ * _mh_sha256_init(ctx);
+ * _mh_sha256_update(ctx, buff, block_len);
+ * _mh_sha256_finalize(ctx, mh_sha256_digest);
  * \endcode
  */
 
@@ -162,18 +162,6 @@ mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 int
 mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
-/*******************************************************************
- * multi-types of mh_sha256 internal API
- *
- * XXXX		The multi-binary version
- * XXXX_base	The C code version which used to display the algorithm
- * XXXX_sse	The version uses a ASM function optimized for SSE
- * XXXX_avx	The version uses a ASM function optimized for AVX
- * XXXX_avx2	The version uses a ASM function optimized for AVX2
- * XXXX_avx512	The version uses a ASM function optimized for AVX512
- *
- ******************************************************************/
-
 /**
  * @brief Multi-hash sha256 update.
  *
@@ -190,66 +178,6 @@ int
 mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
- * @brief Multi-hash sha256 update.
- *
- * Can be called repeatedly to update hashes with new input data.
- * @requires SSE
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   buffer Pointer to buffer to be processed
- * @param   len Length of buffer (in bytes) to be processed
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_update_sse(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
-
-/**
- * @brief Multi-hash sha256 update.
- *
- * Can be called repeatedly to update hashes with new input data.
- * @requires AVX
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   buffer Pointer to buffer to be processed
- * @param   len Length of buffer (in bytes) to be processed
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_update_avx(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
-
-/**
- * @brief Multi-hash sha256 update.
- *
- * Can be called repeatedly to update hashes with new input data.
- * @requires AVX2
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   buffer Pointer to buffer to be processed
- * @param   len Length of buffer (in bytes) to be processed
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_update_avx2(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
-
-/**
- * @brief Multi-hash sha256 update.
- *
- * Can be called repeatedly to update hashes with new input data.
- * @requires AVX512
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   buffer Pointer to buffer to be processed
- * @param   len Length of buffer (in bytes) to be processed
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_update_avx512(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
-
-/**
  * @brief Finalize the message digests for multi-hash sha256.
  *
  * Place the message digests in mh_sha256_digest,
@@ -263,70 +191,6 @@ mh_sha256_update_avx512(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t 
  */
 int
 mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
-
-/**
- * @brief Finalize the message digests for combined multi-hash and murmur.
- *
- * Place the message digest in mh_sha256_digest which must have enough space
- * for the outputs.
- *
- * @requires SSE
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   mh_sha256_digest The digest of mh_sha256
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_finalize_sse(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
-
-/**
- * @brief Finalize the message digests for combined multi-hash and murmur.
- *
- * Place the message digest in mh_sha256_digest which must have enough space
- * for the outputs.
- *
- * @requires AVX
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   mh_sha256_digest The digest of mh_sha256
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_finalize_avx(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
-
-/**
- * @brief Finalize the message digests for combined multi-hash and murmur.
- *
- * Place the message digest in mh_sha256_digest which must have enough space
- * for the outputs.
- *
- * @requires AVX2
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   mh_sha256_digest The digest of mh_sha256
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_finalize_avx2(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
-
-/**
- * @brief Finalize the message digests for combined multi-hash and murmur.
- *
- * Place the message digest in mh_sha256_digest which must have enough space
- * for the outputs.
- *
- * @requires AVX512
- *
- * @param   ctx Structure holding mh_sha256 info
- * @param   mh_sha256_digest The digest of mh_sha256
- * @returns int Return 0 if the function runs without errors
- *
- */
-int
-mh_sha256_finalize_avx512(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Initialize the mh_sha256_ctx structure.
