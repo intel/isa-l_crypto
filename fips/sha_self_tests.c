@@ -38,7 +38,7 @@
 
 #include "sha1_mb_internal.h"
 #include "sha256_mb_internal.h"
-#include "sha512_mb.h"
+#include "sha512_mb_internal.h"
 
 #include "internal_fips.h"
 #include "types.h"
@@ -131,16 +131,16 @@ _sha512_self_test(void)
         ISAL_SHA512_HASH_CTX ctxpool, *ctx = NULL;
         uint32_t j;
 
-        sha512_ctx_mgr_init(&mgr);
+        _sha512_ctx_mgr_init(&mgr);
 
         // Init context before first use
         isal_hash_ctx_init(&ctxpool);
 
-        ctx = sha512_ctx_mgr_submit(&mgr, &ctxpool, msg_sha512,
-                                    (uint32_t) strlen((char *) msg_sha512), ISAL_HASH_ENTIRE);
+        ctx = _sha512_ctx_mgr_submit(&mgr, &ctxpool, msg_sha512,
+                                     (uint32_t) strlen((char *) msg_sha512), ISAL_HASH_ENTIRE);
 
         if (ctx == NULL)
-                ctx = sha512_ctx_mgr_flush(&mgr);
+                ctx = _sha512_ctx_mgr_flush(&mgr);
 
         if (ctx) {
                 for (j = 0; j < ISAL_SHA512_DIGEST_NWORDS; j++) {

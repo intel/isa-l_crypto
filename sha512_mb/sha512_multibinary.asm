@@ -211,42 +211,42 @@ extern _sha512_ctx_mgr_flush_sb_sse4
 ;;; Therefore, *_dispatch_init is only executed on first call.
 
 ; Initialise symbols
-mbin_interface sha512_ctx_mgr_init
-mbin_interface sha512_ctx_mgr_submit
-mbin_interface sha512_ctx_mgr_flush
+mbin_interface _sha512_ctx_mgr_init
+mbin_interface _sha512_ctx_mgr_submit
+mbin_interface _sha512_ctx_mgr_flush
 
 %ifdef HAVE_AS_KNOWS_AVX512
  ; Reuse mbin_dispatch_init6 through replacing base by sse version
- mbin_dispatch_init6_avoton sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
+ mbin_dispatch_init6_avoton _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
 			_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \
 			_sha512_ctx_mgr_init_avx2, _sha512_ctx_mgr_init_avx512, \
 			_sha512_ctx_mgr_init_sb_sse4
 
- mbin_dispatch_init6_avoton sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
+ mbin_dispatch_init6_avoton _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
 			_sha512_ctx_mgr_submit_sse, _sha512_ctx_mgr_submit_avx, \
 			_sha512_ctx_mgr_submit_avx2, _sha512_ctx_mgr_submit_avx512, \
 			_sha512_ctx_mgr_submit_sb_sse4
 
- mbin_dispatch_init6_avoton sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
+ mbin_dispatch_init6_avoton _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
 			_sha512_ctx_mgr_flush_sse, _sha512_ctx_mgr_flush_avx, \
 			_sha512_ctx_mgr_flush_avx2, _sha512_ctx_mgr_flush_avx512, \
 			_sha512_ctx_mgr_flush_sb_sse4
 %else
- mbin_dispatch_init_avoton sha512_ctx_mgr_init, _sha512_ctx_mgr_init_sse, \
+ mbin_dispatch_init_avoton _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_sse, \
 			_sha512_ctx_mgr_init_avx, _sha512_ctx_mgr_init_avx2, \
 			_sha512_ctx_mgr_init_sb_sse4
 
- mbin_dispatch_init_avoton sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_sse, \
+ mbin_dispatch_init_avoton _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_sse, \
 			_sha512_ctx_mgr_submit_avx, _sha512_ctx_mgr_submit_avx2, \
 			_sha512_ctx_mgr_submit_sb_sse4
 
- mbin_dispatch_init_avoton sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_sse, \
+ mbin_dispatch_init_avoton _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_sse, \
 			_sha512_ctx_mgr_flush_avx, _sha512_ctx_mgr_flush_avx2, \
 			_sha512_ctx_mgr_flush_sb_sse4
 %endif
 
 
 ;;;       func				core, ver, snum
-slversion sha512_ctx_mgr_init,		00,   04,  0175
-slversion sha512_ctx_mgr_submit,	00,   04,  0176
-slversion sha512_ctx_mgr_flush,		00,   04,  0177
+slversion _sha512_ctx_mgr_init,		00,   04,  0175
+slversion _sha512_ctx_mgr_submit,	00,   04,  0176
+slversion _sha512_ctx_mgr_flush,		00,   04,  0177

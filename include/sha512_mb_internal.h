@@ -53,6 +53,41 @@ extern "C" {
         0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,            \
                 0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 
+/**
+ * @brief Initialize the SHA512 multi-buffer manager structure.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns void
+ */
+void
+_sha512_ctx_mgr_init(ISAL_SHA512_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief  Submit a new SHA512 job to the multi-buffer manager.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+ISAL_SHA512_HASH_CTX *
+_sha512_ctx_mgr_submit(ISAL_SHA512_HASH_CTX_MGR *mgr, ISAL_SHA512_HASH_CTX *ctx, const void *buffer,
+                       uint32_t len, ISAL_HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted SHA512 jobs and return when complete.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+ISAL_SHA512_HASH_CTX *
+_sha512_ctx_mgr_flush(ISAL_SHA512_HASH_CTX_MGR *mgr);
+
 /*******************************************************************
  * Context level API function prototypes
  ******************************************************************/
