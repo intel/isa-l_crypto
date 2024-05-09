@@ -181,31 +181,31 @@ default rel
 
 ; declare the L3 ctx level symbols (these will then call the appropriate
 ; L2 symbols)
-extern sha512_ctx_mgr_init_sse
-extern sha512_ctx_mgr_submit_sse
-extern sha512_ctx_mgr_flush_sse
+extern _sha512_ctx_mgr_init_sse
+extern _sha512_ctx_mgr_submit_sse
+extern _sha512_ctx_mgr_flush_sse
 
-extern sha512_ctx_mgr_init_avx
-extern sha512_ctx_mgr_submit_avx
-extern sha512_ctx_mgr_flush_avx
+extern _sha512_ctx_mgr_init_avx
+extern _sha512_ctx_mgr_submit_avx
+extern _sha512_ctx_mgr_flush_avx
 
-extern sha512_ctx_mgr_init_avx2
-extern sha512_ctx_mgr_submit_avx2
-extern sha512_ctx_mgr_flush_avx2
+extern _sha512_ctx_mgr_init_avx2
+extern _sha512_ctx_mgr_submit_avx2
+extern _sha512_ctx_mgr_flush_avx2
 
-extern sha512_ctx_mgr_init_base
-extern sha512_ctx_mgr_submit_base
-extern sha512_ctx_mgr_flush_base
+extern _sha512_ctx_mgr_init_base
+extern _sha512_ctx_mgr_submit_base
+extern _sha512_ctx_mgr_flush_base
 
 %ifdef HAVE_AS_KNOWS_AVX512
- extern sha512_ctx_mgr_init_avx512
- extern sha512_ctx_mgr_submit_avx512
- extern sha512_ctx_mgr_flush_avx512
+ extern _sha512_ctx_mgr_init_avx512
+ extern _sha512_ctx_mgr_submit_avx512
+ extern _sha512_ctx_mgr_flush_avx512
 %endif
 
-extern sha512_ctx_mgr_init_sb_sse4
-extern sha512_ctx_mgr_submit_sb_sse4
-extern sha512_ctx_mgr_flush_sb_sse4
+extern _sha512_ctx_mgr_init_sb_sse4
+extern _sha512_ctx_mgr_submit_sb_sse4
+extern _sha512_ctx_mgr_flush_sb_sse4
 
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.
 ;;; Therefore, *_dispatch_init is only executed on first call.
@@ -217,32 +217,32 @@ mbin_interface sha512_ctx_mgr_flush
 
 %ifdef HAVE_AS_KNOWS_AVX512
  ; Reuse mbin_dispatch_init6 through replacing base by sse version
- mbin_dispatch_init6_avoton sha512_ctx_mgr_init, sha512_ctx_mgr_init_base, \
-			sha512_ctx_mgr_init_sse, sha512_ctx_mgr_init_avx, \
-			sha512_ctx_mgr_init_avx2, sha512_ctx_mgr_init_avx512, \
-			sha512_ctx_mgr_init_sb_sse4
+ mbin_dispatch_init6_avoton sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
+			_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \
+			_sha512_ctx_mgr_init_avx2, _sha512_ctx_mgr_init_avx512, \
+			_sha512_ctx_mgr_init_sb_sse4
 
- mbin_dispatch_init6_avoton sha512_ctx_mgr_submit, sha512_ctx_mgr_submit_base, \
-			sha512_ctx_mgr_submit_sse, sha512_ctx_mgr_submit_avx, \
-			sha512_ctx_mgr_submit_avx2, sha512_ctx_mgr_submit_avx512, \
-			sha512_ctx_mgr_submit_sb_sse4
+ mbin_dispatch_init6_avoton sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
+			_sha512_ctx_mgr_submit_sse, _sha512_ctx_mgr_submit_avx, \
+			_sha512_ctx_mgr_submit_avx2, _sha512_ctx_mgr_submit_avx512, \
+			_sha512_ctx_mgr_submit_sb_sse4
 
- mbin_dispatch_init6_avoton sha512_ctx_mgr_flush, sha512_ctx_mgr_flush_base, \
-			sha512_ctx_mgr_flush_sse, sha512_ctx_mgr_flush_avx, \
-			sha512_ctx_mgr_flush_avx2, sha512_ctx_mgr_flush_avx512, \
-			sha512_ctx_mgr_flush_sb_sse4
+ mbin_dispatch_init6_avoton sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
+			_sha512_ctx_mgr_flush_sse, _sha512_ctx_mgr_flush_avx, \
+			_sha512_ctx_mgr_flush_avx2, _sha512_ctx_mgr_flush_avx512, \
+			_sha512_ctx_mgr_flush_sb_sse4
 %else
- mbin_dispatch_init_avoton sha512_ctx_mgr_init, sha512_ctx_mgr_init_sse, \
-			sha512_ctx_mgr_init_avx, sha512_ctx_mgr_init_avx2, \
-			sha512_ctx_mgr_init_sb_sse4
+ mbin_dispatch_init_avoton sha512_ctx_mgr_init, _sha512_ctx_mgr_init_sse, \
+			_sha512_ctx_mgr_init_avx, _sha512_ctx_mgr_init_avx2, \
+			_sha512_ctx_mgr_init_sb_sse4
 
- mbin_dispatch_init_avoton sha512_ctx_mgr_submit, sha512_ctx_mgr_submit_sse, \
-			sha512_ctx_mgr_submit_avx, sha512_ctx_mgr_submit_avx2, \
-			sha512_ctx_mgr_submit_sb_sse4
+ mbin_dispatch_init_avoton sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_sse, \
+			_sha512_ctx_mgr_submit_avx, _sha512_ctx_mgr_submit_avx2, \
+			_sha512_ctx_mgr_submit_sb_sse4
 
- mbin_dispatch_init_avoton sha512_ctx_mgr_flush, sha512_ctx_mgr_flush_sse, \
-			sha512_ctx_mgr_flush_avx, sha512_ctx_mgr_flush_avx2, \
-			sha512_ctx_mgr_flush_sb_sse4
+ mbin_dispatch_init_avoton sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_sse, \
+			_sha512_ctx_mgr_flush_avx, _sha512_ctx_mgr_flush_avx2, \
+			_sha512_ctx_mgr_flush_sb_sse4
 %endif
 
 

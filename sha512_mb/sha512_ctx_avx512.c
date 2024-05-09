@@ -56,14 +56,14 @@ static SHA512_HASH_CTX *
 sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx);
 
 void
-sha512_ctx_mgr_init_avx512(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_init_avx512(SHA512_HASH_CTX_MGR *mgr)
 {
         _sha512_mb_mgr_init_avx512(&mgr->mgr);
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_submit_avx512(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
-                             uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha512_ctx_mgr_submit_avx512(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                              uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -145,7 +145,7 @@ sha512_ctx_mgr_submit_avx512(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, con
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_flush_avx512(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_flush_avx512(SHA512_HASH_CTX_MGR *mgr)
 {
         SHA512_HASH_CTX *ctx;
 
@@ -266,14 +266,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha512_ctx_mgr_init_avx512_slver_0600016a;
-struct slver sha512_ctx_mgr_init_avx512_slver = { 0x016a, 0x00, 0x06 };
+struct slver _sha512_ctx_mgr_init_avx512_slver_0600016a;
+struct slver _sha512_ctx_mgr_init_avx512_slver = { 0x016a, 0x00, 0x06 };
 
-struct slver sha512_ctx_mgr_submit_avx512_slver_0600016b;
-struct slver sha512_ctx_mgr_submit_avx512_slver = { 0x016b, 0x00, 0x06 };
+struct slver _sha512_ctx_mgr_submit_avx512_slver_0600016b;
+struct slver _sha512_ctx_mgr_submit_avx512_slver = { 0x016b, 0x00, 0x06 };
 
-struct slver sha512_ctx_mgr_flush_avx512_slver_0600016c;
-struct slver sha512_ctx_mgr_flush_avx512_slver = { 0x016c, 0x00, 0x06 };
+struct slver _sha512_ctx_mgr_flush_avx512_slver_0600016c;
+struct slver _sha512_ctx_mgr_flush_avx512_slver = { 0x016c, 0x00, 0x06 };
 
 #endif // HAVE_AS_KNOWS_AVX512
 

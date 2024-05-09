@@ -44,14 +44,14 @@ static SHA512_HASH_CTX *
 sha512_ctx_mgr_resubmit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx);
 
 void
-sha512_ctx_mgr_init_sse(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_init_sse(SHA512_HASH_CTX_MGR *mgr)
 {
         _sha512_mb_mgr_init_sse(&mgr->mgr);
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
-                          uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                           uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -132,7 +132,7 @@ sha512_ctx_mgr_submit_sse(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const 
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_flush_sse(SHA512_HASH_CTX_MGR *mgr)
 {
         SHA512_HASH_CTX *ctx;
 
@@ -252,11 +252,11 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver sha512_ctx_mgr_init_sse_slver_00020163;
-struct slver sha512_ctx_mgr_init_sse_slver = { 0x0163, 0x02, 0x00 };
+struct slver _sha512_ctx_mgr_init_sse_slver_00020163;
+struct slver _sha512_ctx_mgr_init_sse_slver = { 0x0163, 0x02, 0x00 };
 
-struct slver sha512_ctx_mgr_submit_sse_slver_00020164;
-struct slver sha512_ctx_mgr_submit_sse_slver = { 0x0164, 0x02, 0x00 };
+struct slver _sha512_ctx_mgr_submit_sse_slver_00020164;
+struct slver _sha512_ctx_mgr_submit_sse_slver = { 0x0164, 0x02, 0x00 };
 
-struct slver sha512_ctx_mgr_flush_sse_slver_00020165;
-struct slver sha512_ctx_mgr_flush_sse_slver = { 0x0165, 0x02, 0x00 };
+struct slver _sha512_ctx_mgr_flush_sse_slver_00020165;
+struct slver _sha512_ctx_mgr_flush_sse_slver = { 0x0165, 0x02, 0x00 };

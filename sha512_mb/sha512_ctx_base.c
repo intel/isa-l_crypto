@@ -82,13 +82,13 @@ static inline void
 hash_init_digest(SHA512_WORD_T *digest);
 
 void
-sha512_ctx_mgr_init_base(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_init_base(SHA512_HASH_CTX_MGR *mgr)
 {
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
-                           uint32_t len, ISAL_HASH_CTX_FLAG flags)
+_sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const void *buffer,
+                            uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -133,7 +133,7 @@ sha512_ctx_mgr_submit_base(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx, const
 }
 
 SHA512_HASH_CTX *
-sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR *mgr)
+_sha512_ctx_mgr_flush_base(SHA512_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
