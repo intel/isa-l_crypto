@@ -123,14 +123,9 @@ extern "C" {
 // Hash Constants and Typedefs
 #define SHA512_DIGEST_NWORDS       8
 #define SHA512_MAX_LANES           8
-#define SHA512_X4_LANES            4
 #define SHA512_MIN_LANES           2
 #define SHA512_BLOCK_SIZE          128
-#define SHA512_LOG2_BLOCK_SIZE     7
 #define SHA512_PADLENGTHFIELD_SIZE 16
-#define SHA512_INITIAL_DIGEST                                                                      \
-        0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,            \
-                0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
 
 typedef uint64_t sha512_digest_array[SHA512_DIGEST_NWORDS][SHA512_MAX_LANES];
 typedef uint64_t SHA512_WORD_T;

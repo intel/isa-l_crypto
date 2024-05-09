@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha512_mb.h"
+#include "sha512_mb_internal.h"
 
 void
 _sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state)

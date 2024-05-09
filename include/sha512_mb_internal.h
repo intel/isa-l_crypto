@@ -47,6 +47,12 @@
 extern "C" {
 #endif
 
+#define SHA512_X4_LANES            4
+#define SHA512_LOG2_BLOCK_SIZE     7
+#define SHA512_INITIAL_DIGEST                                                                      \
+        0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,            \
+                0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
+
 /*******************************************************************
  * Context level API function prototypes
  ******************************************************************/
