@@ -30,10 +30,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
-#include "sha512_mb.h"
+#include "sha512_mb_internal.h"
 
 /*
- * Function: sha512_sb_mgr_submit_sse4
+ * Function: _sha512_sb_mgr_submit_sse4
  *
  * Description: Wrapper API for update routine of single buffer sha512,
  *              to comply with multi-buffer API.
@@ -53,14 +53,14 @@
  *
  **/
 SHA512_JOB *
-sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
+_sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 {
         assert(job != NULL);
 
         uint8_t *buff = job->buffer;
         uint64_t *digest = job->result_digest, len = job->len;
 
-        sha512_sse4((const void *) buff, (void *) digest, len);
+        _sha512_sse4((const void *) buff, (void *) digest, len);
 
         return job;
 }

@@ -451,49 +451,6 @@ isal_sha512_ctx_mgr_submit(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX *ctx_in,
  */
 int
 isal_sha512_ctx_mgr_flush(SHA512_HASH_CTX_MGR *mgr, SHA512_HASH_CTX **ctx_out);
-
-/*******************************************************************
- * Scheduler (internal) level out-of-order function prototypes
- ******************************************************************/
-
-void
-sha512_mb_mgr_init_sse(SHA512_MB_JOB_MGR *state);
-SHA512_JOB *
-sha512_mb_mgr_submit_sse(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
-SHA512_JOB *
-sha512_mb_mgr_flush_sse(SHA512_MB_JOB_MGR *state);
-
-#define sha512_mb_mgr_init_avx sha512_mb_mgr_init_sse
-SHA512_JOB *
-sha512_mb_mgr_submit_avx(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
-SHA512_JOB *
-sha512_mb_mgr_flush_avx(SHA512_MB_JOB_MGR *state);
-
-void
-sha512_mb_mgr_init_avx2(SHA512_MB_JOB_MGR *state);
-SHA512_JOB *
-sha512_mb_mgr_submit_avx2(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
-SHA512_JOB *
-sha512_mb_mgr_flush_avx2(SHA512_MB_JOB_MGR *state);
-
-void
-sha512_mb_mgr_init_avx512(SHA512_MB_JOB_MGR *state);
-SHA512_JOB *
-sha512_mb_mgr_submit_avx512(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
-SHA512_JOB *
-sha512_mb_mgr_flush_avx512(SHA512_MB_JOB_MGR *state);
-
-// Single buffer SHA512 APIs, optimized for SLM.
-void
-sha512_sse4(const void *M, void *D, uint64_t L);
-// Note that these APIs comply with multi-buffer APIs' high level usage
-void
-sha512_sb_mgr_init_sse4(SHA512_MB_JOB_MGR *state);
-SHA512_JOB *
-sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job);
-SHA512_JOB *
-sha512_sb_mgr_flush_sse4(SHA512_MB_JOB_MGR *state);
-
 #ifdef __cplusplus
 }
 #endif

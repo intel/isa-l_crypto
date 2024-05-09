@@ -96,10 +96,10 @@ endstruc
 
 %define APPEND(a,b) a %+ b
 
-; SHA512_JOB* sha512_mb_mgr_flush_avx512(SHA512_MB_JOB_MGR *state)
+; SHA512_JOB* _sha512_mb_mgr_flush_avx512(SHA512_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sha512_mb_mgr_flush_avx512, function
-sha512_mb_mgr_flush_avx512:
+mk_global _sha512_mb_mgr_flush_avx512, function, internal
+_sha512_mb_mgr_flush_avx512:
 	endbranch
 
 	mov     rax, rsp
@@ -261,10 +261,4 @@ lane_4:     dq  4
 lane_5:     dq  5
 lane_6:     dq  6
 lane_7:     dq  7
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sha512_mb_mgr_flush_avx512
-no_sha512_mb_mgr_flush_avx512:
-%endif
 %endif ; HAVE_AS_KNOWS_AVX512

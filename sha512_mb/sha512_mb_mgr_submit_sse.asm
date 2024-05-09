@@ -98,11 +98,11 @@ endstruc
 %define _GPR_SAVE       stack_frame.rsp
 %define STACK_SPACE     stack_frame_size
 
-; SHA512_JOB* sha512_mb_mgr_submit_sse(SHA512_MB_JOB_MGR *state, SHA256_JOB *job)
+; SHA512_JOB* _sha512_mb_mgr_submit_sse(SHA512_MB_JOB_MGR *state, SHA256_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global sha512_mb_mgr_submit_sse, function
-sha512_mb_mgr_submit_sse:
+mk_global _sha512_mb_mgr_submit_sse, function, internal
+_sha512_mb_mgr_submit_sse:
 	endbranch
 
 	mov	rax, rsp

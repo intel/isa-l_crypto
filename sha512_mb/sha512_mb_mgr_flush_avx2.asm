@@ -94,10 +94,10 @@ endstruc
 
 %define APPEND(a,b) a %+ b
 
-; SHA512_JOB* sha512_mb_mgr_flush_avx2(SHA512_MB_JOB_MGR *state)
+; SHA512_JOB* _sha512_mb_mgr_flush_avx2(SHA512_MB_JOB_MGR *state)
 ; arg 1 : rcx : state
-mk_global sha512_mb_mgr_flush_avx2, function
-sha512_mb_mgr_flush_avx2:
+mk_global _sha512_mb_mgr_flush_avx2, function, internal
+_sha512_mb_mgr_flush_avx2:
 	endbranch
 
 	mov     rax, rsp

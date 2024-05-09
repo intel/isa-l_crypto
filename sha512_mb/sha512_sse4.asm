@@ -240,13 +240,13 @@ endstruc
 %endmacro
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; void sha512_sse4(const void* M, void* D, uint64_t L);
+; void _sha512_sse4(const void* M, void* D, uint64_t L);
 ; Purpose: Updates the SHA512 digest stored at D with the message stored in M.
 ; The size of the message pointed to by M must be an integer multiple of SHA512
 ;   message blocks.
 ; L is the message length in SHA512 blocks.
-mk_global sha512_sse4, function
-sha512_sse4:
+mk_global _sha512_sse4, function, internal
+_sha512_sse4:
 	endbranch
 	cmp msglen, 0
 	je .nowork

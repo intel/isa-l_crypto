@@ -27,13 +27,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "sha512_mb.h"
+#include "sha512_mb_internal.h"
 
 // For single buffer APIs, nothing to be done here.
 // This function is required, to comply with the usage of
 // multi-buffer APIs.
 void
-sha512_sb_mgr_init_sse4(SHA512_MB_JOB_MGR *state)
+_sha512_sb_mgr_init_sse4(SHA512_MB_JOB_MGR *state)
 {
         return;
 }
