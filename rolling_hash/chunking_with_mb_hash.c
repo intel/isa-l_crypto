@@ -85,23 +85,27 @@ run_fragment(ISAL_SHA256_HASH_CTX *ctx)
                 filter_table[lookup_hash] = lookup | set_hash;
 }
 
-void
+static int
 setup_chunk_processing(void)
 {
         int i;
+        int ret = isal_sha256_ctx_mgr_init(&mb_hash_mgr);
 
-        sha256_ctx_mgr_init(&mb_hash_mgr);
+        if (ret)
+                return -1;
 
         for (i = 0; i < HASH_POOL_SIZE; i++)
                 isal_hash_ctx_init(&ctxpool[i]);
 
         last_ctx = &ctxpool[0];
+
+        return 0;
 }
 
-ISAL_SHA256_HASH_CTX *
+static ISAL_SHA256_HASH_CTX *
 get_next_job_ctx(void)
 {
-        int i;
+        int i, ret;
         ISAL_SHA256_HASH_CTX *ctx;
 
         if (last_ctx && isal_hash_ctx_complete(last_ctx))
@@ -111,8 +115,10 @@ get_next_job_ctx(void)
                 if (isal_hash_ctx_complete(&ctxpool[i]))
                         return &ctxpool[i];
         }
-        ctx = sha256_ctx_mgr_flush(&mb_hash_mgr);
-        assert(ctx != NULL);
+        ret = isal_sha256_ctx_mgr_flush(&mb_hash_mgr, &ctx);
+        if (ret)
+                return NULL;
+
         return ctx;
 }
 
@@ -125,31 +131,47 @@ put_next_job_ctx(ISAL_SHA256_HASH_CTX *ctx)
         run_fragment(ctx);
 }
 
-void
+static int
 process_chunk(uint8_t *buff, int len)
 {
         ISAL_SHA256_HASH_CTX *ctx;
+        int ret;
 
         ctx = get_next_job_ctx();
-        ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, ISAL_HASH_ENTIRE);
+        if (ctx != NULL)
+                return -1;
+
+        ret = isal_sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, &ctx, buff, len, ISAL_HASH_ENTIRE);
+        if (ret)
+                return -1;
 
         if (ctx)
                 put_next_job_ctx(ctx);
+
+        return 0;
 }
 
-void
+static int
 finish_chunk_processing(void)
 {
         ISAL_SHA256_HASH_CTX *ctx;
+        int ret;
 
-        while ((ctx = sha256_ctx_mgr_flush(&mb_hash_mgr)) != NULL)
-                run_fragment(ctx);
+        do {
+                ret = isal_sha256_ctx_mgr_flush(&mb_hash_mgr, &ctx);
+                if (ret)
+                        return -1;
+                if (ctx != NULL)
+                        run_fragment(ctx);
+        } while (ctx != NULL);
+
+        return 0;
 }
 
 int
 main(void)
 {
-        int i, w, match, ret;
+        int i, w, match, ret, res = -1;
         uint8_t *buffer, *p;
         uint32_t mask, trigger, offset = 0;
         uint32_t min_chunk, max_chunk, mean_chunk;
@@ -192,7 +214,10 @@ main(void)
         perf_start(&start);
 
         isal_rolling_hash2_init(&state, w);
-        setup_chunk_processing();
+        if (setup_chunk_processing() < 0) {
+                printf("Setup chunk failed\n");
+                goto end;
+        }
 
         p = buffer;
         remain = MAX_BUFFER_SIZE;
@@ -223,7 +248,9 @@ main(void)
         if (remain > 0)
                 process_chunk(p, remain);
 
-        finish_chunk_processing();
+        if (finish_chunk_processing() < 0)
+                goto end;
+
         perf_stop(&stop);
 
         printf("chunking_with_mb_hash: ");
@@ -232,5 +259,8 @@ main(void)
         printf(" found %ld chunks, ave_len=%ld, filter hits=%ld\n", chunks_created,
                MAX_BUFFER_SIZE / chunks_created, filter_hits);
 
-        return 0;
+        res = 0;
+end:
+        free(buffer);
+        return res;
 }

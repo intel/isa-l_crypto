@@ -91,7 +91,9 @@ main(void)
                 return 1;
         }
 
-        sha256_ctx_mgr_init(mgr);
+        ret = isal_sha256_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         for (i = 0; i < TEST_BUFS; i++) {
                 // Allocate and fill buffer
@@ -118,14 +120,16 @@ main(void)
                 len_rem = TEST_LEN - len_done;
 
                 if (len_done == 0)
-                        ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                    ISAL_HASH_FIRST);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                         UPDATE_SIZE, ISAL_HASH_FIRST);
                 else if (len_rem <= UPDATE_SIZE)
-                        ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                    ISAL_HASH_LAST);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                         len_rem, ISAL_HASH_LAST);
                 else
-                        ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                    ISAL_HASH_UPDATE);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                         UPDATE_SIZE, ISAL_HASH_UPDATE);
+                if (ret)
+                        return 1;
 
                 // Add jobs while available or finished
                 if ((ctx == NULL) || isal_hash_ctx_complete(ctx)) {
@@ -138,11 +142,15 @@ main(void)
         }
 
         // Start flushing finished jobs, end on last flushed
-        ctx = sha256_ctx_mgr_flush(mgr);
+        ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+        if (ret)
+                return 1;
         while (ctx) {
                 if (isal_hash_ctx_complete(ctx)) {
                         debug_char('-');
-                        ctx = sha256_ctx_mgr_flush(mgr);
+                        ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                        if (ret)
+                                return 1;
                         continue;
                 }
                 // Resubmit unfinished job
@@ -153,14 +161,19 @@ main(void)
                 len_rem = TEST_LEN - len_done;
 
                 if (len_rem <= UPDATE_SIZE)
-                        ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                    ISAL_HASH_LAST);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                         len_rem, ISAL_HASH_LAST);
                 else
-                        ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], UPDATE_SIZE,
-                                                    ISAL_HASH_UPDATE);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                         UPDATE_SIZE, ISAL_HASH_UPDATE);
+                if (ret)
+                        return 1;
 
-                if (ctx == NULL)
-                        ctx = sha256_ctx_mgr_flush(mgr);
+                if (ctx == NULL) {
+                        ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                        if (ret)
+                                return 1;
+                }
         }
 
         // Check digests
@@ -187,7 +200,9 @@ main(void)
                         sha256_ref(bufs[i], digest_ref[i], lens[i]);
                 }
 
-                sha256_ctx_mgr_init(mgr);
+                ret = isal_sha256_ctx_mgr_init(mgr);
+                if (ret)
+                        return 1;
 
                 // Run sha256_sb jobs
                 i = 0;
@@ -197,11 +212,13 @@ main(void)
                                    ISAL_SHA256_BLOCK_SIZE * (rand() % MAX_RAND_UPDATE_BLOCKS);
 
                         if (lens[i] > len_rand)
-                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                            ISAL_HASH_FIRST);
+                                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                                 len_rand, ISAL_HASH_FIRST);
                         else
-                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], lens[i],
-                                                            ISAL_HASH_ENTIRE);
+                                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                                 lens[i], ISAL_HASH_ENTIRE);
+                        if (ret)
+                                return 1;
 
                         // Returned ctx could be:
                         //  - null context (we are just getting started and lanes aren't full yet),
@@ -228,13 +245,15 @@ main(void)
 
                                         if (len_rem <=
                                             len_rand) // submit the rest of the job as LAST
-                                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[j],
-                                                                            buf_ptr[j], len_rem,
-                                                                            ISAL_HASH_LAST);
+                                                ret = isal_sha256_ctx_mgr_submit(
+                                                        mgr, &ctxpool[j], &ctx, buf_ptr[j], len_rem,
+                                                        ISAL_HASH_LAST);
                                         else // submit the random update length as UPDATE
-                                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[j],
-                                                                            buf_ptr[j], len_rand,
-                                                                            ISAL_HASH_UPDATE);
+                                                ret = isal_sha256_ctx_mgr_submit(
+                                                        mgr, &ctxpool[j], &ctx, buf_ptr[j],
+                                                        len_rand, ISAL_HASH_UPDATE);
+                                        if (ret)
+                                                return 1;
                                 } // Either continue submitting any contexts returned here as
                                   // UPDATE/LAST, or
                                 // go back to submitting new jobs using the index i.
@@ -244,11 +263,15 @@ main(void)
                 }
 
                 // Start flushing finished jobs, end on last flushed
-                ctx = sha256_ctx_mgr_flush(mgr);
+                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                if (ret)
+                        return 1;
                 while (ctx) {
                         if (isal_hash_ctx_complete(ctx)) {
                                 debug_char('-');
-                                ctx = sha256_ctx_mgr_flush(mgr);
+                                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
                                 continue;
                         }
                         // Resubmit unfinished job
@@ -259,14 +282,19 @@ main(void)
                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
                         debug_char('+');
                         if (len_rem <= len_rand)
-                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rem,
-                                                            ISAL_HASH_LAST);
+                                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                                 len_rem, ISAL_HASH_LAST);
                         else
-                                ctx = sha256_ctx_mgr_submit(mgr, &ctxpool[i], buf_ptr[i], len_rand,
-                                                            ISAL_HASH_UPDATE);
+                                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
+                                                                 len_rand, ISAL_HASH_UPDATE);
+                        if (ret)
+                                return 1;
 
-                        if (ctx == NULL)
-                                ctx = sha256_ctx_mgr_flush(mgr);
+                        if (ctx == NULL) {
+                                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
+                        }
                 }
 
                 // Check result digest

@@ -206,6 +206,8 @@ main(void)
 
         while (1) {
                 rc = isal_sha1_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) ((uintptr_t) (ctx->user_data));

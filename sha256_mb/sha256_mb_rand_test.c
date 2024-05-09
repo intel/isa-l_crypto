@@ -60,7 +60,7 @@ int
 main(void)
 {
         ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
-        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
         unsigned char *bufs[TEST_BUFS] = { 0 };
         uint32_t lens[TEST_BUFS];
@@ -76,7 +76,9 @@ main(void)
                 return 1;
         }
 
-        sha256_ctx_mgr_init(mgr);
+        ret = isal_sha256_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         srand(TEST_SEED);
 
@@ -98,11 +100,18 @@ main(void)
                 sha256_ref(bufs[i], digest_ref[i], TEST_LEN);
 
                 // Run sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN, ISAL_HASH_ENTIRE);
+                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], TEST_LEN,
+                                                 ISAL_HASH_ENTIRE);
+                if (ret)
+                        return 1;
         }
 
-        while (sha256_ctx_mgr_flush(mgr))
-                ;
+        do {
+                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                if (ret)
+                        return 1;
+        } while (ctx != NULL);
+        ;
 
         for (i = 0; i < TEST_BUFS; i++) {
                 for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
@@ -123,7 +132,9 @@ main(void)
         for (t = 0; t < RANDOMS; t++) {
                 jobs = rand() % (TEST_BUFS);
 
-                sha256_ctx_mgr_init(mgr);
+                ret = isal_sha256_ctx_mgr_init(mgr);
+                if (ret)
+                        return 1;
 
                 for (i = 0; i < jobs; i++) {
                         // Use buffer with random len and contents
@@ -134,11 +145,17 @@ main(void)
                         sha256_ref(bufs[i], digest_ref[i], lens[i]);
 
                         // Run sha256_mb test
-                        sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
+                        ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                                         ISAL_HASH_ENTIRE);
+                        if (ret)
+                                return 1;
                 }
 
-                while (sha256_ctx_mgr_flush(mgr))
-                        ;
+                do {
+                        ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                        if (ret)
+                                return 1;
+                } while (ctx != NULL);
 
                 for (i = 0; i < jobs; i++) {
                         for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
@@ -170,7 +187,9 @@ main(void)
 
         rand_buffer(tmp_buf, jobs);
 
-        sha256_ctx_mgr_init(mgr);
+        ret = isal_sha256_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         for (i = 0; i < TEST_BUFS; i++)
                 free(bufs[i]);
@@ -184,13 +203,19 @@ main(void)
                 sha256_ref(bufs[i], digest_ref[i], lens[i]);
 
                 // sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
+                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                                 ISAL_HASH_ENTIRE);
+                if (ret)
+                        return 1;
         }
         // Clear bufs
         memset(bufs, 0, sizeof(bufs));
 
-        while (sha256_ctx_mgr_flush(mgr))
-                ;
+        do {
+                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                if (ret)
+                        return 1;
+        } while (ctx != NULL);
 
         for (i = 0; i < jobs; i++) {
                 for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {

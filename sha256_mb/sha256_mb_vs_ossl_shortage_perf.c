@@ -61,7 +61,7 @@ int
 main(void)
 {
         ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
-        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         uint32_t nlanes;
@@ -83,7 +83,9 @@ main(void)
                 printf("alloc error: Fail");
                 return -1;
         }
-        sha256_ctx_mgr_init(mgr);
+        ret = isal_sha256_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         // Start OpenSSL tests
         perf_start(&start);
@@ -100,12 +102,19 @@ main(void)
         for (nlanes = TEST_BUFS; nlanes > 0; nlanes--) {
                 perf_start(&start);
                 for (t = 0; t < TEST_LOOPS; t++) {
-                        for (i = 0; i < nlanes; i++)
-                                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], TEST_LEN,
-                                                      ISAL_HASH_ENTIRE);
+                        for (i = 0; i < nlanes; i++) {
+                                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i],
+                                                                 TEST_LEN, ISAL_HASH_ENTIRE);
 
-                        while (sha256_ctx_mgr_flush(mgr))
-                                ;
+                                if (ret)
+                                        return 1;
+                        }
+
+                        do {
+                                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
+                        } while (ctx != NULL);
                 }
                 perf_stop(&stop);
 

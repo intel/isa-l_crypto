@@ -76,7 +76,7 @@ int
 main(void)
 {
         ISAL_SHA256_HASH_CTX_MGR *mgr = NULL;
-        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_SHA256_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
         unsigned char *bufs[TEST_BUFS];
         uint32_t lens[TEST_BUFS];
@@ -91,7 +91,9 @@ main(void)
                 return 1;
         }
 
-        sha256_ctx_mgr_init(mgr);
+        ret = isal_sha256_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         srand(TEST_SEED);
 
@@ -115,15 +117,24 @@ main(void)
                 sha256_ref(bufs[i], digest_ref[i], lens[i]);
 
                 // Run sb_sha256 test
-                sha256_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], ISAL_HASH_ENTIRE);
+                ret = isal_sha256_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, bufs[i], lens[i],
+                                                 ISAL_HASH_ENTIRE);
+                if (ret)
+                        return 1;
         }
 
         printf("Changes of lens inside mgr:\n");
         lens_print_and_check(mgr);
-        while (sha256_ctx_mgr_flush(mgr)) {
-                num_ret = lens_print_and_check(mgr);
-                num_unchanged = num_unchanged > num_ret ? num_unchanged : num_ret;
-        }
+        do {
+                ret = isal_sha256_ctx_mgr_flush(mgr, &ctx);
+                if (ret)
+                        return 1;
+                if (ctx != NULL) {
+                        num_ret = lens_print_and_check(mgr);
+                        num_unchanged = num_unchanged > num_ret ? num_unchanged : num_ret;
+                }
+        } while (ctx != NULL);
+
         printf("Info of sha256_mb lens prints over\n");
 
         for (i = 0; i < TEST_BUFS; i++) {

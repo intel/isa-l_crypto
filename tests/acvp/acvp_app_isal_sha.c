@@ -145,30 +145,53 @@ sha_handler(ACVP_TEST_CASE *test_case)
         }
         case ACVP_SUB_HASH_SHA2_256: {
                 ISAL_SHA256_HASH_CTX_MGR sha256_mgr;
-                ISAL_SHA256_HASH_CTX sha256_ctx;
-                sha256_ctx_mgr_init(&sha256_mgr);
+                ISAL_SHA256_HASH_CTX sha256_ctx, *ctx = NULL;
+                rc = isal_sha256_ctx_mgr_init(&sha256_mgr);
+                if (rc)
+                        return EXIT_FAILURE;
                 isal_hash_ctx_init(&sha256_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m1, tc->msg_len,
-                                              ISAL_HASH_FIRST);
-                        while (sha256_ctx_mgr_flush(&sha256_mgr))
-                                ;
+                        rc = isal_sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, &ctx, tc->m1,
+                                                        tc->msg_len, ISAL_HASH_FIRST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m2, tc->msg_len,
-                                              ISAL_HASH_UPDATE);
-                        while (sha256_ctx_mgr_flush(&sha256_mgr))
-                                ;
+                        rc = isal_sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, &ctx, tc->m2,
+                                                        tc->msg_len, ISAL_HASH_UPDATE);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m3, tc->msg_len,
-                                              ISAL_HASH_LAST);
-                        while (sha256_ctx_mgr_flush(&sha256_mgr))
-                                ;
+                        rc = isal_sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, &ctx, tc->m3,
+                                                        tc->msg_len, ISAL_HASH_LAST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
                 } else {
-                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->msg, tc->msg_len,
-                                              ISAL_HASH_ENTIRE);
-                        while (sha256_ctx_mgr_flush(&sha256_mgr))
-                                ;
+                        rc = isal_sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, &ctx, tc->msg,
+                                                        tc->msg_len, ISAL_HASH_ENTIRE);
+                        if (rc)
+                                return EXIT_FAILURE;
+
+                        if (ctx != NULL) {
+                                rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
                 }
                 md_dcpy(tc->md, sha256_ctx.job.result_digest, ISAL_SHA256_DIGEST_NWORDS);
                 tc->md_len = ISAL_SHA256_DIGEST_NWORDS * 4;

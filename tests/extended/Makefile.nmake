@@ -33,7 +33,7 @@ sha256_mb_over_4GB_test.exe sha512_mb_over_4GB_test.exe
 INCLUDES 	= 	-I../../include
 LINKFLAGS 	= 	/nologo
 INCLUDES 	= 	$(INCLUDES) -Ic:\OpenSSL-Win64\include
-CFLAGS   	= 	-O2 -D NDEBUG /nologo -D_USE_MATH_DEFINES -Qstd=c99 $(INCLUDES) /c
+CFLAGS   	= 	-O2 -D NDEBUG /nologo -D_USE_MATH_DEFINES -Qstd=c99 $(INCLUDES) /c -DNO_COMPAT_ISAL_CRYPTO_API_2_24
 LINKFLAGS 	= 	$(LINKFLAGS) /libpath:c:\OpenSSL-Win64\lib
 LIBS 		= 	../../isa-l_crypto.lib
 DLL 		= 	isa-l_crypto.dll
