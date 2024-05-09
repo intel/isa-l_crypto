@@ -199,32 +199,54 @@ sha_handler(ACVP_TEST_CASE *test_case)
         }
         case ACVP_SUB_HASH_SHA2_512: {
                 ISAL_SHA512_HASH_CTX_MGR sha512_mgr;
-                ISAL_SHA512_HASH_CTX sha512_ctx;
-                sha512_ctx_mgr_init(&sha512_mgr);
+                ISAL_SHA512_HASH_CTX sha512_ctx, *ctx = NULL;
+                rc = isal_sha512_ctx_mgr_init(&sha512_mgr);
+                if (rc)
+                        return EXIT_FAILURE;
                 isal_hash_ctx_init(&sha512_ctx);
                 if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m1, tc->msg_len,
-                                              ISAL_HASH_FIRST);
-                        while (sha512_ctx_mgr_flush(&sha512_mgr))
-                                ;
+                        rc = isal_sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, &ctx, tc->m1,
+                                                        tc->msg_len, ISAL_HASH_FIRST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m2, tc->msg_len,
-                                              ISAL_HASH_UPDATE);
-                        while (sha512_ctx_mgr_flush(&sha512_mgr))
-                                ;
+                        rc = isal_sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, &ctx, tc->m2,
+                                                        tc->msg_len, ISAL_HASH_UPDATE);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
-                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m3, tc->msg_len,
-                                              ISAL_HASH_LAST);
-                        while (sha512_ctx_mgr_flush(&sha512_mgr))
-                                ;
+                        rc = isal_sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, &ctx, tc->m3,
+                                                        tc->msg_len, ISAL_HASH_LAST);
+                        if (rc)
+                                return EXIT_FAILURE;
+                        if (ctx != NULL) {
+                                rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
 
                 } else {
-                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->msg, tc->msg_len,
-                                              ISAL_HASH_ENTIRE);
-                        while (sha512_ctx_mgr_flush(&sha512_mgr))
-                                ;
-                }
+                        rc = isal_sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, &ctx, tc->msg,
+                                                        tc->msg_len, ISAL_HASH_ENTIRE);
+                        if (rc)
+                                return EXIT_FAILURE;
 
+                        if (ctx != NULL) {
+                                rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
+                                if (rc)
+                                        return EXIT_FAILURE;
+                        }
+                }
                 md_qcpy(tc->md, sha512_ctx.job.result_digest, ISAL_SHA512_DIGEST_NWORDS);
                 tc->md_len = ISAL_SHA256_DIGEST_NWORDS * 8;
                 break;

@@ -109,6 +109,7 @@ non_blocksize_updates_test(ISAL_SHA512_HASH_CTX_MGR *mgr)
         ISAL_SHA512_HASH_CTX ctx_refer;
         ISAL_SHA512_HASH_CTX ctx_pool[NUM_CHUNKS];
         ISAL_SHA512_HASH_CTX *ctx = NULL;
+        int rc;
 
         const int update_chunks[NUM_CHUNKS] = { 32, 64, 128, 256 };
         unsigned char data_buf[DATA_BUF_LEN];
@@ -118,48 +119,43 @@ non_blocksize_updates_test(ISAL_SHA512_HASH_CTX_MGR *mgr)
         // Init contexts before first use
         isal_hash_ctx_init(&ctx_refer);
 
-        ctx = sha512_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, ISAL_HASH_ENTIRE);
-        if (ctx && ctx->error) {
+        rc = isal_sha512_ctx_mgr_submit(mgr, &ctx_refer, &ctx, data_buf, DATA_BUF_LEN,
+                                        ISAL_HASH_ENTIRE);
+        if (rc)
                 return -1;
-        }
-        ctx = sha512_ctx_mgr_flush(mgr);
-        if ((ctx && ctx->error) || (ctx_refer.status != ISAL_HASH_CTX_STS_COMPLETE)) {
+
+        rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+        if (rc)
                 return -1;
-        }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
                 int chunk = update_chunks[c];
                 isal_hash_ctx_init(&ctx_pool[c]);
-                ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_FIRST);
-                if (ctx && ctx->error) {
+                rc = isal_sha512_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx, NULL, 0, ISAL_HASH_FIRST);
+                if (rc)
                         return -1;
-                }
-                ctx = sha512_ctx_mgr_flush(mgr);
-                if (ctx && ctx->error) {
+                rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
                         return -1;
-                }
                 for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-                        ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
-                                                    ISAL_HASH_UPDATE);
-                        if (ctx && ctx->error) {
+                        rc = isal_sha512_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx,
+                                                        data_buf + i * chunk, chunk,
+                                                        ISAL_HASH_UPDATE);
+                        if (rc)
                                 return -1;
-                        }
-                        ctx = sha512_ctx_mgr_flush(mgr);
-                        if (ctx && ctx->error) {
+                        rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+                        if (rc)
                                 return -1;
-                        }
                 }
         }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
-                ctx = sha512_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_LAST);
-                if (ctx && ctx->error) {
+                rc = isal_sha512_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx, NULL, 0, ISAL_HASH_LAST);
+                if (rc)
                         return -1;
-                }
-                ctx = sha512_ctx_mgr_flush(mgr);
-                if (ctx && ctx->error) {
+                rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
                         return -1;
-                }
                 if (ctx_pool[c].status != ISAL_HASH_CTX_STS_COMPLETE) {
                         return -1;
                 }
@@ -184,6 +180,7 @@ main(void)
         ISAL_SHA512_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
         uint32_t i, j, k, t, checked = 0;
         uint64_t *good;
+        int rc, ret = -1;
 
 #if defined(_WIN32) || defined(_WIN64)
         mgr = (ISAL_SHA512_HASH_CTX_MGR *) _aligned_malloc(sizeof(ISAL_SHA512_HASH_CTX_MGR), 16);
@@ -192,14 +189,16 @@ main(void)
                 return 1;
         }
 #else
-        int ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
-        if ((ret != 0) || (mgr == NULL)) {
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_SHA512_HASH_CTX_MGR));
+        if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed, test aborted\n");
                 return 1;
         }
 #endif
 
-        sha512_ctx_mgr_init(mgr);
+        rc = isal_sha512_ctx_mgr_init(mgr);
+        if (rc)
+                goto end;
 
         // Init contexts before first use
         for (i = 0; i < MSGS; i++) {
@@ -208,8 +207,11 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
-                                            (uint32_t) strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
+                rc = isal_sha512_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, msgs[i],
+                                                (uint32_t) strlen((char *) msgs[i]),
+                                                ISAL_HASH_ENTIRE);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -222,7 +224,7 @@ main(void)
                                                t, j,
                                                (unsigned long long) ctxpool[t].job.result_digest[j],
                                                (unsigned long long) good[j]);
-                                        return -1;
+                                        goto end;
                                 }
                         }
 
@@ -230,13 +232,15 @@ main(void)
                                 printf("Something bad happened during the"
                                        " submit. Error code: %d",
                                        ctx->error);
-                                return -1;
+                                goto end;
                         }
                 }
         }
 
         while (1) {
-                ctx = sha512_ctx_mgr_flush(mgr);
+                rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -249,7 +253,7 @@ main(void)
                                                t, j,
                                                (unsigned long long) ctxpool[t].job.result_digest[j],
                                                (unsigned long long) good[j]);
-                                        return -1;
+                                        goto end;
                                 }
                         }
 
@@ -257,7 +261,7 @@ main(void)
                                 printf("Something bad happened during the "
                                        "submit. Error code: %d",
                                        ctx->error);
-                                return -1;
+                                goto end;
                         }
                 } else {
                         break;
@@ -276,9 +280,11 @@ main(void)
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
 
-                ctx = sha512_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
-                                            (uint32_t) strlen((char *) msgs[j]), ISAL_HASH_ENTIRE);
-
+                rc = isal_sha512_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, msgs[j],
+                                                (uint32_t) strlen((char *) msgs[j]),
+                                                ISAL_HASH_ENTIRE);
+                if (rc)
+                        goto end;
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
@@ -291,7 +297,7 @@ main(void)
                                                t, j,
                                                (unsigned long long) ctxpool[t].job.result_digest[j],
                                                (unsigned long long) good[j]);
-                                        return -1;
+                                        goto end;
                                 }
                         }
 
@@ -299,7 +305,7 @@ main(void)
                                 printf("Something bad happened during the"
                                        " submit. Error code: %d",
                                        ctx->error);
-                                return -1;
+                                goto end;
                         }
 
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -307,7 +313,9 @@ main(void)
                 }
         }
         while (1) {
-                ctx = sha512_ctx_mgr_flush(mgr);
+                rc = isal_sha512_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -321,7 +329,7 @@ main(void)
                                                t, j,
                                                (unsigned long long) ctxpool[t].job.result_digest[j],
                                                (unsigned long long) good[j]);
-                                        return -1;
+                                        goto end;
                                 }
                         }
 
@@ -329,7 +337,7 @@ main(void)
                                 printf("Something bad happened during the"
                                        " submit. Error code: %d",
                                        ctx->error);
-                                return -1;
+                                goto end;
                         }
                 } else {
                         break;
@@ -338,18 +346,18 @@ main(void)
 
         if (checked != NUM_JOBS) {
                 printf("only tested %d rather than %d\n", checked, NUM_JOBS);
-                return -1;
+                goto end;
         }
-        int rc = non_blocksize_updates_test(mgr);
-#if defined(_WIN32) || defined(_WIN64)
-        _aligned_free(mgr);
-#else
-        free(mgr);
-#endif
+        rc = non_blocksize_updates_test(mgr);
         if (rc) {
                 printf("multi updates test fail %d\n", rc);
-                return rc;
+                goto end;
         }
+        ret = 0;
+
         printf(" multibinary_sha512 test: Pass\n");
-        return 0;
+end:
+        aligned_free(mgr);
+
+        return ret;
 }
