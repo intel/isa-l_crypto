@@ -112,7 +112,7 @@ test_mh_sha1_finalize_api(void)
 {
         int ret, retval = 1;
         struct mh_sha1_ctx *update_ctx = NULL;
-        uint32_t hash_test[SHA1_DIGEST_WORDS] = { 0 };
+        uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS] = { 0 };
         const char *func_name = "isal_mh_sha1_finalize";
 
         update_ctx = malloc(sizeof(*update_ctx));

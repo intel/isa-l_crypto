@@ -30,8 +30,9 @@
 #include "mh_sha1_internal.h"
 
 void
-mh_sha1_block_ce(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                 uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+mh_sha1_block_ce(const uint8_t *input_data,
+                 uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                 uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 /***************mh_sha1_update***********/
 // mh_sha1_update_ce.c
 #define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_ce

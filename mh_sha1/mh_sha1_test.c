@@ -87,12 +87,13 @@ dump(char *buf, int len)
 }
 
 int
-compare_digests(uint32_t hash_ref[SHA1_DIGEST_WORDS], uint32_t hash_test[SHA1_DIGEST_WORDS])
+compare_digests(uint32_t hash_ref[ISAL_SHA1_DIGEST_WORDS],
+                uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS])
 {
         int i;
         int mh_sha1_fail = 0;
 
-        for (i = 0; i < SHA1_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_SHA1_DIGEST_WORDS; i++) {
                 if (hash_test[i] != hash_ref[i])
                         mh_sha1_fail++;
         }
@@ -113,7 +114,7 @@ main(int argc, char *argv[])
 {
         int fail = 0;
 #ifndef FIPS_MODE
-        uint32_t hash_test[SHA1_DIGEST_WORDS], hash_ref[SHA1_DIGEST_WORDS];
+        uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_ref[ISAL_SHA1_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
         struct mh_sha1_ctx *update_ctx = NULL;

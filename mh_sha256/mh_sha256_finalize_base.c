@@ -47,7 +47,7 @@
 
 void
 MH_SHA256_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
-                        uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                        uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                         uint32_t digests[SHA256_DIGEST_WORDS])
 {
         uint64_t partial_buffer_len, len_in_bit;
@@ -72,7 +72,7 @@ MH_SHA256_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
 
         // Calculate multi-hash SHA256 digests (segment digests as input message)
         sha256_for_mh_sha256((uint8_t *) mh_sha256_segs_digests, digests,
-                             4 * SHA256_DIGEST_WORDS * HASH_SEGS);
+                             4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
@@ -83,7 +83,7 @@ MH_SHA256_FINALIZE_FUNCTION(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
         uint8_t i;
         uint8_t *partial_block_buffer;
         uint64_t total_len;
-        uint32_t(*mh_sha256_segs_digests)[HASH_SEGS];
+        uint32_t(*mh_sha256_segs_digests)[ISAL_HASH_SEGS];
         uint8_t *aligned_frame_buffer;
 
         if (ctx == NULL)
@@ -94,7 +94,7 @@ MH_SHA256_FINALIZE_FUNCTION(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
 
         /* mh_sha256 tail */
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
-        mh_sha256_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha256_interim_digests;
+        mh_sha256_segs_digests = (uint32_t(*)[ISAL_HASH_SEGS]) ctx->mh_sha256_interim_digests;
 
         MH_SHA256_TAIL_FUNCTION(partial_block_buffer, (uint32_t) total_len, mh_sha256_segs_digests,
                                 aligned_frame_buffer, ctx->mh_sha256_digest);

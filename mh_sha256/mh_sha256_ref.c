@@ -288,7 +288,7 @@ sha256_update_all_segs(uint32_t *new_data, uint32_t (*mh_sha256_seg_digests)[SHA
 }
 
 void
-mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[HASH_SEGS],
+mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[ISAL_HASH_SEGS],
                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i, j;
@@ -298,12 +298,12 @@ mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[HASH_SEGS],
         trans_digests = (uint32_t(*)[SHA256_DIGEST_WORDS]) digests;
 
         // Re-structure seg_digests from 5*16 to 16*5
-        for (j = 0; j < HASH_SEGS; j++) {
+        for (j = 0; j < ISAL_HASH_SEGS; j++) {
                 for (i = 0; i < SHA256_DIGEST_WORDS; i++) {
                         temp_buffer[j * SHA256_DIGEST_WORDS + i] = digests[i][j];
                 }
         }
-        memcpy(trans_digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * HASH_SEGS);
+        memcpy(trans_digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         // Calculate digests for all segments, leveraging sha256 API
         for (i = 0; i < num_blocks; i++) {
@@ -312,19 +312,19 @@ mh_sha256_block_ref(const uint8_t *input_data, uint32_t (*digests)[HASH_SEGS],
         }
 
         // Re-structure seg_digests from 16*5 to 5*16
-        for (j = 0; j < HASH_SEGS; j++) {
+        for (j = 0; j < ISAL_HASH_SEGS; j++) {
                 for (i = 0; i < SHA256_DIGEST_WORDS; i++) {
-                        temp_buffer[i * HASH_SEGS + j] = trans_digests[j][i];
+                        temp_buffer[i * ISAL_HASH_SEGS + j] = trans_digests[j][i];
                 }
         }
-        memcpy(digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * HASH_SEGS);
+        memcpy(digests, temp_buffer, 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
 
 void
 mh_sha256_tail_ref(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                    uint32_t digests[SHA256_DIGEST_WORDS])
 {
         uint64_t partial_buffer_len, len_in_bit;
@@ -349,7 +349,7 @@ mh_sha256_tail_ref(uint8_t *partial_buffer, uint32_t total_len,
 
         // Calculate multi-hash SHA256 digests (segment digests as input message)
         sha256_for_mh_sha256_ref((uint8_t *) mh_sha256_segs_digests, digests,
-                                 4 * SHA256_DIGEST_WORDS * HASH_SEGS);
+                                 4 * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
@@ -358,7 +358,7 @@ void
 mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
 {
         uint64_t total_len;
-        uint32_t num_blocks, mh_sha256_segs_digests[SHA256_DIGEST_WORDS][HASH_SEGS];
+        uint32_t num_blocks, mh_sha256_segs_digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS];
         uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE];
         uint8_t partial_block_buffer[MH_SHA256_BLOCK_SIZE * 2];
         uint32_t mh_sha256_hash_dword[SHA256_DIGEST_WORDS];
@@ -366,7 +366,7 @@ mh_sha256_ref(const void *buffer, uint32_t len, uint32_t *mh_sha256_digest)
         const uint8_t *input_data = (const uint8_t *) buffer;
 
         /* Initialize digests of all segments */
-        for (i = 0; i < HASH_SEGS; i++) {
+        for (i = 0; i < ISAL_HASH_SEGS; i++) {
                 mh_sha256_segs_digests[0][i] = MH_SHA256_H0;
                 mh_sha256_segs_digests[1][i] = MH_SHA256_H1;
                 mh_sha256_segs_digests[2][i] = MH_SHA256_H2;

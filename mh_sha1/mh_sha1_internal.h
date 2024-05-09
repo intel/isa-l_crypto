@@ -299,7 +299,7 @@ _sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t le
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * This function determines what instruction sets are enabled and selects the
@@ -314,13 +314,13 @@ _sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t le
  */
 void
 _mh_sha1_tail(uint8_t *partial_buffer, uint32_t total_len,
-              uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-              uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+              uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+              uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * @param  partial_buffer Pointer to the start addr of remainder
@@ -333,13 +333,13 @@ _mh_sha1_tail(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 _mh_sha1_tail_base(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+                   uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * @requires SSE
@@ -354,13 +354,13 @@ _mh_sha1_tail_base(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 _mh_sha1_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
-                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+                  uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                  uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * @requires AVX
@@ -375,13 +375,13 @@ _mh_sha1_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 _mh_sha1_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
-                  uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                  uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+                  uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                  uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * @requires AVX2
@@ -396,13 +396,13 @@ _mh_sha1_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 _mh_sha1_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                   uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+                   uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
  * @brief  Tail process for multi-hash sha1.
  *
- * Calculate the remainder of input data which is less than MH_SHA1_BLOCK_SIZE.
+ * Calculate the remainder of input data which is less than ISAL_MH_SHA1_BLOCK_SIZE.
  * It will output the final SHA1 digest based on mh_sha1_segs_digests.
  *
  * @requires AVX512
@@ -417,11 +417,11 @@ _mh_sha1_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 _mh_sha1_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
-                     uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                     uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]);
+                     uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                     uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * This function determines what instruction sets are enabled and selects the
  * appropriate version at runtime.
@@ -434,11 +434,11 @@ _mh_sha1_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-_mh_sha1_block(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-               uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block(const uint8_t *input_data, uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+               uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * @param  input_data Pointer to input data to be processed
  * @param  digests 16 segments digests
@@ -448,11 +448,12 @@ _mh_sha1_block(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HA
  *
  */
 void
-_mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_base(const uint8_t *input_data,
+                    uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                    uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * @requires SSE
  * @param  input_data Pointer to input data to be processed
@@ -463,11 +464,12 @@ _mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORD
  *
  */
 void
-_mh_sha1_block_sse(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_sse(const uint8_t *input_data,
+                   uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                   uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * @requires AVX
  *
@@ -479,11 +481,12 @@ _mh_sha1_block_sse(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS
  *
  */
 void
-_mh_sha1_block_avx(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx(const uint8_t *input_data,
+                   uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                   uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * @requires AVX2
  *
@@ -495,11 +498,12 @@ _mh_sha1_block_avx(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS
  *
  */
 void
-_mh_sha1_block_avx2(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx2(const uint8_t *input_data,
+                    uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                    uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
- * @brief  Calculate mh_sha1 digest of blocks which size is MH_SHA1_BLOCK_SIZE*N.
+ * @brief  Calculate mh_sha1 digest of blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N.
  *
  * @requires AVX512
  *
@@ -511,8 +515,9 @@ _mh_sha1_block_avx2(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORD
  *
  */
 void
-_mh_sha1_block_avx512(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                      uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
+_mh_sha1_block_avx512(const uint8_t *input_data,
+                      uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                      uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks);
 
 #ifdef __cplusplus
 }

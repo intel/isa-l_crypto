@@ -48,53 +48,53 @@ MH_SHA1_UPDATE_FUNCTION(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t le
         uint8_t *partial_block_buffer;
         uint32_t partial_block_len;
         uint32_t num_blocks;
-        uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
+        uint32_t(*mh_sha1_segs_digests)[ISAL_HASH_SEGS];
         uint8_t *aligned_frame_buffer;
         const uint8_t *input_data = (const uint8_t *) buffer;
 
         if (ctx == NULL)
-                return MH_SHA1_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_CTX_ERROR_NULL;
 
         if (len == 0)
-                return MH_SHA1_CTX_ERROR_NONE;
+                return ISAL_MH_SHA1_CTX_ERROR_NONE;
 
-        partial_block_len = ctx->total_length % MH_SHA1_BLOCK_SIZE;
+        partial_block_len = ctx->total_length % ISAL_MH_SHA1_BLOCK_SIZE;
         partial_block_buffer = ctx->partial_block_buffer;
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
-        mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
+        mh_sha1_segs_digests = (uint32_t(*)[ISAL_HASH_SEGS]) ctx->mh_sha1_interim_digests;
 
         ctx->total_length += len;
         // No enough input data for mh_sha1 calculation
-        if (len + partial_block_len < MH_SHA1_BLOCK_SIZE) {
+        if (len + partial_block_len < ISAL_MH_SHA1_BLOCK_SIZE) {
                 memcpy(partial_block_buffer + partial_block_len, input_data, len);
-                return MH_SHA1_CTX_ERROR_NONE;
+                return ISAL_MH_SHA1_CTX_ERROR_NONE;
         }
         // mh_sha1 calculation for the previous partial block
         if (partial_block_len != 0) {
                 memcpy(partial_block_buffer + partial_block_len, input_data,
-                       MH_SHA1_BLOCK_SIZE - partial_block_len);
+                       ISAL_MH_SHA1_BLOCK_SIZE - partial_block_len);
                 // do one_block process
                 MH_SHA1_BLOCK_FUNCTION(partial_block_buffer, mh_sha1_segs_digests,
                                        aligned_frame_buffer, 1);
-                input_data += MH_SHA1_BLOCK_SIZE - partial_block_len;
-                len -= MH_SHA1_BLOCK_SIZE - partial_block_len;
-                memset(partial_block_buffer, 0, MH_SHA1_BLOCK_SIZE);
+                input_data += ISAL_MH_SHA1_BLOCK_SIZE - partial_block_len;
+                len -= ISAL_MH_SHA1_BLOCK_SIZE - partial_block_len;
+                memset(partial_block_buffer, 0, ISAL_MH_SHA1_BLOCK_SIZE);
         }
         // Calculate mh_sha1 for the current blocks
-        num_blocks = len / MH_SHA1_BLOCK_SIZE;
+        num_blocks = len / ISAL_MH_SHA1_BLOCK_SIZE;
         if (num_blocks > 0) {
                 // do num_blocks process
                 MH_SHA1_BLOCK_FUNCTION(input_data, mh_sha1_segs_digests, aligned_frame_buffer,
                                        num_blocks);
-                len -= num_blocks * MH_SHA1_BLOCK_SIZE;
-                input_data += num_blocks * MH_SHA1_BLOCK_SIZE;
+                len -= num_blocks * ISAL_MH_SHA1_BLOCK_SIZE;
+                input_data += num_blocks * ISAL_MH_SHA1_BLOCK_SIZE;
         }
         // Store the partial block
         if (len != 0) {
                 memcpy(partial_block_buffer, input_data, len);
         }
 
-        return MH_SHA1_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_CTX_ERROR_NONE;
 }
 
 #ifdef MH_SHA1_UPDATE_SLVER

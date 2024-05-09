@@ -125,7 +125,7 @@ sha256_single_for_mh_sha256(const uint8_t *data, uint32_t digest[]);
  */
 void
 mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
-               uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+               uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -144,7 +144,7 @@ mh_sha256_tail(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
-                    uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                     uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -165,7 +165,7 @@ mh_sha256_tail_base(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                    uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -186,7 +186,7 @@ mh_sha256_tail_sse(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
-                   uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                   uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                    uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -207,7 +207,7 @@ mh_sha256_tail_avx(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
-                    uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                    uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                     uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -228,7 +228,7 @@ mh_sha256_tail_avx2(uint8_t *partial_buffer, uint32_t total_len,
  */
 void
 mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
-                      uint32_t (*mh_sha256_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
+                      uint32_t (*mh_sha256_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
                       uint32_t mh_sha256_digest[SHA256_DIGEST_WORDS]);
 
 /**
@@ -245,7 +245,7 @@ mh_sha256_tail_avx512(uint8_t *partial_buffer, uint32_t total_len,
  *
  */
 void
-mh_sha256_block(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                 uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
@@ -259,7 +259,8 @@ mh_sha256_block(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS]
  *
  */
 void
-mh_sha256_block_base(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_base(const uint8_t *input_data,
+                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                      uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
@@ -274,7 +275,8 @@ mh_sha256_block_base(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_W
  *
  */
 void
-mh_sha256_block_sse(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_sse(const uint8_t *input_data,
+                    uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
@@ -290,7 +292,8 @@ mh_sha256_block_sse(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WO
  *
  */
 void
-mh_sha256_block_avx(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_avx(const uint8_t *input_data,
+                    uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                     uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
@@ -306,7 +309,8 @@ mh_sha256_block_avx(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WO
  *
  */
 void
-mh_sha256_block_avx2(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_avx2(const uint8_t *input_data,
+                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                      uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 /**
@@ -322,7 +326,8 @@ mh_sha256_block_avx2(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_W
  *
  */
 void
-mh_sha256_block_avx512(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_avx512(const uint8_t *input_data,
+                       uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                        uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks);
 
 #ifdef __cplusplus

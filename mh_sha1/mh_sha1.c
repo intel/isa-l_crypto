@@ -34,16 +34,16 @@
 int
 _mh_sha1_init(struct mh_sha1_ctx *ctx)
 {
-        uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
+        uint32_t(*mh_sha1_segs_digests)[ISAL_HASH_SEGS];
         uint32_t i;
 
         if (ctx == NULL)
-                return MH_SHA1_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_CTX_ERROR_NULL;
 
         memset(ctx, 0, sizeof(*ctx));
 
-        mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
-        for (i = 0; i < HASH_SEGS; i++) {
+        mh_sha1_segs_digests = (uint32_t(*)[ISAL_HASH_SEGS]) ctx->mh_sha1_interim_digests;
+        for (i = 0; i < ISAL_HASH_SEGS; i++) {
                 mh_sha1_segs_digests[0][i] = MH_SHA1_H0;
                 mh_sha1_segs_digests[1][i] = MH_SHA1_H1;
                 mh_sha1_segs_digests[2][i] = MH_SHA1_H2;
@@ -51,7 +51,7 @@ _mh_sha1_init(struct mh_sha1_ctx *ctx)
                 mh_sha1_segs_digests[4][i] = MH_SHA1_H4;
         }
 
-        return MH_SHA1_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_CTX_ERROR_NONE;
 }
 
 int

@@ -120,7 +120,7 @@ test_mh_sha1_murmur3_x64_128_finalize_api(void)
 {
         int ret, retval = 1;
         struct mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
-        uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS];
+        uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
         uint32_t murmur3_x64_128_digest[MURMUR3_x64_128_DIGEST_WORDS];
         const char *func_name = "isal_mh_sha1_murmur3_x64_128_finalize";
 

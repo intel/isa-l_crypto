@@ -50,7 +50,7 @@
  *
  * Example
  * \code
- * uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS];
+ * uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
  * uint32_t murmur_digest[MURMUR3_x64_128_DIGEST_WORDS];
  * struct mh_sha1_murmur3_x64_128_ctx *ctx;
  *
@@ -80,20 +80,20 @@ extern "C" {
  *
  */
 struct mh_sha1_murmur3_x64_128_ctx {
-        uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
+        uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
         uint32_t murmur3_x64_128_digest[MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of
                                                                        //!< murmur3_x64_128
 
         uint64_t total_length;
         //!<  Parameters for update feature, describe the lengths of input buffers in bytes
-        uint8_t partial_block_buffer[MH_SHA1_BLOCK_SIZE * 2];
+        uint8_t partial_block_buffer[ISAL_MH_SHA1_BLOCK_SIZE * 2];
         //!<  Padding the tail of input data for SHA1
-        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
+        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * ISAL_SHA1_DIGEST_WORDS * ISAL_HASH_SEGS];
         //!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to
         //!<  stack for 64-byte alignment purpose.
-        uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE + ISAL_AVX512_ALIGNED];
         //!<  Re-structure sha1 block data from different segments to fit big endian. Use
-        //!<  AVX512_ALIGNED for 64-byte alignment purpose.
+        //!<  ISAL_AVX512_ALIGNED for 64-byte alignment purpose.
 };
 
 /**

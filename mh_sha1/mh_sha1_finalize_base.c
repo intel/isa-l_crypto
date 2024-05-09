@@ -47,32 +47,33 @@
 
 void
 MH_SHA1_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
-                      uint32_t (*mh_sha1_segs_digests)[HASH_SEGS], uint8_t *frame_buffer,
-                      uint32_t digests[SHA1_DIGEST_WORDS])
+                      uint32_t (*mh_sha1_segs_digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer,
+                      uint32_t digests[ISAL_SHA1_DIGEST_WORDS])
 {
         uint64_t partial_buffer_len, len_in_bit;
 
-        partial_buffer_len = total_len % MH_SHA1_BLOCK_SIZE;
+        partial_buffer_len = total_len % ISAL_MH_SHA1_BLOCK_SIZE;
 
         // Padding the first block
         partial_buffer[partial_buffer_len] = 0x80;
         partial_buffer_len++;
-        memset(partial_buffer + partial_buffer_len, 0, MH_SHA1_BLOCK_SIZE - partial_buffer_len);
+        memset(partial_buffer + partial_buffer_len, 0,
+               ISAL_MH_SHA1_BLOCK_SIZE - partial_buffer_len);
 
         // Calculate the first block without total_length if padding needs 2 block
-        if (partial_buffer_len > (MH_SHA1_BLOCK_SIZE - 8)) {
+        if (partial_buffer_len > (ISAL_MH_SHA1_BLOCK_SIZE - 8)) {
                 MH_SHA1_BLOCK_FUNCTION(partial_buffer, mh_sha1_segs_digests, frame_buffer, 1);
                 // Padding the second block
-                memset(partial_buffer, 0, MH_SHA1_BLOCK_SIZE);
+                memset(partial_buffer, 0, ISAL_MH_SHA1_BLOCK_SIZE);
         }
         // Padding the block
         len_in_bit = to_be64((uint64_t) total_len * 8);
-        *(uint64_t *) (partial_buffer + MH_SHA1_BLOCK_SIZE - 8) = len_in_bit;
+        *(uint64_t *) (partial_buffer + ISAL_MH_SHA1_BLOCK_SIZE - 8) = len_in_bit;
         MH_SHA1_BLOCK_FUNCTION(partial_buffer, mh_sha1_segs_digests, frame_buffer, 1);
 
         // Calculate multi-hash SHA1 digests (segment digests as input message)
         _sha1_for_mh_sha1((uint8_t *) mh_sha1_segs_digests, digests,
-                          4 * SHA1_DIGEST_WORDS * HASH_SEGS);
+                          4 * ISAL_SHA1_DIGEST_WORDS * ISAL_HASH_SEGS);
 
         return;
 }
@@ -82,18 +83,18 @@ MH_SHA1_FINALIZE_FUNCTION(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
         uint8_t *partial_block_buffer;
         uint64_t total_len;
-        uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
+        uint32_t(*mh_sha1_segs_digests)[ISAL_HASH_SEGS];
         uint8_t *aligned_frame_buffer;
 
         if (ctx == NULL)
-                return MH_SHA1_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_CTX_ERROR_NULL;
 
         total_len = ctx->total_length;
         partial_block_buffer = ctx->partial_block_buffer;
 
         /* mh_sha1 tail */
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
-        mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
+        mh_sha1_segs_digests = (uint32_t(*)[ISAL_HASH_SEGS]) ctx->mh_sha1_interim_digests;
 
         MH_SHA1_TAIL_FUNCTION(partial_block_buffer, (uint32_t) total_len, mh_sha1_segs_digests,
                               aligned_frame_buffer, ctx->mh_sha1_digest);
@@ -107,7 +108,7 @@ MH_SHA1_FINALIZE_FUNCTION(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
                 ((uint32_t *) mh_sha1_digest)[4] = ctx->mh_sha1_digest[4];
         }
 
-        return MH_SHA1_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_CTX_ERROR_NONE;
 }
 
 #ifdef MH_SHA1_FINALIZE_SLVER

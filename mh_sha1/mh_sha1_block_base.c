@@ -35,7 +35,8 @@
 // Base multi-hash SHA1 Functions
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-#define store_w(s, i, w, ww) (w[i][s] = to_be32(ww[i * HASH_SEGS + s])) // only used for step 0 ~ 15
+#define store_w(s, i, w, ww)                                                                       \
+        (w[i][s] = to_be32(ww[i * ISAL_HASH_SEGS + s])) // only used for step 0 ~ 15
 #define update_w(s, i, w)                                                                          \
         (w[i & 15][s] = rol32(w[(i - 3) & 15][s] ^ w[(i - 8) & 15][s] ^ w[(i - 14) & 15][s] ^      \
                                       w[(i - 16) & 15][s],                                         \
@@ -178,7 +179,7 @@
 
 static inline void
 step00_15(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e,
-          uint32_t (*w)[HASH_SEGS], uint32_t *ww)
+          uint32_t (*w)[ISAL_HASH_SEGS], uint32_t *ww)
 {
         STORE_W(i, w, ww);
         UPDATE_E1(a, b, c, d, e, i, w);
@@ -187,7 +188,7 @@ step00_15(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e
 
 static inline void
 step16_19(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e,
-          uint32_t (*w)[HASH_SEGS])
+          uint32_t (*w)[ISAL_HASH_SEGS])
 {
         UPDATE_W(i, w);
         UPDATE_E1(a, b, c, d, e, i, w);
@@ -196,7 +197,7 @@ step16_19(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e
 
 static inline void
 step20_39(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e,
-          uint32_t (*w)[HASH_SEGS])
+          uint32_t (*w)[ISAL_HASH_SEGS])
 {
         UPDATE_W(i, w);
         UPDATE_E2(a, b, c, d, e, i, w);
@@ -205,7 +206,7 @@ step20_39(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e
 
 static inline void
 step40_59(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e,
-          uint32_t (*w)[HASH_SEGS])
+          uint32_t (*w)[ISAL_HASH_SEGS])
 {
         UPDATE_W(i, w);
         UPDATE_E3(a, b, c, d, e, i, w);
@@ -214,7 +215,7 @@ step40_59(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e
 
 static inline void
 step60_79(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e,
-          uint32_t (*w)[HASH_SEGS])
+          uint32_t (*w)[ISAL_HASH_SEGS])
 {
         UPDATE_W(i, w);
         UPDATE_E4(a, b, c, d, e, i, w);
@@ -222,7 +223,7 @@ step60_79(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e
 }
 
 static inline void
-init_abcde(uint32_t *xx, uint32_t n, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS])
+init_abcde(uint32_t *xx, uint32_t n, uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         xx[0] = digests[n][0];
         xx[1] = digests[n][1];
@@ -243,7 +244,7 @@ init_abcde(uint32_t *xx, uint32_t n, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SE
 }
 
 static inline void
-add_abcde(uint32_t *xx, uint32_t n, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS])
+add_abcde(uint32_t *xx, uint32_t n, uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         digests[n][0] += xx[0];
         digests[n][1] += xx[1];
@@ -276,13 +277,14 @@ add_abcde(uint32_t *xx, uint32_t n, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEG
  *   N/A
  */
 void
-mh_sha1_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *frame_buffer)
+mh_sha1_single(const uint8_t *input, uint32_t (*digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer)
 {
-        uint32_t aa[HASH_SEGS], bb[HASH_SEGS], cc[HASH_SEGS], dd[HASH_SEGS], ee[HASH_SEGS];
+        uint32_t aa[ISAL_HASH_SEGS], bb[ISAL_HASH_SEGS], cc[ISAL_HASH_SEGS], dd[ISAL_HASH_SEGS],
+                ee[ISAL_HASH_SEGS];
         uint32_t *ww = (uint32_t *) input;
-        uint32_t(*w)[HASH_SEGS];
+        uint32_t(*w)[ISAL_HASH_SEGS];
 
-        w = (uint32_t(*)[HASH_SEGS]) frame_buffer;
+        w = (uint32_t(*)[ISAL_HASH_SEGS]) frame_buffer;
 
         init_abcde(aa, 0, digests);
         init_abcde(bb, 1, digests);
@@ -383,14 +385,15 @@ mh_sha1_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *fr
 }
 
 void
-_mh_sha1_block_base(const uint8_t *input_data, uint32_t digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-                    uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
+_mh_sha1_block_base(const uint8_t *input_data,
+                    uint32_t digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                    uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i;
 
         for (i = 0; i < num_blocks; i++) {
                 mh_sha1_single(input_data, digests, frame_buffer);
-                input_data += MH_SHA1_BLOCK_SIZE;
+                input_data += ISAL_MH_SHA1_BLOCK_SIZE;
         }
 
         return;

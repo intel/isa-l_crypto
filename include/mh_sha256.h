@@ -66,11 +66,11 @@ extern "C" {
 #endif
 
 // External Interface Definition
-#define HASH_SEGS            16
+#define ISAL_HASH_SEGS       16
 #define SHA256_BLOCK_SIZE    64
-#define MH_SHA256_BLOCK_SIZE (HASH_SEGS * SHA256_BLOCK_SIZE)
+#define MH_SHA256_BLOCK_SIZE (ISAL_HASH_SEGS * SHA256_BLOCK_SIZE)
 #define SHA256_DIGEST_WORDS  8
-#define AVX512_ALIGNED       64
+#define ISAL_AVX512_ALIGNED  64
 
 /** @brief Holds info describing a single mh_sha256
  *
@@ -84,12 +84,12 @@ struct mh_sha256_ctx {
         //!<  Parameters for update feature, describe the lengths of input buffers in bytes
         uint8_t partial_block_buffer[MH_SHA256_BLOCK_SIZE * 2];
         //!<  Padding the tail of input data for SHA256
-        uint8_t mh_sha256_interim_digests[sizeof(uint32_t) * SHA256_DIGEST_WORDS * HASH_SEGS];
+        uint8_t mh_sha256_interim_digests[sizeof(uint32_t) * SHA256_DIGEST_WORDS * ISAL_HASH_SEGS];
         //!<  Storing the SHA256 interim digests of  all 16 segments. Each time, it will be copied
         //!<  to stack for 64-byte alignment purpose.
-        uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE + AVX512_ALIGNED];
+        uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE + ISAL_AVX512_ALIGNED];
         //!<  Re-structure sha256 block data from different segments to fit big endian. Use
-        //!<  AVX512_ALIGNED for 64-byte alignment purpose.
+        //!<  ISAL_AVX512_ALIGNED for 64-byte alignment purpose.
 };
 
 /**

@@ -68,7 +68,7 @@
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != MH_SHA1_CTX_ERROR_NONE) {                                           \
+                if ((state) != ISAL_MH_SHA1_CTX_ERROR_NONE) {                                      \
                         printf("The mh_sha1 function is failed.\n");                               \
                         goto exit;                                                                 \
                 }                                                                                  \
@@ -97,12 +97,13 @@ dump(char *buf, int len)
 }
 
 int
-compare_digests(uint32_t hash_base[SHA1_DIGEST_WORDS], uint32_t hash_test[SHA1_DIGEST_WORDS])
+compare_digests(uint32_t hash_base[ISAL_SHA1_DIGEST_WORDS],
+                uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS])
 {
         int i;
         int mh_sha1_fail = 0;
 
-        for (i = 0; i < SHA1_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_SHA1_DIGEST_WORDS; i++) {
                 if (hash_test[i] != hash_base[i])
                         mh_sha1_fail++;
         }
@@ -123,7 +124,7 @@ main(int argc, char *argv[])
 {
 #ifndef FIPS_MODE
         int i, fail = -1;
-        uint32_t hash_test[SHA1_DIGEST_WORDS], hash_base[SHA1_DIGEST_WORDS];
+        uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_base[ISAL_SHA1_DIGEST_WORDS];
         uint8_t *buff = NULL;
         struct mh_sha1_ctx *update_ctx_test = NULL, *update_ctx_base = NULL;
         struct perf start, stop;

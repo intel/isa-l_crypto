@@ -36,7 +36,7 @@
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 // store_w is only used for step 0 ~ 15
-#define store_w(s, i, w, ww) (w[i][s] = to_be32(ww[i * HASH_SEGS + s]))
+#define store_w(s, i, w, ww) (w[i][s] = to_be32(ww[i * ISAL_HASH_SEGS + s]))
 #define Ws(x, s)             w[(x) & 15][s]
 // update_w is used for step > 15
 #define update_w(s, i, w)                                                                          \
@@ -49,28 +49,28 @@
 
 // s is a iterator
 #define STORE_W(s, i, w, ww)                                                                       \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 store_w(s, i, w, ww);
 #define UPDATE_W(s, i, w)                                                                          \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 update_w(s, i, w);
 #define UPDATE_T2(s, a, b, c)                                                                      \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 update_t2(s, a, b, c);
 #define UPDATE_T1(s, h, e, f, g, i, k)                                                             \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 update_t1(s, h, e, f, g, i, k);
 #define UPDATE_D(s)                                                                                \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 update_d(s);
 #define UPDATE_H(s)                                                                                \
-        for (s = 0; s < HASH_SEGS; s++)                                                            \
+        for (s = 0; s < ISAL_HASH_SEGS; s++)                                                       \
                 update_h(s);
 
 static inline void
 step(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f,
-     uint32_t *g, uint32_t *h, uint32_t k, uint32_t *t1, uint32_t *t2, uint32_t (*w)[HASH_SEGS],
-     uint32_t *ww)
+     uint32_t *g, uint32_t *h, uint32_t k, uint32_t *t1, uint32_t *t2,
+     uint32_t (*w)[ISAL_HASH_SEGS], uint32_t *ww)
 {
         uint8_t s;
         if (i < 16) {
@@ -85,18 +85,18 @@ step(int i, uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uin
 }
 
 static inline void
-init_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS])
+init_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         uint8_t s;
-        for (s = 0; s < HASH_SEGS; s++)
+        for (s = 0; s < ISAL_HASH_SEGS; s++)
                 xx[s] = digests[n][s];
 }
 
 static inline void
-add_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS])
+add_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS])
 {
         uint8_t s;
-        for (s = 0; s < HASH_SEGS; s++)
+        for (s = 0; s < ISAL_HASH_SEGS; s++)
                 digests[n][s] += xx[s];
 }
 
@@ -113,14 +113,14 @@ add_abcdefgh(uint32_t *xx, uint32_t n, uint32_t digests[SHA256_DIGEST_WORDS][HAS
  *   N/A
  */
 void
-mh_sha256_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *frame_buffer)
+mh_sha256_single(const uint8_t *input, uint32_t (*digests)[ISAL_HASH_SEGS], uint8_t *frame_buffer)
 {
         uint8_t i;
-        uint32_t aa[HASH_SEGS], bb[HASH_SEGS], cc[HASH_SEGS], dd[HASH_SEGS];
-        uint32_t ee[HASH_SEGS], ff[HASH_SEGS], gg[HASH_SEGS], hh[HASH_SEGS];
-        uint32_t t1[HASH_SEGS], t2[HASH_SEGS];
+        uint32_t aa[ISAL_HASH_SEGS], bb[ISAL_HASH_SEGS], cc[ISAL_HASH_SEGS], dd[ISAL_HASH_SEGS];
+        uint32_t ee[ISAL_HASH_SEGS], ff[ISAL_HASH_SEGS], gg[ISAL_HASH_SEGS], hh[ISAL_HASH_SEGS];
+        uint32_t t1[ISAL_HASH_SEGS], t2[ISAL_HASH_SEGS];
         uint32_t *ww = (uint32_t *) input;
-        uint32_t(*w)[HASH_SEGS];
+        uint32_t(*w)[ISAL_HASH_SEGS];
 
         const static uint32_t k[64] = {
                 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
@@ -135,7 +135,7 @@ mh_sha256_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *
                 0xc67178f2
         };
 
-        w = (uint32_t(*)[HASH_SEGS]) frame_buffer;
+        w = (uint32_t(*)[ISAL_HASH_SEGS]) frame_buffer;
 
         init_abcdefgh(aa, 0, digests);
         init_abcdefgh(bb, 1, digests);
@@ -168,7 +168,8 @@ mh_sha256_single(const uint8_t *input, uint32_t (*digests)[HASH_SEGS], uint8_t *
 }
 
 void
-mh_sha256_block_base(const uint8_t *input_data, uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+mh_sha256_block_base(const uint8_t *input_data,
+                     uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
                      uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE], uint32_t num_blocks)
 {
         uint32_t i;

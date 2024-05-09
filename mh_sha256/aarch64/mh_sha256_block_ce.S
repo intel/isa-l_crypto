@@ -89,7 +89,7 @@ declare_vector_reg	tmp,		29,v
 
 /*
 void mh_sha256_block_ce(const uint8_t * input_data,
-			uint32_t digests[SHA256_DIGEST_WORDS][HASH_SEGS],
+			uint32_t digests[SHA256_DIGEST_WORDS][ISAL_HASH_SEGS],
 			uint8_t frame_buffer[MH_SHA256_BLOCK_SIZE],
 			uint32_t num_blocks);
 */

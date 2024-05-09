@@ -48,7 +48,7 @@ MH_SHA256_UPDATE_FUNCTION(struct mh_sha256_ctx *ctx, const void *buffer, uint32_
         uint8_t *partial_block_buffer;
         uint32_t partial_block_len;
         uint32_t num_blocks;
-        uint32_t(*mh_sha256_segs_digests)[HASH_SEGS];
+        uint32_t(*mh_sha256_segs_digests)[ISAL_HASH_SEGS];
         uint8_t *aligned_frame_buffer;
         const uint8_t *input_data = (const uint8_t *) buffer;
 
@@ -61,7 +61,7 @@ MH_SHA256_UPDATE_FUNCTION(struct mh_sha256_ctx *ctx, const void *buffer, uint32_
         partial_block_len = ctx->total_length % MH_SHA256_BLOCK_SIZE;
         partial_block_buffer = ctx->partial_block_buffer;
         aligned_frame_buffer = (uint8_t *) ALIGN_64(ctx->frame_buffer);
-        mh_sha256_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha256_interim_digests;
+        mh_sha256_segs_digests = (uint32_t(*)[ISAL_HASH_SEGS]) ctx->mh_sha256_interim_digests;
 
         ctx->total_length += len;
         // No enough input data for mh_sha256 calculation

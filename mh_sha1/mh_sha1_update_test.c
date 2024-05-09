@@ -86,12 +86,13 @@ dump(char *buf, int len)
 }
 
 int
-compare_digests(uint32_t hash_ref[SHA1_DIGEST_WORDS], uint32_t hash_test[SHA1_DIGEST_WORDS])
+compare_digests(uint32_t hash_ref[ISAL_SHA1_DIGEST_WORDS],
+                uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS])
 {
         int i;
         int mh_sha1_fail = 0;
 
-        for (i = 0; i < SHA1_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_SHA1_DIGEST_WORDS; i++) {
                 if (hash_test[i] != hash_ref[i])
                         mh_sha1_fail++;
         }
@@ -113,7 +114,7 @@ main(int argc, char *argv[])
         int fail = 0;
 #ifndef FIPS_MODE
         int i;
-        uint32_t hash_test[SHA1_DIGEST_WORDS], hash_ref[SHA1_DIGEST_WORDS];
+        uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_ref[ISAL_SHA1_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int update_count;
         int size1, size2, offset, addr_offset;
@@ -216,13 +217,13 @@ main(int argc, char *argv[])
 
         // test various start address of ctx.
         printf("\n various start address of ctx test");
-        mem_addr = (uint8_t *) malloc(sizeof(*update_ctx) + AVX512_ALIGNED * 10);
+        mem_addr = (uint8_t *) malloc(sizeof(*update_ctx) + ISAL_AVX512_ALIGNED * 10);
         if (mem_addr == NULL) {
                 fail++;
                 goto end;
         }
 
-        for (addr_offset = AVX512_ALIGNED * 10; addr_offset >= 0; addr_offset--) {
+        for (addr_offset = ISAL_AVX512_ALIGNED * 10; addr_offset >= 0; addr_offset--) {
 
                 // Fill with rand data
                 rand_buffer(buff, TEST_LEN);

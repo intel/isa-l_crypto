@@ -114,7 +114,8 @@ dump(char *buf, int len)
 }
 
 int
-compare_digests(uint32_t hash_base[SHA1_DIGEST_WORDS], uint32_t hash_test[SHA1_DIGEST_WORDS],
+compare_digests(uint32_t hash_base[ISAL_SHA1_DIGEST_WORDS],
+                uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS],
                 uint32_t murmur3_base[MURMUR3_x64_128_DIGEST_WORDS],
                 uint32_t murmur3_test[MURMUR3_x64_128_DIGEST_WORDS])
 {
@@ -122,7 +123,7 @@ compare_digests(uint32_t hash_base[SHA1_DIGEST_WORDS], uint32_t hash_test[SHA1_D
         int mh_sha1_fail = 0;
         int murmur3_fail = 0;
 
-        for (i = 0; i < SHA1_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_SHA1_DIGEST_WORDS; i++) {
                 if (hash_test[i] != hash_base[i])
                         mh_sha1_fail++;
         }
@@ -154,7 +155,7 @@ int
 main(int argc, char *argv[])
 {
         int i, fail = 0;
-        uint32_t hash_test[SHA1_DIGEST_WORDS], hash_base[SHA1_DIGEST_WORDS];
+        uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_base[ISAL_SHA1_DIGEST_WORDS];
         uint32_t murmur3_test[MURMUR3_x64_128_DIGEST_WORDS],
                 murmur3_base[MURMUR3_x64_128_DIGEST_WORDS];
         uint8_t *buff = NULL;

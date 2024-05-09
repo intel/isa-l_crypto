@@ -215,13 +215,13 @@ main(int argc, char *argv[])
 
         // test various start address of ctx.
         printf("\n various start address of ctx test");
-        mem_addr = (uint8_t *) malloc(sizeof(*update_ctx) + AVX512_ALIGNED * 10);
+        mem_addr = (uint8_t *) malloc(sizeof(*update_ctx) + ISAL_AVX512_ALIGNED * 10);
         if (mem_addr == NULL) {
                 fail++;
                 goto end;
         }
 
-        for (addr_offset = AVX512_ALIGNED * 10; addr_offset >= 0; addr_offset--) {
+        for (addr_offset = ISAL_AVX512_ALIGNED * 10; addr_offset >= 0; addr_offset--) {
 
                 // Fill with rand data
                 rand_buffer(buff, TEST_LEN);

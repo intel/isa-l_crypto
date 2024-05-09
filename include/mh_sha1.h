@@ -49,7 +49,7 @@
  *
  * Example
  * \code
- * uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS];
+ * uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
  * struct mh_sha1_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha1_ctx));
@@ -66,12 +66,29 @@
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define HASH_SEGS          ISAL_HASH_SEGS
+#define SHA1_BLOCK_SIZE    ISAL_SHA1_BLOCK_SIZE
+#define MH_SHA1_BLOCK_SIZE ISAL_MH_SHA1_BLOCK_SIZE
+#define SHA1_DIGEST_WORDS  ISAL_SHA1_DIGEST_WORDS
+#define AVX512_ALIGNED     ISAL_AVX512_ALIGNED
+
+#define MH_SHA1_CTX_ERROR_NONE ISAL_MH_SHA1_CTX_ERROR_NONE
+#define MH_SHA1_CTX_ERROR_NULL ISAL_MH_SHA1_CTX_ERROR_NULL
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 // External Interface Definition
-#define HASH_SEGS          16
-#define SHA1_BLOCK_SIZE    64
-#define MH_SHA1_BLOCK_SIZE (HASH_SEGS * SHA1_BLOCK_SIZE)
-#define SHA1_DIGEST_WORDS  5
-#define AVX512_ALIGNED     64
+#define ISAL_HASH_SEGS          16
+#define ISAL_SHA1_BLOCK_SIZE    64
+#define ISAL_MH_SHA1_BLOCK_SIZE (ISAL_HASH_SEGS * ISAL_SHA1_BLOCK_SIZE)
+#define ISAL_SHA1_DIGEST_WORDS  5
+#define ISAL_AVX512_ALIGNED     64
 
 /** @brief Holds info describing a single mh_sha1
  *
@@ -79,18 +96,18 @@ extern "C" {
  *
  */
 struct mh_sha1_ctx {
-        uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
+        uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
 
         uint64_t total_length;
         //!<  Parameters for update feature, describe the lengths of input buffers in bytes
-        uint8_t partial_block_buffer[MH_SHA1_BLOCK_SIZE * 2];
+        uint8_t partial_block_buffer[ISAL_MH_SHA1_BLOCK_SIZE * 2];
         //!<  Padding the tail of input data for SHA1
-        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
+        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * ISAL_SHA1_DIGEST_WORDS * ISAL_HASH_SEGS];
         //!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to
         //!<  stack for 64-byte alignment purpose.
-        uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE + ISAL_AVX512_ALIGNED];
         //!<  Re-structure sha1 block data from different segments to fit big endian. Use
-        //!<  AVX512_ALIGNED for 64-byte alignment purpose.
+        //!<  ISAL_AVX512_ALIGNED for 64-byte alignment purpose.
 };
 
 /**
@@ -98,8 +115,8 @@ struct mh_sha1_ctx {
  *  @brief CTX error flags
  */
 enum mh_sha1_ctx_error {
-        MH_SHA1_CTX_ERROR_NONE = 0,  //!< MH_SHA1_CTX_ERROR_NONE
-        MH_SHA1_CTX_ERROR_NULL = -1, //!< MH_SHA1_CTX_ERROR_NULL
+        ISAL_MH_SHA1_CTX_ERROR_NONE = 0,  //!< ISAL_MH_SHA1_CTX_ERROR_NONE
+        ISAL_MH_SHA1_CTX_ERROR_NULL = -1, //!< ISAL_MH_SHA1_CTX_ERROR_NULL
 };
 
 /*******************************************************************
