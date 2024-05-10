@@ -63,8 +63,8 @@
 #define MH_SHA256_FUNC_TYPE
 #endif
 
-#define TEST_UPDATE_FUNCTION FUNC_TOKEN(mh_sha256_update, MH_SHA256_FUNC_TYPE)
-#define TEST_FINAL_FUNCTION  FUNC_TOKEN(mh_sha256_finalize, MH_SHA256_FUNC_TYPE)
+#define TEST_UPDATE_FUNCTION FUNC_TOKEN(isal_mh_sha256_update, MH_SHA256_FUNC_TYPE)
+#define TEST_FINAL_FUNCTION  FUNC_TOKEN(isal_mh_sha256_finalize, MH_SHA256_FUNC_TYPE)
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
@@ -122,6 +122,7 @@ compare_digests(uint32_t hash_base[ISAL_SHA256_DIGEST_WORDS],
 int
 main(int argc, char *argv[])
 {
+#ifndef FIPS_MODE
         int i, fail = -1;
         uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS], hash_base[ISAL_SHA256_DIGEST_WORDS];
         uint8_t *buff = NULL;
@@ -142,28 +143,28 @@ main(int argc, char *argv[])
         rand_buffer(buff, TEST_LEN);
 
         // mh_sha256 base version
-        CHECK_RETURN(mh_sha256_init(update_ctx_base));
+        CHECK_RETURN(isal_mh_sha256_init(update_ctx_base));
         CHECK_RETURN(mh_sha256_update_base(update_ctx_base, buff, TEST_LEN));
-        CHECK_RETURN(isal_mh_sha256_finalize_base(update_ctx_base, hash_base));
+        CHECK_RETURN(mh_sha256_finalize_base(update_ctx_base, hash_base));
 
         perf_start(&start);
         for (i = 0; i < TEST_LOOPS / 10; i++) {
-                mh_sha256_init(update_ctx_base);
+                isal_mh_sha256_init(update_ctx_base);
                 mh_sha256_update_base(update_ctx_base, buff, TEST_LEN);
-                isal_mh_sha256_finalize_base(update_ctx_base, hash_base);
+                mh_sha256_finalize_base(update_ctx_base, hash_base);
         }
         perf_stop(&stop);
         printf("mh_sha256_update_base" TEST_TYPE_STR ": ");
         perf_print(stop, start, (long long) TEST_MEM * i);
 
         // Update feature test
-        CHECK_RETURN(mh_sha256_init(update_ctx_test));
+        CHECK_RETURN(isal_mh_sha256_init(update_ctx_test));
         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx_test, buff, TEST_LEN));
         CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx_test, hash_test));
 
         perf_start(&start);
         for (i = 0; i < TEST_LOOPS; i++) {
-                mh_sha256_init(update_ctx_test);
+                isal_mh_sha256_init(update_ctx_test);
                 TEST_UPDATE_FUNCTION(update_ctx_test, buff, TEST_LEN);
                 TEST_FINAL_FUNCTION(update_ctx_test, hash_test);
         }
@@ -184,6 +185,9 @@ exit:
         free(buff);
         free(update_ctx_test);
         free(update_ctx_base);
-
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
         return fail;
 }

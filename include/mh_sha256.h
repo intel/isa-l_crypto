@@ -53,13 +53,14 @@
  * struct mh_sha256_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha256_ctx));
- * _mh_sha256_init(ctx);
- * _mh_sha256_update(ctx, buff, block_len);
- * _mh_sha256_finalize(ctx, mh_sha256_digest);
+ * isal_mh_sha256_init(ctx);
+ * isal_mh_sha256_update(ctx, buff, block_len);
+ * isal_mh_sha256_finalize(ctx, mh_sha256_digest);
  * \endcode
  */
 
 #include <stdint.h>
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -128,7 +129,9 @@ enum mh_sha256_ctx_error {
  *
  * @param  ctx Structure holding mh_sha256 info
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha256_init() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha256_init() instead")
 int
 mh_sha256_init(struct mh_sha256_ctx *ctx);
 
@@ -143,7 +146,9 @@ mh_sha256_init(struct mh_sha256_ctx *ctx);
  * @param  buffer Pointer to buffer to be processed
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha256_update() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha256_update() instead")
 int
 mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
@@ -158,7 +163,9 @@ mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
  * @param   ctx Structure holding mh_sha256 info
  * @param   mh_sha256_digest The digest of mh_sha256
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha256_finalize() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha256_finalize() instead")
 int
 mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
@@ -172,7 +179,7 @@ mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  * @param   buffer Pointer to buffer to be processed
  * @param   len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha256_update() instead.
  */
 int
 mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
@@ -187,7 +194,7 @@ mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t le
  * @param   ctx Structure holding mh_sha256 info
  * @param   mh_sha256_digest The digest of mh_sha256
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha256_finalize() instead.
  */
 int
 mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);

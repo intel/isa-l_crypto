@@ -48,8 +48,8 @@
 #define MH_SHA256_FUNC_TYPE
 #endif
 
-#define TEST_UPDATE_FUNCTION FUNC_TOKEN(mh_sha256_update, MH_SHA256_FUNC_TYPE)
-#define TEST_FINAL_FUNCTION  FUNC_TOKEN(mh_sha256_finalize, MH_SHA256_FUNC_TYPE)
+#define TEST_UPDATE_FUNCTION FUNC_TOKEN(isal_mh_sha256_update, MH_SHA256_FUNC_TYPE)
+#define TEST_FINAL_FUNCTION  FUNC_TOKEN(isal_mh_sha256_finalize, MH_SHA256_FUNC_TYPE)
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
@@ -110,10 +110,11 @@ compare_digests(uint32_t hash_ref[ISAL_SHA256_DIGEST_WORDS],
 int
 main(int argc, char *argv[])
 {
-        int fail = 0, i;
+        int fail = 0;
+#ifndef FIPS_MODE
         uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS], hash_ref[ISAL_SHA256_DIGEST_WORDS];
         uint8_t *buff = NULL;
-        int update_count;
+        int i, update_count;
         int size1, size2, offset, addr_offset;
         struct mh_sha256_ctx *update_ctx = NULL;
         uint8_t *mem_addr = NULL;
@@ -134,7 +135,7 @@ main(int argc, char *argv[])
 
         mh_sha256_ref(buff, TEST_LEN, hash_ref);
 
-        CHECK_RETURN(mh_sha256_init(update_ctx));
+        CHECK_RETURN(isal_mh_sha256_init(update_ctx));
         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
         CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -157,7 +158,7 @@ main(int argc, char *argv[])
 
                 // subsequent update
                 size2 = TEST_LEN - size1; // size2 is different with the former
-                CHECK_RETURN(mh_sha256_init(update_ctx));
+                CHECK_RETURN(isal_mh_sha256_init(update_ctx));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, size1));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff + size1, size2));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
@@ -188,7 +189,7 @@ main(int argc, char *argv[])
                 size1 = TEST_LEN / update_count;
                 size2 = TEST_LEN - size1 * (update_count - 1); // size2 is different with the former
 
-                CHECK_RETURN(mh_sha256_init(update_ctx));
+                CHECK_RETURN(isal_mh_sha256_init(update_ctx));
                 for (i = 1, offset = 0; i < update_count; i++) {
                         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff + offset, size1));
                         offset += size1;
@@ -231,7 +232,7 @@ main(int argc, char *argv[])
 
                 // a unaligned offset
                 update_ctx = (struct mh_sha256_ctx *) (mem_addr + addr_offset);
-                CHECK_RETURN(mh_sha256_init(update_ctx));
+                CHECK_RETURN(isal_mh_sha256_init(update_ctx));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));
 
@@ -254,11 +255,15 @@ end:
                 free(buff);
 
         printf("\n" xstr(TEST_UPDATE_FUNCTION) "_test: %s\n", fail == 0 ? "Pass" : "Fail");
-
+#else
+        printf("Not Executed\n");
+#endif /* FIPS_MODE */
         return fail;
 
+#ifndef FIPS_MODE
 end_ctx:
         if (update_ctx != NULL)
                 free(update_ctx);
         goto end;
+#endif
 }
