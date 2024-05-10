@@ -51,7 +51,7 @@
  * Example
  * \code
  * uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
- * uint32_t murmur_digest[MURMUR3_x64_128_DIGEST_WORDS];
+ * uint32_t murmur_digest[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
  * struct mh_sha1_murmur3_x64_128_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha1_murmur3_x64_128_ctx));
@@ -69,10 +69,25 @@
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
 // External Interface Definition
 // Add murmur3_x64_128 definition
-#define MUR_BLOCK_SIZE               (2 * sizeof(uint64_t))
-#define MURMUR3_x64_128_DIGEST_WORDS 4
+
+#define MUR_BLOCK_SIZE               ISAL_MUR_BLOCK_SIZE
+#define MURMUR3_x64_128_DIGEST_WORDS ISAL_MURMUR3_x64_128_DIGEST_WORDS
+
+#define MH_SHA1_MURMUR3_CTX_ERROR_NONE ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE
+#define MH_SHA1_MURMUR3_CTX_ERROR_NULL ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL
+#endif /* NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
+#define ISAL_MUR_BLOCK_SIZE               (2 * sizeof(uint64_t))
+#define ISAL_MURMUR3_x64_128_DIGEST_WORDS 4
 
 /** @brief Holds info describing a single mh_sha1_murmur3_x64_128
  *
@@ -81,8 +96,8 @@ extern "C" {
  */
 struct mh_sha1_murmur3_x64_128_ctx {
         uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
-        uint32_t murmur3_x64_128_digest[MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of
-                                                                       //!< murmur3_x64_128
+        uint32_t murmur3_x64_128_digest[ISAL_MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of
+                                                                            //!< murmur3_x64_128
 
         uint64_t total_length;
         //!<  Parameters for update feature, describe the lengths of input buffers in bytes
@@ -101,8 +116,8 @@ struct mh_sha1_murmur3_x64_128_ctx {
  *  @brief CTX error flags
  */
 enum mh_sha1_murmur3_ctx_error {
-        MH_SHA1_MURMUR3_CTX_ERROR_NONE = 0,  //!< MH_SHA1_MURMUR3_CTX_ERROR_NONE
-        MH_SHA1_MURMUR3_CTX_ERROR_NULL = -1, //!< MH_SHA1_MURMUR3_CTX_ERROR_NULL
+        ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE = 0,  //!< ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE
+        ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL = -1, //!< ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL
 };
 
 /*******************************************************************

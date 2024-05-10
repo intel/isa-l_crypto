@@ -513,7 +513,7 @@ align 32
 ;void mh_sha1_murmur3_x64_128_block_sse (const uint8_t * input_data,
 ;				uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
 ;				uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-;				uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
+;				uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
 ;				uint32_t num_blocks);
 ; arg 0 pointer to input data
 ; arg 1 pointer to digests, include segments digests(uint32_t digests[16][5])

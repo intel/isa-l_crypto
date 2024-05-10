@@ -70,7 +70,7 @@ hashmix64(uint64_t hashA, uint64_t hashB, uint64_t data, uint64_t add, uint64_t 
 
 void
 murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
-                      uint32_t digests[MURMUR3_x64_128_DIGEST_WORDS])
+                      uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS])
 {
         uint64_t data1, data2;
         uint64_t *input_qword = (uint64_t *) input_data;
@@ -92,7 +92,7 @@ murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
 
 void
 murmur3_x64_128_tail(const uint8_t *tail_buffer, uint32_t total_len,
-                     uint32_t digests[MURMUR3_x64_128_DIGEST_WORDS])
+                     uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS])
 {
         uint64_t data1, data2;
         uint64_t *hash = (uint64_t *) digests;

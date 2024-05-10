@@ -53,7 +53,7 @@
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != MH_SHA1_MURMUR3_CTX_ERROR_NONE) {                                   \
+                if ((state) != ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE) {                              \
                         printf("The stitch function is failed.\n");                                \
                         return 1;                                                                  \
                 }                                                                                  \
@@ -101,8 +101,8 @@ dump(char *buf, int len)
 int
 compare_digests(uint32_t hash_base[ISAL_SHA1_DIGEST_WORDS],
                 uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS],
-                uint32_t murmur3_base[MURMUR3_x64_128_DIGEST_WORDS],
-                uint32_t murmur3_test[MURMUR3_x64_128_DIGEST_WORDS])
+                uint32_t murmur3_base[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
+                uint32_t murmur3_test[ISAL_MURMUR3_x64_128_DIGEST_WORDS])
 {
         int i;
         int mh_sha1_fail = 0;
@@ -113,7 +113,7 @@ compare_digests(uint32_t hash_base[ISAL_SHA1_DIGEST_WORDS],
                         mh_sha1_fail++;
         }
 
-        for (i = 0; i < MURMUR3_x64_128_DIGEST_WORDS; i++) {
+        for (i = 0; i < ISAL_MURMUR3_x64_128_DIGEST_WORDS; i++) {
                 if (murmur3_test[i] != murmur3_base[i])
                         murmur3_fail++;
         }
@@ -141,8 +141,8 @@ main(int argc, char *argv[])
 {
         int fail = 0;
         uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_base[ISAL_SHA1_DIGEST_WORDS];
-        uint32_t murmur3_test[MURMUR3_x64_128_DIGEST_WORDS],
-                murmur3_base[MURMUR3_x64_128_DIGEST_WORDS];
+        uint32_t murmur3_test[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
+                murmur3_base[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
         struct mh_sha1_murmur3_x64_128_ctx *update_ctx = NULL;

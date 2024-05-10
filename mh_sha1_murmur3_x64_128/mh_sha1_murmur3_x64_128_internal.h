@@ -75,7 +75,7 @@ void
 mh_sha1_murmur3_x64_128_block(const uint8_t *input_data,
                               uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
                               uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                              uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
+                              uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
                               uint32_t num_blocks);
 
 /**
@@ -90,11 +90,10 @@ mh_sha1_murmur3_x64_128_block(const uint8_t *input_data,
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
-                                   uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                                   uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                                   uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-                                   uint32_t num_blocks);
+mh_sha1_murmur3_x64_128_block_base(
+        const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
 
 /**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
@@ -110,11 +109,10 @@ mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_sse(const uint8_t *input_data,
-                                  uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                                  uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                                  uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-                                  uint32_t num_blocks);
+mh_sha1_murmur3_x64_128_block_sse(
+        const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
 
 /**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
@@ -130,11 +128,10 @@ mh_sha1_murmur3_x64_128_block_sse(const uint8_t *input_data,
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_avx(const uint8_t *input_data,
-                                  uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                                  uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                                  uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-                                  uint32_t num_blocks);
+mh_sha1_murmur3_x64_128_block_avx(
+        const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
 
 /**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
@@ -150,11 +147,10 @@ mh_sha1_murmur3_x64_128_block_avx(const uint8_t *input_data,
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_avx2(const uint8_t *input_data,
-                                   uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                                   uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                                   uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-                                   uint32_t num_blocks);
+mh_sha1_murmur3_x64_128_block_avx2(
+        const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
 
 /**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
@@ -173,7 +169,7 @@ void
 mh_sha1_murmur3_x64_128_block_avx512(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-        uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
 /*******************************************************************
  * murmur hash API
  ******************************************************************/
@@ -188,7 +184,7 @@ mh_sha1_murmur3_x64_128_block_avx512(
  */
 void
 murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
-                      uint32_t digests[MURMUR3_x64_128_DIGEST_WORDS]);
+                      uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
 
 /**
  * @brief  Do the tail process which is less than 16Byte.
@@ -200,7 +196,7 @@ murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
  */
 void
 murmur3_x64_128_tail(const uint8_t *tail_buffer, uint32_t total_len,
-                     uint32_t digests[MURMUR3_x64_128_DIGEST_WORDS]);
+                     uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
 
 #ifdef __cplusplus
 }

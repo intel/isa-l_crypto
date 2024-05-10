@@ -49,10 +49,10 @@ UPDATE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uin
         const uint8_t *input_data = (const uint8_t *) buffer;
 
         if (ctx == NULL)
-                return MH_SHA1_MURMUR3_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL;
 
         if (len == 0)
-                return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+                return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 
         partial_block_len = ctx->total_length % ISAL_MH_SHA1_BLOCK_SIZE;
         partial_block_buffer = ctx->partial_block_buffer;
@@ -64,7 +64,7 @@ UPDATE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uin
         // No enough input data for mh_sha1 calculation
         if (len + partial_block_len < ISAL_MH_SHA1_BLOCK_SIZE) {
                 memcpy(partial_block_buffer + partial_block_len, input_data, len);
-                return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+                return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE;
         }
         // mh_sha1 calculation for the previous partial block
         if (partial_block_len != 0) {
@@ -91,7 +91,7 @@ UPDATE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uin
                 memcpy(partial_block_buffer, input_data, len);
         }
 
-        return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 }
 
 #ifdef UPDATE_FUNCTION_SLVER

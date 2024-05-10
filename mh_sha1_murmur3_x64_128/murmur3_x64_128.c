@@ -67,11 +67,11 @@ murmur3_x64_128(const void *buffer, uint32_t len, uint64_t murmur_seed,
         murmur3_x64_128_hash[1] = murmur_seed;
 
         // process bodies
-        murmur3_x64_128_block((uint8_t *) input_data, len / MUR_BLOCK_SIZE,
+        murmur3_x64_128_block((uint8_t *) input_data, len / ISAL_MUR_BLOCK_SIZE,
                               murmur3_x64_128_hash_dword);
 
         // process finalize
-        tail_buffer = (uint8_t *) input_data + len - len % MUR_BLOCK_SIZE;
+        tail_buffer = (uint8_t *) input_data + len - len % ISAL_MUR_BLOCK_SIZE;
         murmur3_x64_128_tail(tail_buffer, len, murmur3_x64_128_hash_dword);
 
         // output the digests

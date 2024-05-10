@@ -39,7 +39,7 @@ mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t m
         uint32_t i;
 
         if (ctx == NULL)
-                return MH_SHA1_MURMUR3_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL;
 
         memset(ctx, 0, sizeof(*ctx));
 
@@ -56,20 +56,20 @@ mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t m
         murmur3_x64_128_hash[0] = murmur_seed;
         murmur3_x64_128_hash[1] = murmur_seed;
 
-        return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 }
 
 void
-mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
-                                   uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                                   uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                                   uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-                                   uint32_t num_blocks)
+mh_sha1_murmur3_x64_128_block_base(
+        const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+        uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+        uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks)
 {
 
         _mh_sha1_block_base(input_data, mh_sha1_digests, frame_buffer, num_blocks);
 
-        murmur3_x64_128_block(input_data, num_blocks * ISAL_MH_SHA1_BLOCK_SIZE / MUR_BLOCK_SIZE,
+        murmur3_x64_128_block(input_data,
+                              num_blocks * ISAL_MH_SHA1_BLOCK_SIZE / ISAL_MUR_BLOCK_SIZE,
                               murmur3_x64_128_digests);
 
         return;

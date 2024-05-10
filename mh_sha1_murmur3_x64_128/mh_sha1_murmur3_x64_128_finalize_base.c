@@ -49,7 +49,7 @@ FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
         uint8_t *aligned_frame_buffer;
 
         if (ctx == NULL)
-                return MH_SHA1_MURMUR3_CTX_ERROR_NULL;
+                return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL;
 
         total_len = ctx->total_length;
         partial_block_len = total_len % ISAL_MH_SHA1_BLOCK_SIZE;
@@ -59,8 +59,9 @@ FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
         // because mh_sha1 will change the partial_block_buffer
         // ( partial_block_buffer = n murmur3 blocks and 1 murmur3 tail)
         murmur_tail_data =
-                partial_block_buffer + partial_block_len - partial_block_len % MUR_BLOCK_SIZE;
-        MURMUR_BLOCK_FUNCTION(partial_block_buffer, (uint32_t) (partial_block_len / MUR_BLOCK_SIZE),
+                partial_block_buffer + partial_block_len - partial_block_len % ISAL_MUR_BLOCK_SIZE;
+        MURMUR_BLOCK_FUNCTION(partial_block_buffer,
+                              (uint32_t) (partial_block_len / ISAL_MUR_BLOCK_SIZE),
                               ctx->murmur3_x64_128_digest);
         MURMUR_TAIL_FUNCTION(murmur_tail_data, (uint32_t) total_len, ctx->murmur3_x64_128_digest);
 
@@ -87,7 +88,7 @@ FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                 ((uint32_t *) murmur3_x64_128_digest)[3] = ctx->murmur3_x64_128_digest[3];
         }
 
-        return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+        return ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 }
 
 #ifdef FINALIZE_FUNCTION_SLVER
