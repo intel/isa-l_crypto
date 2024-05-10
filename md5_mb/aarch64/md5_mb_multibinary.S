@@ -31,6 +31,6 @@
 #include "aarch64_multibinary.h"
 
 
-mbin_interface md5_ctx_mgr_submit
-mbin_interface md5_ctx_mgr_init
-mbin_interface md5_ctx_mgr_flush
+mbin_interface _md5_ctx_mgr_submit
+mbin_interface _md5_ctx_mgr_init
+mbin_interface _md5_ctx_mgr_flush

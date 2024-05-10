@@ -184,16 +184,19 @@ typedef struct {
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_md5_ctx_mgr_init() instead.
  *
  * @param mgr	Structure holding context level state info
  * @returns void
  */
+ISAL_DEPRECATED("Please use isal_md5_ctx_mgr_init() instead")
 void
 md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the multi-buffer manager.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_md5_ctx_mgr_submit() instead.
  *
  * @param  mgr Structure holding context level state info
  * @param  ctx Structure holding ctx job info
@@ -202,6 +205,7 @@ md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
+ISAL_DEPRECATED("Please use isal_md5_ctx_mgr_submit() instead")
 ISAL_MD5_HASH_CTX *
 md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
                    uint32_t len, ISAL_HASH_CTX_FLAG flags);
@@ -209,10 +213,12 @@ md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const voi
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
  * @requires SSE4.1 or AVX or AVX2 or AVX512
+ * @deprecated Please use isal_md5_ctx_mgr_submit() instead.
  *
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
+ISAL_DEPRECATED("Please use isal_md5_ctx_mgr_submit() instead")
 ISAL_MD5_HASH_CTX *
 md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr);
 

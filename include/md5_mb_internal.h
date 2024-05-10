@@ -49,6 +49,41 @@ extern "C" {
 #define ISAL_MD5_LOG2_BLOCK_SIZE 6
 #define ISAL_MD5_INITIAL_DIGEST  0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
 
+/**
+ * @brief Initialize the MD5 multi-buffer manager structure.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns void
+ */
+void
+_md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr);
+
+/**
+ * @brief  Submit a new MD5 job to the multi-buffer manager.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param  mgr Structure holding context level state info
+ * @param  ctx Structure holding ctx job info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @param  flags Input flag specifying job type (first, update, last or entire)
+ * @returns NULL if no jobs complete or pointer to jobs structure.
+ */
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                    uint32_t len, ISAL_HASH_CTX_FLAG flags);
+
+/**
+ * @brief Finish all submitted MD5 jobs and return when complete.
+ * @requires SSE4.1 or AVX or AVX2 or AVX512
+ *
+ * @param mgr	Structure holding context level state info
+ * @returns NULL if no jobs to complete or pointer to jobs structure.
+ */
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr);
+
 /*******************************************************************
  * CTX level API function prototypes
  ******************************************************************/

@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "md5_mb.h"
+#include "md5_mb_internal.h"
 #include "isal_crypto_api.h"
 #include "multi_buffer.h"
 
@@ -41,7 +41,7 @@ isal_md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr)
         if (mgr == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MGR;
 #endif
-        md5_ctx_mgr_init(mgr);
+        _md5_ctx_mgr_init(mgr);
 
         return 0;
 #endif
@@ -66,7 +66,7 @@ isal_md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx_in,
         if (len > ISAL_MD5_MAX_LEN)
                 return ISAL_CRYPTO_ERR_AUTH_LEN;
 #endif
-        *ctx_out = md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
+        *ctx_out = _md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
         if (*ctx_out != NULL &&
@@ -97,8 +97,33 @@ isal_md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX **ctx_out)
         if (ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-        *ctx_out = md5_ctx_mgr_flush(mgr);
+        *ctx_out = _md5_ctx_mgr_flush(mgr);
 
         return 0;
 #endif
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+void
+md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr)
+{
+        _md5_ctx_mgr_init(mgr);
+}
+
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                   uint32_t len, ISAL_HASH_CTX_FLAG flags)
+{
+        return _md5_ctx_mgr_submit(mgr, ctx, buffer, len, flags);
+}
+
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr)
+{
+        return _md5_ctx_mgr_flush(mgr);
 }
