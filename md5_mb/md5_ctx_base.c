@@ -76,13 +76,13 @@ static inline void
 hash_init_digest(MD5_WORD_T *digest);
 
 void
-md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
+_md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
 {
 }
 
 MD5_HASH_CTX *
-md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags)
+_md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                         ISAL_HASH_CTX_FLAG flags)
 {
 
         if (flags & (~ISAL_HASH_ENTIRE)) {
@@ -128,7 +128,7 @@ md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *bu
 }
 
 MD5_HASH_CTX *
-md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr)
+_md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }

@@ -29,27 +29,27 @@
 #include <string.h>
 #include "md5_mb.h"
 extern void
-md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr);
 extern MD5_HASH_CTX *
-md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr);
 extern MD5_HASH_CTX *
-md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags);
+_md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                         ISAL_HASH_CTX_FLAG flags);
 void
 md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
 {
-        md5_ctx_mgr_init_base(mgr);
+        _md5_ctx_mgr_init_base(mgr);
 }
 
 MD5_HASH_CTX *
 md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr)
 {
-        return md5_ctx_mgr_flush_base(mgr);
+        return _md5_ctx_mgr_flush_base(mgr);
 }
 
 MD5_HASH_CTX *
 md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
                    ISAL_HASH_CTX_FLAG flags)
 {
-        return md5_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
+        return _md5_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }

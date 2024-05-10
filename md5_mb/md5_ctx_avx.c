@@ -53,14 +53,14 @@ static MD5_HASH_CTX *
 md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx);
 
 void
-md5_ctx_mgr_init_avx(MD5_HASH_CTX_MGR *mgr)
+_md5_ctx_mgr_init_avx(MD5_HASH_CTX_MGR *mgr)
 {
         _md5_mb_mgr_init_avx(&mgr->mgr);
 }
 
 MD5_HASH_CTX *
-md5_ctx_mgr_submit_avx(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                       ISAL_HASH_CTX_FLAG flags)
+_md5_ctx_mgr_submit_avx(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
+                        ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 // User should not pass anything other than FIRST, UPDATE, or LAST
@@ -140,7 +140,7 @@ md5_ctx_mgr_submit_avx(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buf
 }
 
 MD5_HASH_CTX *
-md5_ctx_mgr_flush_avx(MD5_HASH_CTX_MGR *mgr)
+_md5_ctx_mgr_flush_avx(MD5_HASH_CTX_MGR *mgr)
 {
         MD5_HASH_CTX *ctx;
 
@@ -259,14 +259,14 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver md5_ctx_mgr_init_avx_slver_02020183;
-struct slver md5_ctx_mgr_init_avx_slver = { 0x0183, 0x02, 0x02 };
+struct slver _md5_ctx_mgr_init_avx_slver_02020183;
+struct slver _md5_ctx_mgr_init_avx_slver = { 0x0183, 0x02, 0x02 };
 
-struct slver md5_ctx_mgr_submit_avx_slver_02020184;
-struct slver md5_ctx_mgr_submit_avx_slver = { 0x0184, 0x02, 0x02 };
+struct slver _md5_ctx_mgr_submit_avx_slver_02020184;
+struct slver _md5_ctx_mgr_submit_avx_slver = { 0x0184, 0x02, 0x02 };
 
-struct slver md5_ctx_mgr_flush_avx_slver_02020185;
-struct slver md5_ctx_mgr_flush_avx_slver = { 0x0185, 0x02, 0x02 };
+struct slver _md5_ctx_mgr_flush_avx_slver_02020185;
+struct slver _md5_ctx_mgr_flush_avx_slver = { 0x0185, 0x02, 0x02 };
 
 #if defined(__clang__)
 #pragma clang attribute pop
