@@ -91,6 +91,7 @@ non_blocksize_updates_test(ISAL_MD5_HASH_CTX_MGR *mgr)
         ISAL_MD5_HASH_CTX ctx_refer;
         ISAL_MD5_HASH_CTX ctx_pool[NUM_CHUNKS];
         ISAL_MD5_HASH_CTX *ctx = NULL;
+        int rc;
 
         const int update_chunks[NUM_CHUNKS] = { 32, 64, 128, 256 };
         unsigned char data_buf[DATA_BUF_LEN];
@@ -100,48 +101,42 @@ non_blocksize_updates_test(ISAL_MD5_HASH_CTX_MGR *mgr)
         // Init contexts before first use
         isal_hash_ctx_init(&ctx_refer);
 
-        ctx = md5_ctx_mgr_submit(mgr, &ctx_refer, data_buf, DATA_BUF_LEN, ISAL_HASH_ENTIRE);
-        if (ctx && ctx->error) {
+        rc = isal_md5_ctx_mgr_submit(mgr, &ctx_refer, &ctx, data_buf, DATA_BUF_LEN,
+                                     ISAL_HASH_ENTIRE);
+        if (rc)
                 return -1;
-        }
-        ctx = md5_ctx_mgr_flush(mgr);
-        if ((ctx && ctx->error) || (ctx_refer.status != ISAL_HASH_CTX_STS_COMPLETE)) {
+
+        rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+        if (rc)
                 return -1;
-        }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
                 int chunk = update_chunks[c];
                 isal_hash_ctx_init(&ctx_pool[c]);
-                ctx = md5_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_FIRST);
-                if (ctx && ctx->error) {
+                rc = isal_md5_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx, NULL, 0, ISAL_HASH_FIRST);
+                if (rc)
                         return -1;
-                }
-                ctx = md5_ctx_mgr_flush(mgr);
-                if (ctx && ctx->error) {
+                rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
                         return -1;
-                }
                 for (int i = 0; i * chunk < DATA_BUF_LEN; i++) {
-                        ctx = md5_ctx_mgr_submit(mgr, &ctx_pool[c], data_buf + i * chunk, chunk,
-                                                 ISAL_HASH_UPDATE);
-                        if (ctx && ctx->error) {
+                        rc = isal_md5_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx, data_buf + i * chunk,
+                                                     chunk, ISAL_HASH_UPDATE);
+                        if (rc)
                                 return -1;
-                        }
-                        ctx = md5_ctx_mgr_flush(mgr);
-                        if (ctx && ctx->error) {
+                        rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                        if (rc)
                                 return -1;
-                        }
                 }
         }
 
         for (int c = 0; c < NUM_CHUNKS; c++) {
-                ctx = md5_ctx_mgr_submit(mgr, &ctx_pool[c], NULL, 0, ISAL_HASH_LAST);
-                if (ctx && ctx->error) {
+                rc = isal_md5_ctx_mgr_submit(mgr, &ctx_pool[c], &ctx, NULL, 0, ISAL_HASH_LAST);
+                if (rc)
                         return -1;
-                }
-                ctx = md5_ctx_mgr_flush(mgr);
-                if (ctx && ctx->error) {
+                rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
                         return -1;
-                }
                 if (ctx_pool[c].status != ISAL_HASH_CTX_STS_COMPLETE) {
                         return -1;
                 }
@@ -172,7 +167,9 @@ main(void)
                 return 1;
         }
 
-        md5_ctx_mgr_init(mgr);
+        rc = isal_md5_ctx_mgr_init(mgr);
+        if (rc)
+                goto end;
 
         // Init contexts before first use
         for (i = 0; i < MSGS; i++) {
@@ -181,8 +178,10 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[i],
-                                         (uint32_t) strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
+                rc = isal_md5_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, msgs[i],
+                                             (uint32_t) strlen((char *) msgs[i]), ISAL_HASH_ENTIRE);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -206,7 +205,9 @@ main(void)
         }
 
         while (1) {
-                ctx = md5_ctx_mgr_flush(mgr);
+                rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
@@ -242,8 +243,10 @@ main(void)
         checked = 0;
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
-                ctx = md5_ctx_mgr_submit(mgr, &ctxpool[i], msgs[j],
-                                         (uint32_t) strlen((char *) msgs[j]), ISAL_HASH_ENTIRE);
+                rc = isal_md5_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, msgs[j],
+                                             (uint32_t) strlen((char *) msgs[j]), ISAL_HASH_ENTIRE);
+                if (rc)
+                        goto end;
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);
                         k = PSEUDO_RANDOM_NUM(t);
@@ -269,7 +272,10 @@ main(void)
                 }
         }
         while (1) {
-                ctx = md5_ctx_mgr_flush(mgr);
+                rc = isal_md5_ctx_mgr_flush(mgr, &ctx);
+
+                if (rc)
+                        goto end;
 
                 if (ctx) {
                         t = (uint32_t) (uintptr_t) (ctx->user_data);

@@ -64,7 +64,9 @@ main(void)
                 printf("posix_memalign failed test aborted\n");
                 return 1;
         }
-        md5_ctx_mgr_init(mgr);
+        ret = isal_md5_ctx_mgr_init(mgr);
+        if (ret)
+                return 1;
 
         printf("md5_large_test\n");
 
@@ -107,21 +109,29 @@ main(void)
                 else if (isal_hash_ctx_complete(ctx)) {
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
-                        else
-                                ctx = md5_ctx_mgr_flush(mgr);
+                        else {
+                                ret = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
+                        }
                         continue;
                 } else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
                         len = (LEN_TOTAL - u->processed);
                         update_type = ISAL_HASH_LAST;
                 }
                 u->processed += len;
-                ctx = md5_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);
+                ret = isal_md5_ctx_mgr_submit(mgr, ctx, &ctx, bufs[idx], len, update_type);
+                if (ret)
+                        return 1;
 
                 if (NULL == ctx) {
                         if (highest_pool_idx < TEST_BUFS)
                                 ctx = &ctxpool[highest_pool_idx++];
-                        else
-                                ctx = md5_ctx_mgr_flush(mgr);
+                        else {
+                                ret = isal_md5_ctx_mgr_flush(mgr, &ctx);
+                                if (ret)
+                                        return 1;
+                        }
                 }
         }
 
