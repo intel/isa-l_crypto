@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+  Copyright(c) 2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -27,21 +27,58 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
+#ifndef _MD5_MB_INTERNAL_H_
+#define _MD5_MB_INTERNAL_H_
+
+/**
+ *  @file md5_mb_internal.h
+ *  @brief Multi-buffer CTX API MD5 function prototypes and structures
+ */
+
+#include <stdint.h>
+#include <string.h>
+
 #include "md5_mb.h"
+#include "multi_buffer.h"
+#include "types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*******************************************************************
+ * Scheduler (internal) level out-of-order function prototypes
+ ******************************************************************/
 
 void
-_md5_mb_mgr_init_avx512(MD5_MB_JOB_MGR *state)
-{
-        unsigned int j;
+_md5_mb_mgr_init_sse(MD5_MB_JOB_MGR *state);
+MD5_JOB *
+_md5_mb_mgr_submit_sse(MD5_MB_JOB_MGR *state, MD5_JOB *job);
+MD5_JOB *
+_md5_mb_mgr_flush_sse(MD5_MB_JOB_MGR *state);
 
-        memset(state, 0, sizeof(*state));
-        state->unused_lanes[0] = 0x0706050403020100;
-        state->unused_lanes[1] = 0x0f0e0d0c0b0a0908;
-        state->unused_lanes[2] = 0x1716151413121110;
-        state->unused_lanes[3] = 0x1f1e1d1c1b1a1918;
-        state->num_lanes_inuse = 0;
-        for (j = 0; j < 32; j++) {
-                state->lens[j] = 0xFFFFFFFF;
-                state->ldata[j].job_in_lane = 0;
-        }
+#define _md5_mb_mgr_init_avx _md5_mb_mgr_init_sse
+MD5_JOB *
+_md5_mb_mgr_submit_avx(MD5_MB_JOB_MGR *state, MD5_JOB *job);
+MD5_JOB *
+_md5_mb_mgr_flush_avx(MD5_MB_JOB_MGR *state);
+
+void
+_md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR *state);
+MD5_JOB *
+_md5_mb_mgr_submit_avx2(MD5_MB_JOB_MGR *state, MD5_JOB *job);
+MD5_JOB *
+_md5_mb_mgr_flush_avx2(MD5_MB_JOB_MGR *state);
+
+void
+_md5_mb_mgr_init_avx512(MD5_MB_JOB_MGR *state);
+MD5_JOB *
+_md5_mb_mgr_submit_avx512(MD5_MB_JOB_MGR *state, MD5_JOB *job);
+MD5_JOB *
+_md5_mb_mgr_flush_avx512(MD5_MB_JOB_MGR *state);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif // _MD5_MB_INTERNAL_H_

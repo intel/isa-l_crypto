@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include "md5_mb.h"
+#include "md5_mb_internal.h"
 #include "memcpy_inline.h"
 
 #ifdef _MSC_VER
@@ -45,7 +45,7 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx);
 void
 md5_ctx_mgr_init_sse(MD5_HASH_CTX_MGR *mgr)
 {
-        md5_mb_mgr_init_sse(&mgr->mgr);
+        _md5_mb_mgr_init_sse(&mgr->mgr);
 }
 
 MD5_HASH_CTX *
@@ -122,7 +122,7 @@ md5_ctx_mgr_submit_sse(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buf
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
-                        ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
+                        ctx = (MD5_HASH_CTX *) _md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
                 }
         }
 
@@ -135,7 +135,7 @@ md5_ctx_mgr_flush_sse(MD5_HASH_CTX_MGR *mgr)
         MD5_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (MD5_HASH_CTX *) md5_mb_mgr_flush_sse(&mgr->mgr);
+                ctx = (MD5_HASH_CTX *) _md5_mb_mgr_flush_sse(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -191,7 +191,7 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
+                                ctx = (MD5_HASH_CTX *) _md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
                                 continue;
                         }
                 }
@@ -207,7 +207,7 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
 
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
+                        ctx = (MD5_HASH_CTX *) _md5_mb_mgr_submit_sse(&mgr->mgr, &ctx->job);
                         continue;
                 }
 

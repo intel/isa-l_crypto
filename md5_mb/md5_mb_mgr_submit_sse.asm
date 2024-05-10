@@ -78,8 +78,8 @@ section .text
 ; JOB* submit_job(MB_MGR *state, JOB_MD5 *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global md5_mb_mgr_submit_sse, function
-md5_mb_mgr_submit_sse:
+mk_global _md5_mb_mgr_submit_sse, function, internal
+_md5_mb_mgr_submit_sse:
 	endbranch
 
         sub     rsp, STACK_SPACE

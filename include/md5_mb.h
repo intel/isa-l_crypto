@@ -408,38 +408,6 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
  */
 int
 isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX **ctx_out);
-
-/*******************************************************************
- * Scheduler (internal) level out-of-order function prototypes
- ******************************************************************/
-
-void
-md5_mb_mgr_init_sse(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-md5_mb_mgr_submit_sse(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-md5_mb_mgr_flush_sse(MD5_MB_JOB_MGR *state);
-
-#define md5_mb_mgr_init_avx md5_mb_mgr_init_sse
-MD5_JOB *
-md5_mb_mgr_submit_avx(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-md5_mb_mgr_flush_avx(MD5_MB_JOB_MGR *state);
-
-void
-md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-md5_mb_mgr_submit_avx2(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-md5_mb_mgr_flush_avx2(MD5_MB_JOB_MGR *state);
-
-void
-md5_mb_mgr_init_avx512(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-md5_mb_mgr_submit_avx512(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-md5_mb_mgr_flush_avx512(MD5_MB_JOB_MGR *state);
-
 #ifdef __cplusplus
 }
 #endif

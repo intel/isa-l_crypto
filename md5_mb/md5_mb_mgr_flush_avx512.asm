@@ -108,10 +108,10 @@ STACK_SPACE     equ _GPR_SAVE + _GPR_SAVE_SIZE + _ALIGN_SIZE
 
 align 64
 
-; JOB* md5_mb_mgr_flush_avx512(MB_MGR_HMAC_OOO *state)
+; JOB* _md5_mb_mgr_flush_avx512(MB_MGR_HMAC_OOO *state)
 ; arg 1 : rcx : state
-mk_global md5_mb_mgr_flush_avx512, function
-md5_mb_mgr_flush_avx512:
+mk_global _md5_mb_mgr_flush_avx512, function, internal
+_md5_mb_mgr_flush_avx512:
 	endbranch
 	sub	rsp, STACK_SPACE
 	mov	[rsp + _GPR_SAVE + 8*0], rbx

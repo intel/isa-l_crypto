@@ -78,8 +78,8 @@ extern md5_mb_x4x2_avx
 ; JOB* submit_job(MB_MGR *state, JOB_MD5 *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
-mk_global md5_mb_mgr_submit_avx, function
-md5_mb_mgr_submit_avx:
+mk_global _md5_mb_mgr_submit_avx, function, internal
+_md5_mb_mgr_submit_avx:
 	endbranch
 
         sub     rsp, STACK_SPACE
