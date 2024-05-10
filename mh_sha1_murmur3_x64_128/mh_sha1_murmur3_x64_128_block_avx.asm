@@ -514,7 +514,7 @@ section .text
 ; h5 | h5 | h5 | ...| h5 |    | Ea| Eb | Ec |...| Ep |
 
 align 32
-;void mh_sha1_murmur3_x64_128_block_avx (const uint8_t * input_data,
+;void _mh_sha1_murmur3_x64_128_block_avx (const uint8_t * input_data,
 ;				uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
 ;				uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
 ;				uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
@@ -525,8 +525,8 @@ align 32
 ; arg 3 pointer to murmur3 digest
 ; arg 4 number  of 1KB blocks
 ;
-mk_global mh_sha1_murmur3_x64_128_block_avx, function, internal
-func(mh_sha1_murmur3_x64_128_block_avx)
+mk_global _mh_sha1_murmur3_x64_128_block_avx, function, internal
+func(_mh_sha1_murmur3_x64_128_block_avx)
 	endbranch
 	FUNC_SAVE
 	; save rsp

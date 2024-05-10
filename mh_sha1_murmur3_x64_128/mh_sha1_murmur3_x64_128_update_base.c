@@ -31,8 +31,8 @@
 #include "mh_sha1_murmur3_x64_128_internal.h"
 #include <string.h>
 
-#define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_base
-#define BLOCK_FUNCTION  mh_sha1_murmur3_x64_128_block_base
+#define UPDATE_FUNCTION _mh_sha1_murmur3_x64_128_update_base
+#define BLOCK_FUNCTION  _mh_sha1_murmur3_x64_128_block_base
 #define UPDATE_FUNCTION_SLVER
 #endif
 
@@ -102,6 +102,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha1_murmur3_x64_128_update_base_slver_0000025a;
-struct slver mh_sha1_murmur3_x64_128_update_base_slver = { 0x025a, 0x00, 0x00 };
+struct slver _mh_sha1_murmur3_x64_128_update_base_slver_0000025a;
+struct slver _mh_sha1_murmur3_x64_128_update_base_slver = { 0x025a, 0x00, 0x00 };
 #endif

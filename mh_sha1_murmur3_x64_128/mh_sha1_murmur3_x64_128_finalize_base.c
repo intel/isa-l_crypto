@@ -31,13 +31,13 @@
 #include <stdlib.h> // For NULL
 #include "mh_sha1_murmur3_x64_128_internal.h"
 
-#define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_base
+#define FINALIZE_FUNCTION     _mh_sha1_murmur3_x64_128_finalize_base
 #define MH_SHA1_TAIL_FUNCTION _mh_sha1_tail_base
 #define FINALIZE_FUNCTION_SLVER
 #endif
 
-#define MURMUR_BLOCK_FUNCTION murmur3_x64_128_block
-#define MURMUR_TAIL_FUNCTION  murmur3_x64_128_tail
+#define MURMUR_BLOCK_FUNCTION _murmur3_x64_128_block
+#define MURMUR_TAIL_FUNCTION  _murmur3_x64_128_tail
 
 int
 FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
@@ -99,6 +99,6 @@ struct slver {
 };
 
 // Version info
-struct slver mh_sha1_murmur3_x64_128_finalize_base_slver_0000025b;
-struct slver mh_sha1_murmur3_x64_128_finalize_base_slver = { 0x025b, 0x00, 0x00 };
+struct slver _mh_sha1_murmur3_x64_128_finalize_base_slver_0000025b;
+struct slver _mh_sha1_murmur3_x64_128_finalize_base_slver = { 0x025b, 0x00, 0x00 };
 #endif

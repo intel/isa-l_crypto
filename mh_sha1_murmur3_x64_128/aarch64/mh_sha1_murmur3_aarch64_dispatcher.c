@@ -28,7 +28,7 @@
 **********************************************************************/
 #include <aarch64_multibinary.h>
 
-DEFINE_INTERFACE_DISPATCHER(mh_sha1_murmur3_x64_128_update)
+DEFINE_INTERFACE_DISPATCHER(_mh_sha1_murmur3_x64_128_update)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
         if (auxval & HWCAP_SHA1)
@@ -37,10 +37,10 @@ DEFINE_INTERFACE_DISPATCHER(mh_sha1_murmur3_x64_128_update)
         if (auxval & HWCAP_ASIMD)
                 return PROVIDER_INFO(mh_sha1_murmur3_update_asimd);
 
-        return PROVIDER_BASIC(mh_sha1_murmur3_x64_128_update);
+        return PROVIDER_BASIC(_mh_sha1_murmur3_x64_128_update);
 }
 
-DEFINE_INTERFACE_DISPATCHER(mh_sha1_murmur3_x64_128_finalize)
+DEFINE_INTERFACE_DISPATCHER(_mh_sha1_murmur3_x64_128_finalize)
 {
         unsigned long auxval = getauxval(AT_HWCAP);
         if (auxval & HWCAP_SHA1)
@@ -49,5 +49,5 @@ DEFINE_INTERFACE_DISPATCHER(mh_sha1_murmur3_x64_128_finalize)
         if (auxval & HWCAP_ASIMD)
                 return PROVIDER_INFO(mh_sha1_murmur3_finalize_asimd);
 
-        return PROVIDER_BASIC(mh_sha1_murmur3_x64_128_finalize);
+        return PROVIDER_BASIC(_mh_sha1_murmur3_x64_128_finalize);
 }

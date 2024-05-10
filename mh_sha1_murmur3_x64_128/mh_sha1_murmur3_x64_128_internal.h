@@ -56,6 +56,217 @@ extern "C" {
  ******************************************************************/
 
 /**
+ * @brief Initialize the mh_sha1_murmur3_x64_128_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  murmur_seed Seed as an initial digest of murmur3
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                  void *murmur3_x64_128_digest);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * Base update() function that does not require SIMD support.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                     uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ * Base Finalize() function that does not require SIMD support.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                       void *mh_sha1_digest, void *murmur3_x64_128_digest);
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires SSE
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_update_sse(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    uint32_t len);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_update_avx(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    uint32_t len);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX2
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_update_avx2(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                     uint32_t len);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * @requires AVX512
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_update_avx512(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                       uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ *
+ * @requires SSE
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize_sse(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ *
+ * @requires AVX
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize_avx(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ *
+ * @requires AVX2
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize_avx2(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                       void *mh_sha1_digest, void *murmur3_x64_128_digest);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ *
+ * @requires AVX512
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
+ * @returns int Return 0 if the function runs without errors
+ *
+ */
+int
+_mh_sha1_murmur3_x64_128_finalize_avx512(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                         void *mh_sha1_digest, void *murmur3_x64_128_digest);
+
+/**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
  *
  * This function determines what instruction sets are enabled and selects the
@@ -70,13 +281,13 @@ extern "C" {
  *
  */
 // Each function needs an individual C or ASM file because they impact performance much.
-// They will be called by mh_sha1_murmur3_x64_128_update_XXX.
+// They will be called by _mh_sha1_murmur3_x64_128_update_XXX.
 void
-mh_sha1_murmur3_x64_128_block(const uint8_t *input_data,
-                              uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
-                              uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
-                              uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
-                              uint32_t num_blocks);
+_mh_sha1_murmur3_x64_128_block(const uint8_t *input_data,
+                               uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
+                               uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
+                               uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
+                               uint32_t num_blocks);
 
 /**
  * @brief  Calculate blocks which size is ISAL_MH_SHA1_BLOCK_SIZE*N
@@ -90,7 +301,7 @@ mh_sha1_murmur3_x64_128_block(const uint8_t *input_data,
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_base(
+_mh_sha1_murmur3_x64_128_block_base(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
         uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
@@ -109,7 +320,7 @@ mh_sha1_murmur3_x64_128_block_base(
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_sse(
+_mh_sha1_murmur3_x64_128_block_sse(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
         uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
@@ -128,7 +339,7 @@ mh_sha1_murmur3_x64_128_block_sse(
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_avx(
+_mh_sha1_murmur3_x64_128_block_avx(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
         uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
@@ -147,7 +358,7 @@ mh_sha1_murmur3_x64_128_block_avx(
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_avx2(
+_mh_sha1_murmur3_x64_128_block_avx2(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
         uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
@@ -166,7 +377,7 @@ mh_sha1_murmur3_x64_128_block_avx2(
  *
  */
 void
-mh_sha1_murmur3_x64_128_block_avx512(
+_mh_sha1_murmur3_x64_128_block_avx512(
         const uint8_t *input_data, uint32_t mh_sha1_digests[ISAL_SHA1_DIGEST_WORDS][ISAL_HASH_SEGS],
         uint8_t frame_buffer[ISAL_MH_SHA1_BLOCK_SIZE],
         uint32_t murmur3_x64_128_digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS], uint32_t num_blocks);
@@ -183,8 +394,8 @@ mh_sha1_murmur3_x64_128_block_avx512(
  *
  */
 void
-murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
-                      uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
+_murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
+                       uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
 
 /**
  * @brief  Do the tail process which is less than 16Byte.
@@ -195,8 +406,8 @@ murmur3_x64_128_block(const uint8_t *input_data, uint32_t num_blocks,
  *
  */
 void
-murmur3_x64_128_tail(const uint8_t *tail_buffer, uint32_t total_len,
-                     uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
+_murmur3_x64_128_tail(const uint8_t *tail_buffer, uint32_t total_len,
+                      uint32_t digests[ISAL_MURMUR3_x64_128_DIGEST_WORDS]);
 
 #ifdef __cplusplus
 }

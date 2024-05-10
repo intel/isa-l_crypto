@@ -36,41 +36,41 @@
  default rel
  [bits 64]
 
- extern mh_sha1_murmur3_x64_128_update_sse
- extern mh_sha1_murmur3_x64_128_update_avx
- extern mh_sha1_murmur3_x64_128_update_avx2
- extern mh_sha1_murmur3_x64_128_finalize_sse
- extern mh_sha1_murmur3_x64_128_finalize_avx
- extern mh_sha1_murmur3_x64_128_finalize_avx2
+ extern _mh_sha1_murmur3_x64_128_update_sse
+ extern _mh_sha1_murmur3_x64_128_update_avx
+ extern _mh_sha1_murmur3_x64_128_update_avx2
+ extern _mh_sha1_murmur3_x64_128_finalize_sse
+ extern _mh_sha1_murmur3_x64_128_finalize_avx
+ extern _mh_sha1_murmur3_x64_128_finalize_avx2
 
  %ifdef HAVE_AS_KNOWS_AVX512
-  extern mh_sha1_murmur3_x64_128_update_avx512
-  extern mh_sha1_murmur3_x64_128_finalize_avx512
+  extern _mh_sha1_murmur3_x64_128_update_avx512
+  extern _mh_sha1_murmur3_x64_128_finalize_avx512
  %endif
 
 %endif
 
-extern mh_sha1_murmur3_x64_128_update_base
-extern mh_sha1_murmur3_x64_128_finalize_base
+extern _mh_sha1_murmur3_x64_128_update_base
+extern _mh_sha1_murmur3_x64_128_finalize_base
 
-mbin_interface mh_sha1_murmur3_x64_128_update
-mbin_interface mh_sha1_murmur3_x64_128_finalize
+mbin_interface _mh_sha1_murmur3_x64_128_update
+mbin_interface _mh_sha1_murmur3_x64_128_finalize
 
 %ifidn __OUTPUT_FORMAT__, elf64
 
  %ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 mh_sha1_murmur3_x64_128_update, mh_sha1_murmur3_x64_128_update_base, mh_sha1_murmur3_x64_128_update_sse, mh_sha1_murmur3_x64_128_update_avx, mh_sha1_murmur3_x64_128_update_avx2, mh_sha1_murmur3_x64_128_update_avx512
-  mbin_dispatch_init6 mh_sha1_murmur3_x64_128_finalize, mh_sha1_murmur3_x64_128_finalize_base, mh_sha1_murmur3_x64_128_finalize_sse, mh_sha1_murmur3_x64_128_finalize_avx, mh_sha1_murmur3_x64_128_finalize_avx2, mh_sha1_murmur3_x64_128_finalize_avx512
+  mbin_dispatch_init6 _mh_sha1_murmur3_x64_128_update, _mh_sha1_murmur3_x64_128_update_base, _mh_sha1_murmur3_x64_128_update_sse, _mh_sha1_murmur3_x64_128_update_avx, _mh_sha1_murmur3_x64_128_update_avx2, _mh_sha1_murmur3_x64_128_update_avx512
+  mbin_dispatch_init6 _mh_sha1_murmur3_x64_128_finalize, _mh_sha1_murmur3_x64_128_finalize_base, _mh_sha1_murmur3_x64_128_finalize_sse, _mh_sha1_murmur3_x64_128_finalize_avx, _mh_sha1_murmur3_x64_128_finalize_avx2, _mh_sha1_murmur3_x64_128_finalize_avx512
  %else
-  mbin_dispatch_init5 mh_sha1_murmur3_x64_128_update, mh_sha1_murmur3_x64_128_update_base, mh_sha1_murmur3_x64_128_update_sse, mh_sha1_murmur3_x64_128_update_avx, mh_sha1_murmur3_x64_128_update_avx2
-  mbin_dispatch_init5 mh_sha1_murmur3_x64_128_finalize, mh_sha1_murmur3_x64_128_finalize_base, mh_sha1_murmur3_x64_128_finalize_sse, mh_sha1_murmur3_x64_128_finalize_avx, mh_sha1_murmur3_x64_128_finalize_avx2
+  mbin_dispatch_init5 _mh_sha1_murmur3_x64_128_update, _mh_sha1_murmur3_x64_128_update_base, _mh_sha1_murmur3_x64_128_update_sse, _mh_sha1_murmur3_x64_128_update_avx, _mh_sha1_murmur3_x64_128_update_avx2
+  mbin_dispatch_init5 _mh_sha1_murmur3_x64_128_finalize, _mh_sha1_murmur3_x64_128_finalize_base, _mh_sha1_murmur3_x64_128_finalize_sse, _mh_sha1_murmur3_x64_128_finalize_avx, _mh_sha1_murmur3_x64_128_finalize_avx2
  %endif
 
 %else
- mbin_dispatch_init2 mh_sha1_murmur3_x64_128_update, mh_sha1_murmur3_x64_128_update_base
- mbin_dispatch_init2 mh_sha1_murmur3_x64_128_finalize, mh_sha1_murmur3_x64_128_finalize_base
+ mbin_dispatch_init2 _mh_sha1_murmur3_x64_128_update, _mh_sha1_murmur3_x64_128_update_base
+ mbin_dispatch_init2 _mh_sha1_murmur3_x64_128_finalize, _mh_sha1_murmur3_x64_128_finalize_base
 %endif
 
 ;;;       func                 				core, ver, snum
-slversion mh_sha1_murmur3_x64_128_update,		00, 02, 0252
-slversion mh_sha1_murmur3_x64_128_finalize,		00, 02, 0253
+slversion _mh_sha1_murmur3_x64_128_update,		00, 02, 0252
+slversion _mh_sha1_murmur3_x64_128_finalize,		00, 02, 0253
