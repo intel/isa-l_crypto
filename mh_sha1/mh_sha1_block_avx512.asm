@@ -397,10 +397,4 @@ K60_79:			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-mk_global _no_mh_sha1_block_avx512, function, internal
-_no_mh_sha1_block_avx512:
-%endif
 %endif ; HAVE_AS_KNOWS_AVX512
