@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "isal_crypto_api.h"
 #include "mh_sha256.h"
 
 #define TEST_LEN  16 * 1024
@@ -53,7 +54,7 @@
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != ISAL_MH_SHA256_CTX_ERROR_NONE) {                                    \
+                if ((state) != ISAL_CRYPTO_ERR_NONE) {                                             \
                         printf("The mh_sha256 function is failed.\n");                             \
                         return 1;                                                                  \
                 }                                                                                  \
