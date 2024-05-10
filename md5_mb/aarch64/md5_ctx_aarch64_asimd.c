@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 #include <stdlib.h>
-#include "md5_mb.h"
+#include "md5_mb_internal.h"
 #include "memcpy_inline.h"
 void
 md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR *state);

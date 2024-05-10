@@ -46,6 +46,9 @@
 extern "C" {
 #endif
 
+#define MD5_LOG2_BLOCK_SIZE 6
+#define MD5_INITIAL_DIGEST  0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+
 /*******************************************************************
  * CTX level API function prototypes
  ******************************************************************/
