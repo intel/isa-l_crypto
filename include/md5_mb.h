@@ -120,7 +120,6 @@ extern "C" {
 #define ISAL_MD5_MIN_LANES           8
 #define ISAL_MD5_BLOCK_SIZE          64
 #define ISAL_MD5_PADLENGTHFIELD_SIZE 8
-#define ISAL_MD5_MAX_LEN             ((1 << 16) - 2)
 
 typedef uint32_t md5_digest_array[ISAL_MD5_DIGEST_NWORDS][ISAL_MD5_MAX_LANES];
 typedef uint32_t ISAL_MD5_WORD_T;

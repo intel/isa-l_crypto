@@ -121,11 +121,6 @@ test_md5_mb_submit_api(void)
                                                   ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
-        // check invalid len
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, ISAL_MD5_MAX_LEN + 1,
-                                                  ISAL_HASH_ENTIRE),
-                          ISAL_CRYPTO_ERR_AUTH_LEN, fn_name, end_submit);
-
         // check invalid flag
         CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg,
                                                   (uint32_t) strlen((char *) msg), 999),
