@@ -79,7 +79,7 @@ md5_mb_sve_max_lanes:
 	.size md5_mb_sve_max_lanes, .-md5_mb_sve_max_lanes
 
 /*
- *  void md5_mb_sve/sv2(int blocks, int total_lanes, MD5_JOB **job_vec)
+ *  void md5_mb_sve/sv2(int blocks, int total_lanes, ISAL_MD5_JOB **job_vec)
  */
 	num_blocks	.req	w0
 	total_lanes	.req	w1

@@ -128,7 +128,7 @@ Macros
 	d_d1		.req	w19
 
 /*
-	void md5_mb_asimd_x1(MD5_JOB * job0,int len)
+	void md5_mb_asimd_x1(ISAL_MD5_JOB * job0,int len)
 */
 	.global md5_mb_asimd_x1
 	.type md5_mb_asimd_x1, %function

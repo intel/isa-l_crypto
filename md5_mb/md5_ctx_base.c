@@ -65,24 +65,24 @@
         a = b + rol32(f, r);
 
 static void
-md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
+md5_init(ISAL_MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
+md5_update(ISAL_MD5_HASH_CTX *ctx, const void *buffer, uint32_t len);
 static void
-md5_final(MD5_HASH_CTX *ctx);
+md5_final(ISAL_MD5_HASH_CTX *ctx);
 static void OPT_FIX
 md5_single(const void *data, uint32_t digest[4]);
 static inline void
-hash_init_digest(MD5_WORD_T *digest);
+hash_init_digest(ISAL_MD5_WORD_T *digest);
 
 void
-_md5_ctx_mgr_init_base(MD5_HASH_CTX_MGR *mgr)
+_md5_ctx_mgr_init_base(ISAL_MD5_HASH_CTX_MGR *mgr)
 {
 }
 
-MD5_HASH_CTX *
-_md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                         ISAL_HASH_CTX_FLAG flags)
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit_base(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
 
         if (flags & (~ISAL_HASH_ENTIRE)) {
@@ -127,14 +127,14 @@ _md5_ctx_mgr_submit_base(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *b
         return ctx;
 }
 
-MD5_HASH_CTX *
-_md5_ctx_mgr_flush_base(MD5_HASH_CTX_MGR *mgr)
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush_base(ISAL_MD5_HASH_CTX_MGR *mgr)
 {
         return NULL;
 }
 
 static void
-md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
+md5_init(ISAL_MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         // Init digest
         hash_init_digest(ctx->job.result_digest);
@@ -153,7 +153,7 @@ md5_init(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
+md5_update(ISAL_MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 {
         uint32_t remain_len = len;
         uint32_t *digest = ctx->job.result_digest;
@@ -164,9 +164,9 @@ md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (remain_len < MD5_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (remain_len < ISAL_MD5_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (remain_len < copy_len) {
                         copy_len = remain_len;
                 }
@@ -182,20 +182,20 @@ md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
                         buffer = (void *) ((uint8_t *) buffer + copy_len);
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= MD5_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_MD5_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= MD5_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_MD5_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
                         md5_single(ctx->partial_block_buffer, digest);
                 }
         }
         // If the extra blocks are empty, begin hashing what remains in the user's buffer.
         if (ctx->partial_block_buffer_length == 0) {
-                while (remain_len >= MD5_BLOCK_SIZE) {
+                while (remain_len >= ISAL_MD5_BLOCK_SIZE) {
                         md5_single(buffer, digest);
-                        buffer = (void *) ((uint8_t *) buffer + MD5_BLOCK_SIZE);
-                        remain_len -= MD5_BLOCK_SIZE;
+                        buffer = (void *) ((uint8_t *) buffer + ISAL_MD5_BLOCK_SIZE);
+                        remain_len -= ISAL_MD5_BLOCK_SIZE;
                 }
         }
 
@@ -209,30 +209,30 @@ md5_update(MD5_HASH_CTX *ctx, const void *buffer, uint32_t len)
 }
 
 static void
-md5_final(MD5_HASH_CTX *ctx)
+md5_final(ISAL_MD5_HASH_CTX *ctx)
 {
         const void *buffer = ctx->partial_block_buffer;
         uint32_t i = ctx->partial_block_buffer_length;
-        uint8_t buf[2 * MD5_BLOCK_SIZE];
+        uint8_t buf[2 * ISAL_MD5_BLOCK_SIZE];
         uint32_t *digest = ctx->job.result_digest;
 
         memcpy(buf, buffer, i);
         buf[i++] = 0x80;
-        for (uint32_t j = i; j < (2 * MD5_BLOCK_SIZE); j++) {
+        for (uint32_t j = i; j < (2 * ISAL_MD5_BLOCK_SIZE); j++) {
                 buf[j] = 0;
         }
 
-        if (i > MD5_BLOCK_SIZE - MD5_PADLENGTHFIELD_SIZE) {
-                i = 2 * MD5_BLOCK_SIZE;
+        if (i > ISAL_MD5_BLOCK_SIZE - ISAL_MD5_PADLENGTHFIELD_SIZE) {
+                i = 2 * ISAL_MD5_BLOCK_SIZE;
         } else {
-                i = MD5_BLOCK_SIZE;
+                i = ISAL_MD5_BLOCK_SIZE;
         }
 
         *(uint64_t *) (buf + i - 8) = to_le64((uint64_t) ctx->total_length * 8);
 
         md5_single(buf, digest);
-        if (i == 2 * MD5_BLOCK_SIZE) {
-                md5_single(buf + MD5_BLOCK_SIZE, digest);
+        if (i == 2 * ISAL_MD5_BLOCK_SIZE) {
+                md5_single(buf + ISAL_MD5_BLOCK_SIZE, digest);
         }
 
         ctx->status = ISAL_HASH_CTX_STS_COMPLETE;
@@ -326,9 +326,11 @@ md5_single(const void *data, uint32_t digest[4])
 }
 
 static inline void
-hash_init_digest(MD5_WORD_T *digest)
+hash_init_digest(ISAL_MD5_WORD_T *digest)
 {
-        static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] = { MD5_INITIAL_DIGEST };
+        static const ISAL_MD5_WORD_T hash_initial_digest[ISAL_MD5_DIGEST_NWORDS] = {
+                ISAL_MD5_INITIAL_DIGEST
+        };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 

@@ -329,7 +329,7 @@ STACK_SIZE      equ     MEM + 16*8 + 8
 
 ;#define NUM_MD5_DIGEST_WORDS 4
 ;#define NUM_LANES 8
-;#define MD5_BLOCK_SIZE 64
+;#define ISAL_MD5_BLOCK_SIZE 64
 ;
 ;typedef UINT32 digest_array[NUM_MD5_DIGEST_WORDS][NUM_LANES];
 ;

@@ -69,14 +69,14 @@ md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
 }
 
 /* Reference digest global to reduce stack usage */
-static uint8_t digest_ssl[TEST_BUFS][4 * MD5_DIGEST_NWORDS];
+static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_MD5_DIGEST_NWORDS];
 
 int
 main(void)
 {
         int ret;
-        MD5_HASH_CTX_MGR *mgr = NULL;
-        MD5_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
+        ISAL_MD5_HASH_CTX ctxpool[TEST_BUFS];
         unsigned char *bufs[TEST_BUFS];
         uint32_t i, j, t, fail = 0;
         struct perf start, stop;
@@ -92,7 +92,7 @@ main(void)
                 ctxpool[i].user_data = (void *) ((uint64_t) i);
         }
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_MD5_HASH_CTX_MGR));
         if (ret) {
                 printf("alloc error: Fail");
                 return -1;
@@ -125,7 +125,7 @@ main(void)
         perf_print(stop, start, (long long) TEST_LEN * i * t);
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_MD5_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] !=
                             to_le32(((uint32_t *) digest_ssl[i])[j])) {
                                 fail++;

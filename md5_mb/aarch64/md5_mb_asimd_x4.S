@@ -124,8 +124,8 @@ Macros
 	key_adr	.req	x10
 
 /*
-	void md5_mb_asimd_x4(MD5_JOB * job0, MD5_JOB * job1,
-		MD5_JOB * job2, MD5_JOB * job3, int len)
+	void md5_mb_asimd_x4(ISAL_MD5_JOB * job0, ISAL_MD5_JOB * job1,
+		ISAL_MD5_JOB * job2, ISAL_MD5_JOB * job3, int len)
 */
 	.global md5_mb_asimd_x4
 	.type md5_mb_asimd_x4, %function

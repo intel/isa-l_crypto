@@ -40,10 +40,10 @@ static uint8_t msg[] = "Test message";
 static int
 test_md5_mb_init_api(void)
 {
-        MD5_HASH_CTX_MGR *mgr = NULL;
+        ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
         int rc, ret = -1;
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_MD5_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -72,12 +72,12 @@ end_init:
 static int
 test_md5_mb_submit_api(void)
 {
-        MD5_HASH_CTX_MGR *mgr = NULL;
-        MD5_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
+        ISAL_MD5_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
         int rc, ret = -1;
         const char *fn_name = "isal_md5_ctx_mgr_submit";
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_MD5_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -122,7 +122,7 @@ test_md5_mb_submit_api(void)
                           ISAL_CRYPTO_ERR_NULL_SRC, fn_name, end_submit);
 
         // check invalid len
-        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, MD5_MAX_LEN + 1,
+        CHECK_RETURN_GOTO(isal_md5_ctx_mgr_submit(mgr, ctx_ptr, &ctx_ptr, msg, ISAL_MD5_MAX_LEN + 1,
                                                   ISAL_HASH_ENTIRE),
                           ISAL_CRYPTO_ERR_AUTH_LEN, fn_name, end_submit);
 
@@ -172,12 +172,12 @@ end_submit:
 static int
 test_md5_mb_flush_api(void)
 {
-        MD5_HASH_CTX_MGR *mgr = NULL;
-        MD5_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
+        ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
+        ISAL_MD5_HASH_CTX ctx = { 0 }, *ctx_ptr = &ctx;
         int rc, ret = -1;
         const char *fn_name = "isal_md5_ctx_mgr_flush";
 
-        rc = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        rc = posix_memalign((void *) &mgr, 16, sizeof(ISAL_MD5_HASH_CTX_MGR));
         if ((rc != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;

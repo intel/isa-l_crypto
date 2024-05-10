@@ -46,8 +46,8 @@
 extern "C" {
 #endif
 
-#define MD5_LOG2_BLOCK_SIZE 6
-#define MD5_INITIAL_DIGEST  0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+#define ISAL_MD5_LOG2_BLOCK_SIZE 6
+#define ISAL_MD5_INITIAL_DIGEST  0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
 
 /*******************************************************************
  * CTX level API function prototypes
@@ -61,7 +61,7 @@ extern "C" {
  * @returns void
  */
 void
-_md5_ctx_mgr_init_sse(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_init_sse(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the context level multi-buffer manager.
@@ -74,9 +74,9 @@ _md5_ctx_mgr_init_sse(MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_submit_sse(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit_sse(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                        uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
@@ -85,8 +85,8 @@ _md5_ctx_mgr_submit_sse(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *bu
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_flush_sse(MD5_HASH_CTX_MGR *mgr);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush_sse(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
@@ -96,7 +96,7 @@ _md5_ctx_mgr_flush_sse(MD5_HASH_CTX_MGR *mgr);
  * @returns void
  */
 void
-_md5_ctx_mgr_init_avx(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_init_avx(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the multi-buffer manager.
@@ -109,9 +109,9 @@ _md5_ctx_mgr_init_avx(MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_submit_avx(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                        ISAL_HASH_CTX_FLAG flags);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit_avx(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                        uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
@@ -120,8 +120,8 @@ _md5_ctx_mgr_submit_avx(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *bu
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_flush_avx(MD5_HASH_CTX_MGR *mgr);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush_avx(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
@@ -131,7 +131,7 @@ _md5_ctx_mgr_flush_avx(MD5_HASH_CTX_MGR *mgr);
  * @returns void
  */
 void
-_md5_ctx_mgr_init_avx2(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_init_avx2(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the multi-buffer manager.
@@ -144,9 +144,9 @@ _md5_ctx_mgr_init_avx2(MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_submit_avx2(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                         ISAL_HASH_CTX_FLAG flags);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit_avx2(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                         uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
@@ -155,8 +155,8 @@ _md5_ctx_mgr_submit_avx2(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *b
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_flush_avx2(MD5_HASH_CTX_MGR *mgr);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush_avx2(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
@@ -166,7 +166,7 @@ _md5_ctx_mgr_flush_avx2(MD5_HASH_CTX_MGR *mgr);
  * @returns void
  */
 void
-_md5_ctx_mgr_init_avx512(MD5_HASH_CTX_MGR *mgr);
+_md5_ctx_mgr_init_avx512(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the multi-buffer manager.
@@ -179,8 +179,8 @@ _md5_ctx_mgr_init_avx512(MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_submit_avx512(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer,
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_submit_avx512(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
                            uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
@@ -190,39 +190,39 @@ _md5_ctx_mgr_submit_avx512(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void 
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-_md5_ctx_mgr_flush_avx512(MD5_HASH_CTX_MGR *mgr);
+ISAL_MD5_HASH_CTX *
+_md5_ctx_mgr_flush_avx512(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /*******************************************************************
  * Scheduler (internal) level out-of-order function prototypes
  ******************************************************************/
 
 void
-_md5_mb_mgr_init_sse(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-_md5_mb_mgr_submit_sse(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-_md5_mb_mgr_flush_sse(MD5_MB_JOB_MGR *state);
+_md5_mb_mgr_init_sse(ISAL_MD5_MB_JOB_MGR *state);
+ISAL_MD5_JOB *
+_md5_mb_mgr_submit_sse(ISAL_MD5_MB_JOB_MGR *state, ISAL_MD5_JOB *job);
+ISAL_MD5_JOB *
+_md5_mb_mgr_flush_sse(ISAL_MD5_MB_JOB_MGR *state);
 
 #define _md5_mb_mgr_init_avx _md5_mb_mgr_init_sse
-MD5_JOB *
-_md5_mb_mgr_submit_avx(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-_md5_mb_mgr_flush_avx(MD5_MB_JOB_MGR *state);
+ISAL_MD5_JOB *
+_md5_mb_mgr_submit_avx(ISAL_MD5_MB_JOB_MGR *state, ISAL_MD5_JOB *job);
+ISAL_MD5_JOB *
+_md5_mb_mgr_flush_avx(ISAL_MD5_MB_JOB_MGR *state);
 
 void
-_md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-_md5_mb_mgr_submit_avx2(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-_md5_mb_mgr_flush_avx2(MD5_MB_JOB_MGR *state);
+_md5_mb_mgr_init_avx2(ISAL_MD5_MB_JOB_MGR *state);
+ISAL_MD5_JOB *
+_md5_mb_mgr_submit_avx2(ISAL_MD5_MB_JOB_MGR *state, ISAL_MD5_JOB *job);
+ISAL_MD5_JOB *
+_md5_mb_mgr_flush_avx2(ISAL_MD5_MB_JOB_MGR *state);
 
 void
-_md5_mb_mgr_init_avx512(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-_md5_mb_mgr_submit_avx512(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-_md5_mb_mgr_flush_avx512(MD5_MB_JOB_MGR *state);
+_md5_mb_mgr_init_avx512(ISAL_MD5_MB_JOB_MGR *state);
+ISAL_MD5_JOB *
+_md5_mb_mgr_submit_avx512(ISAL_MD5_MB_JOB_MGR *state, ISAL_MD5_JOB *job);
+ISAL_MD5_JOB *
+_md5_mb_mgr_flush_avx512(ISAL_MD5_MB_JOB_MGR *state);
 
 #ifdef __cplusplus
 }

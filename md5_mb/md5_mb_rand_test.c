@@ -40,7 +40,7 @@
 #define TEST_SEED 0x1234
 #endif
 
-static uint32_t digest_ref[TEST_BUFS][MD5_DIGEST_NWORDS];
+static uint32_t digest_ref[TEST_BUFS][ISAL_MD5_DIGEST_NWORDS];
 
 // Compare against reference function
 extern void
@@ -58,8 +58,8 @@ rand_buffer(unsigned char *buf, const long buffer_size)
 int
 main(void)
 {
-        MD5_HASH_CTX_MGR *mgr = NULL;
-        MD5_HASH_CTX ctxpool[TEST_BUFS];
+        ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
+        ISAL_MD5_HASH_CTX ctxpool[TEST_BUFS];
         uint32_t i, j, fail = 0;
         unsigned char *bufs[TEST_BUFS] = { 0 };
         uint32_t lens[TEST_BUFS];
@@ -69,7 +69,7 @@ main(void)
 
         printf("multibinary_md5 test, %d sets of %dx%d max: ", RANDOMS, TEST_BUFS, TEST_LEN);
 
-        ret = posix_memalign((void *) &mgr, 16, sizeof(MD5_HASH_CTX_MGR));
+        ret = posix_memalign((void *) &mgr, 16, sizeof(ISAL_MD5_HASH_CTX_MGR));
         if ((ret != 0) || (mgr == NULL)) {
                 printf("posix_memalign failed test aborted\n");
                 return 1;
@@ -104,7 +104,7 @@ main(void)
                 ;
 
         for (i = 0; i < TEST_BUFS; i++) {
-                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_MD5_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
                                 printf("Test%d fixed size, digest%d "
@@ -140,7 +140,7 @@ main(void)
                         ;
 
                 for (i = 0; i < jobs; i++) {
-                        for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                        for (j = 0; j < ISAL_MD5_DIGEST_NWORDS; j++) {
                                 if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                         fail++;
                                         printf("Test%d, digest%d fail "
@@ -192,7 +192,7 @@ main(void)
                 ;
 
         for (i = 0; i < jobs; i++) {
-                for (j = 0; j < MD5_DIGEST_NWORDS; j++) {
+                for (j = 0; j < ISAL_MD5_DIGEST_NWORDS; j++) {
                         if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
                                 fail++;
                                 printf("End test failed at offset %d - result: 0x%08X"

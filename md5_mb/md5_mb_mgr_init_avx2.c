@@ -30,7 +30,7 @@
 #include "md5_mb.h"
 
 void
-_md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR *state)
+_md5_mb_mgr_init_avx2(ISAL_MD5_MB_JOB_MGR *state)
 {
         unsigned int j;
 

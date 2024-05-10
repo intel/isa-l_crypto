@@ -32,7 +32,7 @@
 #include "multi_buffer.h"
 
 int
-isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
+isal_md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -48,8 +48,9 @@ isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr)
 }
 
 int
-isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CTX **ctx_out,
-                        const void *buffer, const uint32_t len, const ISAL_HASH_CTX_FLAG flags)
+isal_md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx_in,
+                        ISAL_MD5_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+                        const ISAL_HASH_CTX_FLAG flags)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -62,14 +63,15 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
         /* OK to have NULL source buffer when flags is ISAL_HASH_FIRST or ISAL_HASH_LAST */
         if (buffer == NULL && (flags == ISAL_HASH_UPDATE || flags == ISAL_HASH_ENTIRE))
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > MD5_MAX_LEN)
+        if (len > ISAL_MD5_MAX_LEN)
                 return ISAL_CRYPTO_ERR_AUTH_LEN;
 #endif
         *ctx_out = md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
 #ifdef SAFE_PARAM
-        if (*ctx_out != NULL && (MD5_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
-                MD5_HASH_CTX *cp = (MD5_HASH_CTX *) (*ctx_out);
+        if (*ctx_out != NULL &&
+            (ISAL_MD5_HASH_CTX *) (*ctx_out)->error != ISAL_HASH_CTX_ERROR_NONE) {
+                ISAL_MD5_HASH_CTX *cp = (ISAL_MD5_HASH_CTX *) (*ctx_out);
 
                 if (cp->error == ISAL_HASH_CTX_ERROR_INVALID_FLAGS)
                         return ISAL_CRYPTO_ERR_INVALID_FLAGS;
@@ -84,7 +86,7 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
 }
 
 int
-isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX **ctx_out)
+isal_md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX **ctx_out)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;

@@ -30,28 +30,28 @@
 #include "md5_mb_internal.h"
 #include "memcpy_inline.h"
 void
-md5_mb_mgr_init_sve(MD5_MB_JOB_MGR *state);
-MD5_JOB *
-md5_mb_mgr_submit_sve(MD5_MB_JOB_MGR *state, MD5_JOB *job);
-MD5_JOB *
-md5_mb_mgr_flush_sve(MD5_MB_JOB_MGR *state);
+md5_mb_mgr_init_sve(ISAL_MD5_MB_JOB_MGR *state);
+ISAL_MD5_JOB *
+md5_mb_mgr_submit_sve(ISAL_MD5_MB_JOB_MGR *state, ISAL_MD5_JOB *job);
+ISAL_MD5_JOB *
+md5_mb_mgr_flush_sve(ISAL_MD5_MB_JOB_MGR *state);
 
 static inline void
-hash_init_digest(MD5_WORD_T *digest);
+hash_init_digest(ISAL_MD5_WORD_T *digest);
 static inline uint32_t
-hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len);
-static MD5_HASH_CTX *
-md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx);
+hash_pad(uint8_t padblock[ISAL_MD5_BLOCK_SIZE * 2], uint64_t total_len);
+static ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_resubmit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx);
 
 void
-md5_ctx_mgr_init_sve(MD5_HASH_CTX_MGR *mgr)
+md5_ctx_mgr_init_sve(ISAL_MD5_HASH_CTX_MGR *mgr)
 {
         md5_mb_mgr_init_sve(&mgr->mgr);
 }
 
-MD5_HASH_CTX *
-md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                       ISAL_HASH_CTX_FLAG flags)
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_submit_sve(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                       uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         if (flags & (~ISAL_HASH_ENTIRE)) {
                 ctx->error = ISAL_HASH_CTX_ERROR_INVALID_FLAGS;
@@ -98,9 +98,9 @@ md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buf
         // If there is anything currently buffered in the extra blocks, append to it until it
         // contains a whole block. Or if the user's buffer contains less than a whole block, append
         // as much as possible to the extra block.
-        if ((ctx->partial_block_buffer_length) | (len < MD5_BLOCK_SIZE)) {
+        if ((ctx->partial_block_buffer_length) | (len < ISAL_MD5_BLOCK_SIZE)) {
                 // Compute how many bytes to copy from user buffer into extra block
-                uint32_t copy_len = MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
+                uint32_t copy_len = ISAL_MD5_BLOCK_SIZE - ctx->partial_block_buffer_length;
                 if (len < copy_len)
                         copy_len = len;
 
@@ -114,28 +114,28 @@ md5_ctx_mgr_submit_sve(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buf
                         ctx->incoming_buffer_length = len - copy_len;
                 }
                 // The extra block should never contain more than 1 block here
-                assert(ctx->partial_block_buffer_length <= MD5_BLOCK_SIZE);
+                assert(ctx->partial_block_buffer_length <= ISAL_MD5_BLOCK_SIZE);
 
                 // If the extra block buffer contains exactly 1 block, it can be hashed.
-                if (ctx->partial_block_buffer_length >= MD5_BLOCK_SIZE) {
+                if (ctx->partial_block_buffer_length >= ISAL_MD5_BLOCK_SIZE) {
                         ctx->partial_block_buffer_length = 0;
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
-                        ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr, &ctx->job);
+                        ctx = (ISAL_MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr, &ctx->job);
                 }
         }
 
         return md5_ctx_mgr_resubmit(mgr, ctx);
 }
 
-MD5_HASH_CTX *
-md5_ctx_mgr_flush_sve(MD5_HASH_CTX_MGR *mgr)
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_flush_sve(ISAL_MD5_HASH_CTX_MGR *mgr)
 {
-        MD5_HASH_CTX *ctx;
+        ISAL_MD5_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (MD5_HASH_CTX *) md5_mb_mgr_flush_sve(&mgr->mgr);
+                ctx = (ISAL_MD5_HASH_CTX *) md5_mb_mgr_flush_sve(&mgr->mgr);
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -154,8 +154,8 @@ md5_ctx_mgr_flush_sve(MD5_HASH_CTX_MGR *mgr)
         }
 }
 
-static MD5_HASH_CTX *
-md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
+static ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_resubmit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx)
 {
         while (ctx) {
 
@@ -169,7 +169,7 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
                         uint32_t len = ctx->incoming_buffer_length;
 
                         // Only entire blocks can be hashed. Copy remainder to extra blocks buffer.
-                        uint32_t copy_len = len & (MD5_BLOCK_SIZE - 1);
+                        uint32_t copy_len = len & (ISAL_MD5_BLOCK_SIZE - 1);
 
                         if (copy_len) {
                                 len -= copy_len;
@@ -181,15 +181,16 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
                         ctx->incoming_buffer_length = 0;
 
                         // len should be a multiple of the block size now
-                        assert((len % MD5_BLOCK_SIZE) == 0);
+                        assert((len % ISAL_MD5_BLOCK_SIZE) == 0);
 
                         // Set len to the number of blocks to be hashed in the user's buffer
-                        len >>= MD5_LOG2_BLOCK_SIZE;
+                        len >>= ISAL_MD5_LOG2_BLOCK_SIZE;
 
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr, &ctx->job);
+                                ctx = (ISAL_MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr,
+                                                                                  &ctx->job);
                                 continue;
                         }
                 }
@@ -205,7 +206,7 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
 
                         ctx->job.buffer = buf;
                         ctx->job.len = n_extra_blocks;
-                        ctx = (MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr, &ctx->job);
+                        ctx = (ISAL_MD5_HASH_CTX *) md5_mb_mgr_submit_sve(&mgr->mgr, &ctx->job);
                         continue;
                 }
 
@@ -218,24 +219,26 @@ md5_ctx_mgr_resubmit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx)
 }
 
 static inline void
-hash_init_digest(MD5_WORD_T *digest)
+hash_init_digest(ISAL_MD5_WORD_T *digest)
 {
-        static const MD5_WORD_T hash_initial_digest[MD5_DIGEST_NWORDS] = { MD5_INITIAL_DIGEST };
+        static const ISAL_MD5_WORD_T hash_initial_digest[ISAL_MD5_DIGEST_NWORDS] = {
+                ISAL_MD5_INITIAL_DIGEST
+        };
         memcpy_fixedlen(digest, hash_initial_digest, sizeof(hash_initial_digest));
 }
 
 static inline uint32_t
-hash_pad(uint8_t padblock[MD5_BLOCK_SIZE * 2], uint64_t total_len)
+hash_pad(uint8_t padblock[ISAL_MD5_BLOCK_SIZE * 2], uint64_t total_len)
 {
-        uint32_t i = (uint32_t) (total_len & (MD5_BLOCK_SIZE - 1));
+        uint32_t i = (uint32_t) (total_len & (ISAL_MD5_BLOCK_SIZE - 1));
 
-        memclr_fixedlen(&padblock[i], MD5_BLOCK_SIZE);
+        memclr_fixedlen(&padblock[i], ISAL_MD5_BLOCK_SIZE);
         padblock[i] = 0x80;
 
-        i += ((MD5_BLOCK_SIZE - 1) & (0 - (total_len + MD5_PADLENGTHFIELD_SIZE + 1))) + 1 +
-             MD5_PADLENGTHFIELD_SIZE;
+        i += ((ISAL_MD5_BLOCK_SIZE - 1) & (0 - (total_len + ISAL_MD5_PADLENGTHFIELD_SIZE + 1))) +
+             1 + ISAL_MD5_PADLENGTHFIELD_SIZE;
 
         *((uint64_t *) &padblock[i - 8]) = ((uint64_t) total_len << 3);
 
-        return i >> MD5_LOG2_BLOCK_SIZE; // Number of extra blocks to hash
+        return i >> ISAL_MD5_LOG2_BLOCK_SIZE; // Number of extra blocks to hash
 }

@@ -40,9 +40,9 @@
  * <b> Multi-buffer MD5  Entire or First-Update..Update-Last </b>
  *
  * The interface to this multi-buffer hashing code is carried out through the
- * context-level (CTX) init, submit and flush functions and the MD5_HASH_CTX_MGR and
- * MD5_HASH_CTX objects. Numerous MD5_HASH_CTX objects may be instantiated by the
- * application for use with a single MD5_HASH_CTX_MGR.
+ * context-level (CTX) init, submit and flush functions and the ISAL_MD5_HASH_CTX_MGR and
+ * ISAL_MD5_HASH_CTX objects. Numerous ISAL_MD5_HASH_CTX objects may be instantiated by the
+ * application for use with a single ISAL_MD5_HASH_CTX_MGR.
  *
  * The CTX interface functions carry out the initialization and padding of the jobs
  * entered by the user and add them to the multi-buffer manager. The lower level "scheduler"
@@ -58,25 +58,25 @@
  * AVX512. In addition, a multibinary interface is provided, which selects the appropriate
  * architecture-specific function at runtime.
  *
- * <b>Usage:</b> The application creates a MD5_HASH_CTX_MGR object and initializes it
+ * <b>Usage:</b> The application creates a ISAL_MD5_HASH_CTX_MGR object and initializes it
  * with a call to md5_ctx_mgr_init*() function, where henceforth "*" stands for the
  * relevant suffix for each architecture; _sse, _avx, _avx2, _avx512 (or no suffix for the
- * multibinary version). The MD5_HASH_CTX_MGR object will be used to schedule processor
- * resources, with up to 8 MD5_HASH_CTX objects (or 16 in AVX2 case, 32 in AVX512 case)
+ * multibinary version). The ISAL_MD5_HASH_CTX_MGR object will be used to schedule processor
+ * resources, with up to 8 ISAL_MD5_HASH_CTX objects (or 16 in AVX2 case, 32 in AVX512 case)
  * being processed at a time.
  *
- * Each MD5_HASH_CTX must be initialized before first use by the isal_hash_ctx_init macro
+ * Each ISAL_MD5_HASH_CTX must be initialized before first use by the isal_hash_ctx_init macro
  * defined in multi_buffer.h. After initialization, the application may begin computing
- * a hash by giving the MD5_HASH_CTX to a MD5_HASH_CTX_MGR using the submit functions
- * md5_ctx_mgr_submit*() with the ISAL_HASH_FIRST flag set. When the MD5_HASH_CTX is
+ * a hash by giving the ISAL_MD5_HASH_CTX to a ISAL_MD5_HASH_CTX_MGR using the submit functions
+ * md5_ctx_mgr_submit*() with the ISAL_HASH_FIRST flag set. When the ISAL_MD5_HASH_CTX is
  * returned to the application (via this or a later call to md5_ctx_mgr_submit*() or
  * md5_ctx_mgr_flush*()), the application can then re-submit it with another call to
  * md5_ctx_mgr_submit*(), but without the ISAL_HASH_FIRST flag set.
  *
  * Ideally, on the last buffer for that hash, md5_ctx_mgr_submit_sse is called with
  * ISAL_HASH_LAST, although it is also possible to submit the hash with ISAL_HASH_LAST and a zero
- * length if necessary. When a MD5_HASH_CTX is returned after having been submitted with
- * ISAL_HASH_LAST, it will contain a valid hash. The MD5_HASH_CTX can be reused immediately
+ * length if necessary. When a ISAL_MD5_HASH_CTX is returned after having been submitted with
+ * ISAL_HASH_LAST, it will contain a valid hash. The ISAL_MD5_HASH_CTX can be reused immediately
  * by submitting with ISAL_HASH_FIRST.
  *
  * For example, you would submit hashes with the following flags for the following numbers
@@ -94,13 +94,13 @@
  * A few possible error conditions exist:
  * <ul>
  *  <li> Submitting flags other than the allowed entire/first/update/last values
- *  <li> Submitting a context that is currently being managed by a MD5_HASH_CTX_MGR.
+ *  <li> Submitting a context that is currently being managed by a ISAL_MD5_HASH_CTX_MGR.
  *  <li> Submitting a context after ISAL_HASH_LAST is used but before ISAL_HASH_FIRST is set.
  * </ul>
  *
- *  These error conditions are reported by returning the MD5_HASH_CTX immediately after
+ *  These error conditions are reported by returning the ISAL_MD5_HASH_CTX immediately after
  *  a submit with its error member set to a non-zero error code (defined in
- *  multi_buffer.h). No changes are made to the MD5_HASH_CTX_MGR in the case of an
+ *  multi_buffer.h). No changes are made to the ISAL_MD5_HASH_CTX_MGR in the case of an
  *  error; no processing is done for other hashes.
  *
  */
@@ -115,69 +115,69 @@ extern "C" {
 #endif
 
 // Hash Constants and Typedefs
-#define MD5_DIGEST_NWORDS       4
-#define MD5_MAX_LANES           32
-#define MD5_MIN_LANES           8
-#define MD5_BLOCK_SIZE          64
-#define MD5_PADLENGTHFIELD_SIZE 8
-#define MD5_MAX_LEN             ((1 << 16) - 2)
+#define ISAL_MD5_DIGEST_NWORDS       4
+#define ISAL_MD5_MAX_LANES           32
+#define ISAL_MD5_MIN_LANES           8
+#define ISAL_MD5_BLOCK_SIZE          64
+#define ISAL_MD5_PADLENGTHFIELD_SIZE 8
+#define ISAL_MD5_MAX_LEN             ((1 << 16) - 2)
 
-typedef uint32_t md5_digest_array[MD5_DIGEST_NWORDS][MD5_MAX_LANES];
-typedef uint32_t MD5_WORD_T;
+typedef uint32_t md5_digest_array[ISAL_MD5_DIGEST_NWORDS][ISAL_MD5_MAX_LANES];
+typedef uint32_t ISAL_MD5_WORD_T;
 
 /** @brief Scheduler layer - Holds info describing a single MD5 job for the multi-buffer manager */
 
 typedef struct {
         uint8_t *buffer; //!< pointer to data buffer for this job
         uint32_t len;    //!< length of buffer for this job in blocks.
-        DECLARE_ALIGNED(uint32_t result_digest[MD5_DIGEST_NWORDS], 64);
+        DECLARE_ALIGNED(uint32_t result_digest[ISAL_MD5_DIGEST_NWORDS], 64);
         ISAL_JOB_STS status; //!< output job status
         void *user_data;     //!< pointer for user's job-related data
-} MD5_JOB;
+} ISAL_MD5_JOB;
 
 /** @brief Scheduler layer -  Holds arguments for submitted MD5 job */
 
 typedef struct {
         md5_digest_array digest;
-        uint8_t *data_ptr[MD5_MAX_LANES];
+        uint8_t *data_ptr[ISAL_MD5_MAX_LANES];
 } MD5_MB_ARGS_X32;
 
 /** @brief Scheduler layer - Lane data */
 
 typedef struct {
-        MD5_JOB *job_in_lane;
-} MD5_LANE_DATA;
+        ISAL_MD5_JOB *job_in_lane;
+} ISAL_MD5_LANE_DATA;
 
 /** @brief Scheduler layer - Holds state for multi-buffer MD5 jobs */
 
 typedef struct {
         MD5_MB_ARGS_X32 args;
-        uint32_t lens[MD5_MAX_LANES];
+        uint32_t lens[ISAL_MD5_MAX_LANES];
         uint64_t unused_lanes[4]; //!< each byte or nibble is index (0...31 or 15) of unused lanes.
-        MD5_LANE_DATA ldata[MD5_MAX_LANES];
+        ISAL_MD5_LANE_DATA ldata[ISAL_MD5_MAX_LANES];
         uint32_t num_lanes_inuse;
-} MD5_MB_JOB_MGR;
+} ISAL_MD5_MB_JOB_MGR;
 
 /** @brief Context layer - Holds state for multi-buffer MD5 jobs */
 
 typedef struct {
-        MD5_MB_JOB_MGR mgr;
-} MD5_HASH_CTX_MGR;
+        ISAL_MD5_MB_JOB_MGR mgr;
+} ISAL_MD5_HASH_CTX_MGR;
 
 /** @brief Context layer - Holds info describing a single MD5 job for the multi-buffer CTX manager
  */
 
 typedef struct {
-        MD5_JOB job;                     // Must be at struct offset 0.
+        ISAL_MD5_JOB job;                // Must be at struct offset 0.
         ISAL_HASH_CTX_STS status;        //!< Context status flag
         ISAL_HASH_CTX_ERROR error;       //!< Context error flag
         uint64_t total_length;           //!< Running counter of length processed for this CTX's job
         const void *incoming_buffer;     //!< pointer to data input buffer for this CTX's job
         uint32_t incoming_buffer_length; //!< length of buffer for this job in bytes.
-        uint8_t partial_block_buffer[MD5_BLOCK_SIZE * 2]; //!< CTX partial blocks
+        uint8_t partial_block_buffer[ISAL_MD5_BLOCK_SIZE * 2]; //!< CTX partial blocks
         uint32_t partial_block_buffer_length;
         void *user_data; //!< pointer for user to keep any job-related data
-} MD5_HASH_CTX;
+} ISAL_MD5_HASH_CTX;
 
 /******************** multibinary function prototypes **********************/
 
@@ -189,7 +189,7 @@ typedef struct {
  * @returns void
  */
 void
-md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr);
+md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief  Submit a new MD5 job to the multi-buffer manager.
@@ -202,9 +202,9 @@ md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr);
  * @param  flags Input flag specifying job type (first, update, last or entire)
  * @returns NULL if no jobs complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                   ISAL_HASH_CTX_FLAG flags);
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, const void *buffer,
+                   uint32_t len, ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
@@ -213,8 +213,8 @@ md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx, const void *buffer,
  * @param mgr	Structure holding context level state info
  * @returns NULL if no jobs to complete or pointer to jobs structure.
  */
-MD5_HASH_CTX *
-md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr);
+ISAL_MD5_HASH_CTX *
+md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
@@ -226,7 +226,7 @@ md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr);
+isal_md5_ctx_mgr_init(ISAL_MD5_HASH_CTX_MGR *mgr);
 
 /**
  * @brief Submit a new MD5 job to the multi-buffer manager.
@@ -245,8 +245,9 @@ isal_md5_ctx_mgr_init(MD5_HASH_CTX_MGR *mgr);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CTX **ctx_out,
-                        const void *buffer, const uint32_t len, const ISAL_HASH_CTX_FLAG flags);
+isal_md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx_in,
+                        ISAL_MD5_HASH_CTX **ctx_out, const void *buffer, const uint32_t len,
+                        const ISAL_HASH_CTX_FLAG flags);
 
 /**
  * @brief Finish all submitted MD5 jobs and return when complete.
@@ -261,7 +262,7 @@ isal_md5_ctx_mgr_submit(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX *ctx_in, MD5_HASH_CT
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_md5_ctx_mgr_flush(MD5_HASH_CTX_MGR *mgr, MD5_HASH_CTX **ctx_out);
+isal_md5_ctx_mgr_flush(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX **ctx_out);
 #ifdef __cplusplus
 }
 #endif
