@@ -53,9 +53,9 @@
  * struct mh_sha1_ctx *ctx;
  *
  * ctx = malloc(sizeof(struct mh_sha1_ctx));
- * mh_sha1_init(ctx);
- * mh_sha1_update(ctx, buff, block_len);
- * mh_sha1_finalize(ctx, mh_sha1_digest);
+ * isal_mh_sha1_init(ctx);
+ * isal_mh_sha1_update(ctx, buff, block_len);
+ * isal_mh_sha1_finalize(ctx, mh_sha1_digest);
  * \endcode
  */
 
