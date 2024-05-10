@@ -130,7 +130,9 @@ enum mh_sha1_murmur3_ctx_error {
  * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
  * @param  murmur_seed Seed as an initial digest of murmur3
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_murmur3_x64_128_init() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_init() instead")
 int
 mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed);
 
@@ -145,7 +147,9 @@ mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t m
  * @param  buffer Pointer to buffer to be processed
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_murmur3_x64_128_update() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_update() instead")
 int
 mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
                                uint32_t len);
@@ -162,7 +166,9 @@ mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const vo
  * @param  mh_sha1_digest The digest of mh_sha1
  * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
  * @returns int Return 0 if the function runs without errors
+ * @deprecated Please use isal_mh_sha1_murmur3_x64_128_finalize() instead.
  */
+ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_finalize() instead")
 int
 mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                                  void *murmur3_x64_128_digest);
@@ -188,7 +194,7 @@ mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *
  * @param  buffer Pointer to buffer to be processed
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha1_murmur3_x64_128_update() instead.
  */
 int
 mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
@@ -205,7 +211,7 @@ mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, con
  * @param  mh_sha1_digest The digest of mh_sha1
  * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
  * @returns int Return 0 if the function runs without errors
- *
+ * @deprecated Please use isal_mh_sha1_murmur3_x64_128_finalize() instead.
  */
 int
 mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,

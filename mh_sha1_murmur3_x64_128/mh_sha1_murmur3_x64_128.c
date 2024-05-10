@@ -103,7 +103,7 @@ isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, con
         if (buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
-        return mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
+        return _mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
 #endif
 }
 
@@ -120,7 +120,7 @@ isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, v
         if (mh_sha1_digest == NULL || murmur3_x64_128_digest == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
 #endif
-        return mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
+        return _mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 #endif
 }
 

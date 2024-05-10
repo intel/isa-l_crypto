@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "isal_crypto_api.h"
 #include "mh_sha1_murmur3_x64_128.h"
 #include "test.h"
 
@@ -63,12 +64,12 @@
 #define MH_SHA1_FUNC_TYPE
 #endif
 
-#define TEST_UPDATE_FUNCTION FUNC_TOKEN(mh_sha1_murmur3_x64_128_update, MH_SHA1_FUNC_TYPE)
-#define TEST_FINAL_FUNCTION  FUNC_TOKEN(mh_sha1_murmur3_x64_128_finalize, MH_SHA1_FUNC_TYPE)
+#define TEST_UPDATE_FUNCTION FUNC_TOKEN(isal_mh_sha1_murmur3_x64_128_update, MH_SHA1_FUNC_TYPE)
+#define TEST_FINAL_FUNCTION  FUNC_TOKEN(isal_mh_sha1_murmur3_x64_128_finalize, MH_SHA1_FUNC_TYPE)
 
 #define CHECK_RETURN(state)                                                                        \
         do {                                                                                       \
-                if ((state) != ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE) {                              \
+                if ((state) != ISAL_CRYPTO_ERR_NONE) {                                             \
                         printf("The stitch function is failed.\n");                                \
                         return 1;                                                                  \
                 }                                                                                  \
@@ -154,6 +155,7 @@ compare_digests(uint32_t hash_base[ISAL_SHA1_DIGEST_WORDS],
 int
 main(int argc, char *argv[])
 {
+#ifndef FIPS_MODE
         int i, fail = 0;
         uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS], hash_base[ISAL_SHA1_DIGEST_WORDS];
         uint32_t murmur3_test[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
@@ -185,13 +187,13 @@ main(int argc, char *argv[])
         perf_print(stop, start, (long long) TEST_MEM * i);
 
         // Update feature test
-        CHECK_RETURN(mh_sha1_murmur3_x64_128_init(update_ctx, TEST_SEED));
+        CHECK_RETURN(isal_mh_sha1_murmur3_x64_128_init(update_ctx, TEST_SEED));
         CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
         CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test, murmur3_test));
 
         perf_start(&start);
         for (i = 0; i < TEST_LOOPS; i++) {
-                CHECK_RETURN(mh_sha1_murmur3_x64_128_init(update_ctx, TEST_SEED));
+                CHECK_RETURN(isal_mh_sha1_murmur3_x64_128_init(update_ctx, TEST_SEED));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test, murmur3_test));
         }
@@ -209,4 +211,8 @@ main(int argc, char *argv[])
                 printf("Pass func check\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }
