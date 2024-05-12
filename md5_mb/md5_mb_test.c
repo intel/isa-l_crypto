@@ -32,6 +32,7 @@
 #include <string.h>
 #include "md5_mb.h"
 
+#ifndef FIPS_MODE
 typedef uint32_t DigestMD5[ISAL_MD5_DIGEST_NWORDS];
 
 #define MSGS     13
@@ -151,10 +152,12 @@ non_blocksize_updates_test(ISAL_MD5_HASH_CTX_MGR *mgr)
         }
         return 0;
 }
+#endif
 
 int
 main(void)
 {
+#ifndef FIPS_MODE
         ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
         ISAL_MD5_HASH_CTX ctxpool[NUM_JOBS], *ctx = NULL;
         uint32_t i, j, k, t, checked = 0;
@@ -318,4 +321,9 @@ end:
         aligned_free(mgr);
 
         return ret;
+#else
+        printf("Not Executed\n");
+
+        return 0;
+#endif /* FIPS_MODE */
 }

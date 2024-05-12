@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include "md5_mb.h"
 
+#ifndef FIPS_MODE
 #define TEST_LEN  (1024 * 1024)
 #define TEST_BUFS 100
 #ifndef RANDOMS
@@ -66,10 +67,12 @@ rand_buffer(unsigned char *buf, const long buffer_size)
         for (i = 0; i < buffer_size; i++)
                 buf[i] = rand();
 }
+#endif
 
 int
 main(void)
 {
+#ifndef FIPS_MODE
         ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
         ISAL_MD5_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         uint32_t i, j, fail = 0;
@@ -326,4 +329,9 @@ end:
                 printf(" multibinary_md5_update rand: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+
+        return 0;
+#endif /* FIPS_MODE */
 }
