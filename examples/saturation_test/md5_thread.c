@@ -13,18 +13,18 @@
 
 #ifndef HASH_THREAD
 /* MD5 related params and structures*/
-#define DIGEST_NWORDS MD5_DIGEST_NWORDS
-#define MB_BUFS       MD5_MAX_LANES
-#define HASH_CTX_MGR  MD5_HASH_CTX_MGR
-#define HASH_CTX      MD5_HASH_CTX
+#define DIGEST_NWORDS ISAL_MD5_DIGEST_NWORDS
+#define MB_BUFS       ISAL_MD5_MAX_LANES
+#define HASH_CTX_MGR  ISAL_MD5_HASH_CTX_MGR
+#define HASH_CTX      ISAL_MD5_HASH_CTX
 
 #define OSSL_THREAD_FUNC md5_ossl_func
 #define MB_THREAD_FUNC   md5_mb_func
-#define CTX_MGR_INIT     md5_ctx_mgr_init
-#define CTX_MGR_SUBMIT   md5_ctx_mgr_submit
-#define CTX_MGR_FLUSH    md5_ctx_mgr_flush
+#define CTX_MGR_INIT     isal_md5_ctx_mgr_init
+#define CTX_MGR_SUBMIT   isal_md5_ctx_mgr_submit
+#define CTX_MGR_FLUSH    isal_md5_ctx_mgr_flush
 
-#define rounds_buf MD5_MAX_LANES
+#define rounds_buf ISAL_MD5_MAX_LANES
 
 #endif // HASH_THREAD
 
@@ -163,7 +163,11 @@ MB_THREAD_FUNC(void *arg)
                 printf("posix_memalign failed test aborted\n");
                 goto out;
         }
-        CTX_MGR_INIT(mgr);
+        ret = CTX_MGR_INIT(mgr);
+        if (ret != 0) {
+                printf("MD5 CTX MGR Init failed\n");
+                goto out;
+        }
 
         printfv("Thread %i gets to wait\n", id);
         /* Thread sync */
@@ -188,13 +192,23 @@ MB_THREAD_FUNC(void *arg)
                                 if (prememcpy)
                                         memcpy(hash_buf[j + i], carry_buf[j + i], buflen);
 
-                                CTX_MGR_SUBMIT(mgr, &ctxpool[j + i], hash_buf[j + i], buflen,
-                                               ISAL_HASH_ENTIRE);
+                                ret = CTX_MGR_SUBMIT(mgr, &ctxpool[j + i], &ctx, hash_buf[j + i],
+                                                     buflen, ISAL_HASH_ENTIRE);
+                                if (ret) {
+                                        printf("MD5 CTX MGR Submit failed\n");
+                                        goto out;
+                                }
                         }
 
                         /* Calculate hash digest */
-                        while (CTX_MGR_FLUSH(mgr))
-                                ;
+                        do {
+                                ret = CTX_MGR_FLUSH(mgr, &ctx);
+                                if (ret) {
+                                        printf("MD5 CTX MGR Flush failed\n");
+                                        goto out;
+                                }
+                        } while (ctx != NULL);
+
                         for (i = 0; i < MB_BUFS; i++) {
                                 /* Post mem-operation */
                                 if (postmemcpy)

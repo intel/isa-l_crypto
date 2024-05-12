@@ -9,9 +9,9 @@
 #define OSSL_THREAD_FUNC sha256_ossl_func
 #define OSSL_HASH_FUNC   SHA256
 #define MB_THREAD_FUNC   sha256_mb_func
-#define CTX_MGR_INIT     sha256_ctx_mgr_init
-#define CTX_MGR_SUBMIT   sha256_ctx_mgr_submit
-#define CTX_MGR_FLUSH    sha256_ctx_mgr_flush
+#define CTX_MGR_INIT     isal_sha256_ctx_mgr_init
+#define CTX_MGR_SUBMIT   isal_sha256_ctx_mgr_submit
+#define CTX_MGR_FLUSH    isal_sha256_ctx_mgr_flush
 
 #define rounds_buf ISAL_SHA256_MAX_LANES
 
