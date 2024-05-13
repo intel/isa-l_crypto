@@ -39,6 +39,7 @@ typedef enum {
         ISAL_CRYPTO_ERR_NULL_SRC = 2000,
         ISAL_CRYPTO_ERR_NULL_DST,
         ISAL_CRYPTO_ERR_NULL_CTX,
+        ISAL_CRYPTO_ERR_NULL_MGR,
         ISAL_CRYPTO_ERR_NULL_KEY,
         ISAL_CRYPTO_ERR_NULL_EXP_KEY,
         ISAL_CRYPTO_ERR_NULL_IV,
@@ -50,11 +51,45 @@ typedef enum {
         ISAL_CRYPTO_ERR_KEY_LEN,
         ISAL_CRYPTO_ERR_AUTH_TAG_LEN,
         ISAL_CRYPTO_ERR_AAD_LEN,
+        ISAL_CRYPTO_ERR_INVALID_FLAGS,
+        ISAL_CRYPTO_ERR_ALREADY_PROCESSING,
+        ISAL_CRYPTO_ERR_ALREADY_COMPLETED,
+        ISAL_CRYPTO_ERR_XTS_NULL_TWEAK,
+        ISAL_CRYPTO_ERR_XTS_SAME_KEYS,
+        ISAL_CRYPTO_ERR_SELF_TEST,
+        ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO,
+        ISAL_CRYPTO_ERR_WINDOW_SIZE,
+        ISAL_CRYPTO_ERR_NULL_OFFSET,
+        ISAL_CRYPTO_ERR_NULL_MATCH,
+        ISAL_CRYPTO_ERR_NULL_MASK,
+        ISAL_CRYPTO_ERR_HASH_INIT_VAL,
         /* add new error types above this comment */
         ISAL_CRYPTO_ERR_MAX /* don't move this one */
 } ISAL_CRYPTO_ERROR;
 
+/**
+ * @brief Run all crypto self tests
+ *
+ * When FIPS Mode is enabled, all isal_XXX API which performs any crypto processing
+ * on a NIST-approved algorithm (such as isal_aes_cbc_enc_128) will require this function
+ * to be run.
+ *
+ * This API can be run from the application or it will be run internally in the library,
+ * after calling any of the isal_XXX API.
+ *
+ * Either way, once the self tests have passed, all API calls will be able to start
+ * performing the crypto operation. If the self tests fail, no crypto processing will be done.
+ *
+ * This function is thread safe, so only one thread will run the tests and the rest of the threads
+ * will wait until the tests are finished.
+ *
+ * @return  Self test result
+ * @retval  0 on success, ISAL_CRYPTO_ERR_SELF_TEST on failure
+ */
+int
+isal_self_tests(void);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus
-#endif //ifndef _ISAL_CRYPTO_API_H
+#endif // ifndef _ISAL_CRYPTO_API_H

@@ -52,14 +52,15 @@
  * Return: SHA512_JOB pointer.
  *
  **/
-SHA512_JOB *sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR * state, SHA512_JOB * job)
+SHA512_JOB *
+sha512_sb_mgr_submit_sse4(SHA512_MB_JOB_MGR *state, SHA512_JOB *job)
 {
-	assert(job != NULL);
+        assert(job != NULL);
 
-	uint8_t *buff = job->buffer;
-	uint64_t *digest = job->result_digest, len = job->len;
+        uint8_t *buff = job->buffer;
+        uint64_t *digest = job->result_digest, len = job->len;
 
-	sha512_sse4((const void *)buff, (void *)digest, len);
+        sha512_sse4((const void *) buff, (void *) digest, len);
 
-	return job;
+        return job;
 }

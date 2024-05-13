@@ -29,10 +29,18 @@
 
 # Assembling AES requires including cbc_common.asm, gcm_defines.asm
 src_include += -I $(srcdir)/aes
+src_include += -I $(srcdir)/intel-ipsec-mb/lib
 
-extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h
+extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h include/isal_crypto_api.h
 
-lsrc_x86_64     += aes/gcm_multibinary.asm aes/gcm_pre.c
+lsrc            += aes/gcm_pre.c
+lsrc            += aes/cbc_pre.c
+lsrc            += aes/aes_keyexp.c
+lsrc            += aes/aes_cbc.c
+lsrc            += aes/aes_xts.c
+lsrc            += aes/aes_gcm.c
+
+lsrc_x86_64     += aes/gcm_multibinary.asm
 lsrc_x86_64     += aes/gcm128_avx_gen2.asm aes/gcm128_avx_gen4.asm aes/gcm128_sse.asm
 lsrc_x86_64     += aes/gcm256_avx_gen2.asm aes/gcm256_avx_gen4.asm aes/gcm256_sse.asm
 lsrc_x86_64     += aes/gcm128_vaes_avx512.asm aes/gcm256_vaes_avx512.asm
@@ -45,14 +53,13 @@ lsrc_x86_64     += aes/gcm_multibinary_nt.asm
 lsrc_x86_64     += aes/keyexp_multibinary.asm
 lsrc_x86_64     += aes/keyexp_128.asm aes/keyexp_192.asm aes/keyexp_256.asm
 lsrc_x86_64     += aes/cbc_multibinary.asm
-lsrc_x86_64     += aes/cbc_dec_128_x4_sse.asm aes/cbc_dec_128_x8_avx.asm
-lsrc_x86_64     += aes/cbc_dec_192_x4_sse.asm aes/cbc_dec_192_x8_avx.asm
-lsrc_x86_64     += aes/cbc_dec_256_x4_sse.asm aes/cbc_dec_256_x8_avx.asm
+lsrc_x86_64     += aes/cbc_dec_128_x8_sse.asm aes/cbc_dec_128_x8_avx.asm
+lsrc_x86_64     += aes/cbc_dec_192_x8_sse.asm aes/cbc_dec_192_x8_avx.asm
+lsrc_x86_64     += aes/cbc_dec_256_x8_sse.asm aes/cbc_dec_256_x8_avx.asm
 lsrc_x86_64     += aes/cbc_enc_128_x4_sb.asm aes/cbc_enc_128_x8_sb.asm
 lsrc_x86_64     += aes/cbc_enc_192_x4_sb.asm aes/cbc_enc_192_x8_sb.asm
 lsrc_x86_64     += aes/cbc_enc_256_x4_sb.asm aes/cbc_enc_256_x8_sb.asm
 lsrc_x86_64     += aes/cbc_dec_vaes_avx512.asm
-lsrc_x86_64     += aes/cbc_pre.c
 lsrc_x86_64     += aes/xts_aes_128_multibinary.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_sse.asm aes/XTS_AES_128_dec_expanded_key_sse.asm
 lsrc_x86_64     += aes/XTS_AES_128_enc_sse.asm aes/XTS_AES_128_enc_expanded_key_sse.asm
@@ -71,13 +78,10 @@ lsrc_x86_64     += aes/XTS_AES_256_dec_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_256_dec_expanded_key_vaes.asm
 lsrc_x86_64     += aes/XTS_AES_128_dec_expanded_key_vaes.asm
-lsrc_x86_64     += aes/aes_keyexp.c
 
 lsrc_x86_32 	+= $(lsrc_x86_64)
 
-lsrc_aarch64 +=  aes/gcm_pre.c \
-                aes/aes_keyexp.c                            \
-                aes/aarch64/gcm_multibinary_aarch64.S       \
+lsrc_aarch64 += aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/keyexp_multibinary_aarch64.S    \
                 aes/aarch64/gcm_aarch64_dispatcher.c        \
                 aes/aarch64/keyexp_aarch64_dispatcher.c     \
@@ -104,7 +108,6 @@ lsrc_aarch64 +=  aes/gcm_pre.c \
                 aes/aarch64/xts_keyexp_aes_256_dec.S        \
                 aes/aarch64/xts_keyexp_aes_256_enc.S        \
                 aes/aarch64/xts_multibinary_aarch64.S       \
-                aes/cbc_pre.c                               \
                 aes/aarch64/cbc_multibinary_aarch64.S       \
                 aes/aarch64/cbc_aarch64_dispatcher.c        \
                 aes/aarch64/cbc_enc_aes.S                   \

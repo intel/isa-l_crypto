@@ -32,15 +32,16 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <assert.h>
+#include "isal_crypto_api.h"
 #include "rolling_hashx.h"
 #include "sha256_mb.h"
 #include "test.h"
 
-#define MAX_BUFFER_SIZE 128*1024*1024
-#define HASH_POOL_SIZE SHA256_MAX_LANES
+#define MAX_BUFFER_SIZE 128 * 1024 * 1024
+#define HASH_POOL_SIZE  SHA256_MAX_LANES
 
 #ifndef TEST_SEED
-# define TEST_SEED 0x1234
+#define TEST_SEED 0x1234
 #endif
 
 #define FILTER_BITS 10
@@ -59,164 +60,177 @@ unsigned long filter_hits = 0;
 
 // Example function to run on each chunk
 
-void run_fragment(SHA256_HASH_CTX * ctx)
+void
+run_fragment(SHA256_HASH_CTX *ctx)
 {
-	uint64_t lookup, set_hash;
-	unsigned int lookup_hash;
-	uint32_t idx;
+        uint64_t lookup, set_hash;
+        unsigned int lookup_hash;
+        uint32_t idx;
 
-	chunks_created++;
+        chunks_created++;
 
-	// Run a simple lookup filter on chunk using digest
-	lookup_hash = ctx->job.result_digest[0] & FILTER_MASK;
-	lookup = filter_table[lookup_hash];
+        // Run a simple lookup filter on chunk using digest
+        lookup_hash = ctx->job.result_digest[0] & FILTER_MASK;
+        lookup = filter_table[lookup_hash];
 
-	idx = ctx->job.result_digest[1];
+        idx = ctx->job.result_digest[1];
 
-	set_hash = 1 << (idx & MASK_TO_INDEX_LONG) |
-	    1 << ((idx >> BITS_TO_INDEX_LONG) & MASK_TO_INDEX_LONG) |
-	    1 << ((idx >> (2 * BITS_TO_INDEX_LONG)) & MASK_TO_INDEX_LONG);
+        set_hash = 1 << (idx & MASK_TO_INDEX_LONG) |
+                   1 << ((idx >> BITS_TO_INDEX_LONG) & MASK_TO_INDEX_LONG) |
+                   1 << ((idx >> (2 * BITS_TO_INDEX_LONG)) & MASK_TO_INDEX_LONG);
 
-	if ((lookup & set_hash) == set_hash)
-		filter_hits++;
-	else
-		filter_table[lookup_hash] = lookup | set_hash;
+        if ((lookup & set_hash) == set_hash)
+                filter_hits++;
+        else
+                filter_table[lookup_hash] = lookup | set_hash;
 }
 
-void setup_chunk_processing(void)
+void
+setup_chunk_processing(void)
 {
-	int i;
+        int i;
 
-	sha256_ctx_mgr_init(&mb_hash_mgr);
+        sha256_ctx_mgr_init(&mb_hash_mgr);
 
-	for (i = 0; i < HASH_POOL_SIZE; i++)
-		hash_ctx_init(&ctxpool[i]);
+        for (i = 0; i < HASH_POOL_SIZE; i++)
+                hash_ctx_init(&ctxpool[i]);
 
-	last_ctx = &ctxpool[0];
+        last_ctx = &ctxpool[0];
 }
 
-SHA256_HASH_CTX *get_next_job_ctx(void)
+SHA256_HASH_CTX *
+get_next_job_ctx(void)
 {
-	int i;
-	SHA256_HASH_CTX *ctx;
+        int i;
+        SHA256_HASH_CTX *ctx;
 
-	if (last_ctx && hash_ctx_complete(last_ctx))
-		return last_ctx;
+        if (last_ctx && hash_ctx_complete(last_ctx))
+                return last_ctx;
 
-	for (i = 0; i < HASH_POOL_SIZE; i++) {
-		if (hash_ctx_complete(&ctxpool[i]))
-			return &ctxpool[i];
-	}
-	ctx = sha256_ctx_mgr_flush(&mb_hash_mgr);
-	assert(ctx != NULL);
-	return ctx;
+        for (i = 0; i < HASH_POOL_SIZE; i++) {
+                if (hash_ctx_complete(&ctxpool[i]))
+                        return &ctxpool[i];
+        }
+        ctx = sha256_ctx_mgr_flush(&mb_hash_mgr);
+        assert(ctx != NULL);
+        return ctx;
 }
 
-void put_next_job_ctx(SHA256_HASH_CTX * ctx)
+void
+put_next_job_ctx(SHA256_HASH_CTX *ctx)
 {
-	if (ctx && hash_ctx_complete(ctx))
-		last_ctx = ctx;
+        if (ctx && hash_ctx_complete(ctx))
+                last_ctx = ctx;
 
-	run_fragment(ctx);
+        run_fragment(ctx);
 }
 
-void process_chunk(uint8_t * buff, int len)
+void
+process_chunk(uint8_t *buff, int len)
 {
-	SHA256_HASH_CTX *ctx;
+        SHA256_HASH_CTX *ctx;
 
-	ctx = get_next_job_ctx();
-	ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, HASH_ENTIRE);
+        ctx = get_next_job_ctx();
+        ctx = sha256_ctx_mgr_submit(&mb_hash_mgr, ctx, buff, len, HASH_ENTIRE);
 
-	if (ctx)
-		put_next_job_ctx(ctx);
+        if (ctx)
+                put_next_job_ctx(ctx);
 }
 
-void finish_chunk_processing(void)
+void
+finish_chunk_processing(void)
 {
-	SHA256_HASH_CTX *ctx;
+        SHA256_HASH_CTX *ctx;
 
-	while ((ctx = sha256_ctx_mgr_flush(&mb_hash_mgr)) != NULL)
-		run_fragment(ctx);
+        while ((ctx = sha256_ctx_mgr_flush(&mb_hash_mgr)) != NULL)
+                run_fragment(ctx);
 }
 
-int main(void)
+int
+main(void)
 {
-	int i, w;
-	uint8_t *buffer, *p;
-	uint32_t mask, trigger, offset = 0;
-	uint32_t min_chunk, max_chunk, mean_chunk;
-	long remain;
-	struct rh_state2 state;
-	struct perf start, stop;
+        int i, w, match, ret;
+        uint8_t *buffer, *p;
+        uint32_t mask, trigger, offset = 0;
+        uint32_t min_chunk, max_chunk, mean_chunk;
+        long remain;
+        struct rh_state2 state;
+        struct perf start, stop;
 
-	// Chunking parameters
-	w = 32;
-	min_chunk = 1024;
-	mean_chunk = 4 * 1024;
-	max_chunk = 32 * 1024;
-	mask = rolling_hashx_mask_gen(mean_chunk, 0);
-	trigger = rand() & mask;
+        // Chunking parameters
+        w = 32;
+        min_chunk = 1024;
+        mean_chunk = 4 * 1024;
+        max_chunk = 32 * 1024;
+        ret = isal_rolling_hashx_mask_gen(mean_chunk, 0, &mask);
 
-	printf("chunk and hash test w=%d, min=%d, target_ave=%d, max=%d:\n", w, min_chunk,
-	       mean_chunk, max_chunk);
+        if (ret != ISAL_CRYPTO_ERR_NONE) {
+                printf(" Error generating mask");
+                return -1;
+        }
 
-	if (min_chunk < w || min_chunk > max_chunk) {
-		printf(" Improper parameters selected\n");
-		return -1;
-	}
+        trigger = rand() & mask;
 
-	if ((buffer = malloc(MAX_BUFFER_SIZE)) == NULL) {
-		printf("cannot allocate mem\n");
-		return -1;
-	}
-	// Initialize buffer with random data
-	srand(TEST_SEED);
-	for (i = 0; i < MAX_BUFFER_SIZE; i++)
-		buffer[i] = rand();
+        printf("chunk and hash test w=%d, min=%d, target_ave=%d, max=%d:\n", w, min_chunk,
+               mean_chunk, max_chunk);
 
-	// Start chunking test with multi-buffer hashing of results
-	perf_start(&start);
+        if (min_chunk < w || min_chunk > max_chunk) {
+                printf(" Improper parameters selected\n");
+                return -1;
+        }
 
-	rolling_hash2_init(&state, w);
-	setup_chunk_processing();
+        if ((buffer = malloc(MAX_BUFFER_SIZE)) == NULL) {
+                printf("cannot allocate mem\n");
+                return -1;
+        }
+        // Initialize buffer with random data
+        srand(TEST_SEED);
+        for (i = 0; i < MAX_BUFFER_SIZE; i++)
+                buffer[i] = rand();
 
-	p = buffer;
-	remain = MAX_BUFFER_SIZE;
+        // Start chunking test with multi-buffer hashing of results
+        perf_start(&start);
 
-	while (remain > max_chunk) {
-		// Skip to min chunk
-		rolling_hash2_reset(&state, p + min_chunk - w);
-		rolling_hash2_run(&state, p + min_chunk, max_chunk - min_chunk,
-				  mask, trigger, &offset);
+        isal_rolling_hash2_init(&state, w);
+        setup_chunk_processing();
 
-		process_chunk(p, min_chunk + offset);
+        p = buffer;
+        remain = MAX_BUFFER_SIZE;
 
-		p += offset + min_chunk;
-		remain -= (offset + min_chunk);
-	}
+        while (remain > max_chunk) {
+                // Skip to min chunk
+                isal_rolling_hash2_reset(&state, p + min_chunk - w);
+                isal_rolling_hash2_run(&state, p + min_chunk, max_chunk - min_chunk, mask, trigger,
+                                       &offset, &match);
 
-	while (remain > min_chunk) {
-		rolling_hash2_reset(&state, p + min_chunk - w);
-		rolling_hash2_run(&state, p + min_chunk, remain - min_chunk,
-				  mask, trigger, &offset);
+                process_chunk(p, min_chunk + offset);
 
-		process_chunk(p, min_chunk + offset);
+                p += offset + min_chunk;
+                remain -= (offset + min_chunk);
+        }
 
-		p += offset + min_chunk;
-		remain -= (offset + min_chunk);
-	}
+        while (remain > min_chunk) {
+                isal_rolling_hash2_reset(&state, p + min_chunk - w);
+                isal_rolling_hash2_run(&state, p + min_chunk, remain - min_chunk, mask, trigger,
+                                       &offset, &match);
 
-	if (remain > 0)
-		process_chunk(p, remain);
+                process_chunk(p, min_chunk + offset);
 
-	finish_chunk_processing();
-	perf_stop(&stop);
+                p += offset + min_chunk;
+                remain -= (offset + min_chunk);
+        }
 
-	printf("chunking_with_mb_hash: ");
-	perf_print(stop, start, MAX_BUFFER_SIZE);
+        if (remain > 0)
+                process_chunk(p, remain);
 
-	printf(" found %ld chunks, ave_len=%ld, filter hits=%ld\n", chunks_created,
-	       MAX_BUFFER_SIZE / chunks_created, filter_hits);
+        finish_chunk_processing();
+        perf_stop(&stop);
 
-	return 0;
+        printf("chunking_with_mb_hash: ");
+        perf_print(stop, start, MAX_BUFFER_SIZE);
+
+        printf(" found %ld chunks, ave_len=%ld, filter hits=%ld\n", chunks_created,
+               MAX_BUFFER_SIZE / chunks_created, filter_hits);
+
+        return 0;
 }

@@ -208,11 +208,11 @@ objs = \
 	bin\keyexp_192.obj \
 	bin\keyexp_256.obj \
 	bin\cbc_multibinary.obj \
-	bin\cbc_dec_128_x4_sse.obj \
+	bin\cbc_dec_128_x8_sse.obj \
 	bin\cbc_dec_128_x8_avx.obj \
-	bin\cbc_dec_192_x4_sse.obj \
+	bin\cbc_dec_192_x8_sse.obj \
 	bin\cbc_dec_192_x8_avx.obj \
-	bin\cbc_dec_256_x4_sse.obj \
+	bin\cbc_dec_256_x8_sse.obj \
 	bin\cbc_dec_256_x8_avx.obj \
 	bin\cbc_enc_128_x4_sb.obj \
 	bin\cbc_enc_128_x8_sb.obj \
@@ -248,15 +248,28 @@ objs = \
 	bin\XTS_AES_128_dec_vaes.obj \
 	bin\XTS_AES_256_dec_expanded_key_vaes.obj \
 	bin\XTS_AES_128_dec_expanded_key_vaes.obj \
-	bin\aes_keyexp.obj
+	bin\aes_keyexp.obj \
+	bin\md5_mb.obj \
+	bin\sha1_mb.obj \
+	bin\aes_cbc.obj \
+	bin\aes_xts.obj \
+	bin\sha256_mb.obj \
+	bin\sha512_mb.obj \
+	bin\aes_gcm.obj \
+	bin\aes_self_tests.obj \
+	bin\sha_self_tests.obj \
+	bin\self_tests.obj \
+	bin\asm_self_tests.obj \
+	bin\sm3_mb.obj
 
-INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/
+
+INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/ -Iintel-ipsec-mb/lib
 # Modern asm feature level, consider upgrading nasm/yasm before decreasing feature_level
 FEAT_FLAGS = -DHAVE_AS_KNOWS_AVX512 -DAS_FEATURE_LEVEL=10 -DHAVE_AS_KNOWS_SHANI
 CFLAGS_REL = -O2 -DNDEBUG /Z7 /Gy
 CFLAGS_DBG = -Od -DDEBUG /Z7
 LINKFLAGS  = -nologo -incremental:no -debug
-CFLAGS     = $(CFLAGS_REL) -nologo -D_USE_MATH_DEFINES $(FEAT_FLAGS) $(INCLUDES) $(D)
+CFLAGS     = $(CFLAGS_REL) -nologo -D_USE_MATH_DEFINES $(FEAT_FLAGS) $(INCLUDES) $(D) /W3
 AFLAGS     = -f win64 $(FEAT_FLAGS) $(INCLUDES) $(D)
 CC         = cl
 # or CC    = icl -Qstd=c99
@@ -270,6 +283,11 @@ AFLAGS = $(AFLAGS) -DSAFE_DATA
 !if "$(SAFE_PARAM)" != "n"
 CFLAGS = $(CFLAGS) /DSAFE_PARAM
 AFLAGS = $(AFLAGS) -DSAFE_PARAM
+!endif
+
+!if "$(FIPS_MODE)" == "y"
+CFLAGS = $(CFLAGS) /DFIPS_MODE
+AFLAGS = $(AFLAGS) -DFIPS_MODE
 !endif
 
 lib: bin static dll
@@ -338,6 +356,11 @@ $?
 {aes}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
 
+{fips}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
+{fips}.asm.obj:
+	$(AS) $(AFLAGS) -o $@ $?
+
 
 # Examples
 ex = \
@@ -379,7 +402,15 @@ checks = \
 	xts_128_expanded_key_test.exe \
 	xts_256_expanded_key_test.exe \
 	aes_param_test.exe \
-	mh_sha1_param_test.exe
+	mh_sha1_param_test.exe \
+	mh_sha256_param_test.exe \
+	md5_mb_param_test.exe \
+	sha1_mb_param_test.exe \
+	sha256_mb_param_test.exe \
+	sha512_mb_param_test.exe \
+	mh_sha1_murmur3_x64_128_param_test.exe \
+	sm3_mb_param_test.exe \
+	rolling_hash2_param_test.exe
 
 
 checks: lib $(checks)

@@ -31,157 +31,160 @@
 #include <assert.h>
 
 #ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
 #ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#define MD5_MB_CE_MAX_LANES	4
-void md5_mb_asimd_x4(MD5_JOB *, MD5_JOB *, MD5_JOB *, MD5_JOB *, int);
-void md5_mb_asimd_x1(MD5_JOB *, int);
+#define MD5_MB_CE_MAX_LANES 4
+void
+md5_mb_asimd_x4(MD5_JOB *, MD5_JOB *, MD5_JOB *, MD5_JOB *, int);
+void
+md5_mb_asimd_x1(MD5_JOB *, int);
 
-#define LANE_IS_NOT_FINISHED(state,i)  	\
-	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane!=NULL)
-#define LANE_IS_FINISHED(state,i)  	\
-	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane!=NULL)
-#define	LANE_IS_FREE(state,i)		\
-	(((state->lens[i]&(~0xf))==0) && state->ldata[i].job_in_lane==NULL)
-#define LANE_IS_INVALID(state,i)	\
-	(((state->lens[i]&(~0xf))!=0) && state->ldata[i].job_in_lane==NULL)
-void md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR * state)
+#define LANE_IS_NOT_FINISHED(state, i)                                                             \
+        (((state->lens[i] & (~0xf)) != 0) && state->ldata[i].job_in_lane != NULL)
+#define LANE_IS_FINISHED(state, i)                                                                 \
+        (((state->lens[i] & (~0xf)) == 0) && state->ldata[i].job_in_lane != NULL)
+#define LANE_IS_FREE(state, i)                                                                     \
+        (((state->lens[i] & (~0xf)) == 0) && state->ldata[i].job_in_lane == NULL)
+#define LANE_IS_INVALID(state, i)                                                                  \
+        (((state->lens[i] & (~0xf)) != 0) && state->ldata[i].job_in_lane == NULL)
+void
+md5_mb_mgr_init_asimd(MD5_MB_JOB_MGR *state)
 {
-	unsigned int i;
+        unsigned int i;
 
-	state->unused_lanes[0] = 0xf;
-	state->num_lanes_inuse = 0;
-	for (i = 0; i < MD5_MB_CE_MAX_LANES; i++) {
-		state->unused_lanes[0] <<= 4;
-		state->unused_lanes[0] |= MD5_MB_CE_MAX_LANES - 1 - i;
-		state->lens[i] = i;
-		state->ldata[i].job_in_lane = 0;
-	}
+        state->unused_lanes[0] = 0xf;
+        state->num_lanes_inuse = 0;
+        for (i = 0; i < MD5_MB_CE_MAX_LANES; i++) {
+                state->unused_lanes[0] <<= 4;
+                state->unused_lanes[0] |= MD5_MB_CE_MAX_LANES - 1 - i;
+                state->lens[i] = i;
+                state->ldata[i].job_in_lane = 0;
+        }
 
-	//lanes > MD5_MB_CE_MAX_LANES is invalid lane
-	for (; i < MD5_MAX_LANES; i++) {
-		state->lens[i] = 0xf;
-		state->ldata[i].job_in_lane = 0;
-	}
+        // lanes > MD5_MB_CE_MAX_LANES is invalid lane
+        for (; i < MD5_MAX_LANES; i++) {
+                state->lens[i] = 0xf;
+                state->ldata[i].job_in_lane = 0;
+        }
 }
 
-static int md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR * state)
+static int
+md5_mb_mgr_do_jobs(MD5_MB_JOB_MGR *state)
 {
-	int lane_idx, len, i;
+        int lane_idx, len, i;
 
-	if (state->num_lanes_inuse == 0) {
-		return -1;
-	}
-	if (state->num_lanes_inuse == 4) {
-		len = min(min(state->lens[0], state->lens[1]),
-			  min(state->lens[2], state->lens[3]));
-		lane_idx = len & 0xf;
-		len &= ~0xf;
-		md5_mb_asimd_x4(state->ldata[0].job_in_lane,
-				state->ldata[1].job_in_lane,
-				state->ldata[2].job_in_lane,
-				state->ldata[3].job_in_lane, len >> 4);
-		//only return the min length job
-		for (i = 0; i < MD5_MAX_LANES; i++) {
-			if (LANE_IS_NOT_FINISHED(state, i)) {
-				state->lens[i] -= len;
-				state->ldata[i].job_in_lane->len -= len;
-				state->ldata[i].job_in_lane->buffer += len << 2;
-			}
-		}
+        if (state->num_lanes_inuse == 0) {
+                return -1;
+        }
+        if (state->num_lanes_inuse == 4) {
+                len = min(min(state->lens[0], state->lens[1]), min(state->lens[2], state->lens[3]));
+                lane_idx = len & 0xf;
+                len &= ~0xf;
+                md5_mb_asimd_x4(state->ldata[0].job_in_lane, state->ldata[1].job_in_lane,
+                                state->ldata[2].job_in_lane, state->ldata[3].job_in_lane, len >> 4);
+                // only return the min length job
+                for (i = 0; i < MD5_MAX_LANES; i++) {
+                        if (LANE_IS_NOT_FINISHED(state, i)) {
+                                state->lens[i] -= len;
+                                state->ldata[i].job_in_lane->len -= len;
+                                state->ldata[i].job_in_lane->buffer += len << 2;
+                        }
+                }
 
-		return lane_idx;
-	} else {
-		for (i = 0; i < MD5_MAX_LANES; i++) {
-			if (LANE_IS_NOT_FINISHED(state, i)) {
-				len = state->lens[i] & (~0xf);
-				md5_mb_asimd_x1(state->ldata[i].job_in_lane, len >> 4);
-				state->lens[i] -= len;
-				state->ldata[i].job_in_lane->len -= len;
-				state->ldata[i].job_in_lane->buffer += len << 2;
-				return i;
-			}
-		}
-	}
-	return -1;
-
+                return lane_idx;
+        } else {
+                for (i = 0; i < MD5_MAX_LANES; i++) {
+                        if (LANE_IS_NOT_FINISHED(state, i)) {
+                                len = state->lens[i] & (~0xf);
+                                md5_mb_asimd_x1(state->ldata[i].job_in_lane, len >> 4);
+                                state->lens[i] -= len;
+                                state->ldata[i].job_in_lane->len -= len;
+                                state->ldata[i].job_in_lane->buffer += len << 2;
+                                return i;
+                        }
+                }
+        }
+        return -1;
 }
 
-static MD5_JOB *md5_mb_mgr_free_lane(MD5_MB_JOB_MGR * state)
+static MD5_JOB *
+md5_mb_mgr_free_lane(MD5_MB_JOB_MGR *state)
 {
-	int i;
-	MD5_JOB *ret = NULL;
+        int i;
+        MD5_JOB *ret = NULL;
 
-	for (i = 0; i < MD5_MB_CE_MAX_LANES; i++) {
-		if (LANE_IS_FINISHED(state, i)) {
+        for (i = 0; i < MD5_MB_CE_MAX_LANES; i++) {
+                if (LANE_IS_FINISHED(state, i)) {
 
-			state->unused_lanes[0] <<= 4;
-			state->unused_lanes[0] |= i;
-			state->num_lanes_inuse--;
-			ret = state->ldata[i].job_in_lane;
-			ret->status = STS_COMPLETED;
-			state->ldata[i].job_in_lane = NULL;
-			break;
-		}
-	}
-	return ret;
+                        state->unused_lanes[0] <<= 4;
+                        state->unused_lanes[0] |= i;
+                        state->num_lanes_inuse--;
+                        ret = state->ldata[i].job_in_lane;
+                        ret->status = STS_COMPLETED;
+                        state->ldata[i].job_in_lane = NULL;
+                        break;
+                }
+        }
+        return ret;
 }
 
-static void md5_mb_mgr_insert_job(MD5_MB_JOB_MGR * state, MD5_JOB * job)
+static void
+md5_mb_mgr_insert_job(MD5_MB_JOB_MGR *state, MD5_JOB *job)
 {
-	int lane_idx;
-	//add job into lanes
-	lane_idx = state->unused_lanes[0] & 0xf;
-	//fatal error
-	assert(lane_idx < MD5_MB_CE_MAX_LANES);
-	state->lens[lane_idx] = (job->len << 4) | lane_idx;
-	state->ldata[lane_idx].job_in_lane = job;
-	state->unused_lanes[0] >>= 4;
-	state->num_lanes_inuse++;
+        int lane_idx;
+        // add job into lanes
+        lane_idx = state->unused_lanes[0] & 0xf;
+        // fatal error
+        assert(lane_idx < MD5_MB_CE_MAX_LANES);
+        state->lens[lane_idx] = (job->len << 4) | lane_idx;
+        state->ldata[lane_idx].job_in_lane = job;
+        state->unused_lanes[0] >>= 4;
+        state->num_lanes_inuse++;
 }
 
-MD5_JOB *md5_mb_mgr_submit_asimd(MD5_MB_JOB_MGR * state, MD5_JOB * job)
+MD5_JOB *
+md5_mb_mgr_submit_asimd(MD5_MB_JOB_MGR *state, MD5_JOB *job)
 {
 #ifndef NDEBUG
-	int lane_idx;
+        int lane_idx;
 #endif
-	MD5_JOB *ret;
+        MD5_JOB *ret;
 
-	//add job into lanes
-	md5_mb_mgr_insert_job(state, job);
+        // add job into lanes
+        md5_mb_mgr_insert_job(state, job);
 
-	ret = md5_mb_mgr_free_lane(state);
-	if (ret != NULL) {
-		return ret;
-	}
-	//submit will wait all lane has data
-	if (state->num_lanes_inuse < MD5_MB_CE_MAX_LANES)
-		return NULL;
+        ret = md5_mb_mgr_free_lane(state);
+        if (ret != NULL) {
+                return ret;
+        }
+        // submit will wait all lane has data
+        if (state->num_lanes_inuse < MD5_MB_CE_MAX_LANES)
+                return NULL;
 #ifndef NDEBUG
-	lane_idx = md5_mb_mgr_do_jobs(state);
-	assert(lane_idx != -1);
+        lane_idx = md5_mb_mgr_do_jobs(state);
+        assert(lane_idx != -1);
 #else
-	md5_mb_mgr_do_jobs(state);
+        md5_mb_mgr_do_jobs(state);
 #endif
 
-	ret = md5_mb_mgr_free_lane(state);
-	return ret;
+        ret = md5_mb_mgr_free_lane(state);
+        return ret;
 }
 
-MD5_JOB *md5_mb_mgr_flush_asimd(MD5_MB_JOB_MGR * state)
+MD5_JOB *
+md5_mb_mgr_flush_asimd(MD5_MB_JOB_MGR *state)
 {
-	MD5_JOB *ret;
-	ret = md5_mb_mgr_free_lane(state);
-	if (ret) {
-		return ret;
-	}
+        MD5_JOB *ret;
+        ret = md5_mb_mgr_free_lane(state);
+        if (ret) {
+                return ret;
+        }
 
-	md5_mb_mgr_do_jobs(state);
-	return md5_mb_mgr_free_lane(state);
-
+        md5_mb_mgr_do_jobs(state);
+        return md5_mb_mgr_free_lane(state);
 }

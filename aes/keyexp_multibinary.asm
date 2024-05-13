@@ -49,20 +49,20 @@ extern aes_keyexp_256_avx
 ;;;;
 ; instantiate aes_keyexp_128 interfaces
 ;;;;
-mbin_interface     aes_keyexp_128
-mbin_dispatch_init aes_keyexp_128, aes_keyexp_128_sse, aes_keyexp_128_avx, aes_keyexp_128_avx
+mbin_interface     _aes_keyexp_128
+mbin_dispatch_init _aes_keyexp_128, aes_keyexp_128_sse, aes_keyexp_128_avx, aes_keyexp_128_avx
 
 mbin_interface     aes_keyexp_128_enc
 mbin_dispatch_init aes_keyexp_128_enc, aes_keyexp_128_enc_sse, aes_keyexp_128_enc_avx, aes_keyexp_128_enc_avx
 
-mbin_interface     aes_keyexp_192
-mbin_dispatch_init aes_keyexp_192, aes_keyexp_192_sse, aes_keyexp_192_avx, aes_keyexp_192_avx
+mbin_interface     _aes_keyexp_192
+mbin_dispatch_init _aes_keyexp_192, aes_keyexp_192_sse, aes_keyexp_192_avx, aes_keyexp_192_avx
 
-mbin_interface     aes_keyexp_256
-mbin_dispatch_init aes_keyexp_256, aes_keyexp_256_sse, aes_keyexp_256_avx, aes_keyexp_256_avx
+mbin_interface     _aes_keyexp_256
+mbin_dispatch_init _aes_keyexp_256, aes_keyexp_256_sse, aes_keyexp_256_avx, aes_keyexp_256_avx
 
 section .text
 ;;;       func            	core, ver, snum
-slversion aes_keyexp_128,	00,   01,  02a1
-slversion aes_keyexp_192,	00,   01,  02a2
-slversion aes_keyexp_256,	00,   01,  02a3
+slversion _aes_keyexp_128,	00,   01,  02a1
+slversion _aes_keyexp_192,	00,   01,  02a2
+slversion _aes_keyexp_256,	00,   01,  02a3

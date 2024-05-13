@@ -69,40 +69,41 @@
 extern "C" {
 #endif
 
-
 // External Interface Definition
 // Add murmur3_x64_128 definition
-#define MUR_BLOCK_SIZE		    (2 * sizeof(uint64_t))
-#define MURMUR3_x64_128_DIGEST_WORDS			 4
+#define MUR_BLOCK_SIZE               (2 * sizeof(uint64_t))
+#define MURMUR3_x64_128_DIGEST_WORDS 4
 
 /** @brief Holds info describing a single mh_sha1_murmur3_x64_128
  *
  * It is better to use heap to allocate this data structure to avoid stack overflow.
  *
-*/
+ */
 struct mh_sha1_murmur3_x64_128_ctx {
-	uint32_t  mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
-	uint32_t  murmur3_x64_128_digest[MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of murmur3_x64_128
+        uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
+        uint32_t murmur3_x64_128_digest[MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of
+                                                                       //!< murmur3_x64_128
 
-	uint64_t  total_length;
-	//!<  Parameters for update feature, describe the lengths of input buffers in bytes
-	uint8_t   partial_block_buffer [MH_SHA1_BLOCK_SIZE * 2];
-	//!<  Padding the tail of input data for SHA1
-	uint8_t   mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
-	//!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to stack for 64-byte alignment purpose.
-	uint8_t   frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
-	//!<  Re-structure sha1 block data from different segments to fit big endian. Use AVX512_ALIGNED for 64-byte alignment purpose.
+        uint64_t total_length;
+        //!<  Parameters for update feature, describe the lengths of input buffers in bytes
+        uint8_t partial_block_buffer[MH_SHA1_BLOCK_SIZE * 2];
+        //!<  Padding the tail of input data for SHA1
+        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
+        //!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to
+        //!<  stack for 64-byte alignment purpose.
+        uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
+        //!<  Re-structure sha1 block data from different segments to fit big endian. Use
+        //!<  AVX512_ALIGNED for 64-byte alignment purpose.
 };
 
 /**
  *  @enum mh_sha1_murmur3_ctx_error
  *  @brief CTX error flags
  */
-enum mh_sha1_murmur3_ctx_error{
-	MH_SHA1_MURMUR3_CTX_ERROR_NONE			=  0, //!< MH_SHA1_MURMUR3_CTX_ERROR_NONE
-	MH_SHA1_MURMUR3_CTX_ERROR_NULL			= -1, //!<MH_SHA1_MURMUR3_CTX_ERROR_NULL
+enum mh_sha1_murmur3_ctx_error {
+        MH_SHA1_MURMUR3_CTX_ERROR_NONE = 0,  //!< MH_SHA1_MURMUR3_CTX_ERROR_NONE
+        MH_SHA1_MURMUR3_CTX_ERROR_NULL = -1, //!< MH_SHA1_MURMUR3_CTX_ERROR_NULL
 };
-
 
 /*******************************************************************
  * mh_sha1_murmur3_x64_128 API function prototypes
@@ -115,8 +116,8 @@ enum mh_sha1_murmur3_ctx_error{
  * @param  murmur_seed Seed as an initial digest of murmur3
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_murmur3_x64_128_init (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-					uint64_t murmur_seed);
+int
+mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -130,8 +131,9 @@ int mh_sha1_murmur3_x64_128_init (struct mh_sha1_murmur3_x64_128_ctx* ctx,
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_murmur3_x64_128_update (struct mh_sha1_murmur3_x64_128_ctx * ctx,
-					const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                               uint32_t len);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -146,8 +148,9 @@ int mh_sha1_murmur3_x64_128_update (struct mh_sha1_murmur3_x64_128_ctx * ctx,
  * @param  murmur3_x64_128_digest The digest of murmur3_x64_128
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_murmur3_x64_128_finalize (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-					void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                 void *murmur3_x64_128_digest);
 
 /*******************************************************************
  * multi-types of mh_sha1_murmur3_x64_128 internal API
@@ -172,8 +175,9 @@ int mh_sha1_murmur3_x64_128_finalize (struct mh_sha1_murmur3_x64_128_ctx* ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_update_base (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    uint32_t len);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -187,8 +191,9 @@ int mh_sha1_murmur3_x64_128_update_base (struct mh_sha1_murmur3_x64_128_ctx* ctx
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_update_sse (struct mh_sha1_murmur3_x64_128_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update_sse(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                   uint32_t len);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -202,8 +207,9 @@ int mh_sha1_murmur3_x64_128_update_sse (struct mh_sha1_murmur3_x64_128_ctx * ctx
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_update_avx (struct mh_sha1_murmur3_x64_128_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update_avx(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                   uint32_t len);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -217,8 +223,9 @@ int mh_sha1_murmur3_x64_128_update_avx (struct mh_sha1_murmur3_x64_128_ctx * ctx
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_update_avx2 (struct mh_sha1_murmur3_x64_128_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update_avx2(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    uint32_t len);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -232,11 +239,12 @@ int mh_sha1_murmur3_x64_128_update_avx2 (struct mh_sha1_murmur3_x64_128_ctx * ct
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_update_avx512 (struct mh_sha1_murmur3_x64_128_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_murmur3_x64_128_update_avx512(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                      uint32_t len);
 
 /**
-  * @brief Finalize the message digests for combined multi-hash and murmur.
+ * @brief Finalize the message digests for combined multi-hash and murmur.
  *
  * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
  * which must have enough space for the outputs.
@@ -248,8 +256,9 @@ int mh_sha1_murmur3_x64_128_update_avx512 (struct mh_sha1_murmur3_x64_128_ctx * 
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_finalize_base (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -265,8 +274,9 @@ int mh_sha1_murmur3_x64_128_finalize_base (struct mh_sha1_murmur3_x64_128_ctx* c
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_finalize_sse (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize_sse(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                     void *murmur3_x64_128_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -282,8 +292,9 @@ int mh_sha1_murmur3_x64_128_finalize_sse (struct mh_sha1_murmur3_x64_128_ctx* ct
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_finalize_avx (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize_avx(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                     void *murmur3_x64_128_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -299,8 +310,9 @@ int mh_sha1_murmur3_x64_128_finalize_avx (struct mh_sha1_murmur3_x64_128_ctx* ct
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_finalize_avx2 (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize_avx2(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -316,12 +328,61 @@ int mh_sha1_murmur3_x64_128_finalize_avx2 (struct mh_sha1_murmur3_x64_128_ctx* c
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_murmur3_x64_128_finalize_avx512 (struct mh_sha1_murmur3_x64_128_ctx* ctx,
-						void* mh_sha1_digest, void* murmur3_x64_128_digest);
+int
+mh_sha1_murmur3_x64_128_finalize_avx512(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                        void *mh_sha1_digest, void *murmur3_x64_128_digest);
 
+/**
+ * @brief Initialize the mh_sha1_murmur3_x64_128_ctx structure.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  murmur_seed Seed as an initial digest of murmur3
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                  const uint64_t murmur_seed);
+
+/**
+ * @brief Combined multi-hash and murmur hash update.
+ *
+ * Can be called repeatedly to update hashes with new input data.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  buffer Pointer to buffer to be processed
+ * @param  len Length of buffer (in bytes) to be processed
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    const uint32_t len);
+
+/**
+ * @brief Finalize the message digests for combined multi-hash and murmur.
+ *
+ * Place the message digests in mh_sha1_digest and murmur3_x64_128_digest,
+ * which must have enough space for the outputs.
+ * This function determines what instruction sets are enabled and selects the
+ * appropriate version at runtime.
+ *
+ * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
+ * @param  mh_sha1_digest The digest of mh_sha1 (5*4 bytes)
+ * @param  murmur3_x64_128_digest The digest of murmur3_x64_128 (4*4 bytes)
+ * @return Operation status
+ * @retval 0 on success
+ * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
+ */
+int
+isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest);
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

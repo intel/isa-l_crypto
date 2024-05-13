@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+;  Copyright(c) 2011-2024 Intel Corporation All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
 ;  modification, are permitted provided that the following conditions
@@ -27,14 +27,14 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; routine to do AES cbc decrypt on 16n bytes doing AES
+; routine to do AES cbc decrypt on 16n bytes doing AES by 8
 ; XMM registers are clobbered. Saving/restoring must be done at a higher level
 
-; void aes_cbc_dec_192_sse(void    *in,
-;                          uint8_t *IV,
-;                          uint8_t  keys[13], // +1 over key length
-;                          void    *out,
-;                          uint64_t len_bytes);
+; void _aes_cbc_dec_192_sse(void     *in,
+;                          uint8_t  *IV,
+;                          uint8_t  *keys,
+;                          void     *out,
+;                          uint64_t  len_bytes);
 ;
 ; arg 1: IN:   pointer to input (cipher text)
 ; arg 2: IV:   pointer to IV
@@ -42,29 +42,26 @@
 ; arg 4: OUT:  pointer to output (plain text)
 ; arg 5: LEN:  length in bytes (multiple of 16)
 ;
-
 %include "reg_sizes.asm"
 %include "clear_regs.inc"
 
-%define MOVDQ	movdqu
-
 %ifidn __OUTPUT_FORMAT__, elf64
-%define IN		rdi
-%define IV		rsi
-%define KEYS		rdx
-%define OUT		rcx
-%define LEN		r8
+%define arg1	        rdi
+%define arg2	        rsi
+%define arg3	        rdx
+%define arg4	        rcx
+%define arg5            r8
 %define func(x) x:
 %define FUNC_SAVE
 %define FUNC_RESTORE
 %endif
 
 %ifidn __OUTPUT_FORMAT__, win64
-%define IN		rcx
-%define IV		rdx
-%define KEYS		r8
-%define OUT		r9
-%define LEN		r10
+%define arg1	        rcx
+%define arg2	        rdx
+%define arg3	        r8
+%define arg4	        r9
+%define arg5            rax
 %define PS		8
 %define stack_size	10*16 + 1*8	; must be an odd multiple of 8
 %define arg(x)		[rsp + stack_size + PS + PS*x]
@@ -83,7 +80,7 @@
 	save_xmm128	xmm14, 8*16
 	save_xmm128	xmm15, 9*16
 	end_prolog
-	mov	LEN, arg(4)
+	mov	arg5, arg(4)
 %endmacro
 
 %macro FUNC_RESTORE 0
@@ -102,66 +99,18 @@
 
 %endif
 
-; configuration parameters for AES-CBC
-%define KEY_ROUNDS 13
-%define XMM_USAGE    (16)
-%define EARLY_BLOCKS (2)
-%define PARALLEL_BLOCKS (5)
-%define IV_CNT          (1)
-
-; instruction set specific operation definitions
-%define MOVDQ         movdqu
-%define PXOR          pxor
-%define AES_DEC       aesdec
-%define AES_DEC_LAST  aesdeclast
-
-%include "cbc_common.asm"
+%include "include/aes_cbc_dec_by8_sse.inc"
 
 section .text
 
-mk_global aes_cbc_dec_192_sse, function
-func(aes_cbc_dec_192_sse)
+;; _aes_cbc_dec_192_sse(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
+mk_global _aes_cbc_dec_192_sse, function, internal
+func(_aes_cbc_dec_192_sse)
 	endbranch
 	FUNC_SAVE
 
-        FILL_KEY_CACHE CKEY_CNT, FIRST_CKEY, KEYS, MOVDQ
+        AES_CBC_DEC arg1, arg2, arg3, arg4, arg5, r10, 11
 
-        MOVDQ  reg(IV_IDX), [IV]         ; Load IV for next round of block decrypt
-        mov IDX, 0
-        cmp     LEN, PARALLEL_BLOCKS*16
-        jge     main_loop                ; if enough data blocks remain enter main_loop
-        jmp  partials
-
-main_loop:
-        CBC_DECRYPT_BLOCKS KEY_ROUNDS, PARALLEL_BLOCKS, EARLY_BLOCKS, MOVDQ, PXOR, AES_DEC, AES_DEC_LAST, CKEY_CNT, TMP, TMP_CNT, FIRST_CKEY, KEYS, FIRST_XDATA, IN, OUT, IDX, LEN
-	cmp	LEN, PARALLEL_BLOCKS*16
-	jge	main_loop                ; enough blocks to do another full parallel set
-	jz  done
-
-partials:                                ; fewer than 'PARALLEL_BLOCKS' left do in groups of 4, 2 or 1
-	cmp	LEN, 0
-	je	done
-	cmp	LEN, 4*16
-	jge	initial_4
-	cmp	LEN, 2*16
-	jge	initial_2
-
-initial_1:
-        CBC_DECRYPT_BLOCKS KEY_ROUNDS, 1, EARLY_BLOCKS, MOVDQ, PXOR, AES_DEC, AES_DEC_LAST, CKEY_CNT, TMP, TMP_CNT, FIRST_CKEY, KEYS, FIRST_XDATA, IN, OUT, IDX, LEN
-	jmp	done
-
-initial_2:
-        CBC_DECRYPT_BLOCKS KEY_ROUNDS, 2, EARLY_BLOCKS, MOVDQ, PXOR, AES_DEC, AES_DEC_LAST, CKEY_CNT, TMP, TMP_CNT, FIRST_CKEY, KEYS, FIRST_XDATA, IN, OUT, IDX, LEN
-	jz  done
-	jmp	partials
-
-initial_4:
-        CBC_DECRYPT_BLOCKS KEY_ROUNDS, 4, EARLY_BLOCKS, MOVDQ, PXOR, AES_DEC, AES_DEC_LAST, CKEY_CNT, TMP, TMP_CNT, FIRST_CKEY, KEYS, FIRST_XDATA, IN, OUT, IDX, LEN
-	jnz	partials
-done:
-%ifdef SAFE_DATA
-        clear_all_xmms_sse_asm
-%endif
 	FUNC_RESTORE
 	ret
 

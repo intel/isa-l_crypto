@@ -52,6 +52,8 @@ extern_hdrs  += include/rolling_hashx.h
 other_src    += rolling_hash/rolling_hash2_table.h
 other_src    += include/test.h include/types.h
 
-check_tests  += rolling_hash/rolling_hash2_test
+check_tests  += rolling_hash/rolling_hash2_test \
+		rolling_hash/rolling_hash2_param_test
+
 perf_tests   += rolling_hash/rolling_hash2_perf
 other_tests  += rolling_hash/chunking_with_mb_hash

@@ -30,8 +30,7 @@
 
 DEFINE_INTERFACE_DISPATCHER(rolling_hash2_run_until)
 {
-	return PROVIDER_INFO(rolling_hash2_run_until_unroll);
+        return PROVIDER_INFO(rolling_hash2_run_until_unroll);
 
-	//~ return PROVIDER_BASIC(rolling_hash2_run_until);
-
+        //~ return PROVIDER_BASIC(rolling_hash2_run_until);
 }

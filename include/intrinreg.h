@@ -27,7 +27,6 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-
 /**
  *  @file  intrinreg.h
  *  @brief Defines intrinsic types used by the new hashing API
@@ -42,7 +41,7 @@ extern "C" {
 #endif
 
 #ifdef _MSC_VER
-# define inline __inline
+#define inline __inline
 #endif
 
 #include <stdint.h>
@@ -50,13 +49,20 @@ extern "C" {
 
 // Define available register types uniformly.
 /// @cond
-typedef struct{ uint8_t  dummy; } intrinreg1;
-typedef struct{ uint16_t dummy; } intrinreg2;
-typedef struct{ uint32_t dummy; } intrinreg4;
-typedef struct{ uint64_t dummy; } intrinreg8;
-typedef __m128                    intrinreg16;
+typedef struct {
+        uint8_t dummy;
+} intrinreg1;
+typedef struct {
+        uint16_t dummy;
+} intrinreg2;
+typedef struct {
+        uint32_t dummy;
+} intrinreg4;
+typedef struct {
+        uint64_t dummy;
+} intrinreg8;
+typedef __m128 intrinreg16;
 /// @endcond
-
 
 #ifdef __cplusplus
 }

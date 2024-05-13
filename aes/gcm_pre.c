@@ -29,28 +29,34 @@
 
 #include <aes_gcm.h>
 #include <aes_keyexp.h>
+#include "aes_keyexp_internal.h"
 
-void aes_keyexp_128_enc(const void *, uint8_t *);
-void aes_gcm_precomp_128(struct gcm_key_data *key_data);
-void aes_gcm_precomp_256(struct gcm_key_data *key_data);
+void
+aes_keyexp_128_enc(const void *, uint8_t *);
+void
+aes_gcm_precomp_128(struct gcm_key_data *key_data);
+void
+aes_gcm_precomp_256(struct gcm_key_data *key_data);
 
-void aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
+void
+aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
 {
-	aes_keyexp_128_enc(key, key_data->expanded_keys);
-	aes_gcm_precomp_128(key_data);
+        aes_keyexp_128_enc(key, key_data->expanded_keys);
+        aes_gcm_precomp_128(key_data);
 }
 
-void aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
+void
+aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
 {
-	uint8_t tmp_exp_key[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
-	aes_keyexp_256((const uint8_t *)key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
-	aes_gcm_precomp_256(key_data);
+        uint8_t tmp_exp_key[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
+        _aes_keyexp_256((const uint8_t *) key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
+        aes_gcm_precomp_256(key_data);
 }
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 
 // Version info

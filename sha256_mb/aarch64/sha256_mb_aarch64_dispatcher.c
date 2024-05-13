@@ -30,30 +30,27 @@
 
 DEFINE_INTERFACE_DISPATCHER(sha256_ctx_mgr_submit)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if (auxval & HWCAP_SHA2)
-		return PROVIDER_INFO(sha256_ctx_mgr_submit_ce);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if (auxval & HWCAP_SHA2)
+                return PROVIDER_INFO(sha256_ctx_mgr_submit_ce);
 
-	return PROVIDER_BASIC(sha256_ctx_mgr_submit);
-
+        return PROVIDER_BASIC(sha256_ctx_mgr_submit);
 }
 
 DEFINE_INTERFACE_DISPATCHER(sha256_ctx_mgr_init)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if (auxval & HWCAP_SHA2)
-		return PROVIDER_INFO(sha256_ctx_mgr_init_ce);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if (auxval & HWCAP_SHA2)
+                return PROVIDER_INFO(sha256_ctx_mgr_init_ce);
 
-	return PROVIDER_BASIC(sha256_ctx_mgr_init);
-
+        return PROVIDER_BASIC(sha256_ctx_mgr_init);
 }
 
 DEFINE_INTERFACE_DISPATCHER(sha256_ctx_mgr_flush)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if (auxval & HWCAP_SHA2)
-		return PROVIDER_INFO(sha256_ctx_mgr_flush_ce);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if (auxval & HWCAP_SHA2)
+                return PROVIDER_INFO(sha256_ctx_mgr_flush_ce);
 
-	return PROVIDER_BASIC(sha256_ctx_mgr_flush);
-
+        return PROVIDER_BASIC(sha256_ctx_mgr_flush);
 }

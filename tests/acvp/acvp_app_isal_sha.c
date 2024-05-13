@@ -37,177 +37,179 @@ extern uint8_t verbose;
 
 #define LARGEST_TEST_MSG (1ul << 31)
 
-#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) \
-    && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-# define to_be32(x)
-# define to_be64(x)
+#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) &&                                    \
+        __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define to_be32(x)
+#define to_be64(x)
 #else
-# define to_be32(x) (  ((x) << 24) \
-                        | (((x) & 0xff00) << 8) \
-                        | (((x) & 0xff0000) >> 8) \
-                        | ((x)>>24))
-# define to_be64(x) (  (((x) & (0xffull << 0)) << 56) \
-                        | (((x) & (0xffull << 8)) << 40) \
-                        | (((x) & (0xffull << 16)) << 24) \
-                        | (((x) & (0xffull << 24)) << 8) \
-                        | (((x) & (0xffull << 32)) >> 8) \
-                        | (((x) & (0xffull << 40)) >> 24) \
-                        | (((x) & (0xffull << 48)) >> 40) \
-                        | (((x) & (0xffull << 56)) >> 56))
+#define to_be32(x) (((x) << 24) | (((x) & 0xff00) << 8) | (((x) & 0xff0000) >> 8) | ((x) >> 24))
+#define to_be64(x)                                                                                 \
+        ((((x) & (0xffull << 0)) << 56) | (((x) & (0xffull << 8)) << 40) |                         \
+         (((x) & (0xffull << 16)) << 24) | (((x) & (0xffull << 24)) << 8) |                        \
+         (((x) & (0xffull << 32)) >> 8) | (((x) & (0xffull << 40)) >> 24) |                        \
+         (((x) & (0xffull << 48)) >> 40) | (((x) & (0xffull << 56)) >> 56))
 
 #endif
 
-inline void static md_dcpy(void *bdst, uint32_t * dsrc, int dwords)
+inline void static md_dcpy(void *bdst, uint32_t *dsrc, int dwords)
 {
-	int i;
-	uint32_t *ddst = (uint32_t *) bdst;
-	for (i = 0; i < dwords; i++)
-		ddst[i] = to_be32(dsrc[i]);
+        int i;
+        uint32_t *ddst = (uint32_t *) bdst;
+        for (i = 0; i < dwords; i++)
+                ddst[i] = to_be32(dsrc[i]);
 }
 
-inline void static md_qcpy(void *bdst, uint64_t * qsrc, int qwords)
+inline void static md_qcpy(void *bdst, uint64_t *qsrc, int qwords)
 {
-	int i;
-	uint64_t *qdst = (uint64_t *) bdst;
-	for (i = 0; i < qwords; i++)
-		qdst[i] = to_be64(qsrc[i]);
+        int i;
+        uint64_t *qdst = (uint64_t *) bdst;
+        for (i = 0; i < qwords; i++)
+                qdst[i] = to_be64(qsrc[i]);
 }
 
-static int sha_handler(ACVP_TEST_CASE * test_case)
+static int
+sha_handler(ACVP_TEST_CASE *test_case)
 {
-	ACVP_RESULT ret = ACVP_SUCCESS;
-	ACVP_HASH_TC *tc;
+        ACVP_RESULT ret = ACVP_SUCCESS;
+        ACVP_HASH_TC *tc;
 
-	if (verbose > 2)
-		printf("sha case\n");
+        if (verbose > 2)
+                printf("sha case\n");
 
-	if (test_case == NULL)
-		return EXIT_FAILURE;
+        if (test_case == NULL)
+                return EXIT_FAILURE;
 
-	tc = test_case->tc.hash;
-	if (!tc)
-		return EXIT_FAILURE;
+        tc = test_case->tc.hash;
+        if (!tc)
+                return EXIT_FAILURE;
 
-	if (!tc->msg)
-		return EXIT_FAILURE;
+        if (!tc->msg)
+                return EXIT_FAILURE;
 
-	switch (acvp_get_hash_alg(tc->cipher)) {
-	case ACVP_SUB_HASH_SHA1:
-		{
-			SHA1_HASH_CTX_MGR sha1_mgr;
-			SHA1_HASH_CTX sha1_ctx;
-			sha1_ctx_mgr_init(&sha1_mgr);
-			hash_ctx_init(&sha1_ctx);
-			if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-				sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m1, tc->msg_len,
-						    HASH_FIRST);
-				while (sha1_ctx_mgr_flush(&sha1_mgr)) ;
+        switch (acvp_get_hash_alg(tc->cipher)) {
+        case ACVP_SUB_HASH_SHA1: {
+                SHA1_HASH_CTX_MGR sha1_mgr;
+                SHA1_HASH_CTX sha1_ctx;
+                sha1_ctx_mgr_init(&sha1_mgr);
+                hash_ctx_init(&sha1_ctx);
+                if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
+                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m1, tc->msg_len, HASH_FIRST);
+                        while (sha1_ctx_mgr_flush(&sha1_mgr))
+                                ;
 
-				sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m2, tc->msg_len,
-						    HASH_UPDATE);
-				while (sha1_ctx_mgr_flush(&sha1_mgr)) ;
+                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m2, tc->msg_len, HASH_UPDATE);
+                        while (sha1_ctx_mgr_flush(&sha1_mgr))
+                                ;
 
-				sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m3, tc->msg_len,
-						    HASH_LAST);
-				while (sha1_ctx_mgr_flush(&sha1_mgr)) ;
+                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->m3, tc->msg_len, HASH_LAST);
+                        while (sha1_ctx_mgr_flush(&sha1_mgr))
+                                ;
 
-			} else {
-				sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->msg, tc->msg_len,
-						    HASH_ENTIRE);
+                } else {
+                        sha1_ctx_mgr_submit(&sha1_mgr, &sha1_ctx, tc->msg, tc->msg_len,
+                                            HASH_ENTIRE);
 
-				while (sha1_ctx_mgr_flush(&sha1_mgr)) ;
-			}
-			md_dcpy(tc->md, sha1_ctx.job.result_digest, SHA1_DIGEST_NWORDS);
-			tc->md_len = SHA1_DIGEST_NWORDS * 4;
+                        while (sha1_ctx_mgr_flush(&sha1_mgr))
+                                ;
+                }
+                md_dcpy(tc->md, sha1_ctx.job.result_digest, SHA1_DIGEST_NWORDS);
+                tc->md_len = SHA1_DIGEST_NWORDS * 4;
 
-			break;
-		}
-	case ACVP_SUB_HASH_SHA2_256:
-		{
-			SHA256_HASH_CTX_MGR sha256_mgr;
-			SHA256_HASH_CTX sha256_ctx;
-			sha256_ctx_mgr_init(&sha256_mgr);
-			hash_ctx_init(&sha256_ctx);
-			if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-				sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m1,
-						      tc->msg_len, HASH_FIRST);
-				while (sha256_ctx_mgr_flush(&sha256_mgr)) ;
+                break;
+        }
+        case ACVP_SUB_HASH_SHA2_256: {
+                SHA256_HASH_CTX_MGR sha256_mgr;
+                SHA256_HASH_CTX sha256_ctx;
+                sha256_ctx_mgr_init(&sha256_mgr);
+                hash_ctx_init(&sha256_ctx);
+                if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
+                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m1, tc->msg_len,
+                                              HASH_FIRST);
+                        while (sha256_ctx_mgr_flush(&sha256_mgr))
+                                ;
 
-				sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m2,
-						      tc->msg_len, HASH_UPDATE);
-				while (sha256_ctx_mgr_flush(&sha256_mgr)) ;
+                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m2, tc->msg_len,
+                                              HASH_UPDATE);
+                        while (sha256_ctx_mgr_flush(&sha256_mgr))
+                                ;
 
-				sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m3,
-						      tc->msg_len, HASH_LAST);
-				while (sha256_ctx_mgr_flush(&sha256_mgr)) ;
+                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->m3, tc->msg_len,
+                                              HASH_LAST);
+                        while (sha256_ctx_mgr_flush(&sha256_mgr))
+                                ;
 
-			} else {
-				sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->msg,
-						      tc->msg_len, HASH_ENTIRE);
-				while (sha256_ctx_mgr_flush(&sha256_mgr)) ;
-			}
-			md_dcpy(tc->md, sha256_ctx.job.result_digest, SHA256_DIGEST_NWORDS);
-			tc->md_len = SHA256_DIGEST_NWORDS * 4;
-			break;
-		}
-	case ACVP_SUB_HASH_SHA2_512:
-		{
-			SHA512_HASH_CTX_MGR sha512_mgr;
-			SHA512_HASH_CTX sha512_ctx;
-			sha512_ctx_mgr_init(&sha512_mgr);
-			hash_ctx_init(&sha512_ctx);
-			if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
-				sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m1,
-						      tc->msg_len, HASH_FIRST);
-				while (sha512_ctx_mgr_flush(&sha512_mgr)) ;
+                } else {
+                        sha256_ctx_mgr_submit(&sha256_mgr, &sha256_ctx, tc->msg, tc->msg_len,
+                                              HASH_ENTIRE);
+                        while (sha256_ctx_mgr_flush(&sha256_mgr))
+                                ;
+                }
+                md_dcpy(tc->md, sha256_ctx.job.result_digest, SHA256_DIGEST_NWORDS);
+                tc->md_len = SHA256_DIGEST_NWORDS * 4;
+                break;
+        }
+        case ACVP_SUB_HASH_SHA2_512: {
+                SHA512_HASH_CTX_MGR sha512_mgr;
+                SHA512_HASH_CTX sha512_ctx;
+                sha512_ctx_mgr_init(&sha512_mgr);
+                hash_ctx_init(&sha512_ctx);
+                if (tc->test_type == ACVP_HASH_TEST_TYPE_MCT) {
+                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m1, tc->msg_len,
+                                              HASH_FIRST);
+                        while (sha512_ctx_mgr_flush(&sha512_mgr))
+                                ;
 
-				sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m2,
-						      tc->msg_len, HASH_UPDATE);
-				while (sha512_ctx_mgr_flush(&sha512_mgr)) ;
+                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m2, tc->msg_len,
+                                              HASH_UPDATE);
+                        while (sha512_ctx_mgr_flush(&sha512_mgr))
+                                ;
 
-				sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m3,
-						      tc->msg_len, HASH_LAST);
-				while (sha512_ctx_mgr_flush(&sha512_mgr)) ;
+                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->m3, tc->msg_len,
+                                              HASH_LAST);
+                        while (sha512_ctx_mgr_flush(&sha512_mgr))
+                                ;
 
-			} else {
-				sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->msg,
-						      tc->msg_len, HASH_ENTIRE);
-				while (sha512_ctx_mgr_flush(&sha512_mgr)) ;
-			}
+                } else {
+                        sha512_ctx_mgr_submit(&sha512_mgr, &sha512_ctx, tc->msg, tc->msg_len,
+                                              HASH_ENTIRE);
+                        while (sha512_ctx_mgr_flush(&sha512_mgr))
+                                ;
+                }
 
-			md_qcpy(tc->md, sha512_ctx.job.result_digest, SHA512_DIGEST_NWORDS);
-			tc->md_len = SHA256_DIGEST_NWORDS * 8;
-			break;
-		}
-	default:
-		return ACVP_NO_CAP;
-	}
+                md_qcpy(tc->md, sha512_ctx.job.result_digest, SHA512_DIGEST_NWORDS);
+                tc->md_len = SHA256_DIGEST_NWORDS * 8;
+                break;
+        }
+        default:
+                return ACVP_NO_CAP;
+        }
 
-	return ret;
+        return ret;
 }
 
-int enable_sha(ACVP_CTX * ctx)
+int
+enable_sha(ACVP_CTX *ctx)
 {
-	ACVP_RESULT ret = ACVP_SUCCESS;
+        ACVP_RESULT ret = ACVP_SUCCESS;
 
-	if (verbose)
-		printf(" Enable isa-l_crypto sha\n");
+        if (verbose)
+                printf(" Enable isa-l_crypto sha\n");
 
-	ret = acvp_cap_hash_enable(ctx, ACVP_HASH_SHA1, &sha_handler);
-	ret |= acvp_cap_hash_enable(ctx, ACVP_HASH_SHA256, &sha_handler);
-	ret |= acvp_cap_hash_enable(ctx, ACVP_HASH_SHA512, &sha_handler);
-	if (ret != ACVP_SUCCESS)
-		goto exit;
+        ret = acvp_cap_hash_enable(ctx, ACVP_HASH_SHA1, &sha_handler);
+        ret |= acvp_cap_hash_enable(ctx, ACVP_HASH_SHA256, &sha_handler);
+        ret |= acvp_cap_hash_enable(ctx, ACVP_HASH_SHA512, &sha_handler);
+        if (ret != ACVP_SUCCESS)
+                goto exit;
 
-	ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA1, ACVP_HASH_MESSAGE_LEN,
-					0, LARGEST_TEST_MSG, 8);
+        ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA1, ACVP_HASH_MESSAGE_LEN, 0,
+                                        LARGEST_TEST_MSG, 8);
 
-	ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA256, ACVP_HASH_MESSAGE_LEN,
-					0, LARGEST_TEST_MSG, 8);
+        ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA256, ACVP_HASH_MESSAGE_LEN, 0,
+                                        LARGEST_TEST_MSG, 8);
 
-	ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA512, ACVP_HASH_MESSAGE_LEN,
-					0, LARGEST_TEST_MSG, 8);
+        ret |= acvp_cap_hash_set_domain(ctx, ACVP_HASH_SHA512, ACVP_HASH_MESSAGE_LEN, 0,
+                                        LARGEST_TEST_MSG, 8);
 
-      exit:
-	return ret;
+exit:
+        return ret;
 }

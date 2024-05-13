@@ -1,6 +1,10 @@
 Intel(R) Intelligent Storage Acceleration Library Crypto Version
 ================================================================
 
+![Continuous Integration](https://github.com/intel/isa-l_crypto/actions/workflows/ci.yml/badge.svg)
+[![Coverity Status](https://scan.coverity.com/projects/29481/badge.svg)](https://scan.coverity.com/projects/intel-isa-l-crypto)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/intel/isa-l_crypto/badge)](https://securityscorecards.dev/viewer/?uri=github.com/intel/isa-l_crypto)
+
 ISA-L_crypto is a collection of optimized low-level functions targeting storage
 applications.  ISA-L_crypto includes:
 
@@ -9,7 +13,7 @@ applications.  ISA-L_crypto includes:
   - SHA1, SHA256, SHA512, MD5, SM3
 
 * Multi-hash - Get the performance of multi-buffer hashing with a single-buffer
-  interface. Specification ref : [Multi-Hash white paper](https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/multi-hash-paper.pdf)
+  interface. Specification ref : [Multi-Hash white paper](https://raw.githubusercontent.com/wiki/intel/isa-l_crypto/pdf/multi-hash-paper.pdf)
 
 * Multi-hash + murmur - run both together.
 

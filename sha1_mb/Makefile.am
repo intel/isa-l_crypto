@@ -27,6 +27,8 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+lsrc +=		sha1_mb/sha1_mb.c
+
 lsrc_x86_64 += 	sha1_mb/sha1_ctx_sse.c \
 		sha1_mb/sha1_ctx_avx.c \
 		sha1_mb/sha1_ctx_avx2.c \
@@ -101,7 +103,8 @@ other_src += 	include/datastruct.asm \
 check_tests  += sha1_mb/sha1_mb_test \
 		sha1_mb/sha1_mb_rand_test \
 		sha1_mb/sha1_mb_rand_update_test \
-		sha1_mb/sha1_mb_flush_test
+		sha1_mb/sha1_mb_flush_test \
+		sha1_mb/sha1_mb_param_test
 
 unit_tests   += sha1_mb/sha1_mb_rand_ssl_test
 

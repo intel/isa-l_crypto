@@ -29,74 +29,75 @@
 #include <aarch64_multibinary.h>
 
 #undef PROVIDER_BASIC
-#define PROVIDER_BASIC(a) (void*)0
+#define PROVIDER_BASIC(a) (void *) 0
 
-static unsigned long is_crypto_available(void)
+static unsigned long
+is_crypto_available(void)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	return (auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        return (auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_128_enc)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_128_enc_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_128_enc);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_128_enc_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_128_enc);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_128_dec)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_128_dec_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_128_dec);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_128_dec_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_128_dec);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_128_enc_expanded_key)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_128_enc_expanded_key_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_128_enc_expanded_key);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_128_enc_expanded_key_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_128_enc_expanded_key);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_128_dec_expanded_key)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_128_dec_expanded_key_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_128_dec_expanded_key);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_128_dec_expanded_key_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_128_dec_expanded_key);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_256_enc)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_256_enc_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_256_enc);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_256_enc_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_256_enc);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_256_dec)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_256_dec_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_256_dec);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_256_dec_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_256_dec);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_256_enc_expanded_key)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_256_enc_expanded_key_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_256_enc_expanded_key);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_256_enc_expanded_key_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_256_enc_expanded_key);
 }
 
 DEFINE_INTERFACE_DISPATCHER(XTS_AES_256_dec_expanded_key)
 {
-	if (is_crypto_available()) {
-		return PROVIDER_INFO(XTS_AES_256_dec_expanded_key_ce);
-	}
-	return PROVIDER_BASIC(XTS_AES_256_dec_expanded_key);
+        if (is_crypto_available()) {
+                return PROVIDER_INFO(XTS_AES_256_dec_expanded_key_ce);
+        }
+        return PROVIDER_BASIC(XTS_AES_256_dec_expanded_key);
 }

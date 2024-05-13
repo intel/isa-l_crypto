@@ -35,7 +35,7 @@
 /***************mh_sha1_update***********/
 // mh_sha1_update_avx512.c
 #define MH_SHA1_UPDATE_FUNCTION mh_sha1_update_avx512
-#define MH_SHA1_BLOCK_FUNCTION	mh_sha1_block_avx512
+#define MH_SHA1_BLOCK_FUNCTION  mh_sha1_block_avx512
 #include "mh_sha1_update_base.c"
 #undef MH_SHA1_UPDATE_FUNCTION
 #undef MH_SHA1_BLOCK_FUNCTION
@@ -44,9 +44,9 @@
 // mh_sha1_tail is used to calculate the last incomplete src data block
 // mh_sha1_finalize is a mh_sha1_ctx wrapper of mh_sha1_tail
 // mh_sha1_finalize_avx512.c and mh_sha1_tail_avx512.c
-#define MH_SHA1_FINALIZE_FUNCTION	mh_sha1_finalize_avx512
-#define MH_SHA1_TAIL_FUNCTION		mh_sha1_tail_avx512
-#define MH_SHA1_BLOCK_FUNCTION		mh_sha1_block_avx512
+#define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_avx512
+#define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_avx512
+#define MH_SHA1_BLOCK_FUNCTION    mh_sha1_block_avx512
 #include "mh_sha1_finalize_base.c"
 #undef MH_SHA1_FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
@@ -54,9 +54,9 @@
 
 /***************version info***********/
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 
 // mh_sha1_update version info

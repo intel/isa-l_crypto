@@ -29,92 +29,142 @@
 
 #include <string.h>
 #include "mh_sha1_murmur3_x64_128_internal.h"
+#include "isal_crypto_api.h"
 
-int mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
+int
+mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
 {
-	uint64_t *murmur3_x64_128_hash;
-	uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
-	uint32_t i;
+        uint64_t *murmur3_x64_128_hash;
+        uint32_t(*mh_sha1_segs_digests)[HASH_SEGS];
+        uint32_t i;
 
-	if (ctx == NULL)
-		return MH_SHA1_MURMUR3_CTX_ERROR_NULL;
+        if (ctx == NULL)
+                return MH_SHA1_MURMUR3_CTX_ERROR_NULL;
 
-	memset(ctx, 0, sizeof(*ctx));
+        memset(ctx, 0, sizeof(*ctx));
 
-	mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
-	for (i = 0; i < HASH_SEGS; i++) {
-		mh_sha1_segs_digests[0][i] = MH_SHA1_H0;
-		mh_sha1_segs_digests[1][i] = MH_SHA1_H1;
-		mh_sha1_segs_digests[2][i] = MH_SHA1_H2;
-		mh_sha1_segs_digests[3][i] = MH_SHA1_H3;
-		mh_sha1_segs_digests[4][i] = MH_SHA1_H4;
-	}
+        mh_sha1_segs_digests = (uint32_t(*)[HASH_SEGS]) ctx->mh_sha1_interim_digests;
+        for (i = 0; i < HASH_SEGS; i++) {
+                mh_sha1_segs_digests[0][i] = MH_SHA1_H0;
+                mh_sha1_segs_digests[1][i] = MH_SHA1_H1;
+                mh_sha1_segs_digests[2][i] = MH_SHA1_H2;
+                mh_sha1_segs_digests[3][i] = MH_SHA1_H3;
+                mh_sha1_segs_digests[4][i] = MH_SHA1_H4;
+        }
 
-	murmur3_x64_128_hash = (uint64_t *) ctx->murmur3_x64_128_digest;
-	murmur3_x64_128_hash[0] = murmur_seed;
-	murmur3_x64_128_hash[1] = murmur_seed;
+        murmur3_x64_128_hash = (uint64_t *) ctx->murmur3_x64_128_digest;
+        murmur3_x64_128_hash[0] = murmur_seed;
+        murmur3_x64_128_hash[1] = murmur_seed;
 
-	return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
+        return MH_SHA1_MURMUR3_CTX_ERROR_NONE;
 }
 
-void mh_sha1_murmur3_x64_128_block_base(const uint8_t * input_data,
-					uint32_t mh_sha1_digests[SHA1_DIGEST_WORDS][HASH_SEGS],
-					uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE],
-					uint32_t
-					murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
-					uint32_t num_blocks)
+void
+mh_sha1_murmur3_x64_128_block_base(const uint8_t *input_data,
+                                   uint32_t mh_sha1_digests[SHA1_DIGEST_WORDS][HASH_SEGS],
+                                   uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE],
+                                   uint32_t murmur3_x64_128_digests[MURMUR3_x64_128_DIGEST_WORDS],
+                                   uint32_t num_blocks)
 {
 
-	mh_sha1_block_base(input_data, mh_sha1_digests, frame_buffer, num_blocks);
+        mh_sha1_block_base(input_data, mh_sha1_digests, frame_buffer, num_blocks);
 
-	murmur3_x64_128_block(input_data,
-			      num_blocks * MH_SHA1_BLOCK_SIZE / MUR_BLOCK_SIZE,
-			      murmur3_x64_128_digests);
+        murmur3_x64_128_block(input_data, num_blocks * MH_SHA1_BLOCK_SIZE / MUR_BLOCK_SIZE,
+                              murmur3_x64_128_digests);
 
-	return;
+        return;
 }
 
-#if (!defined(NOARCH)) && (defined(__i386__) || defined(__x86_64__) \
-	|| defined( _M_X64) || defined(_M_IX86))
+int
+isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+                                  const uint64_t murmur_seed)
+{
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+#endif
+        return mh_sha1_murmur3_x64_128_init(ctx, murmur_seed);
+#endif
+}
+
+int
+isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+                                    const uint32_t len)
+{
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
+#endif
+        return mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
+#endif
+}
+
+int
+isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+                                      void *murmur3_x64_128_digest)
+{
+#ifdef FIPS_MODE
+        return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
+#else
+#ifdef SAFE_PARAM
+        if (ctx == NULL)
+                return ISAL_CRYPTO_ERR_NULL_CTX;
+        if (mh_sha1_digest == NULL || murmur3_x64_128_digest == NULL)
+                return ISAL_CRYPTO_ERR_NULL_AUTH;
+#endif
+        return mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
+#endif
+}
+
+#if (!defined(NOARCH)) &&                                                                          \
+        (defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86))
 /***************mh_sha1_murmur3_x64_128_update***********/
 // mh_sha1_murmur3_x64_128_update_sse.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_sse
-#define BLOCK_FUNCTION	mh_sha1_murmur3_x64_128_block_sse
+#define BLOCK_FUNCTION  mh_sha1_murmur3_x64_128_block_sse
 #include "mh_sha1_murmur3_x64_128_update_base.c"
 #undef UPDATE_FUNCTION
 #undef BLOCK_FUNCTION
 
 // mh_sha1_murmur3_x64_128_update_avx.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_avx
-#define BLOCK_FUNCTION	mh_sha1_murmur3_x64_128_block_avx
+#define BLOCK_FUNCTION  mh_sha1_murmur3_x64_128_block_avx
 #include "mh_sha1_murmur3_x64_128_update_base.c"
 #undef UPDATE_FUNCTION
 #undef BLOCK_FUNCTION
 
 // mh_sha1_murmur3_x64_128_update_avx2.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_avx2
-#define BLOCK_FUNCTION	mh_sha1_murmur3_x64_128_block_avx2
+#define BLOCK_FUNCTION  mh_sha1_murmur3_x64_128_block_avx2
 #include "mh_sha1_murmur3_x64_128_update_base.c"
 #undef UPDATE_FUNCTION
 #undef BLOCK_FUNCTION
 
 /***************mh_sha1_murmur3_x64_128_finalize***********/
 // mh_sha1_murmur3_x64_128_finalize_sse.c
-#define FINALIZE_FUNCTION mh_sha1_murmur3_x64_128_finalize_sse
+#define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_sse
 #define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_sse
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 
 // mh_sha1_murmur3_x64_128_finalize_avx.c
-#define FINALIZE_FUNCTION mh_sha1_murmur3_x64_128_finalize_avx
+#define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_avx
 #define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_avx
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
 #undef MH_SHA1_TAIL_FUNCTION
 
 // mh_sha1_murmur3_x64_128_finalize_avx2.c
-#define FINALIZE_FUNCTION mh_sha1_murmur3_x64_128_finalize_avx2
+#define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_avx2
 #define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_avx2
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
@@ -123,9 +173,9 @@ void mh_sha1_murmur3_x64_128_block_base(const uint8_t * input_data,
 /***************version info***********/
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 
 // Version info

@@ -35,14 +35,14 @@
 /***************mh_sha1_murmur3_x64_128_update***********/
 // mh_sha1_murmur3_x64_128_update_avx512.c
 #define UPDATE_FUNCTION mh_sha1_murmur3_x64_128_update_avx512
-#define BLOCK_FUNCTION	mh_sha1_murmur3_x64_128_block_avx512
+#define BLOCK_FUNCTION  mh_sha1_murmur3_x64_128_block_avx512
 #include "mh_sha1_murmur3_x64_128_update_base.c"
 #undef UPDATE_FUNCTION
 #undef BLOCK_FUNCTION
 
 /***************mh_sha1_murmur3_x64_128_finalize***********/
 // mh_sha1_murmur3_x64_128_finalize_avx512.c
-#define FINALIZE_FUNCTION mh_sha1_murmur3_x64_128_finalize_avx512
+#define FINALIZE_FUNCTION     mh_sha1_murmur3_x64_128_finalize_avx512
 #define MH_SHA1_TAIL_FUNCTION mh_sha1_tail_avx512
 #include "mh_sha1_murmur3_x64_128_finalize_base.c"
 #undef FINALIZE_FUNCTION
@@ -51,9 +51,9 @@
 /***************version info***********/
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 
 // mh_sha1_murmur3_x64_128_update version info

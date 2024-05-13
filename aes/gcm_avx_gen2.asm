@@ -113,6 +113,7 @@
 
 %include "reg_sizes.asm"
 %include "gcm_defines.asm"
+%include "include/clear_regs.inc"
 
 %ifndef GCM128_MODE
 %ifndef GCM192_MODE
@@ -1902,6 +1903,10 @@ FN_NAME(precomp,_):
 
         PRECOMPUTE arg1, xmm6, xmm0, xmm1, xmm2, xmm3, xmm4, xmm5
 
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
+
 %ifidn __OUTPUT_FORMAT__, win64
         vmovdqu xmm6, [rsp + LOCAL_STORAGE + 0*16]
 %endif
@@ -1967,6 +1972,9 @@ FN_NAME(enc,_update_):
 
 	GCM_ENC_DEC arg1, arg2, arg3, arg4, arg5, ENC
 
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
 	FUNC_RESTORE
 
 	ret
@@ -1988,6 +1996,9 @@ FN_NAME(dec,_update_):
 
 	GCM_ENC_DEC arg1, arg2, arg3, arg4, arg5, DEC
 
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
 	FUNC_RESTORE
 
 	ret
@@ -2017,6 +2028,10 @@ FN_NAME(enc,_finalize_):
 	vmovdqu	[rsp + 4*16],xmm15
 %endif
 	GCM_COMPLETE	arg1, arg2, arg3, arg4, ENC
+
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
 
 %ifidn __OUTPUT_FORMAT__, win64
 	vmovdqu	xmm15  , [rsp + 4*16]
@@ -2096,6 +2111,9 @@ FN_NAME(enc,_):
 
 	GCM_COMPLETE arg1, arg2, arg9, arg10, ENC
 
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
 	FUNC_RESTORE
 
 	ret
@@ -2125,6 +2143,9 @@ FN_NAME(dec,_):
 
 	GCM_COMPLETE arg1, arg2, arg9, arg10, DEC
 
+%ifdef SAFE_DATA
+        clear_scratch_xmms_avx_asm
+%endif ;; SAFE_DATA
 	FUNC_RESTORE
 
 	ret

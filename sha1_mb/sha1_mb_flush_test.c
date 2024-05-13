@@ -31,122 +31,125 @@
 #include <stdlib.h>
 #include "sha1_mb.h"
 
-#define TEST_LEN  (1024*1024)
+#define TEST_LEN  (1024 * 1024)
 #define TEST_BUFS (SHA1_MAX_LANES - 1)
 #ifndef TEST_SEED
-# define TEST_SEED 0x1234
+#define TEST_SEED 0x1234
 #endif
 
 static uint32_t digest_ref[TEST_BUFS][SHA1_DIGEST_NWORDS];
 
 // Compare against reference function
-extern void sha1_ref(uint8_t * input_data, uint32_t * digest, uint32_t len);
+extern void
+sha1_ref(uint8_t *input_data, uint32_t *digest, uint32_t len);
 
 // Generates pseudo-random data
-void rand_buffer(unsigned char *buf, const long buffer_size)
+void
+rand_buffer(unsigned char *buf, const long buffer_size)
 {
-	long i;
-	for (i = 0; i < buffer_size; i++)
-		buf[i] = rand();
+        long i;
+        for (i = 0; i < buffer_size; i++)
+                buf[i] = rand();
 }
 
-uint8_t lens_print_and_check(SHA1_HASH_CTX_MGR * mgr)
+uint8_t
+lens_print_and_check(SHA1_HASH_CTX_MGR *mgr)
 {
-	static int32_t last_lens[SHA1_MAX_LANES] = { 0 };
-	int32_t len;
-	uint8_t num_unchanged = 0;
-	int i;
-	for (i = 0; i < SHA1_MAX_LANES; i++) {
-		len = (int32_t) mgr->mgr.lens[i];
-		// len[i] in mgr consists of byte_length<<4 | lane_index
-		len = (len >= 16) ? (len >> 4 << 6) : 0;
-		printf("\t%d", len);
-		if (last_lens[i] > 0 && last_lens[i] == len)
-			num_unchanged += 1;
-		last_lens[i] = len;
-	}
-	printf("\n");
-	return num_unchanged;
+        static int32_t last_lens[SHA1_MAX_LANES] = { 0 };
+        int32_t len;
+        uint8_t num_unchanged = 0;
+        int i;
+        for (i = 0; i < SHA1_MAX_LANES; i++) {
+                len = (int32_t) mgr->mgr.lens[i];
+                // len[i] in mgr consists of byte_length<<4 | lane_index
+                len = (len >= 16) ? (len >> 4 << 6) : 0;
+                printf("\t%d", len);
+                if (last_lens[i] > 0 && last_lens[i] == len)
+                        num_unchanged += 1;
+                last_lens[i] = len;
+        }
+        printf("\n");
+        return num_unchanged;
 }
 
-int main(void)
+int
+main(void)
 {
-	SHA1_HASH_CTX_MGR *mgr = NULL;
-	SHA1_HASH_CTX ctxpool[TEST_BUFS];
-	uint32_t i, j, fail = 0;
-	unsigned char *bufs[TEST_BUFS] = { 0 };
-	uint32_t lens[TEST_BUFS];
-	uint8_t num_ret, num_unchanged = 0;
-	int ret;
+        SHA1_HASH_CTX_MGR *mgr = NULL;
+        SHA1_HASH_CTX ctxpool[TEST_BUFS];
+        uint32_t i, j, fail = 0;
+        unsigned char *bufs[TEST_BUFS] = { 0 };
+        uint32_t lens[TEST_BUFS];
+        uint8_t num_ret, num_unchanged = 0;
+        int ret;
 
-	printf("sha1_mb flush test, %d buffers with %d length: \n", TEST_BUFS, TEST_LEN);
+        printf("sha1_mb flush test, %d buffers with %d length: \n", TEST_BUFS, TEST_LEN);
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        ret = posix_memalign((void *) &mgr, 16, sizeof(SHA1_HASH_CTX_MGR));
+        if ((ret != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	sha1_ctx_mgr_init(mgr);
+        sha1_ctx_mgr_init(mgr);
 
-	srand(TEST_SEED);
+        srand(TEST_SEED);
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		// Allocate  and fill buffer
-		lens[i] = TEST_LEN / SHA1_MAX_LANES * (i + 1);
-		bufs[i] = (unsigned char *)malloc(lens[i]);
-		if (bufs[i] == NULL) {
-			printf("malloc failed test aborted\n");
-			fail++;
-			goto end;
-		}
-		rand_buffer(bufs[i], lens[i]);
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                // Allocate  and fill buffer
+                lens[i] = TEST_LEN / SHA1_MAX_LANES * (i + 1);
+                bufs[i] = (unsigned char *) malloc(lens[i]);
+                if (bufs[i] == NULL) {
+                        printf("malloc failed test aborted\n");
+                        fail++;
+                        goto end;
+                }
+                rand_buffer(bufs[i], lens[i]);
+        }
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		// Init ctx contexts
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)((uint64_t) i);
+        for (i = 0; i < TEST_BUFS; i++) {
+                // Init ctx contexts
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) ((uint64_t) i);
 
-		// Run reference test
-		sha1_ref(bufs[i], digest_ref[i], lens[i]);
+                // Run reference test
+                sha1_ref(bufs[i], digest_ref[i], lens[i]);
 
-		// Run sb_sha1 test
-		sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
-	}
+                // Run sb_sha1 test
+                sha1_ctx_mgr_submit(mgr, &ctxpool[i], bufs[i], lens[i], HASH_ENTIRE);
+        }
 
-	printf("Changes of lens inside mgr:\n");
-	lens_print_and_check(mgr);
-	while (sha1_ctx_mgr_flush(mgr)) {
-		num_ret = lens_print_and_check(mgr);
-		num_unchanged = num_unchanged > num_ret ? num_unchanged : num_ret;
-	}
-	printf("Info of sha1_mb lens prints over\n");
+        printf("Changes of lens inside mgr:\n");
+        lens_print_and_check(mgr);
+        while (sha1_ctx_mgr_flush(mgr)) {
+                num_ret = lens_print_and_check(mgr);
+                num_unchanged = num_unchanged > num_ret ? num_unchanged : num_ret;
+        }
+        printf("Info of sha1_mb lens prints over\n");
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
-				fail++;
-				printf("Test%d fixed size, digest%d "
-				       "fail 0x%08X <=> 0x%08X \n",
-				       i, j, ctxpool[i].job.result_digest[j],
-				       digest_ref[i][j]);
-			}
-		}
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                for (j = 0; j < SHA1_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] != digest_ref[i][j]) {
+                                fail++;
+                                printf("Test%d fixed size, digest%d "
+                                       "fail 0x%08X <=> 0x%08X \n",
+                                       i, j, ctxpool[i].job.result_digest[j], digest_ref[i][j]);
+                        }
+                }
+        }
 
-	if (fail)
-		printf("Test failed function check %d\n", fail);
-	else if (num_unchanged)
-		printf("SHA-NI is used when %d or %d jobs are uncompleted\n",
-		       num_unchanged, num_unchanged + 1);
-	else
-		printf("SHA-NI is not used, or used for last job\n");
+        if (fail)
+                printf("Test failed function check %d\n", fail);
+        else if (num_unchanged)
+                printf("SHA-NI is used when %d or %d jobs are uncompleted\n", num_unchanged,
+                       num_unchanged + 1);
+        else
+                printf("SHA-NI is not used, or used for last job\n");
 
-      end:
-	for (i = 0; i < TEST_BUFS; i++)
-		free(bufs[i]);
-	aligned_free(mgr);
+end:
+        for (i = 0; i < TEST_BUFS; i++)
+                free(bufs[i]);
+        aligned_free(mgr);
 
-	return fail;
+        return fail;
 }

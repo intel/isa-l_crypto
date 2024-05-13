@@ -29,26 +29,28 @@
 
 #include <aes_cbc.h>
 #include <aes_keyexp.h>
+#include "aes_keyexp_internal.h"
 
-int aes_cbc_precomp(uint8_t * key, int key_size, struct cbc_key_data *keys_blk)
+int
+aes_cbc_precomp(uint8_t *key, int key_size, struct cbc_key_data *keys_blk)
 {
-	if (CBC_128_BITS == key_size) {
-		aes_keyexp_128(key, keys_blk->enc_keys, keys_blk->dec_keys);
-	} else if (CBC_192_BITS == key_size) {
-		aes_keyexp_192(key, keys_blk->enc_keys, keys_blk->dec_keys);
-	} else if (CBC_256_BITS == key_size) {
-		aes_keyexp_256(key, keys_blk->enc_keys, keys_blk->dec_keys);
-	} else {
-		//Invalid key length
-		return 1;
-	}
-	return 0;
+        if (CBC_128_BITS == key_size) {
+                _aes_keyexp_128(key, keys_blk->enc_keys, keys_blk->dec_keys);
+        } else if (CBC_192_BITS == key_size) {
+                _aes_keyexp_192(key, keys_blk->enc_keys, keys_blk->dec_keys);
+        } else if (CBC_256_BITS == key_size) {
+                _aes_keyexp_256(key, keys_blk->enc_keys, keys_blk->dec_keys);
+        } else {
+                // Invalid key length
+                return 1;
+        }
+        return 0;
 }
 
 struct slver {
-	uint16_t snum;
-	uint8_t ver;
-	uint8_t core;
+        uint16_t snum;
+        uint8_t ver;
+        uint8_t core;
 };
 
 // Version info

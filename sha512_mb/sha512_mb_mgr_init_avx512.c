@@ -29,15 +29,16 @@
 
 #include "sha512_mb.h"
 
-void sha512_mb_mgr_init_avx512(SHA512_MB_JOB_MGR * state)
+void
+sha512_mb_mgr_init_avx512(SHA512_MB_JOB_MGR *state)
 {
-	unsigned int j;
+        unsigned int j;
 
-	memset(state, 0, sizeof(*state));
-	state->unused_lanes = 0x0706050403020100;
-	state->num_lanes_inuse = 0;
-	for (j = 0; j < SHA512_MAX_LANES; j++) {
-		state->lens[j] = j;	// sha512_mb uses low 32bit of lens to hold idx exclusively
-		state->ldata[j].job_in_lane = 0;
-	}
+        memset(state, 0, sizeof(*state));
+        state->unused_lanes = 0x0706050403020100;
+        state->num_lanes_inuse = 0;
+        for (j = 0; j < SHA512_MAX_LANES; j++) {
+                state->lens[j] = j; // sha512_mb uses low 32bit of lens to hold idx exclusively
+                state->ldata[j].job_in_lane = 0;
+        }
 }

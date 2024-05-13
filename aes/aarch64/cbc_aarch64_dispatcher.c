@@ -29,21 +29,22 @@
 #include <aarch64_multibinary.h>
 
 #undef PROVIDER_BASIC
-#define PROVIDER_BASIC(a) (void*)0
+#define PROVIDER_BASIC(a) (void *) 0
 
-static unsigned long is_crypto_available(void)
+static unsigned long
+is_crypto_available(void)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	return (auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        return (auxval & (HWCAP_ASIMD | HWCAP_AES)) == (HWCAP_ASIMD | HWCAP_AES);
 }
 
-#define DEFINE_CBC_INTERFACE_DISPATCHER(func,mode,suffix)               \
-    DEFINE_INTERFACE_DISPATCHER(aes_cbc_##func##_##mode)                \
-    {                                                                   \
-        if (is_crypto_available())                                      \
-            return PROVIDER_INFO(aes_cbc_##func##_##mode##_##suffix);   \
-        return PROVIDER_BASIC(aes_cbc_##func##_##mode);                 \
-    }
+#define DEFINE_CBC_INTERFACE_DISPATCHER(func, mode, suffix)                                        \
+        DEFINE_INTERFACE_DISPATCHER(_aes_cbc_##func##_##mode)                                      \
+        {                                                                                          \
+                if (is_crypto_available())                                                         \
+                        return PROVIDER_INFO(_aes_cbc_##func##_##mode##_##suffix);                 \
+                return PROVIDER_BASIC(_aes_cbc_##func##_##mode);                                   \
+        }
 
 DEFINE_CBC_INTERFACE_DISPATCHER(enc, 128, aes);
 DEFINE_CBC_INTERFACE_DISPATCHER(enc, 192, aes);
@@ -59,50 +60,50 @@ DEFINE_CBC_INTERFACE_DISPATCHER(enc, 256, aes);
  * ThunderX2  test results.
  *
  */
-DEFINE_INTERFACE_DISPATCHER(aes_cbc_dec_128)
+DEFINE_INTERFACE_DISPATCHER(_aes_cbc_dec_128)
 {
-	if (is_crypto_available()) {
-		switch (get_micro_arch_id()) {
-		case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
-			return PROVIDER_INFO(aes_cbc_dec_128_aes_1);
-		case MICRO_ARCH_ID(ARM, CORTEX_A57):
-			return PROVIDER_INFO(aes_cbc_dec_128_aes_4);
-		case MICRO_ARCH_ID(ARM, CORTEX_A72):
-			return PROVIDER_INFO(aes_cbc_dec_128_aes_6);
-		}
-		return PROVIDER_INFO(aes_cbc_dec_128_aes_5);
-	}
-	return PROVIDER_BASIC(aes_cbc_dec_128);
+        if (is_crypto_available()) {
+                switch (get_micro_arch_id()) {
+                case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
+                        return PROVIDER_INFO(_aes_cbc_dec_128_aes_1);
+                case MICRO_ARCH_ID(ARM, CORTEX_A57):
+                        return PROVIDER_INFO(_aes_cbc_dec_128_aes_4);
+                case MICRO_ARCH_ID(ARM, CORTEX_A72):
+                        return PROVIDER_INFO(_aes_cbc_dec_128_aes_6);
+                }
+                return PROVIDER_INFO(_aes_cbc_dec_128_aes_5);
+        }
+        return PROVIDER_BASIC(_aes_cbc_dec_128);
 }
 
-DEFINE_INTERFACE_DISPATCHER(aes_cbc_dec_192)
+DEFINE_INTERFACE_DISPATCHER(_aes_cbc_dec_192)
 {
-	if (is_crypto_available()) {
-		switch (get_micro_arch_id()) {
-		case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
-			return PROVIDER_INFO(aes_cbc_dec_192_aes_1);
-		case MICRO_ARCH_ID(ARM, CORTEX_A57):
-			return PROVIDER_INFO(aes_cbc_dec_192_aes_5);
-		case MICRO_ARCH_ID(ARM, CORTEX_A72):
-			return PROVIDER_INFO(aes_cbc_dec_192_aes_4);
-		}
-		return PROVIDER_INFO(aes_cbc_dec_192_aes_5);
-	}
-	return PROVIDER_BASIC(aes_cbc_dec_192);
+        if (is_crypto_available()) {
+                switch (get_micro_arch_id()) {
+                case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
+                        return PROVIDER_INFO(_aes_cbc_dec_192_aes_1);
+                case MICRO_ARCH_ID(ARM, CORTEX_A57):
+                        return PROVIDER_INFO(_aes_cbc_dec_192_aes_5);
+                case MICRO_ARCH_ID(ARM, CORTEX_A72):
+                        return PROVIDER_INFO(_aes_cbc_dec_192_aes_4);
+                }
+                return PROVIDER_INFO(_aes_cbc_dec_192_aes_5);
+        }
+        return PROVIDER_BASIC(_aes_cbc_dec_192);
 }
 
-DEFINE_INTERFACE_DISPATCHER(aes_cbc_dec_256)
+DEFINE_INTERFACE_DISPATCHER(_aes_cbc_dec_256)
 {
-	if (is_crypto_available()) {
-		switch (get_micro_arch_id()) {
-		case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
-			return PROVIDER_INFO(aes_cbc_dec_256_aes_1);
-		case MICRO_ARCH_ID(ARM, CORTEX_A57):
-			return PROVIDER_INFO(aes_cbc_dec_256_aes_5);
-		case MICRO_ARCH_ID(ARM, CORTEX_A72):
-			return PROVIDER_INFO(aes_cbc_dec_256_aes_6);
-		}
-		return PROVIDER_INFO(aes_cbc_dec_256_aes_5);
-	}
-	return PROVIDER_BASIC(aes_cbc_dec_256);
+        if (is_crypto_available()) {
+                switch (get_micro_arch_id()) {
+                case MICRO_ARCH_ID(ARM, NEOVERSE_N1):
+                        return PROVIDER_INFO(_aes_cbc_dec_256_aes_1);
+                case MICRO_ARCH_ID(ARM, CORTEX_A57):
+                        return PROVIDER_INFO(_aes_cbc_dec_256_aes_5);
+                case MICRO_ARCH_ID(ARM, CORTEX_A72):
+                        return PROVIDER_INFO(_aes_cbc_dec_256_aes_6);
+                }
+                return PROVIDER_INFO(_aes_cbc_dec_256_aes_5);
+        }
+        return PROVIDER_BASIC(_aes_cbc_dec_256);
 }

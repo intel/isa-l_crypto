@@ -27,6 +27,8 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+lsrc        += sm3_mb/sm3_mb.c
+
 lsrc_x86_64 += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/sm3_multibinary.asm
 
@@ -78,7 +80,8 @@ other_src +=	include/datastruct.asm \
 		sm3_mb/sm3_mb_mgr_datastruct.asm \
 		sm3_mb/sm3_test_helper.c
 
-check_tests  +=	sm3_mb/sm3_ref_test
+check_tests  +=	sm3_mb/sm3_ref_test \
+		sm3_mb/sm3_mb_param_test
 
 unit_tests   +=	sm3_mb/sm3_mb_rand_ssl_test \
 		sm3_mb/sm3_mb_rand_test \

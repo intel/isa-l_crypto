@@ -32,7 +32,7 @@ arch ?= $(shell uname | grep -v -e Linux -e BSD )
 
 
 units ?=sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 \
-	mh_sha256 rolling_hash sm3_mb
+	mh_sha256 rolling_hash sm3_mb fips
 
 
 ifneq ($(arch),noarch)
@@ -54,4 +54,4 @@ lib_name := bin/isa-l_crypto.a
 
 include make.inc
 include tools/gen_nmake.mk
-VPATH = . $(units) include
+VPATH = . $(units) include intel-ipsec-mb/lib

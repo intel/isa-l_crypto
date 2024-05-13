@@ -31,24 +31,29 @@
 #include "sha256_mb.h"
 #include "memcpy_inline.h"
 
-extern void sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR * mgr);
-extern SHA256_HASH_CTX *sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR * mgr,
-						   SHA256_HASH_CTX * ctx, const void *buffer,
-						   uint32_t len, HASH_CTX_FLAG flags);
-extern SHA256_HASH_CTX *sha256_ctx_mgr_flush_base(SHA256_HASH_CTX_MGR * mgr);
+extern void
+sha256_ctx_mgr_init_base(SHA256_HASH_CTX_MGR *mgr);
+extern SHA256_HASH_CTX *
+sha256_ctx_mgr_submit_base(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                           uint32_t len, HASH_CTX_FLAG flags);
+extern SHA256_HASH_CTX *
+sha256_ctx_mgr_flush_base(SHA256_HASH_CTX_MGR *mgr);
 
-void sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR * mgr)
+void
+sha256_ctx_mgr_init(SHA256_HASH_CTX_MGR *mgr)
 {
-	return sha256_ctx_mgr_init_base(mgr);
+        return sha256_ctx_mgr_init_base(mgr);
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR * mgr, SHA256_HASH_CTX * ctx,
-				       const void *buffer, uint32_t len, HASH_CTX_FLAG flags)
+SHA256_HASH_CTX *
+sha256_ctx_mgr_submit(SHA256_HASH_CTX_MGR *mgr, SHA256_HASH_CTX *ctx, const void *buffer,
+                      uint32_t len, HASH_CTX_FLAG flags)
 {
-	return sha256_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
+        return sha256_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }
 
-SHA256_HASH_CTX *sha256_ctx_mgr_flush(SHA256_HASH_CTX_MGR * mgr)
+SHA256_HASH_CTX *
+sha256_ctx_mgr_flush(SHA256_HASH_CTX_MGR *mgr)
 {
-	return sha256_ctx_mgr_flush_base(mgr);
+        return sha256_ctx_mgr_flush_base(mgr);
 }

@@ -31,287 +31,315 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include "isal_crypto_api.h"
 #include "rolling_hashx.h"
 
 #ifndef FUT_run
-# define FUT_run rolling_hash2_run
+#define FUT_run isal_rolling_hash2_run
 #endif
 #ifndef FUT_init
-# define FUT_init rolling_hash2_init
+#define FUT_init isal_rolling_hash2_init
 #endif
 #ifndef FUT_reset
-# define FUT_reset rolling_hash2_reset
+#define FUT_reset isal_rolling_hash2_reset
 #endif
 #ifndef FUT_ref
-# define FUT_ref rolling_hash2_ref
+#define FUT_ref rolling_hash2_ref
 #endif
 
-#define str(s) #s
+#define str(s)  #s
 #define xstr(s) str(s)
 
-#define MAX_BUFFER_SIZE 128*1024*1024
+#define MAX_BUFFER_SIZE        128 * 1024 * 1024
 #define MAX_ROLLING_HASH_WIDTH 32
 
 #ifndef RANDOMS
-# define RANDOMS 200
+#define RANDOMS 200
 #endif
 #ifndef TEST_SEED
-# define TEST_SEED 0x1234
+#define TEST_SEED 0x1234
 #endif
 
-static
-uint64_t rolling_hash2_ref(struct rh_state2 *state, unsigned char *p, int len,
-			   uint64_t hash_init)
+#ifndef FIPS_MODE
+static uint64_t
+rolling_hash2_ref(struct rh_state2 *state, unsigned char *p, int len, uint64_t hash_init)
 {
-	int i;
-	uint64_t h = hash_init;
+        int i;
+        uint64_t h = hash_init;
 
-	for (i = 0; i < len; i++) {
-		h = (h << 1) | (h >> (64 - 1));
-		h ^= state->table1[*p++];
-	}
-	return h;
+        for (i = 0; i < len; i++) {
+                h = (h << 1) | (h >> (64 - 1));
+                h ^= state->table1[*p++];
+        }
+        return h;
 }
 
-int ones_in_mask(uint32_t in)
+static int
+ones_in_mask(uint32_t in)
 {
-	int count;
+        int count;
 
-	for (count = 0; in != 0; in &= (in - 1))
-		count++;
+        for (count = 0; in != 0; in &= (in - 1))
+                count++;
 
-	return count;
+        return count;
 }
 
 /*
  * Utility function to pick a random mask.  Not uniform in number of bits.
  */
-uint32_t pick_rand_mask_in_range(int min_bits, int max_bits)
+static uint32_t
+pick_rand_mask_in_range(int min_bits, int max_bits)
 {
-	uint32_t mask = 0;
-	int ones;
+        uint32_t mask = 0;
+        int ones;
 
-	do {
-		mask = rand();
+        do {
+                mask = rand();
 #if defined(_WIN32) || defined(_WIN64)
-		mask = (mask << 16) ^ rand();
+                mask = (mask << 16) ^ rand();
 #endif
-		ones = ones_in_mask(mask);
-	} while (ones < min_bits || ones > max_bits);
+                ones = ones_in_mask(mask);
+        } while (ones < min_bits || ones > max_bits);
 
-	return mask;
+        return mask;
 }
+#endif
 
-int main(void)
+int
+main(void)
 {
-	uint8_t *buffer;
-	uint64_t hash;
-	uint32_t mask, trigger, offset = 0;
-	int i, w, r, ret, max, errors = 0;
-	uint32_t offset_fut;
-	struct rh_state2 state;
+#ifndef FIPS_MODE
+        uint8_t *buffer;
+        uint64_t hash;
+        uint32_t w, max, mask, trigger, offset = 0;
+        int i, r, ret, match, errors = 0;
+        uint32_t offset_fut;
+        struct rh_state2 state;
 
-	printf(xstr(FUT_run) ": " xstr(MAX_BUFFER_SIZE));
+        printf(xstr(FUT_run) ": " xstr(MAX_BUFFER_SIZE));
 
-	buffer = malloc(MAX_BUFFER_SIZE);
-	if (buffer == NULL) {
-		printf("cannot allocate mem\n");
-		return -1;
-	}
-	srand(TEST_SEED);
+        buffer = malloc(MAX_BUFFER_SIZE);
+        if (buffer == NULL) {
+                printf("cannot allocate mem\n");
+                return -1;
+        }
+        srand(TEST_SEED);
 
-	// Test case 1, compare trigger case at boundary with reference hash
-	w = 32;
-	mask = 0xffff0;
-	trigger = 0x3df0;
-	trigger &= mask;
+        // Test case 1, compare trigger case at boundary with reference hash
+        w = 32;
+        mask = 0xffff0;
+        trigger = 0x3df0;
+        trigger &= mask;
 
-	for (i = 0; i < MAX_BUFFER_SIZE; i++)
-		buffer[i] = rand();
+        for (i = 0; i < MAX_BUFFER_SIZE; i++)
+                buffer[i] = rand();
 
-	FUT_init(&state, w);
-	FUT_reset(&state, buffer);
+        FUT_init(&state, w);
+        FUT_reset(&state, buffer);
 
-	uint8_t *p = buffer;
-	int remain = MAX_BUFFER_SIZE;
-	ret = FINGERPRINT_RET_HIT;
+        uint8_t *p = buffer;
+        uint32_t remain = MAX_BUFFER_SIZE;
+        match = FINGERPRINT_RET_HIT;
 
-	while ((ret == FINGERPRINT_RET_HIT) && (remain > 0)) {
-		ret = FUT_run(&state, p, remain, mask, trigger, &offset);
+        while ((match == FINGERPRINT_RET_HIT) && (remain > 0)) {
+                ret = FUT_run(&state, p, remain, mask, trigger, &offset, &match);
 
-		if (offset > remain) {
-			printf(" error offset past remaining limit\n");
-			errors++;
-		}
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC1) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
 
-		if ((ret == FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
-			hash = FUT_ref(&state, &p[offset] - w, w, 0);
-			if ((hash & mask) != trigger) {
-				printf("   mismatch chunk from ref");
-				printf(" hit: offset=%d %lx %lx\n", offset, state.hash, hash);
-				errors++;
-			}
-		}
-		p += offset;
-		remain -= offset;
-		putchar('.');
-	}
+                if (offset > remain) {
+                        printf(" error offset past remaining limit\n");
+                        errors++;
+                }
 
-	putchar('.');		// Finished test 1
+                if ((match == FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
+                        hash = FUT_ref(&state, &p[offset] - w, w, 0);
+                        if ((hash & mask) != trigger) {
+                                printf("   mismatch chunk from ref");
+                                printf(" hit: offset=%u %llx %llx\n", (unsigned) offset,
+                                       (unsigned long long) state.hash, (unsigned long long) hash);
+                                errors++;
+                        }
+                }
+                p += offset;
+                remain -= offset;
+                putchar('.');
+        }
 
-	// Test case 2, check if reference function hits same chunk boundary as test
+        putchar('.'); // Finished test 1
 
-	w = 32;
-	mask = 0xffff;
-	trigger = rand();
-	trigger &= mask;
-	p = buffer;
+        // Test case 2, check if reference function hits same chunk boundary as test
 
-	// Function under test
-	FUT_init(&state, w);
-	FUT_reset(&state, p);
-	FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
-	offset_fut += w;
+        w = 32;
+        mask = 0xffff;
+        trigger = rand();
+        trigger &= mask;
+        p = buffer;
 
-	// Reference
-	for (p++, offset = w + 1; offset < MAX_BUFFER_SIZE; offset++) {
-		hash = FUT_ref(&state, p++, w, 0);
-		if ((hash & mask) == trigger)
-			break;
-	}
+        // Function under test
+        FUT_init(&state, w);
+        FUT_reset(&state, p);
+        FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut, &match);
+        offset_fut += w;
 
-	if (offset != offset_fut) {
-		printf("\ncase 2, offset of chunk different from ref\n");
-		printf("  case 2: stop fut at offset=%d\n", offset_fut);
-		printf("  case 2: stop ref at offset=%d\n", offset);
-		errors++;
-		goto end;
-	}
-	putchar('.');		// Finished test 2
+        // Reference
+        for (p++, offset = w + 1; offset < MAX_BUFFER_SIZE; offset++) {
+                hash = FUT_ref(&state, p++, w, 0);
+                if ((hash & mask) == trigger)
+                        break;
+        }
 
-	// Do case 2 above with random args
+        if (offset != offset_fut) {
+                printf("\ncase 2, offset of chunk different from ref\n");
+                printf("  case 2: stop fut at offset=%d\n", offset_fut);
+                printf("  case 2: stop ref at offset=%d\n", offset);
+                errors++;
+                goto end;
+        }
+        putchar('.'); // Finished test 2
 
-	for (r = 0; r < RANDOMS; r++) {
-		w = rand() % MAX_ROLLING_HASH_WIDTH;
-		if (w < 3)
-			continue;
+        // Do case 2 above with random args
 
-		mask = pick_rand_mask_in_range(4, 20);
-		trigger = rand() & mask;
-		p = buffer;
+        for (r = 0; r < RANDOMS; r++) {
+                w = rand() % MAX_ROLLING_HASH_WIDTH;
+                if (w < 3)
+                        continue;
 
-		// Function under test
-		FUT_init(&state, w);
-		FUT_reset(&state, p);
-		FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut);
-		offset_fut += w;
+                mask = pick_rand_mask_in_range(4, 20);
+                trigger = rand() & mask;
+                p = buffer;
 
-		// Reference
-		for (p++, offset = w + 1; offset < MAX_BUFFER_SIZE; offset++) {
-			hash = FUT_ref(&state, p++, w, 0);
-			if ((hash & mask) == trigger)
-				break;
-		}
+                // Function under test
+                FUT_init(&state, w);
+                FUT_reset(&state, p);
+                FUT_run(&state, p + w, MAX_BUFFER_SIZE - w, mask, trigger, &offset_fut, &match);
+                offset_fut += w;
 
-		if (offset != offset_fut) {
-			printf("\nrand case 2 #%d: w=%d, mask=0x%x, trigger=0x%x\n", r, w,
-			       mask, trigger);
-			printf("  offset of chunk different from ref\n");
-			printf("  case 2r: stop fut at offset=%d\n", offset_fut);
-			printf("  case 2r: stop ref at offset=%d\n", offset);
-			errors++;
-			goto end;
-		}
-		putchar('.');
-	}
+                // Reference
+                for (p++, offset = w + 1; offset < MAX_BUFFER_SIZE; offset++) {
+                        hash = FUT_ref(&state, p++, w, 0);
+                        if ((hash & mask) == trigger)
+                                break;
+                }
 
-	// Test case 3, check if max bound is same
+                if (offset != offset_fut) {
+                        printf("\nrand case 2 #%d: w=%d, mask=0x%x, trigger=0x%x\n", r, w, mask,
+                               trigger);
+                        printf("  offset of chunk different from ref\n");
+                        printf("  case 2r: stop fut at offset=%d\n", offset_fut);
+                        printf("  case 2r: stop ref at offset=%d\n", offset);
+                        errors++;
+                        goto end;
+                }
+                putchar('.');
+        }
 
-	w = 32;
-	mask = 0xfffff;
-	trigger = rand();
-	trigger &= mask;
-	putchar('|');
+        // Test case 3, check if max bound is same
 
-	for (max = w + 1; max < 500; max++) {
-		p = buffer;
-		FUT_init(&state, w);
-		FUT_reset(&state, p);
+        w = 32;
+        mask = 0xfffff;
+        trigger = rand();
+        trigger &= mask;
+        putchar('|');
 
-		ret = FUT_run(&state, p + w, max - w, mask, trigger, &offset_fut);
-		offset_fut += w;
+        for (max = w + 1; max < 500; max++) {
+                p = buffer;
+                FUT_init(&state, w);
+                FUT_reset(&state, p);
 
-		int ret_ref = FINGERPRINT_RET_MAX;
-		for (p++, offset = w + 1; offset < max; offset++) {
-			hash = FUT_ref(&state, p++, w, 0);
-			if ((hash & mask) == trigger) {
-				ret_ref = FINGERPRINT_RET_HIT;
-				break;
-			}
-		}
+                ret = FUT_run(&state, p + w, max - w, mask, trigger, &offset_fut, &match);
 
-		if (offset != offset_fut || ret != ret_ref) {
-			printf("\ncase 3 max=%d, offset of chunk different from ref\n", max);
-			printf("  case 3: stop fut at offset=%d\n", offset_fut);
-			printf("  case 3: stop ref at offset=%d\n", offset);
-			printf("  case 3: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
-			errors++;
-			goto end;
-		}
-		putchar('.');	// Finished test 3
-	}
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC3) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
 
-	// Test case 4, check if max bound is same under random params
+                offset_fut += w;
 
-	for (r = 0; r < RANDOMS; r++) {
-		p = buffer;
-		mask = pick_rand_mask_in_range(24, 30);	// Pick an unlikely mask
-		trigger = rand() & mask;
-		w = rand() % MAX_ROLLING_HASH_WIDTH;
-		max = rand() % 1024;
+                int ret_ref = FINGERPRINT_RET_MAX;
+                for (p++, offset = w + 1; offset < max; offset++) {
+                        hash = FUT_ref(&state, p++, w, 0);
+                        if ((hash & mask) == trigger) {
+                                ret_ref = FINGERPRINT_RET_HIT;
+                                break;
+                        }
+                }
 
-		if (w < 3 || max < 2 * MAX_ROLLING_HASH_WIDTH)
-			continue;
+                if (offset != offset_fut || match != ret_ref) {
+                        printf("\ncase 3 max=%d, offset of chunk different from ref\n", max);
+                        printf("  case 3: stop fut at offset=%d\n", offset_fut);
+                        printf("  case 3: stop ref at offset=%d\n", offset);
+                        printf("  case 3: ret_fut=%d ret_ref=%d\n", match, ret_ref);
+                        errors++;
+                        goto end;
+                }
+                putchar('.'); // Finished test 3
+        }
 
-		FUT_init(&state, w);
-		FUT_reset(&state, p);
+        // Test case 4, check if max bound is same under random params
 
-		ret = FUT_run(&state, p, max, mask, trigger, &offset_fut);
+        for (r = 0; r < RANDOMS; r++) {
+                p = buffer;
+                mask = pick_rand_mask_in_range(24, 30); // Pick an unlikely mask
+                trigger = rand() & mask;
+                w = rand() % MAX_ROLLING_HASH_WIDTH;
+                max = rand() % 1024;
 
-		if (offset_fut <= w)
-			continue;
+                if (w < 3 || max < 2 * MAX_ROLLING_HASH_WIDTH)
+                        continue;
 
-		int ret_ref = FINGERPRINT_RET_MAX;
-		for (p++, offset = w + 1; offset < max; offset++) {
-			hash = FUT_ref(&state, p++, w, 0);
-			if ((hash & mask) == trigger) {
-				ret_ref = FINGERPRINT_RET_HIT;
-				break;
-			}
-		}
+                FUT_init(&state, w);
+                FUT_reset(&state, p);
 
-		if (offset != offset_fut || ret != ret_ref) {
-			printf("\ncase 4 rand case different from ref, max=%d w=%d\n", max, w);
-			printf("  case 4: stop fut at offset=%d\n", offset_fut);
-			printf("  case 4: stop ref at offset=%d\n", offset);
-			printf("  case 4: ret_fut=%d ret_ref=%d\n", ret, ret_ref);
-			errors++;
-			goto end;
-		}
-		putchar('.');	// Finished test 4
+                ret = FUT_run(&state, p, max, mask, trigger, &offset_fut, &match);
 
-		if (ret == FINGERPRINT_RET_HIT) {
-			p[-1] = rand();	// Keep hits from repeating
-		}
-	}
+                if (ret != ISAL_CRYPTO_ERR_NONE) {
+                        printf(" %s (TC4) returned error %d\n", xstr(FUT_run), ret);
+                        errors++;
+                }
 
-      end:
-	if (buffer != NULL)
-		free(buffer);
+                if (offset_fut <= w)
+                        continue;
 
-	if (errors > 0)
-		printf(" Fail: %d\n", errors);
-	else
-		printf(" Pass\n");
-	return errors;
+                int ret_ref = FINGERPRINT_RET_MAX;
+                for (p++, offset = w + 1; offset < max; offset++) {
+                        hash = FUT_ref(&state, p++, w, 0);
+                        if ((hash & mask) == trigger) {
+                                ret_ref = FINGERPRINT_RET_HIT;
+                                break;
+                        }
+                }
+
+                if (offset != offset_fut || match != ret_ref) {
+                        printf("\ncase 4 rand case different from ref, max=%d w=%d\n", max, w);
+                        printf("  case 4: stop fut at offset=%d\n", offset_fut);
+                        printf("  case 4: stop ref at offset=%d\n", offset);
+                        printf("  case 4: ret_fut=%d ret_ref=%d\n", match, ret_ref);
+                        errors++;
+                        goto end;
+                }
+                putchar('.'); // Finished test 4
+
+                if (match == FINGERPRINT_RET_HIT) {
+                        p[-1] = rand(); // Keep hits from repeating
+                }
+        }
+
+end:
+        if (buffer != NULL)
+                free(buffer);
+
+        if (errors > 0)
+                printf(" Fail: %d\n", errors);
+        else
+                printf(" Pass\n");
+        return errors;
+#else
+        printf("FIPS Mode enabled. Test not run\n");
+
+        return 0;
+#endif
 }

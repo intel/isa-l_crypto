@@ -79,7 +79,7 @@ default rel
 %define stack_size	3*16 + 1*8	; must be an odd multiple of 8
 
 %macro FUNC_SAVE 0
-	mov             rsp, stack_size
+	alloc_stack     stack_size
 	vmovdqa64	[rsp + 0*16], xmm6
 	vmovdqa64	[rsp + 1*16], xmm7
 	vmovdqa64	[rsp + 2*16], xmm8
@@ -471,10 +471,10 @@ default rel
 section .text
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; aes_cbc_dec_128_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
+;; _aes_cbc_dec_128_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-mk_global aes_cbc_dec_128_vaes_avx512,function,internal
-aes_cbc_dec_128_vaes_avx512:
+mk_global _aes_cbc_dec_128_vaes_avx512,function,internal
+_aes_cbc_dec_128_vaes_avx512:
         endbranch
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
@@ -484,10 +484,10 @@ aes_cbc_dec_128_vaes_avx512:
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; aes_cbc_dec_192_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
+;; _aes_cbc_dec_192_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-mk_global aes_cbc_dec_192_vaes_avx512,function,internal
-aes_cbc_dec_192_vaes_avx512:
+mk_global _aes_cbc_dec_192_vaes_avx512,function,internal
+_aes_cbc_dec_192_vaes_avx512:
         endbranch
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
@@ -497,10 +497,10 @@ aes_cbc_dec_192_vaes_avx512:
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; aes_cbc_dec_256_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
+;; _aes_cbc_dec_256_vaes_avx512(void *in, void *IV, void *keys, void *out, UINT64 num_bytes)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-mk_global aes_cbc_dec_256_vaes_avx512,function,internal
-aes_cbc_dec_256_vaes_avx512:
+mk_global _aes_cbc_dec_256_vaes_avx512,function,internal
+_aes_cbc_dec_256_vaes_avx512:
         endbranch
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
@@ -511,7 +511,7 @@ aes_cbc_dec_256_vaes_avx512:
 
 %else  ; Assembler doesn't understand these opcodes. Add empty symbol for windows.
 %ifidn __OUTPUT_FORMAT__, win64
-global no_aes_cbc_dec_256_vaes_avx512
-no_aes_cbc_dec_256_vaes_avx512:
+global no__aes_cbc_dec_256_vaes_avx512
+no__aes_cbc_dec_256_vaes_avx512:
 %endif
 %endif ; (AS_FEATURE_LEVEL) >= 10

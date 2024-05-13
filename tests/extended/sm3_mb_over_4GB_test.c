@@ -33,130 +33,130 @@
 #include "endian_helper.h"
 #include <openssl/evp.h>
 
-#define TEST_LEN  		(1024*1024ull)	//1M
-#define TEST_BUFS 		SM3_MAX_LANES
-#define ROTATION_TIMES 		10000	//total length processing = TEST_LEN * ROTATION_TIMES
-#define UPDATE_SIZE		(13*SM3_BLOCK_SIZE)
-#define LEN_TOTAL		(TEST_LEN * ROTATION_TIMES)
+#define TEST_LEN       (1024 * 1024ull) // 1M
+#define TEST_BUFS      SM3_MAX_LANES
+#define ROTATION_TIMES 10000 // total length processing = TEST_LEN * ROTATION_TIMES
+#define UPDATE_SIZE    (13 * SM3_BLOCK_SIZE)
+#define LEN_TOTAL      (TEST_LEN * ROTATION_TIMES)
 
 /* Reference digest global to reduce stack usage */
 static uint8_t digest_ref_upd[4 * SM3_DIGEST_NWORDS];
 
 struct user_data {
-	int idx;
-	uint64_t processed;
+        int idx;
+        uint64_t processed;
 };
 
-int main(void)
+int
+main(void)
 {
-	SM3_HASH_CTX_MGR *mgr = NULL;
-	SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
-	uint32_t i, j, k, fail = 0;
-	unsigned char *bufs[TEST_BUFS];
-	struct user_data udata[TEST_BUFS];
-	EVP_MD_CTX *md_ctx;
-	const EVP_MD *md;
-	unsigned int md_len;
-	int ret;
+        SM3_HASH_CTX_MGR *mgr = NULL;
+        SM3_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
+        uint32_t i, j, k, fail = 0;
+        unsigned char *bufs[TEST_BUFS];
+        struct user_data udata[TEST_BUFS];
+        EVP_MD_CTX *md_ctx;
+        const EVP_MD *md;
+        unsigned int md_len;
+        int ret;
 
-	ret = posix_memalign((void *)&mgr, 16, sizeof(SM3_HASH_CTX_MGR));
-	if ((ret != 0) || (mgr == NULL)) {
-		printf("posix_memalign failed test aborted\n");
-		return 1;
-	}
+        ret = posix_memalign((void *) &mgr, 16, sizeof(SM3_HASH_CTX_MGR));
+        if ((ret != 0) || (mgr == NULL)) {
+                printf("posix_memalign failed test aborted\n");
+                return 1;
+        }
 
-	sm3_ctx_mgr_init(mgr);
+        sm3_ctx_mgr_init(mgr);
 
-	printf("sm3_large_test\n");
+        printf("sm3_large_test\n");
 
-	// Init ctx contents
-	for (i = 0; i < TEST_BUFS; i++) {
-		bufs[i] = (unsigned char *)calloc((size_t)TEST_LEN, 1);
-		if (bufs[i] == NULL) {
-			printf("malloc failed test aborted\n");
-			return 1;
-		}
-		hash_ctx_init(&ctxpool[i]);
-		ctxpool[i].user_data = (void *)&udata[i];
-	}
+        // Init ctx contents
+        for (i = 0; i < TEST_BUFS; i++) {
+                bufs[i] = (unsigned char *) calloc((size_t) TEST_LEN, 1);
+                if (bufs[i] == NULL) {
+                        printf("malloc failed test aborted\n");
+                        return 1;
+                }
+                hash_ctx_init(&ctxpool[i]);
+                ctxpool[i].user_data = (void *) &udata[i];
+        }
 
-	//Openssl SM3 update test
-	md = EVP_sm3();
-	md_ctx = EVP_MD_CTX_new();
-	EVP_DigestInit_ex(md_ctx, md, NULL);
-	for (k = 0; k < ROTATION_TIMES; k++) {
-		EVP_DigestUpdate(md_ctx, bufs[k % TEST_BUFS], TEST_LEN);
-	}
-	EVP_DigestFinal_ex(md_ctx, digest_ref_upd, &md_len);
-	EVP_MD_CTX_free(md_ctx);
+        // Openssl SM3 update test
+        md = EVP_sm3();
+        md_ctx = EVP_MD_CTX_new();
+        EVP_DigestInit_ex(md_ctx, md, NULL);
+        for (k = 0; k < ROTATION_TIMES; k++) {
+                EVP_DigestUpdate(md_ctx, bufs[k % TEST_BUFS], TEST_LEN);
+        }
+        EVP_DigestFinal_ex(md_ctx, digest_ref_upd, &md_len);
+        EVP_MD_CTX_free(md_ctx);
 
-	// Initialize pool
-	for (i = 0; i < TEST_BUFS; i++) {
-		struct user_data *u = (struct user_data *)ctxpool[i].user_data;
-		u->idx = i;
-		u->processed = 0;
-	}
+        // Initialize pool
+        for (i = 0; i < TEST_BUFS; i++) {
+                struct user_data *u = (struct user_data *) ctxpool[i].user_data;
+                u->idx = i;
+                u->processed = 0;
+        }
 
-	printf("Starting updates\n");
-	int highest_pool_idx = 0;
-	ctx = &ctxpool[highest_pool_idx++];
-	while (ctx) {
-		int len = UPDATE_SIZE;
-		int update_type = HASH_UPDATE;
-		struct user_data *u = (struct user_data *)ctx->user_data;
-		int idx = u->idx;
+        printf("Starting updates\n");
+        int highest_pool_idx = 0;
+        ctx = &ctxpool[highest_pool_idx++];
+        while (ctx) {
+                int len = UPDATE_SIZE;
+                int update_type = HASH_UPDATE;
+                struct user_data *u = (struct user_data *) ctx->user_data;
+                int idx = u->idx;
 
-		if (u->processed == 0)
-			update_type = HASH_FIRST;
+                if (u->processed == 0)
+                        update_type = HASH_FIRST;
 
-		else if (hash_ctx_complete(ctx)) {
-			if (highest_pool_idx < TEST_BUFS)
-				ctx = &ctxpool[highest_pool_idx++];
-			else
-				ctx = sm3_ctx_mgr_flush(mgr);
-			continue;
-		} else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
-			len = (LEN_TOTAL - u->processed);
-			update_type = HASH_LAST;
-		}
-		u->processed += len;
-		ctx = sm3_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);
+                else if (hash_ctx_complete(ctx)) {
+                        if (highest_pool_idx < TEST_BUFS)
+                                ctx = &ctxpool[highest_pool_idx++];
+                        else
+                                ctx = sm3_ctx_mgr_flush(mgr);
+                        continue;
+                } else if (u->processed >= (LEN_TOTAL - UPDATE_SIZE)) {
+                        len = (LEN_TOTAL - u->processed);
+                        update_type = HASH_LAST;
+                }
+                u->processed += len;
+                ctx = sm3_ctx_mgr_submit(mgr, ctx, bufs[idx], len, update_type);
 
-		if (NULL == ctx) {
-			if (highest_pool_idx < TEST_BUFS)
-				ctx = &ctxpool[highest_pool_idx++];
-			else
-				ctx = sm3_ctx_mgr_flush(mgr);
-		}
-	}
+                if (NULL == ctx) {
+                        if (highest_pool_idx < TEST_BUFS)
+                                ctx = &ctxpool[highest_pool_idx++];
+                        else
+                                ctx = sm3_ctx_mgr_flush(mgr);
+                }
+        }
 
-	printf("multibuffer SM3 digest: \n");
-	for (i = 0; i < TEST_BUFS; i++) {
-		printf("Total processing size of buf[%d] is %ld \n", i,
-		       ctxpool[i].total_length);
-		for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
-			printf("digest%d : %08X\n", j, ctxpool[i].job.result_digest[j]);
-		}
-	}
-	printf("\n");
+        printf("multibuffer SM3 digest: \n");
+        for (i = 0; i < TEST_BUFS; i++) {
+                printf("Total processing size of buf[%d] is %ld \n", i, ctxpool[i].total_length);
+                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                        printf("digest%d : %08X\n", j, ctxpool[i].job.result_digest[j]);
+                }
+        }
+        printf("\n");
 
-	printf("openssl SM3 update digest: \n");
-	for (i = 0; i < SM3_DIGEST_NWORDS; i++)
-		printf("%08X - ", to_le32(((uint32_t *) digest_ref_upd)[i]));
-	printf("\n");
+        printf("openssl SM3 update digest: \n");
+        for (i = 0; i < SM3_DIGEST_NWORDS; i++)
+                printf("%08X - ", to_le32(((uint32_t *) digest_ref_upd)[i]));
+        printf("\n");
 
-	for (i = 0; i < TEST_BUFS; i++) {
-		for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
-			if (ctxpool[i].job.result_digest[j] !=
-			    to_le32(((uint32_t *) digest_ref_upd)[j])) {
-				fail++;
-			}
-		}
-	}
+        for (i = 0; i < TEST_BUFS; i++) {
+                for (j = 0; j < SM3_DIGEST_NWORDS; j++) {
+                        if (ctxpool[i].job.result_digest[j] !=
+                            to_le32(((uint32_t *) digest_ref_upd)[j])) {
+                                fail++;
+                        }
+                }
+        }
 
-	if (fail)
-		printf("Test failed SM3_hash_large check %d\n", fail);
-	else
-		printf(" SM3_hash_large_test: Pass\n");
-	return fail;
+        if (fail)
+                printf("Test failed SM3_hash_large check %d\n", fail);
+        else
+                printf(" SM3_hash_large_test: Pass\n");
+        return fail;
 }

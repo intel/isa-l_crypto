@@ -57,9 +57,9 @@ default rel
 %define GHASH_POLY 0x87
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;void XTS_AES_256_enc_avx(
+;void XTS_AES_256_dec_vaes(
 ;               UINT8 *k2,      // key used for tweaking, 16*2 bytes
-;               UINT8 *k1,      // key used for "ECB" encryption, 16*2 bytes
+;               UINT8 *k1,      // key used for "ECB" decryption, 16*2 bytes
 ;               UINT8 *TW_initial,      // initial tweak value, 16 bytes
 ;               UINT64 N,       // sector size, in bytes
 ;               const UINT8 *pt,        // plaintext sector input data
@@ -1551,6 +1551,12 @@ _done:
 _ret_:
 %ifdef SAFE_DATA
         clear_all_zmms_asm
+        ; Clear expanded keys (16*15 bytes)
+        vmovdqa64       [keys], zmm0
+        vmovdqa64       [keys + 4*16], zmm0
+        vmovdqa64       [keys + 8*16], zmm0
+        vmovdqa64       [keys + 12*16], ymm0
+        vmovdqa64       [keys + 14*16], xmm0
 %else
         vzeroupper
 %endif

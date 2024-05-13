@@ -36,158 +36,181 @@
 #include <stdint.h>
 #include <string.h>
 #include <aes_cbc.h>
+#include <aes_keyexp.h>
 #include "types.h"
 #include "cbc_std_vectors.h"
 
-typedef void (*aes_cbc_generic)(uint8_t * in, uint8_t * IV, uint8_t * keys, uint8_t * out,
-				uint64_t len_bytes);
+typedef void (*aes_cbc_generic)(uint8_t *in, uint8_t *IV, uint8_t *keys, uint8_t *out,
+                                uint64_t len_bytes);
 
-int check_data(uint8_t * test, uint8_t * expected, uint64_t len, char *data_name)
+int
+check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 {
-	int mismatch;
-	int OK = 0;
-	uint64_t a;
+        int mismatch;
+        int OK = 0;
+        uint64_t a;
 
-	mismatch = memcmp(test, expected, len);
-	if (!mismatch) {
-		return OK;
-
-	} else {
-		OK = 1;
-		printf("  failed %s \t\t", data_name);
-		for (a = 0; a < len; a++) {
-			if (test[a] != expected[a]) {
-				printf(" '%x' != '%x' at %lx of %lx\n",
-				       test[a], expected[a], a, len);
-				break;
-			}
-		}
-	}
-	return OK;
+        mismatch = memcmp(test, expected, len);
+        if (!mismatch) {
+                return OK;
+        } else {
+                OK = 1;
+                printf("  failed %s \t\t", data_name);
+                for (a = 0; a < len; a++) {
+                        if (test[a] != expected[a]) {
+                                printf(" '%x' != '%x' at %llx of %llx\n", test[a], expected[a],
+                                       (unsigned long long) a, (unsigned long long) len);
+                                break;
+                        }
+                }
+        }
+        return OK;
 }
 
-int check_vector(struct cbc_vector *vector)
+int
+check_vector(struct cbc_vector *vector)
 {
-	uint8_t *pt_test = NULL;
-	int OK = 0;
-	aes_cbc_generic enc;
-	aes_cbc_generic dec;
+        uint8_t *pt_test = NULL;
+        int OK = 0;
+        aes_cbc_generic enc;
+        aes_cbc_generic dec;
 
-	DEBUG_PRINT((" Keylen:%d PLen:%d ", (int)vector->K_LEN, (int)vector->P_LEN));
-	DEBUG_PRINT((" K:%p P:%p C:%p IV:%p expC:%p Keys:%p ", vector->K, vector->P, vector->C,
-		     vector->IV, vector->EXP_C, vector->KEYS));
-	printf(".");
+        DEBUG_PRINT((" Keylen:%d PLen:%d ", (int) vector->K_LEN, (int) vector->P_LEN));
+        DEBUG_PRINT((" K:%p P:%p C:%p IV:%p expC:%p Keys:%p ", vector->K, vector->P, vector->C,
+                     vector->IV, vector->EXP_C, vector->KEYS));
+        printf(".");
 
-	switch (vector->K_LEN) {
-	case CBC_128_BITS:
-		enc = (aes_cbc_generic) & aes_cbc_enc_128;
-		dec = (aes_cbc_generic) & aes_cbc_dec_128;
-		DEBUG_PRINT((" CBC128 "));
-		break;
-	case CBC_192_BITS:
-		enc = (aes_cbc_generic) & aes_cbc_enc_192;
-		dec = (aes_cbc_generic) & aes_cbc_dec_192;
-		DEBUG_PRINT((" CBC192 "));
-		break;
-	case CBC_256_BITS:
-		enc = (aes_cbc_generic) & aes_cbc_enc_256;
-		dec = (aes_cbc_generic) & aes_cbc_dec_256;
-		DEBUG_PRINT((" CBC256 "));
-		break;
-	default:
-		printf("Invalid key length: %d\n", vector->K_LEN);
-		return 1;
-	}
+        switch (vector->K_LEN) {
+        case CBC_128_BITS:
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
+                isal_aes_keyexp_128(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
+                DEBUG_PRINT((" CBC128 "));
+                break;
+        case CBC_192_BITS:
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
+                isal_aes_keyexp_192(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
+                DEBUG_PRINT((" CBC192 "));
+                break;
+        case CBC_256_BITS:
+                enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
+                dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
+                isal_aes_keyexp_256(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
+                DEBUG_PRINT((" CBC256 "));
+                break;
+        default:
+                printf("Invalid key length: %d\n", vector->K_LEN);
+                return 1;
+        }
 
-	// Allocate space for the calculated ciphertext
-	pt_test = malloc(vector->P_LEN);
+        // Allocate space for the calculated ciphertext
+        pt_test = malloc(vector->P_LEN);
 
-	if (pt_test == NULL) {
-		fprintf(stderr, "Can't allocate ciphertext memory\n");
-		return 1;
-	}
+        if (pt_test == NULL) {
+                fprintf(stderr, "Can't allocate ciphertext memory\n");
+                return 1;
+        }
 
-	aes_cbc_precomp(vector->K, vector->K_LEN, vector->KEYS);
+        ////
+        // ISA-L CBC Encrypt (out-of-place)
+        ////
+        enc(vector->P, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
 
-	////
-	// ISA-l Encrypt
-	////
-	enc(vector->P, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
+        if (NULL != vector->EXP_C) { // when the encrypted text is known verify correct
+                OK |= check_data(vector->EXP_C, vector->C, vector->P_LEN,
+                                 "AES-CBC out-of-place encryption");
+        }
 
-	if (NULL != vector->EXP_C) {	//when the encrypted text is known verify correct
-		OK |= check_data(vector->EXP_C, vector->C, vector->P_LEN,
-				 "ISA-L expected cypher text (C)");
-	}
-	memcpy(pt_test, vector->P, vector->P_LEN);
-	memset(vector->P, 0, vector->P_LEN);
+        ////
+        // ISA-L CBC Encrypt (in-place)
+        ////
+        memcpy(vector->C, vector->P, vector->P_LEN);
+        enc(vector->C, vector->IV, vector->KEYS->enc_keys, vector->C, vector->P_LEN);
 
-	////
-	// ISA-l Decrypt
-	////
-	dec(vector->C, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
-	OK |= check_data(vector->P, pt_test, vector->P_LEN, "ISA-L decrypted plain text (P)");
-	DEBUG_PRINT((OK ? "Failed\n" : "Passed\n"));
+        if (NULL != vector->EXP_C) { // when the encrypted text is known verify correct
+                OK |= check_data(vector->EXP_C, vector->C, vector->P_LEN,
+                                 "AES-CBC in-place encryption");
+        }
+        memcpy(pt_test, vector->P, vector->P_LEN);
+        memset(vector->P, 0, vector->P_LEN);
 
-	free(pt_test);
-	return OK;
+        ////
+        // ISA-L CBC Decrypt (out-of-place)
+        ////
+        dec(vector->C, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
+        OK |= check_data(vector->P, pt_test, vector->P_LEN, "AES-CBC in-place decryption");
+
+        ////
+        // ISA-L CBC Decrypt (in-place)
+        ////
+        memcpy(vector->P, vector->C, vector->P_LEN);
+        dec(vector->P, vector->IV, vector->KEYS->dec_keys, vector->P, vector->P_LEN);
+        OK |= check_data(vector->P, pt_test, vector->P_LEN, "AES-CBC in-place decryption");
+        DEBUG_PRINT((OK ? "Failed\n" : "Passed\n"));
+
+        free(pt_test);
+        return OK;
 }
 
-int test_std_combinations(void)
+int
+test_std_combinations(void)
 {
-	int const vectors_cnt = sizeof(cbc_vectors) / sizeof(cbc_vectors[0]);
-	int i, ret;
-	uint8_t *iv = NULL;
+        int const vectors_cnt = sizeof(cbc_vectors) / sizeof(cbc_vectors[0]);
+        int i, ret;
+        uint8_t *iv = NULL;
 
-	printf("AES CBC standard test vectors: ");
+        printf("AES CBC standard test vectors: ");
 
-	ret = posix_memalign((void **)&iv, 16, (CBC_IV_DATA_LEN));
-	if ((0 != ret) || (NULL == iv))
-		return 1;
+        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        if ((0 != ret) || (NULL == iv))
+                return 1;
 
-	for (i = 0; (i < vectors_cnt); i++) {
-		struct cbc_vector vect = cbc_vectors[i];
+        for (i = 0; (i < vectors_cnt); i++) {
+                struct cbc_vector vect = cbc_vectors[i];
 
-		ret = posix_memalign((void **)&(vect.KEYS), 16, sizeof(*vect.KEYS));
-		if ((0 != ret) || (NULL == vect.KEYS)) {
-			ret = 1;
-			break;
-		}
-		// IV data must be aligned to 16 byte boundary so move data in
-		// aligned buffer and change out the pointer
-		memcpy(iv, vect.IV, CBC_IV_DATA_LEN);
-		vect.IV = iv;
-		vect.C = malloc(vect.P_LEN);
-		if (NULL == vect.C) {
-			ret = 1;
-			aligned_free(vect.KEYS);
-			vect.KEYS = NULL;
-			break;
-		}
+                ret = posix_memalign((void **) &(vect.KEYS), 16, sizeof(*vect.KEYS));
+                if ((0 != ret) || (NULL == vect.KEYS)) {
+                        ret = 1;
+                        break;
+                }
+                // IV data must be aligned to 16 byte boundary so move data in
+                // aligned buffer and change out the pointer
+                memcpy(iv, vect.IV, CBC_IV_DATA_LEN);
+                vect.IV = iv;
+                vect.C = malloc(vect.P_LEN);
+                if (NULL == vect.C) {
+                        ret = 1;
+                        aligned_free(vect.KEYS);
+                        vect.KEYS = NULL;
+                        break;
+                }
 
-		DEBUG_PRINT(("vector[%d of %d] ", i, vectors_cnt));
+                DEBUG_PRINT(("vector[%d of %d] ", i, vectors_cnt));
 
-		if (0 != check_vector(&vect))
-			ret = 1;
+                if (0 != check_vector(&vect))
+                        ret = 1;
 
-		aligned_free(vect.KEYS);
-		vect.KEYS = NULL;
-		free(vect.C);
-		vect.C = NULL;
+                aligned_free(vect.KEYS);
+                vect.KEYS = NULL;
+                free(vect.C);
+                vect.C = NULL;
 
-		if (ret != 0)
-			break;
-	}
+                if (ret != 0)
+                        break;
+        }
 
-	aligned_free(iv);
-	return ret;
+        aligned_free(iv);
+        return ret;
 }
 
-int main(void)
+int
+main(void)
 {
-	uint32_t OK = 0;
+        uint32_t OK = 0;
 
-	OK = test_std_combinations();
+        OK = test_std_combinations();
 
-	printf(0 == OK ? "Pass\n" : "Fail\n");
-	return OK;
+        printf(0 == OK ? "Pass\n" : "Fail\n");
+        return OK;
 }

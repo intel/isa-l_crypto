@@ -73,6 +73,8 @@ src_include += -I $(srcdir)/mh_sha1_murmur3_x64_128
 
 extern_hdrs +=	include/mh_sha1_murmur3_x64_128.h
 
+check_tests +=  mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_param_test
+
 unit_tests  += 	mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_test \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_update_test
 

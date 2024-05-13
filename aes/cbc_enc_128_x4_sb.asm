@@ -30,7 +30,7 @@
 ;;; routine to do a 128 bit CBC AES encrypt
 ;;; Updates In and Out pointers at end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;void aes_cbc_enc_128_x4(void      *in,
+;;void _aes_cbc_enc_128_x4(void      *in,
 ;;                        uint8_t   *IV,
 ;;                        uint8_t   *keys,
 ;;                        void      *out,
@@ -118,8 +118,8 @@
 %include "cbc_common.asm"
 
 
-mk_global aes_cbc_enc_128_x4, function
-func(aes_cbc_enc_128_x4)
+mk_global _aes_cbc_enc_128_x4, function, internal
+func(_aes_cbc_enc_128_x4)
 	endbranch
 	FUNC_SAVE
 

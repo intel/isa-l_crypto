@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#define FN_NAME(fn,mode,post) aes_cbc_##fn##_##mode##_##post
+#define FN_NAME(fn,mode,post) _aes_cbc_##fn##_##mode##_##post
 #define LABEL_NAME(fn,mode,post) .L##fn##_##mode##_##post
 #define START_FUNC(fn,mode,post) .global FN_NAME(fn,mode,post); \
     .type   FN_NAME(fn,mode,post), %function; \

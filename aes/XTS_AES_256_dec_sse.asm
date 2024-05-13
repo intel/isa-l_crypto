@@ -57,7 +57,7 @@ default rel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void XTS_AES_256_dec_sse(
 ;               UINT8 *k2,      // key used for tweaking, 16*2 bytes
-;               UINT8 *k1,      // key used for "ECB" encryption, 16*2 bytes
+;               UINT8 *k1,      // key used for "ECB" decryption, 16*2 bytes
 ;               UINT8 *TW_initial,      // initial tweak value, 16 bytes
 ;               UINT64 N,       // sector size, in bytes
 ;               const UINT8 *ct,        // ciphertext sector input data
@@ -1569,6 +1569,12 @@ _ret_:
 
 %ifdef SAFE_DATA
         clear_all_xmms_sse_asm
+        ; Clear expanded keys (16*15 bytes)
+%assign i 0
+%rep 15
+        movdqa  [keys + i*16], xmm0
+%assign i (i + 1)
+%endrep
 %endif
 	mov     rbx, [_gpr + 8*0]
 %ifidn __OUTPUT_FORMAT__, win64

@@ -27,6 +27,8 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
+lsrc +=		sha512_mb/sha512_mb.c
+
 lsrc_x86_64 += 	sha512_mb/sha512_ctx_sse.c \
 		sha512_mb/sha512_ctx_avx.c \
 		sha512_mb/sha512_ctx_avx2.c \
@@ -88,7 +90,8 @@ other_src += 	include/datastruct.asm \
 
 check_tests +=	sha512_mb/sha512_mb_test \
 		sha512_mb/sha512_mb_rand_test \
-		sha512_mb/sha512_mb_rand_update_test
+		sha512_mb/sha512_mb_rand_update_test \
+		sha512_mb/sha512_mb_param_test
 
 unit_tests   += sha512_mb/sha512_mb_rand_ssl_test
 

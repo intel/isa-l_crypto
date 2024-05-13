@@ -65,41 +65,41 @@
 extern "C" {
 #endif
 
-
 // External Interface Definition
-#define HASH_SEGS					16
-#define SHA1_BLOCK_SIZE					64
-#define MH_SHA1_BLOCK_SIZE   (HASH_SEGS * SHA1_BLOCK_SIZE)
-#define SHA1_DIGEST_WORDS				 5
-#define AVX512_ALIGNED					64
+#define HASH_SEGS          16
+#define SHA1_BLOCK_SIZE    64
+#define MH_SHA1_BLOCK_SIZE (HASH_SEGS * SHA1_BLOCK_SIZE)
+#define SHA1_DIGEST_WORDS  5
+#define AVX512_ALIGNED     64
 
 /** @brief Holds info describing a single mh_sha1
  *
  * It is better to use heap to allocate this data structure to avoid stack overflow.
  *
-*/
+ */
 struct mh_sha1_ctx {
-	uint32_t  mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
+        uint32_t mh_sha1_digest[SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
 
-	uint64_t  total_length;
-	//!<  Parameters for update feature, describe the lengths of input buffers in bytes
-	uint8_t   partial_block_buffer [MH_SHA1_BLOCK_SIZE * 2];
-	//!<  Padding the tail of input data for SHA1
-	uint8_t   mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
-	//!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to stack for 64-byte alignment purpose.
-	uint8_t   frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
-	//!<  Re-structure sha1 block data from different segments to fit big endian. Use AVX512_ALIGNED for 64-byte alignment purpose.
+        uint64_t total_length;
+        //!<  Parameters for update feature, describe the lengths of input buffers in bytes
+        uint8_t partial_block_buffer[MH_SHA1_BLOCK_SIZE * 2];
+        //!<  Padding the tail of input data for SHA1
+        uint8_t mh_sha1_interim_digests[sizeof(uint32_t) * SHA1_DIGEST_WORDS * HASH_SEGS];
+        //!<  Storing the SHA1 interim digests of  all 16 segments. Each time, it will be copied to
+        //!<  stack for 64-byte alignment purpose.
+        uint8_t frame_buffer[MH_SHA1_BLOCK_SIZE + AVX512_ALIGNED];
+        //!<  Re-structure sha1 block data from different segments to fit big endian. Use
+        //!<  AVX512_ALIGNED for 64-byte alignment purpose.
 };
 
 /**
  *  @enum mh_sha1_ctx_error
  *  @brief CTX error flags
  */
-enum mh_sha1_ctx_error{
-	MH_SHA1_CTX_ERROR_NONE			=  0, //!< MH_SHA1_CTX_ERROR_NONE
-	MH_SHA1_CTX_ERROR_NULL			= -1, //!< MH_SHA1_CTX_ERROR_NULL
+enum mh_sha1_ctx_error {
+        MH_SHA1_CTX_ERROR_NONE = 0,  //!< MH_SHA1_CTX_ERROR_NONE
+        MH_SHA1_CTX_ERROR_NULL = -1, //!< MH_SHA1_CTX_ERROR_NULL
 };
-
 
 /*******************************************************************
  * mh_sha1 API function prototypes
@@ -111,7 +111,8 @@ enum mh_sha1_ctx_error{
  * @param  ctx Structure holding mh_sha1 info
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_init (struct mh_sha1_ctx* ctx);
+int
+mh_sha1_init(struct mh_sha1_ctx *ctx);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -125,7 +126,8 @@ int mh_sha1_init (struct mh_sha1_ctx* ctx);
  * @param  len Length of buffer (in bytes) to be processed
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_update (struct mh_sha1_ctx * ctx, const void* buffer, uint32_t len);
+int
+mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -139,7 +141,8 @@ int mh_sha1_update (struct mh_sha1_ctx * ctx, const void* buffer, uint32_t len);
  * @param   mh_sha1_digest The digest of mh_sha1
  * @returns int Return 0 if the function runs without errors
  */
-int mh_sha1_finalize (struct mh_sha1_ctx* ctx, void* mh_sha1_digest);
+int
+mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /*******************************************************************
  * multi-types of mh_sha1 internal API
@@ -165,7 +168,8 @@ int mh_sha1_finalize (struct mh_sha1_ctx* ctx, void* mh_sha1_digest);
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_update_base (struct mh_sha1_ctx* ctx, const void* buffer, uint32_t len);
+int
+mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -179,8 +183,8 @@ int mh_sha1_update_base (struct mh_sha1_ctx* ctx, const void* buffer, uint32_t l
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_update_sse (struct mh_sha1_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_update_sse(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -194,8 +198,8 @@ int mh_sha1_update_sse (struct mh_sha1_ctx * ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_update_avx (struct mh_sha1_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_update_avx(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -209,8 +213,8 @@ int mh_sha1_update_avx (struct mh_sha1_ctx * ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_update_avx2 (struct mh_sha1_ctx * ctx,
-						const void* buffer, uint32_t len);
+int
+mh_sha1_update_avx2(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -224,12 +228,11 @@ int mh_sha1_update_avx2 (struct mh_sha1_ctx * ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_update_avx512 (struct mh_sha1_ctx * ctx,
-						const void* buffer, uint32_t len);
-
+int
+mh_sha1_update_avx512(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
-  * @brief Finalize the message digests for multi-hash sha1.
+ * @brief Finalize the message digests for multi-hash sha1.
  *
  * Place the message digests in mh_sha1_digest,
  * which must have enough space for the outputs.
@@ -240,8 +243,8 @@ int mh_sha1_update_avx512 (struct mh_sha1_ctx * ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_finalize_base (struct mh_sha1_ctx* ctx,
-						void* mh_sha1_digest);
+int
+mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -256,8 +259,8 @@ int mh_sha1_finalize_base (struct mh_sha1_ctx* ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_finalize_sse (struct mh_sha1_ctx* ctx,
-						void* mh_sha1_digest);
+int
+mh_sha1_finalize_sse(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -272,8 +275,8 @@ int mh_sha1_finalize_sse (struct mh_sha1_ctx* ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_finalize_avx (struct mh_sha1_ctx* ctx,
-						void* mh_sha1_digest);
+int
+mh_sha1_finalize_avx(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -288,8 +291,8 @@ int mh_sha1_finalize_avx (struct mh_sha1_ctx* ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_finalize_avx2 (struct mh_sha1_ctx* ctx,
-						void* mh_sha1_digest);
+int
+mh_sha1_finalize_avx2(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -304,8 +307,8 @@ int mh_sha1_finalize_avx2 (struct mh_sha1_ctx* ctx,
  * @returns int Return 0 if the function runs without errors
  *
  */
-int mh_sha1_finalize_avx512 (struct mh_sha1_ctx* ctx,
-						void* mh_sha1_digest);
+int
+mh_sha1_finalize_avx512(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Initialize the mh_sha1_ctx structure.
@@ -315,7 +318,8 @@ int mh_sha1_finalize_avx512 (struct mh_sha1_ctx* ctx,
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_mh_sha1_init (struct mh_sha1_ctx* ctx);
+int
+isal_mh_sha1_init(struct mh_sha1_ctx *ctx);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -331,7 +335,8 @@ int isal_mh_sha1_init (struct mh_sha1_ctx* ctx);
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_mh_sha1_update (struct mh_sha1_ctx * ctx, const void* buffer, uint32_t len);
+int
+isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -347,11 +352,11 @@ int isal_mh_sha1_update (struct mh_sha1_ctx * ctx, const void* buffer, uint32_t 
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
-int isal_mh_sha1_finalize (struct mh_sha1_ctx* ctx, void* mh_sha1_digest);
+int
+isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

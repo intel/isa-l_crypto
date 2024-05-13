@@ -7,6 +7,56 @@
 *.exp
 *.lib
 bin
+*.log
+*.trs
+
+# Binary files
+TAGS
+cbc_std_vectors_random_test
+cbc_std_vectors_test
+gcm_nt_rand_test
+gcm_nt_std_vectors_test
+gcm_std_vectors_random_test
+gcm_std_vectors_test
+xts_128_expanded_key_test
+xts_128_rand
+xts_128_rand_ossl_test
+xts_128_test
+xts_256_expanded_key_test
+xts_256_rand
+xts_256_rand_ossl_test
+xts_256_test
+md5_mb/md5_mb_rand_ssl_test
+md5_mb/md5_mb_rand_test
+md5_mb/md5_mb_rand_update_test
+md5_mb/md5_mb_test
+mh_sha1/mh_sha1_test
+mh_sha1/mh_sha1_update_test
+mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_test
+mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_update_test
+mh_sha256/mh_sha256_test
+mh_sha256/mh_sha256_update_test
+rolling_hash/rolling_hash2_test
+sha1_mb/sha1_mb_flush_test
+sha1_mb/sha1_mb_rand_ssl_test
+sha1_mb/sha1_mb_rand_test
+sha1_mb/sha1_mb_rand_update_test
+sha1_mb/sha1_mb_test
+sha256_mb/sha256_mb_flush_test
+sha256_mb/sha256_mb_rand_ssl_test
+sha256_mb/sha256_mb_rand_test
+sha256_mb/sha256_mb_rand_update_test
+sha256_mb/sha256_mb_test
+sha512_mb/sha512_mb_rand_ssl_test
+sha512_mb/sha512_mb_rand_test
+sha512_mb/sha512_mb_rand_update_test
+sha512_mb/sha512_mb_test
+sm3_mb/sm3_mb_flush_test
+sm3_mb/sm3_mb_rand_ssl_test
+sm3_mb/sm3_mb_rand_test
+sm3_mb/sm3_mb_rand_update_test
+sm3_mb/sm3_mb_test
+sm3_mb/sm3_ref_test
 
 # Autobuild
 Makefile
@@ -19,6 +69,7 @@ configure
 .deps
 .dirstamp
 .libs
+*/.libs
 libtool
 
 # Generated files

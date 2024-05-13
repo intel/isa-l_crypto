@@ -30,20 +30,18 @@
 
 DEFINE_INTERFACE_DISPATCHER(mh_sha256_update)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if (auxval & HWCAP_SHA2)
-		return PROVIDER_INFO(mh_sha256_update_ce);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if (auxval & HWCAP_SHA2)
+                return PROVIDER_INFO(mh_sha256_update_ce);
 
-	return PROVIDER_BASIC(mh_sha256_update);
-
+        return PROVIDER_BASIC(mh_sha256_update);
 }
 
 DEFINE_INTERFACE_DISPATCHER(mh_sha256_finalize)
 {
-	unsigned long auxval = getauxval(AT_HWCAP);
-	if (auxval & HWCAP_SHA2)
-		return PROVIDER_INFO(mh_sha256_finalize_ce);
+        unsigned long auxval = getauxval(AT_HWCAP);
+        if (auxval & HWCAP_SHA2)
+                return PROVIDER_INFO(mh_sha256_finalize_ce);
 
-	return PROVIDER_BASIC(mh_sha256_finalize);
-
+        return PROVIDER_BASIC(mh_sha256_finalize);
 }

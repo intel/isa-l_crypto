@@ -74,6 +74,7 @@ src_include += -I $(srcdir)/mh_sha256
 extern_hdrs +=	include/mh_sha256.h
 
 check_tests += 	mh_sha256/mh_sha256_test
+check_tests += 	mh_sha256/mh_sha256_param_test
 unit_tests  += 	mh_sha256/mh_sha256_update_test
 
 perf_tests  += 	mh_sha256/mh_sha256_perf

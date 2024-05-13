@@ -31,398 +31,380 @@
 #define AES_OSSL_HELPER_H_
 
 #ifdef _MSC_VER
-# define inline __inline
+#define inline __inline
 #endif
 
 #include <openssl/evp.h>
 
-static inline
-    int openssl_aes_128_cbc_dec(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * ciphertext, uint8_t * plaintext)
+static inline int
+openssl_aes_128_cbc_dec(uint8_t *key, uint8_t *iv, int len, uint8_t *ciphertext, uint8_t *plaintext)
 {
-	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen = 0, tmplen = 0;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (uint8_t const *)ciphertext, len))
-		printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_DecryptFinal_ex(ctx, &plaintext[outlen], &tmplen))
-		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_128_cbc %x, %x, %x\n", len,
-		       outlen, tmplen);
+        if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (uint8_t const *) ciphertext, len))
+                printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_128_cbc\n");
+        if (!EVP_DecryptFinal_ex(ctx, &plaintext[outlen], &tmplen))
+                printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_128_cbc %x, %x, %x\n", len, outlen,
+                       tmplen);
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-static inline
-    int openssl_aes_128_cbc_enc(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * plaintext, uint8_t * ciphertext)
+static inline int
+openssl_aes_128_cbc_enc(uint8_t *key, uint8_t *iv, int len, uint8_t *plaintext, uint8_t *ciphertext)
 {
-	int outlen, tmplen;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen, tmplen;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_EncryptUpdate
-	    (ctx, ciphertext, &outlen, (const unsigned char *)plaintext, len))
-		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
+        if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const unsigned char *) plaintext, len))
+                printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
+        if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-static inline
-    int openssl_aes_192_cbc_dec(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * ciphertext, uint8_t * plaintext)
+static inline int
+openssl_aes_192_cbc_dec(uint8_t *key, uint8_t *iv, int len, uint8_t *ciphertext, uint8_t *plaintext)
 {
-	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen = 0, tmplen = 0;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_DecryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_192_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_DecryptUpdate
-	    (ctx, plaintext, &outlen, (const unsigned char *)ciphertext, len))
-		printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_192_cbc\n");
-	if (!EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_192_cbc \n");
+        if (!EVP_DecryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_192_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (const unsigned char *) ciphertext, len))
+                printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_192_cbc\n");
+        if (!EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_192_cbc \n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return 0;
+        EVP_CIPHER_CTX_free(ctx);
+        return 0;
 }
 
-static inline
-    int openssl_aes_192_cbc_enc(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * plaintext, uint8_t * ciphertext)
+static inline int
+openssl_aes_192_cbc_enc(uint8_t *key, uint8_t *iv, int len, uint8_t *plaintext, uint8_t *ciphertext)
 {
-	int outlen, tmplen;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen, tmplen;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_EncryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_192_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_EncryptUpdate
-	    (ctx, ciphertext, &outlen, (const unsigned char *)plaintext, len))
-		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_192_cbc\n");
-	if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_192_cbc\n");
+        if (!EVP_EncryptInit_ex(ctx, EVP_aes_192_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_192_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const unsigned char *) plaintext, len))
+                printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_192_cbc\n");
+        if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_192_cbc\n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return 0;
+        EVP_CIPHER_CTX_free(ctx);
+        return 0;
 }
 
-static inline
-    int openssl_aes_256_cbc_dec(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * ciphertext, uint8_t * plaintext)
+static inline int
+openssl_aes_256_cbc_dec(uint8_t *key, uint8_t *iv, int len, uint8_t *ciphertext, uint8_t *plaintext)
 {
-	int outlen = 0, tmplen = 0;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen = 0, tmplen = 0;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_256_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_DecryptUpdate
-	    (ctx, plaintext, &outlen, (const unsigned char *)ciphertext, len))
-		printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_256_cbc\n");
-	if (!EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_256_cbc %x,%x\n", outlen,
-		       tmplen);
+        if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_256_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (const unsigned char *) ciphertext, len))
+                printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_256_cbc\n");
+        if (!EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_256_cbc %x,%x\n", outlen, tmplen);
 
-	EVP_CIPHER_CTX_free(ctx);
-	return 0;
+        EVP_CIPHER_CTX_free(ctx);
+        return 0;
 }
 
-static inline
-    int openssl_aes_256_cbc_enc(uint8_t * key, uint8_t * iv,
-				int len, uint8_t * plaintext, uint8_t * ciphertext)
+static inline int
+openssl_aes_256_cbc_enc(uint8_t *key, uint8_t *iv, int len, uint8_t *plaintext, uint8_t *ciphertext)
 {
-	int outlen, tmplen;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen, tmplen;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_256_cbc\n");
-	if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
-		printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
-	if (!EVP_EncryptUpdate
-	    (ctx, ciphertext, &outlen, (const unsigned char *)plaintext, len))
-		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_256_cbc\n");
-	if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_256_cbc\n");
+        if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
+                printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_256_cbc\n");
+        if (!EVP_CIPHER_CTX_set_padding(ctx, 0))
+                printf("\n ERROR!! EVP_CIPHER_CTX_set_padding - no padding\n");
+        if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const unsigned char *) plaintext, len))
+                printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_256_cbc\n");
+        if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_256_cbc\n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return 0;
+        EVP_CIPHER_CTX_free(ctx);
+        return 0;
 }
 
-static inline
-    int openssl_aes_gcm_dec(uint8_t * key, uint8_t * iv, int iv_len, uint8_t * aad,
-			    int aad_len, uint8_t * tag, int tag_len, uint8_t * ciphertext,
-			    int len, uint8_t * plaintext)
+static inline int
+openssl_aes_gcm_dec(uint8_t *key, uint8_t *iv, int iv_len, uint8_t *aad, int aad_len, uint8_t *tag,
+                    int tag_len, uint8_t *ciphertext, int len, uint8_t *plaintext)
 {
-	int outlen = 0, tmplen = len, ret;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen = 0, tmplen = len, ret;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
-		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
-	if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
-		printf("\n ERROR!! EVP_DecryptInit_ex - key init\n");
-	if (!EVP_DecryptUpdate(ctx, NULL, &outlen, aad, aad_len))
-		printf("\n ERROR!! EVP_DecryptUpdate - aad data setup\n");
-	if (!EVP_DecryptUpdate
-	    (ctx, plaintext, &outlen, (const unsigned char *)ciphertext, len))
-		printf("\n ERROR!! EVP_DecryptUpdate - PT->CT\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
+        if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
+                printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
+        if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
+                printf("\n ERROR!! EVP_DecryptInit_ex - key init\n");
+        if (!EVP_DecryptUpdate(ctx, NULL, &outlen, aad, aad_len))
+                printf("\n ERROR!! EVP_DecryptUpdate - aad data setup\n");
+        if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (const unsigned char *) ciphertext, len))
+                printf("\n ERROR!! EVP_DecryptUpdate - PT->CT\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
 
-	ret = EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen);
-	if (0 < ret) {
-		tmplen += outlen;
-	} else {
-		//Authentication failed mismatched key, ADD or tag
-		tmplen = -1;
-	}
+        ret = EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen);
+        if (0 < ret) {
+                tmplen += outlen;
+        } else {
+                // Authentication failed mismatched key, ADD or tag
+                tmplen = -1;
+        }
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-static inline
-    int openssl_aes_gcm_enc(uint8_t * key, uint8_t * iv, int iv_len, uint8_t * aad,
-			    int aad_len, uint8_t * tag, int tag_len, uint8_t * plaintext,
-			    int len, uint8_t * ciphertext)
+static inline int
+openssl_aes_gcm_enc(uint8_t *key, uint8_t *iv, int iv_len, uint8_t *aad, int aad_len, uint8_t *tag,
+                    int tag_len, uint8_t *plaintext, int len, uint8_t *ciphertext)
 {
-	int outlen, tmplen;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen, tmplen;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	//printf("ivl:%x addl:%x tagl:%x ptl:%x\n", iv_len, aad_len, tag_len, len);
-	if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
-		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
-	if (!EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
-		printf("\n ERROR!! EVP_EncryptInit_ex - init\n");
-	if (!EVP_EncryptUpdate(ctx, NULL, &outlen, aad, aad_len))
-		printf("\n ERROR!! EVP_EncryptUpdate - aad insert\n");
-	if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const uint8_t *)plaintext, len))
-		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
+        // printf("ivl:%x addl:%x tagl:%x ptl:%x\n", iv_len, aad_len, tag_len, len);
+        if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_gcm(), NULL, NULL, NULL))
+                printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
+        if (!EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
+                printf("\n ERROR!! EVP_EncryptInit_ex - init\n");
+        if (!EVP_EncryptUpdate(ctx, NULL, &outlen, aad, aad_len))
+                printf("\n ERROR!! EVP_EncryptUpdate - aad insert\n");
+        if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const uint8_t *) plaintext, len))
+                printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
+        if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-static inline
-    int openssl_aes_256_gcm_dec(uint8_t * key, uint8_t * iv, int iv_len, uint8_t * aad,
-				int aad_len, uint8_t * tag, int tag_len, uint8_t * ciphertext,
-				int len, uint8_t * plaintext)
+static inline int
+openssl_aes_256_gcm_dec(uint8_t *key, uint8_t *iv, int iv_len, uint8_t *aad, int aad_len,
+                        uint8_t *tag, int tag_len, uint8_t *ciphertext, int len, uint8_t *plaintext)
 {
-	int outlen = 0, tmplen = len, ret;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen = 0, tmplen = len, ret;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
-		printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
-	if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
-		printf("\n ERROR!! EVP_DecryptInit_ex - key init\n");
-	if (!EVP_DecryptUpdate(ctx, NULL, &outlen, aad, aad_len))
-		printf("\n ERROR!! EVP_DecryptUpdate - aad data setup\n");
-	if (!EVP_DecryptUpdate
-	    (ctx, plaintext, &outlen, (const unsigned char *)ciphertext, len))
-		printf("\n ERROR!! EVP_DecryptUpdate - PT->CT\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
-	ret = EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen);
-	if (0 < ret) {
-		tmplen += outlen;
-	} else {
-		//Authentication failed mismatched key, ADD or tag
-		tmplen = -1;
-	}
+        if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+                printf("\n ERROR!! EVP_DecryptInit_ex - EVP_aes_128_gcm\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
+        if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
+                printf("\n ERROR!! EVP_DecryptInit_ex - key init\n");
+        if (!EVP_DecryptUpdate(ctx, NULL, &outlen, aad, aad_len))
+                printf("\n ERROR!! EVP_DecryptUpdate - aad data setup\n");
+        if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (const unsigned char *) ciphertext, len))
+                printf("\n ERROR!! EVP_DecryptUpdate - PT->CT\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - set tag\n");
+        ret = EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen);
+        if (0 < ret) {
+                tmplen += outlen;
+        } else {
+                // Authentication failed mismatched key, ADD or tag
+                tmplen = -1;
+        }
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-static inline
-    int openssl_aes_256_gcm_enc(uint8_t * key, uint8_t * iv, int iv_len, uint8_t * aad,
-				int aad_len, uint8_t * tag, int tag_len, uint8_t * plaintext,
-				int len, uint8_t * ciphertext)
+static inline int
+openssl_aes_256_gcm_enc(uint8_t *key, uint8_t *iv, int iv_len, uint8_t *aad, int aad_len,
+                        uint8_t *tag, int tag_len, uint8_t *plaintext, int len, uint8_t *ciphertext)
 {
-	int outlen, tmplen;
-	EVP_CIPHER_CTX *ctx;
-	ctx = EVP_CIPHER_CTX_new();
+        int outlen, tmplen;
+        EVP_CIPHER_CTX *ctx;
+        ctx = EVP_CIPHER_CTX_new();
 
-	if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
-		printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
-	if (!EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
-		printf("\n ERROR!! EVP_EncryptInit_ex - init\n");
-	if (!EVP_EncryptUpdate(ctx, NULL, &outlen, aad, aad_len))
-		printf("\n ERROR!! EVP_EncryptUpdate - aad insert\n");
-	if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const uint8_t *)plaintext, len))
-		printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
-	if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
-		printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
-	if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
-		printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
+        if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
+                printf("\n ERROR!! EVP_EncryptInit_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, iv_len, NULL))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - IV length init\n");
+        if (!EVP_EncryptInit_ex(ctx, NULL, NULL, key, iv))
+                printf("\n ERROR!! EVP_EncryptInit_ex - init\n");
+        if (!EVP_EncryptUpdate(ctx, NULL, &outlen, aad, aad_len))
+                printf("\n ERROR!! EVP_EncryptUpdate - aad insert\n");
+        if (!EVP_EncryptUpdate(ctx, ciphertext, &outlen, (const uint8_t *) plaintext, len))
+                printf("\n ERROR!! EVP_EncryptUpdate - EVP_aes_128_cbc\n");
+        if (!EVP_EncryptFinal_ex(ctx, ciphertext + outlen, &tmplen))
+                printf("\n ERROR!! EVP_EncryptFinal_ex - EVP_aes_128_cbc\n");
+        if (!EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, tag_len, tag))
+                printf("\n ERROR!! EVP_CIPHER_CTX_ctrl - tag \n");
 
-	EVP_CIPHER_CTX_free(ctx);
-	return tmplen;
+        EVP_CIPHER_CTX_free(ctx);
+        return tmplen;
 }
 
-#define OSSL_XTS_MAX_LEN (1<<24)
+#define OSSL_XTS_MAX_LEN (1 << 24)
 
-static inline int openssl_aes_128_xts_enc(EVP_CIPHER_CTX * ctx, unsigned char *key,
-					  unsigned char *iv, int len, unsigned char *pt,
-					  unsigned char *ct)
+static inline int
+openssl_aes_128_xts_enc(EVP_CIPHER_CTX *ctx, unsigned char *key, unsigned char *iv, int len,
+                        unsigned char *pt, unsigned char *ct)
 {
-	int outlen, tmplen;
+        int outlen, tmplen;
 
-	while (len > 0) {
-		int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
+        while (len > 0) {
+                int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
 
-		if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)) {
-			printf("\n ERROR ossl init\n");
-			return -1;
-		}
+                if (!EVP_EncryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)) {
+                        printf("\n ERROR ossl init\n");
+                        return -1;
+                }
 
-		if (!EVP_EncryptUpdate(ctx, ct, &outlen, pt, blocklen)) {
-			printf("\n ERROR ossl update i %d\n", outlen);
-			return -1;
-		}
-		pt += outlen;
-		ct += outlen;
-		len -= outlen;
+                if (!EVP_EncryptUpdate(ctx, ct, &outlen, pt, blocklen)) {
+                        printf("\n ERROR ossl update i %d\n", outlen);
+                        return -1;
+                }
+                pt += outlen;
+                ct += outlen;
+                len -= outlen;
 
-		if (!EVP_EncryptFinal_ex(ctx, pt, &tmplen)) {
-			printf("\n ERROR ossl finalize\n");
-			return -1;
-		}
-	}
+                if (!EVP_EncryptFinal_ex(ctx, pt, &tmplen)) {
+                        printf("\n ERROR ossl finalize\n");
+                        return -1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
-static inline int openssl_aes_128_xts_dec(EVP_CIPHER_CTX * ctx, unsigned char *key,
-					  unsigned char *iv, int len, unsigned char *ct,
-					  unsigned char *dt)
+static inline int
+openssl_aes_128_xts_dec(EVP_CIPHER_CTX *ctx, unsigned char *key, unsigned char *iv, int len,
+                        unsigned char *ct, unsigned char *dt)
 {
-	int outlen, tmplen;
+        int outlen, tmplen;
 
-	while (len > 0) {
-		int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
+        while (len > 0) {
+                int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
 
-		if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)) {
-			printf("\n ERROR ossl init\n");
-			return -1;
-		}
+                if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_xts(), NULL, key, iv)) {
+                        printf("\n ERROR ossl init\n");
+                        return -1;
+                }
 
-		if (!EVP_DecryptUpdate(ctx, dt, &outlen, ct, blocklen)) {
-			printf("\n ERROR ossl update i %d\n", outlen);
-			return -1;
-		}
-		dt += outlen;
-		ct += outlen;
-		len -= outlen;
+                if (!EVP_DecryptUpdate(ctx, dt, &outlen, ct, blocklen)) {
+                        printf("\n ERROR ossl update i %d\n", outlen);
+                        return -1;
+                }
+                dt += outlen;
+                ct += outlen;
+                len -= outlen;
 
-		if (!EVP_DecryptFinal_ex(ctx, dt, &tmplen)) {
-			printf("\n ERROR ossl finalize\n");
-			return -1;
-		}
-	}
+                if (!EVP_DecryptFinal_ex(ctx, dt, &tmplen)) {
+                        printf("\n ERROR ossl finalize\n");
+                        return -1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
-static inline int openssl_aes_256_xts_enc(EVP_CIPHER_CTX * ctx, unsigned char *key,
-					  unsigned char *iv, int len, unsigned char *pt,
-					  unsigned char *ct)
+static inline int
+openssl_aes_256_xts_enc(EVP_CIPHER_CTX *ctx, unsigned char *key, unsigned char *iv, int len,
+                        unsigned char *pt, unsigned char *ct)
 {
-	int outlen, tmplen;
+        int outlen, tmplen;
 
-	while (len > 0) {
-		int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
+        while (len > 0) {
+                int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
 
-		if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_xts(), NULL, key, iv)) {
-			printf("\n ERROR ossl init\n");
-			return -1;
-		}
+                if (!EVP_EncryptInit_ex(ctx, EVP_aes_256_xts(), NULL, key, iv)) {
+                        printf("\n ERROR ossl init\n");
+                        return -1;
+                }
 
-		if (!EVP_EncryptUpdate(ctx, ct, &outlen, pt, blocklen)) {
-			printf("\n ERROR ossl update i %d\n", outlen);
-			return -1;
-		}
-		pt += outlen;
-		ct += outlen;
-		len -= outlen;
+                if (!EVP_EncryptUpdate(ctx, ct, &outlen, pt, blocklen)) {
+                        printf("\n ERROR ossl update i %d\n", outlen);
+                        return -1;
+                }
+                pt += outlen;
+                ct += outlen;
+                len -= outlen;
 
-		if (!EVP_EncryptFinal_ex(ctx, pt, &tmplen)) {
-			printf("\n ERROR ossl finalize\n");
-			return -1;
-		}
-	}
+                if (!EVP_EncryptFinal_ex(ctx, pt, &tmplen)) {
+                        printf("\n ERROR ossl finalize\n");
+                        return -1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
-static inline int openssl_aes_256_xts_dec(EVP_CIPHER_CTX * ctx, unsigned char *key,
-					  unsigned char *iv, int len, unsigned char *ct,
-					  unsigned char *dt)
+static inline int
+openssl_aes_256_xts_dec(EVP_CIPHER_CTX *ctx, unsigned char *key, unsigned char *iv, int len,
+                        unsigned char *ct, unsigned char *dt)
 {
-	int outlen, tmplen;
+        int outlen, tmplen;
 
-	while (len > 0) {
-		int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
+        while (len > 0) {
+                int blocklen = (len > OSSL_XTS_MAX_LEN) ? OSSL_XTS_MAX_LEN : len;
 
-		if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_xts(), NULL, key, iv)) {
-			printf("\n ERROR ossl init\n");
-			return -1;
-		}
+                if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_xts(), NULL, key, iv)) {
+                        printf("\n ERROR ossl init\n");
+                        return -1;
+                }
 
-		if (!EVP_DecryptUpdate(ctx, dt, &outlen, ct, blocklen)) {
-			printf("\n ERROR ossl update i %d\n", outlen);
-			return -1;
-		}
-		dt += outlen;
-		ct += outlen;
-		len -= outlen;
+                if (!EVP_DecryptUpdate(ctx, dt, &outlen, ct, blocklen)) {
+                        printf("\n ERROR ossl update i %d\n", outlen);
+                        return -1;
+                }
+                dt += outlen;
+                ct += outlen;
+                len -= outlen;
 
-		if (!EVP_DecryptFinal_ex(ctx, dt, &tmplen)) {
-			printf("\n ERROR ossl finalize\n");
-			return -1;
-		}
-	}
+                if (!EVP_DecryptFinal_ex(ctx, dt, &tmplen)) {
+                        printf("\n ERROR ossl finalize\n");
+                        return -1;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 #endif /* AES_OSSL_HELPER_H_ */

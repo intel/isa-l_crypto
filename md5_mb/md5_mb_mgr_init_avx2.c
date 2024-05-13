@@ -29,15 +29,16 @@
 
 #include "md5_mb.h"
 
-void md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR * state)
+void
+md5_mb_mgr_init_avx2(MD5_MB_JOB_MGR *state)
 {
-	unsigned int j;
+        unsigned int j;
 
-	memset(state, 0, sizeof(*state));
-	state->unused_lanes[0] = 0xfedcba9876543210;
-	state->num_lanes_inuse = 0;
-	for (j = 0; j < 16; j++) {
-		state->lens[j] = 0xFFFFFFFF;
-		state->ldata[j].job_in_lane = 0;
-	}
+        memset(state, 0, sizeof(*state));
+        state->unused_lanes[0] = 0xfedcba9876543210;
+        state->num_lanes_inuse = 0;
+        for (j = 0; j < 16; j++) {
+                state->lens[j] = 0xFFFFFFFF;
+                state->ldata[j].job_in_lane = 0;
+        }
 }
