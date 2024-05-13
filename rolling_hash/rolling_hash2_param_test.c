@@ -81,7 +81,7 @@ test_rolling_hash2_reset_api(void)
                           fn_name, end_reset);
 
         // check NULL init bytes
-        CHECK_RETURN_GOTO(isal_rolling_hash2_reset(&state, NULL), ISAL_CRYPTO_ERR_HASH_INIT_VAL,
+        CHECK_RETURN_GOTO(isal_rolling_hash2_reset(&state, NULL), ISAL_CRYPTO_ERR_NULL_INIT_VAL,
                           fn_name, end_reset);
 
         // check valid args

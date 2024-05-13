@@ -184,7 +184,7 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
         if (state == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (init_bytes == NULL)
-                return ISAL_CRYPTO_ERR_HASH_INIT_VAL;
+                return ISAL_CRYPTO_ERR_NULL_INIT_VAL;
 #endif
         _rolling_hash2_reset(state, (uint8_t *) init_bytes);
 
