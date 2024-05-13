@@ -162,10 +162,9 @@ FIELD	_rsp,		8,	8
 %define %%t0 %17
 %define %%t1 %18
 
-	; keep the shuffle masks in registers.
+	; keep the transpose masks in registers
 	vmovdqa32 TMP2, [PSHUFFLE_TRANSPOSE16_MASK1]
 	vmovdqa32 TMP3, [PSHUFFLE_TRANSPOSE16_MASK2]
-
 	; process top half (r0..r3) {a...d}
 	vshufps	%%t0, %%r0, %%r1, 0x44	; t0 = {b13 b12 a13 a12   b9  b8  a9  a8   b5 b4 a5 a4   b1 b0 a1 a0}
 	vshufps	%%r0, %%r0, %%r1, 0xEE	; r0 = {b15 b14 a15 a14   b11 b10 a11 a10  b7 b6 a7 a6   b3 b2 a3 a2}
@@ -330,7 +329,7 @@ FIELD	_rsp,		8,	8
 %define %%Y 	%2
 %define %%Z 	%3
 	; I < 16 return (X ^ Y ^ Z)
-	vmovdqa32 TMP0,%%X
+	vmovups TMP0,%%X
 	vpternlogd TMP0,%%Y,%%Z,0x96
 %endmacro
 
@@ -343,10 +342,12 @@ FIELD	_rsp,		8,	8
 %define %%X 	%1
 %define %%Y 	%2
 %define %%Z 	%3
-	; I > 16 return (x & y) | (x & z) | (y & z) bitwise majority function.
+	; I > 16 return (x & y) | (x & z) | (y & z)
 	; Same as (x & y) | (z & (x | y))
-	vmovdqa32 TMP0, %%X
-	vpternlogd TMP0, %%Y, %%Z, 0xE8
+	vporq TMP0,%%X,%%Y
+	vpandq TMP0,%%Z
+	vpandq TMP1,%%X,%%Y
+	vporq TMP0,TMP1
 %endmacro
 
 
@@ -358,7 +359,7 @@ FIELD	_rsp,		8,	8
 %define %%Y 	%2
 %define %%Z 	%3
 	; I < 16 return (x ^ y ^ z)
-        vmovdqa32 TMP0,%%X
+        vmovups TMP0,%%X
         vpternlogd TMP0,%%Y,%%Z,0x96
 %endmacro
 
@@ -368,9 +369,10 @@ FIELD	_rsp,		8,	8
 %define %%Y 	%2
 %define %%Z 	%3
 
-	; I > 16 return (x & y) | ((~x) & z) bitwise select x ? y : z.
-	vmovdqa32 TMP0, %%X
-	vpternlogd TMP0, %%Y, %%Z, 0xCA
+	; I > 16 return (x & y) | ((~x) & z)
+	vpandq TMP0,%%X,%%Y
+	vpandnd TMP1,%%X,%%Z
+	vporq TMP0,TMP1
 %endmacro
 
 ;; void sm3_mb_x16_avx512(SM3_MB_ARGS_X16, uint32_t size)
@@ -388,19 +390,17 @@ sm3_mb_x16_avx512:
 	lea	TBL, [TABLE]
 
 	;; Initialize digests
-	vmovdqu64	A, [DIGEST + 0*64] ; mov unsigned
-	vmovdqu64	B, [DIGEST + 1*64]
-	vmovdqu64	C, [DIGEST + 2*64]
-	vmovdqu64	D, [DIGEST + 3*64]
-	vmovdqu64	E, [DIGEST + 4*64]
-	vmovdqu64	F, [DIGEST + 5*64]
-	vmovdqu64	G, [DIGEST + 6*64]
-	vmovdqu64	H, [DIGEST + 7*64]
+	vmovups	A, [DIGEST + 0*64] ; mov unsigned
+	vmovups	B, [DIGEST + 1*64]
+	vmovups	C, [DIGEST + 2*64]
+	vmovups	D, [DIGEST + 3*64]
+	vmovups	E, [DIGEST + 4*64]
+	vmovups	F, [DIGEST + 5*64]
+	vmovups	G, [DIGEST + 6*64]
+	vmovups	H, [DIGEST + 7*64]
 
 	xor IDX, IDX
-	jmp lloop
 
-align 32
 %assign cur_loop 0
 lloop:
 	;; start message expand
@@ -417,14 +417,14 @@ lloop:
 	;; stored B(i) to W(1)...W(15)
 	;; in zmm16....zmm31
 
-	vmovdqu64	WB0,[inp0+IDX]
-	vmovdqu64	WB1,[inp1+IDX]
-	vmovdqu64	WB2,[inp2+IDX]
-	vmovdqu64	WB3,[inp3+IDX]
-	vmovdqu64	WB4,[inp4+IDX]
-	vmovdqu64	WB5,[inp5+IDX]
-	vmovdqu64	WB6,[inp6+IDX]
-	vmovdqu64	WB7,[inp7+IDX]
+	vmovups	WB0,[inp0+IDX]
+	vmovups	WB1,[inp1+IDX]
+	vmovups	WB2,[inp2+IDX]
+	vmovups	WB3,[inp3+IDX]
+	vmovups	WB4,[inp4+IDX]
+	vmovups	WB5,[inp5+IDX]
+	vmovups	WB6,[inp6+IDX]
+	vmovups	WB7,[inp7+IDX]
 
 	mov	inp0, [IN + 8*8]
 	mov	inp1, [IN + 9*8]
@@ -435,14 +435,14 @@ lloop:
 	mov	inp6, [IN +14*8]
 	mov	inp7, [IN +15*8]
 
-	vmovdqu64	WB8, [inp0+IDX]
-	vmovdqu64	WB9, [inp1+IDX]
-	vmovdqu64	WB10,[inp2+IDX]
-	vmovdqu64	WB11,[inp3+IDX]
-	vmovdqu64	WB12,[inp4+IDX]
-	vmovdqu64	WB13,[inp5+IDX]
-	vmovdqu64	WB14,[inp6+IDX]
-	vmovdqu64	WB15,[inp7+IDX]
+	vmovups	WB8, [inp0+IDX]
+	vmovups	WB9, [inp1+IDX]
+	vmovups	WB10,[inp2+IDX]
+	vmovups	WB11,[inp3+IDX]
+	vmovups	WB12,[inp4+IDX]
+	vmovups	WB13,[inp5+IDX]
+	vmovups	WB14,[inp6+IDX]
+	vmovups	WB15,[inp7+IDX]
 
 	vmovdqa32	[rsp + _DIGEST_SAVE + 64*0], A
         vmovdqa32	[rsp + _DIGEST_SAVE + 64*1], B
@@ -488,7 +488,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vpaddd TMP2,E, [TBL+ (I*4)]{1to16}
+	vpaddd TMP2, E, [TBL + (I*4)]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -522,15 +522,17 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovdqa32 D,C
-	vprold C, B, 9
-	vmovdqa32 B,A
-	vmovdqa32 A,TMP3
-	vmovdqa32 H,G
-	vprold G, F,19
-	vmovdqa32 F,E
+	vmovups D,C
+	vprold B,9
+	vmovups C,B
+	vmovups B,A
+	vmovups A,TMP3
+	vmovups H,G
+	vprold F,19
+	vmovups G,F
+	vmovups F,E
 	P TMP2
-	vmovdqa32 E,TMP0
+	vmovups E,TMP0
 
 	;vprold B,9
 	;vprold F,19
@@ -562,7 +564,8 @@ lloop:
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpternlogd APPEND(WB,J),APPEND(WB,J_6), TMP0, 0x96
+	vpxord APPEND(WB,J),TMP0
+	vpxord APPEND(WB,J),APPEND(WB,J_6)
 
 	; (A <<< 12)
 	; store in TMP0
@@ -571,7 +574,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vpaddd TMP2,E, [TBL + (I*4)]{1to16}
+	vpaddd TMP2, E, [TBL + (I*4)]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -604,17 +607,17 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovdqa32 D,C
+	vmovups D,C
 	vprold B,9
-	vmovdqa32 C,B
-	vmovdqa32 B,A
-	vmovdqa32 A,TMP3
-	vmovdqa32 H,G
+	vmovups C,B
+	vmovups B,A
+	vmovups A,TMP3
+	vmovups H,G
 	vprold F,19
-	vmovdqa32 G,F
-	vmovdqa32 F,E
+	vmovups G,F
+	vmovups F,E
 	P TMP2
-	vmovdqu64 E,TMP0
+	vmovups E,TMP0
 
 	%assign I (I+1)
 %endrep
@@ -632,12 +635,14 @@ lloop:
 	%assign J (((I+4) % 20))
 
 	vprold APPEND(WB,J),APPEND(WB,J_3),15
-	vpternlogd APPEND(WB,J),APPEND(WB,J_9), APPEND(WB,J_16), 0x96
+	vpxord APPEND(WB,J),APPEND(WB,J_16)
+	vpxord APPEND(WB,J),APPEND(WB,J_9)
 
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpternlogd APPEND(WB,J),APPEND(WB,J_6), TMP0, 0x96
+	vpxord APPEND(WB,J),TMP0
+	vpxord APPEND(WB,J),APPEND(WB,J_6)
 
 	; (A <<< 12)
 	; store in TMP0
@@ -646,7 +651,7 @@ lloop:
 	; SS1 = ((A <<< 12) + E + (T(j) <<< j)) <<< 7
 	; (T(j) <<< j) store in TBL
 	; SS1 store in TMP2
-	vpaddd TMP2,E, [TBL + (I*4)]{1to16}
+	vpaddd TMP2, E, [TBL + (I*4)]{1to16}
 
 	vpaddd TMP2,TMP0
 	vprold TMP2,7
@@ -679,15 +684,17 @@ lloop:
 	; G = F <<< 19
 	; F = E
 	; E = P(TT2)
-	vmovdqa32 D,C
-	vprold C, B, 9
-	vmovdqa32 B,A
-	vmovdqa32 A,TMP3
-	vmovdqa32 H,G
-	vprold G, F, 19
-	vmovdqa32 F,E
+	vmovups D,C
+	vprold B,9
+	vmovups C,B
+	vmovups B,A
+	vmovups A,TMP3
+	vmovups H,G
+	vprold F,19
+	vmovups G,F
+	vmovups F,E
 	P TMP2
-	vmovdqa32 E,TMP0
+	vmovups E,TMP0
 
 	%assign I (I+1)
 %endrep
@@ -703,7 +710,9 @@ lloop:
 
 	%assign cur_loop cur_loop+1
 	sub 	SIZE, 1
-	jne	lloop
+	je	last_loop
+
+	jmp	lloop
 
 
 last_loop:
@@ -719,14 +728,14 @@ last_loop:
 %assign I (I+1)
 %endrep
 	; Write out digest
-	vmovdqu64	[DIGEST + 0*64], A
-	vmovdqu64	[DIGEST + 1*64], B
-	vmovdqu64	[DIGEST + 2*64], C
-	vmovdqu64	[DIGEST + 3*64], D
-	vmovdqu64	[DIGEST + 4*64], E
-	vmovdqu64	[DIGEST + 5*64], F
-	vmovdqu64	[DIGEST + 6*64], G
-	vmovdqu64	[DIGEST + 7*64], H
+	vmovups	[DIGEST + 0*64], A
+	vmovups	[DIGEST + 1*64], B
+	vmovups	[DIGEST + 2*64], C
+	vmovups	[DIGEST + 3*64], D
+	vmovups	[DIGEST + 4*64], E
+	vmovups	[DIGEST + 5*64], F
+	vmovups	[DIGEST + 6*64], G
+	vmovups	[DIGEST + 7*64], H
 
 
         mov     rsp, [rsp + _rsp]
@@ -803,7 +812,6 @@ TABLE:
 
 
 
-align 64
 PSHUFFLE_TRANSPOSE16_MASK1: 	dq 0x0000000000000000
 				dq 0x0000000000000001
 				dq 0x0000000000000008
