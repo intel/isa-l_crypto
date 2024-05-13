@@ -420,7 +420,7 @@ static unsigned char C11[] = { 0x15, 0xb9, 0x26, 0x83, 0x81, 0x95, 0x96, 0xa8, 0
 #define vector(N)                                                                                  \
         {                                                                                          \
                 K##N, (CBC_KEY_LEN(K##N)), IV##N, vect_size(P##N, C##N), P##N, C##N, NULL,         \
-                        NULL, /*NULL, NULL*/                                                       \
+                NULL, /*NULL, NULL*/                                                               \
         }
 struct cbc_vector const cbc_vectors[] = {
         vector(1), vector(2), vector(3), vector(4),  vector(5),  vector(6),
