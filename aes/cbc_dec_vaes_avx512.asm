@@ -296,8 +296,6 @@ default rel
         cmp     %%LENGTH, 0
         je      %%cbc_dec_done
 
-        FUNC_SAVE
-
         vinserti64x2 zIV, zIV, [%%IV], 3
 
         ;; preload keys
@@ -455,13 +453,6 @@ default rel
 
 %%cbc_dec_done:
 
-%ifdef SAFE_DATA
-        clear_all_zmms_asm
-%else
-        vzeroupper
-%endif ;; SAFE_DATA
-
-        FUNC_RESTORE
 %endmacro
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -479,8 +470,17 @@ _aes_cbc_dec_128_vaes_avx512:
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
 %endif
+        FUNC_SAVE
+
         AES_CBC_DEC p_in, p_out, p_keys, p_IV, num_bytes, 9, tmp
 
+%ifdef SAFE_DATA
+        clear_all_zmms_asm
+%else
+        vzeroupper
+%endif ;; SAFE_DATA
+
+        FUNC_RESTORE
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -492,8 +492,17 @@ _aes_cbc_dec_192_vaes_avx512:
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
 %endif
+        FUNC_SAVE
+
         AES_CBC_DEC p_in, p_out, p_keys, p_IV, num_bytes, 11, tmp
 
+%ifdef SAFE_DATA
+        clear_all_zmms_asm
+%else
+        vzeroupper
+%endif ;; SAFE_DATA
+
+        FUNC_RESTORE
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -505,8 +514,17 @@ _aes_cbc_dec_256_vaes_avx512:
 %ifidn __OUTPUT_FORMAT__, win64
         mov     num_bytes, [rsp + 8*5]
 %endif
+        FUNC_SAVE
+
         AES_CBC_DEC p_in, p_out, p_keys, p_IV, num_bytes, 13, tmp
 
+%ifdef SAFE_DATA
+        clear_all_zmms_asm
+%else
+        vzeroupper
+%endif ;; SAFE_DATA
+
+        FUNC_RESTORE
         ret
 
 %else  ; Assembler doesn't understand these opcodes. Add empty symbol for windows.
