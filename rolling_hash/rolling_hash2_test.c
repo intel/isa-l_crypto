@@ -140,9 +140,9 @@ main(void)
 
         uint8_t *p = buffer;
         uint32_t remain = MAX_BUFFER_SIZE;
-        match = FINGERPRINT_RET_HIT;
+        match = ISAL_FINGERPRINT_RET_HIT;
 
-        while ((match == FINGERPRINT_RET_HIT) && (remain > 0)) {
+        while ((match == ISAL_FINGERPRINT_RET_HIT) && (remain > 0)) {
                 ret = FUT_run(&state, p, remain, mask, trigger, &offset, &match);
 
                 if (ret != ISAL_CRYPTO_ERR_NONE) {
@@ -155,7 +155,7 @@ main(void)
                         errors++;
                 }
 
-                if ((match == FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
+                if ((match == ISAL_FINGERPRINT_RET_HIT) && (&p[offset] > &buffer[w])) {
                         hash = FUT_ref(&state, &p[offset] - w, w, 0);
                         if ((hash & mask) != trigger) {
                                 printf("   mismatch chunk from ref");
@@ -259,11 +259,11 @@ main(void)
 
                 offset_fut += w;
 
-                int ret_ref = FINGERPRINT_RET_MAX;
+                int ret_ref = ISAL_FINGERPRINT_RET_MAX;
                 for (p++, offset = w + 1; offset < max; offset++) {
                         hash = FUT_ref(&state, p++, w, 0);
                         if ((hash & mask) == trigger) {
-                                ret_ref = FINGERPRINT_RET_HIT;
+                                ret_ref = ISAL_FINGERPRINT_RET_HIT;
                                 break;
                         }
                 }
@@ -304,11 +304,11 @@ main(void)
                 if (offset_fut <= w)
                         continue;
 
-                int ret_ref = FINGERPRINT_RET_MAX;
+                int ret_ref = ISAL_FINGERPRINT_RET_MAX;
                 for (p++, offset = w + 1; offset < max; offset++) {
                         hash = FUT_ref(&state, p++, w, 0);
                         if ((hash & mask) == trigger) {
-                                ret_ref = FINGERPRINT_RET_HIT;
+                                ret_ref = ISAL_FINGERPRINT_RET_HIT;
                                 break;
                         }
                 }
@@ -323,7 +323,7 @@ main(void)
                 }
                 putchar('.'); // Finished test 4
 
-                if (match == FINGERPRINT_RET_HIT) {
+                if (match == ISAL_FINGERPRINT_RET_HIT) {
                         p[-1] = rand(); // Keep hits from repeating
                 }
         }

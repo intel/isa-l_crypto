@@ -43,7 +43,7 @@ rolling_hash2_init(struct rh_state2 *state, uint32_t w)
         uint32_t i;
         uint64_t v;
 
-        if (w > FINGERPRINT_MAX_WINDOW)
+        if (w > ISAL_FINGERPRINT_MAX_WINDOW)
                 return -1;
 
         for (i = 0; i < 256; i++) {
@@ -124,7 +124,7 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
                         memmove(state->history, state->history + i, w - i);
                         memcpy(state->history + w - i, buffer, i);
                         state->hash = hash;
-                        return FINGERPRINT_RET_MAX;
+                        return ISAL_FINGERPRINT_RET_MAX;
                 }
                 hash = hash_fn(state, hash, buffer[i], state->history[i]);
 
@@ -135,7 +135,7 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
                         memmove(state->history, state->history + i, w - i);
                         memcpy(state->history + w - i, buffer, i);
                         state->hash = hash;
-                        return FINGERPRINT_RET_HIT;
+                        return ISAL_FINGERPRINT_RET_HIT;
                 }
         }
 
@@ -147,13 +147,13 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
                 *offset = i;
                 memcpy(state->history, buffer + i - w, w);
                 state->hash = hash;
-                return FINGERPRINT_RET_HIT;
+                return ISAL_FINGERPRINT_RET_HIT;
         }
         // no hit
         *offset = i;
         memcpy(state->history, buffer + i - w, w);
         state->hash = hash;
-        return FINGERPRINT_RET_MAX;
+        return ISAL_FINGERPRINT_RET_MAX;
 }
 
 int

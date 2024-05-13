@@ -43,22 +43,36 @@ extern "C" {
 
 #include <stdint.h>
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define FINGERPRINT_RET_HIT   ISAL_FINGERPRINT_RET_HIT
+#define FINGERPRINT_RET_MAX   ISAL_FINGERPRINT_RET_MAX
+#define FINGERPRINT_RET_OTHER ISAL_FINGERPRINT_RET_OTHER
+
+#define FINGERPRINT_MAX_WINDOW ISAL_FINGERPRINT_MAX_WINDOW
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 /**
  *@brief rolling hash return values
  */
 enum {
-        FINGERPRINT_RET_HIT = 0, //!< Fingerprint trigger hit
-        FINGERPRINT_RET_MAX,     //!< Fingerprint max length reached before hit
-        FINGERPRINT_RET_OTHER    //!< Fingerprint function error returned
+        ISAL_FINGERPRINT_RET_HIT = 0, //!< Fingerprint trigger hit
+        ISAL_FINGERPRINT_RET_MAX,     //!< Fingerprint max length reached before hit
+        ISAL_FINGERPRINT_RET_OTHER    //!< Fingerprint function error returned
 };
 
-#define FINGERPRINT_MAX_WINDOW 48
+#define ISAL_FINGERPRINT_MAX_WINDOW 48
 
 /**
  * @brief Context for rolling_hash2 functions
  */
 struct rh_state2 {
-        uint8_t history[FINGERPRINT_MAX_WINDOW];
+        uint8_t history[ISAL_FINGERPRINT_MAX_WINDOW];
         uint64_t table1[256];
         uint64_t table2[256];
         uint64_t hash;
@@ -95,7 +109,7 @@ rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
  * @param mask    Mask bits ORed with hash before test with trigger
  * @param trigger Match value to compare with windowed hash at each input byte
  * @param offset  Offset from buffer to match, set if match found
- * @returns FINGERPRINT_RET_HIT - match found, FINGERPRINT_RET_MAX - exceeded max length
+ * @returns ISAL_FINGERPRINT_RET_HIT - match found, ISAL_FINGERPRINT_RET_MAX - exceeded max length
  */
 int
 rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
@@ -146,9 +160,9 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes);
  * @param[in] trigger Match value to compare with windowed hash at each input byte
  * @param[out] offset Offset from buffer to match, set if match found
  * @param[out] match Pointer to fingerprint result status to set
- *                   FINGERPRINT_RET_HIT - match found
- *                   FINGERPRINT_RET_MAX - exceeded max length
- *                   FINGERPRINT_RET_OTHER - error
+ *                   ISAL_FINGERPRINT_RET_HIT - match found
+ *                   ISAL_FINGERPRINT_RET_MAX - exceeded max length
+ *                   ISAL_FINGERPRINT_RET_OTHER - error
  * @return Operation status
  * @retval 0 on success
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure

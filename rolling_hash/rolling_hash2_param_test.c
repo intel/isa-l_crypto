@@ -147,7 +147,7 @@ test_rolling_hashx_mask_gen_api(void)
         const char *fn_name = "isal_rolling_hashx_mask_gen";
         uint32_t mean = 0;
         uint32_t shift = 0;
-        uint32_t mask = FINGERPRINT_RET_OTHER + 1;
+        uint32_t mask = ISAL_FINGERPRINT_RET_OTHER + 1;
 
 #ifdef FIPS_MODE
         // check for invalid algorithm
@@ -163,7 +163,7 @@ test_rolling_hashx_mask_gen_api(void)
                           fn_name, end_mask_gen);
 
         // check mask was set to valid value
-        if (mask >= FINGERPRINT_RET_OTHER) {
+        if (mask >= ISAL_FINGERPRINT_RET_OTHER) {
                 printf("test: %s() - unexpected mask set\n", fn_name);
                 goto end_mask_gen;
         }

@@ -115,7 +115,7 @@ main(int argc, char *argv[])
         }
         perf_stop(&stop);
 
-        run_length = (ret == FINGERPRINT_RET_HIT) ? offset : TEST_LEN;
+        run_length = (ret == ISAL_FINGERPRINT_RET_HIT) ? offset : TEST_LEN;
         printf("  returned %d after %lld B\n", ret, run_length);
         printf(xstr(FUT_run) TEST_TYPE_STR ": ");
         perf_print(stop, start, run_length * i);
