@@ -185,9 +185,10 @@ exit:
         free(buff);
         free(update_ctx_test);
         free(update_ctx_base);
+
+        return fail;
 #else
         printf("Not Executed\n");
         return 0;
 #endif /* FIPS_MODE */
-        return fail;
 }
