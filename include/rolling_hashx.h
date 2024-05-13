@@ -42,6 +42,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "types.h"
 
 /*
  * Define enums from API v2.24, so applications that were using this version
@@ -85,7 +86,9 @@ struct rh_state2 {
  * @param state Structure holding state info on current rolling hash
  * @param w     Window width (1 <= w <= 32)
  * @returns 0 - success, -1 - failure
+ * @deprecated Please use isal_rolling_hash2_init() instead.
  */
+ISAL_DEPRECATED("Please use isal_rolling_hash2_init() instead")
 int
 rolling_hash2_init(struct rh_state2 *state, uint32_t w);
 
@@ -95,7 +98,9 @@ rolling_hash2_init(struct rh_state2 *state, uint32_t w);
  * @param state Structure holding state info on current rolling hash
  * @param init_bytes Optional window size buffer to pre-init hash
  * @returns none
+ * @deprecated Please use isal_rolling_hash2_reset() instead.
  */
+ISAL_DEPRECATED("Please use isal_rolling_hash2_reset() instead")
 void
 rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
 
@@ -110,7 +115,9 @@ rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
  * @param trigger Match value to compare with windowed hash at each input byte
  * @param offset  Offset from buffer to match, set if match found
  * @returns ISAL_FINGERPRINT_RET_HIT - match found, ISAL_FINGERPRINT_RET_MAX - exceeded max length
+ * @deprecated Please use isal_rolling_hash2_run() instead.
  */
+ISAL_DEPRECATED("Please use isal_rolling_hash2_run() instead")
 int
 rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
                   uint32_t trigger, uint32_t *offset);
@@ -121,7 +128,9 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, ui
  * @param mean  Target chunk size in bytes
  * @param shift Bits to rotate result to get independent masks
  * @returns 32-bit mask value
+ * @deprecated Please use isal_rolling_hashx_mask_gen() instead.
  */
+ISAL_DEPRECATED("Please use isal_rolling_hashx_mask_gen() instead")
 uint32_t
 rolling_hashx_mask_gen(long mean, int shift);
 

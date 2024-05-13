@@ -51,13 +51,13 @@
 #endif
 
 #ifndef FUT_run
-#define FUT_run rolling_hash2_run
+#define FUT_run isal_rolling_hash2_run
 #endif
 #ifndef FUT_init
-#define FUT_init rolling_hash2_init
+#define FUT_init isal_rolling_hash2_init
 #endif
 #ifndef FUT_reset
-#define FUT_reset rolling_hash2_reset
+#define FUT_reset isal_rolling_hash2_reset
 #endif
 
 #define str(s)  #s
@@ -72,9 +72,10 @@
 int
 main(int argc, char *argv[])
 {
+#ifndef FIPS_MODE
         uint8_t *buf;
         uint32_t mask, trigger, offset = 0;
-        int i, w, ret;
+        int i, w, ret, match;
         long long run_length;
         struct rh_state2 *state;
         struct perf start, stop;
@@ -105,20 +106,42 @@ main(int argc, char *argv[])
         printf("Start timed tests\n");
         fflush(0);
 
-        FUT_init(state, w);
-        FUT_reset(state, buf);
-        ret = FUT_run(state, buf, TEST_LEN, mask, trigger, &offset);
+        ret = FUT_init(state, w);
+        if (ret) {
+                printf(xstr(FUT_init) " error (%d)\n", ret);
+                return -1;
+        }
+        ret = FUT_reset(state, buf);
+        if (ret) {
+                printf(xstr(FUT_reset) " error (%d)\n", ret);
+                return -1;
+        }
+        ret = FUT_run(state, buf, TEST_LEN, mask, trigger, &offset, &match);
+        if (ret)
+                goto run_error;
 
         perf_start(&start);
         for (i = 0; i < TEST_LOOPS; i++) {
-                ret = FUT_run(state, buf, TEST_LEN, mask, trigger, &offset);
+                ret = FUT_run(state, buf, TEST_LEN, mask, trigger, &offset, &match);
         }
         perf_stop(&stop);
 
-        run_length = (ret == ISAL_FINGERPRINT_RET_HIT) ? offset : TEST_LEN;
+        if (ret)
+                goto run_error;
+
+        run_length = (match == ISAL_FINGERPRINT_RET_HIT) ? offset : TEST_LEN;
         printf("  returned %d after %lld B\n", ret, run_length);
         printf(xstr(FUT_run) TEST_TYPE_STR ": ");
         perf_print(stop, start, run_length * i);
 
         return 0;
+
+run_error:
+        printf(xstr(FUT_run) " error (%d)\n", ret);
+        return -1;
+#else
+        printf("FIPS Mode enabled. Perf test not run.\n");
+
+        return 0;
+#endif /* FIPS_MODE */
 }
