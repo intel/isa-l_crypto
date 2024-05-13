@@ -44,53 +44,53 @@ default rel
 %define wrd_sz  	qword
 %define arg1		rsi
 
-extern rolling_hash2_run_until_00
-extern rolling_hash2_run_until_04
+extern _rolling_hash2_run_until_00
+extern _rolling_hash2_run_until_04
 %endif
 
-extern rolling_hash2_run_until_base
+extern _rolling_hash2_run_until_base
 
 
 section .data
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.
 ;;; Therefore, *_dispatch_init is only executed on first call.
 
-rolling_hash2_run_until_dispatched:
-	def_wrd      rolling_hash2_run_until_mbinit
+_rolling_hash2_run_until_dispatched:
+	def_wrd      _rolling_hash2_run_until_mbinit
 
 section .text
 
 ;;;;
-; rolling_hash2_run_until multibinary function
+; _rolling_hash2_run_until multibinary function
 ;;;;
-mk_global rolling_hash2_run_until, function
-rolling_hash2_run_until_mbinit:
+mk_global _rolling_hash2_run_until, function, internal
+_rolling_hash2_run_until_mbinit:
 	endbranch
-	call	rolling_hash2_run_until_dispatch_init
+	call	_rolling_hash2_run_until_dispatch_init
 
-rolling_hash2_run_until:
-	jmp	wrd_sz [rolling_hash2_run_until_dispatched]
+_rolling_hash2_run_until:
+	jmp	wrd_sz [_rolling_hash2_run_until_dispatched]
 
-rolling_hash2_run_until_dispatch_init:
+_rolling_hash2_run_until_dispatch_init:
 	push    arg1
 %ifidn __OUTPUT_FORMAT__, elf32		;; 32-bit check
-	lea     arg1, [rolling_hash2_run_until_base]
+	lea     arg1, [_rolling_hash2_run_until_base]
 %else
 	push    rax
 	push    rbx
 	push    rcx
 	push    rdx
-	lea     arg1, [rolling_hash2_run_until_base WRT_OPT] ; Default
+	lea     arg1, [_rolling_hash2_run_until_base WRT_OPT] ; Default
 
 	mov     eax, 1
 	cpuid
-	lea     rbx, [rolling_hash2_run_until_00 WRT_OPT]
+	lea     rbx, [_rolling_hash2_run_until_00 WRT_OPT]
 	test    ecx, FLAG_CPUID1_ECX_SSE4_1
 	cmovne  arg1, rbx
 
 	and	ecx, (FLAG_CPUID1_ECX_AVX | FLAG_CPUID1_ECX_OSXSAVE)
 	cmp	ecx, (FLAG_CPUID1_ECX_AVX | FLAG_CPUID1_ECX_OSXSAVE)
-	lea	rbx, [rolling_hash2_run_until_00 WRT_OPT]
+	lea	rbx, [_rolling_hash2_run_until_00 WRT_OPT]
 
 	jne	_done_rolling_hash2_run_until_data_init
 	mov	rsi, rbx
@@ -100,7 +100,7 @@ rolling_hash2_run_until_dispatch_init:
 	mov	eax, 7
 	cpuid
 	test	ebx, FLAG_CPUID1_EBX_AVX2
-	lea     rbx, [rolling_hash2_run_until_04 WRT_OPT]
+	lea     rbx, [_rolling_hash2_run_until_04 WRT_OPT]
 	cmovne	rsi, rbx
 
 	;;  Does it have xmm and ymm support
@@ -109,7 +109,7 @@ rolling_hash2_run_until_dispatch_init:
 	and     eax, FLAG_XGETBV_EAX_XMM_YMM
 	cmp     eax, FLAG_XGETBV_EAX_XMM_YMM
 	je      _done_rolling_hash2_run_until_data_init
-	lea     rsi, [rolling_hash2_run_until_00 WRT_OPT]
+	lea     rsi, [_rolling_hash2_run_until_00 WRT_OPT]
 
 _done_rolling_hash2_run_until_data_init:
 	pop     rdx
@@ -117,6 +117,6 @@ _done_rolling_hash2_run_until_data_init:
 	pop     rbx
 	pop     rax
 %endif			;; END 32-bit check
-	mov     [rolling_hash2_run_until_dispatched], arg1
+	mov     [_rolling_hash2_run_until_dispatched], arg1
 	pop     arg1
 	ret

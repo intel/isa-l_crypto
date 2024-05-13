@@ -31,5 +31,5 @@
 #include "aarch64_multibinary.h"
 
 
-mbin_interface rolling_hash2_run_until
+mbin_interface _rolling_hash2_run_until
 

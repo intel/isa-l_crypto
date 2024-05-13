@@ -30,15 +30,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "rolling_hashx.h"
+#include "rolling_hashx_internal.h"
 #include "rolling_hash2_table.h"
 #include "isal_crypto_api.h"
 
 extern uint64_t
-rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
-                        uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger);
+_rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
+                         uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger);
 
 int
-rolling_hash2_init(struct rh_state2 *state, uint32_t w)
+_rolling_hash2_init(struct rh_state2 *state, uint32_t w)
 {
         uint32_t i;
         uint64_t v;
@@ -56,7 +57,7 @@ rolling_hash2_init(struct rh_state2 *state, uint32_t w)
 }
 
 void
-rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
+_rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
 {
         uint64_t hash;
         uint32_t i, w;
@@ -80,8 +81,8 @@ hash_fn(struct rh_state2 *state, uint64_t h, uint8_t new_char, uint8_t old_char)
 }
 
 uint64_t
-rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
-                             uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger)
+_rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
+                              uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger)
 {
         int i = *idx;
 
@@ -109,8 +110,8 @@ rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t 
 }
 
 int
-rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_length, uint32_t mask,
-                  uint32_t trigger, uint32_t *offset)
+_rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_length, uint32_t mask,
+                   uint32_t trigger, uint32_t *offset)
 {
 
         uint32_t i;
@@ -139,8 +140,8 @@ rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_leng
                 }
         }
 
-        hash = rolling_hash2_run_until(&i, buffer_length, state->table1, state->table2, buffer,
-                                       buffer - w, hash, mask, trigger);
+        hash = _rolling_hash2_run_until(&i, buffer_length, state->table1, state->table2, buffer,
+                                        buffer - w, hash, mask, trigger);
         if ((hash & mask) == trigger) {
                 // found hit
                 i++;
@@ -166,7 +167,7 @@ isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
         if (state == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
 #endif
-        if (rolling_hash2_init(state, w) < 0)
+        if (_rolling_hash2_init(state, w) < 0)
                 return ISAL_CRYPTO_ERR_WINDOW_SIZE;
 
         return 0;
@@ -185,7 +186,7 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
         if (init_bytes == NULL)
                 return ISAL_CRYPTO_ERR_HASH_INIT_VAL;
 #endif
-        rolling_hash2_reset(state, (uint8_t *) init_bytes);
+        _rolling_hash2_reset(state, (uint8_t *) init_bytes);
 
         return 0;
 #endif
@@ -208,7 +209,7 @@ isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uin
         if (match == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MATCH;
 #endif
-        *match = rolling_hash2_run(state, (uint8_t *) buffer, max_len, mask, trigger, offset);
+        *match = _rolling_hash2_run(state, (uint8_t *) buffer, max_len, mask, trigger, offset);
 
         return 0;
 #endif
@@ -224,10 +225,41 @@ isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t 
         if (mask == NULL)
                 return ISAL_CRYPTO_ERR_NULL_MASK;
 #endif
-        *mask = rolling_hashx_mask_gen((long) mean, (int) shift);
+        *mask = _rolling_hashx_mask_gen((long) mean, (int) shift);
 
         return 0;
 #endif
+}
+
+/*
+ * =============================================================================
+ * LEGACY / DEPRECATED API
+ * =============================================================================
+ */
+
+int
+rolling_hash2_init(struct rh_state2 *state, uint32_t w)
+{
+        return _rolling_hash2_init(state, w);
+}
+
+void
+rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
+{
+        _rolling_hash2_reset(state, init_bytes);
+}
+
+int
+rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
+                  uint32_t trigger, uint32_t *offset)
+{
+        return _rolling_hash2_run(state, buffer, max_len, mask, trigger, offset);
+}
+
+uint32_t
+rolling_hashx_mask_gen(long mean, int shift)
+{
+        return _rolling_hashx_mask_gen(mean, shift);
 }
 
 struct slver {
@@ -235,11 +267,11 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver rolling_hash2_init_slver_00000264;
-struct slver rolling_hash2_init_slver = { 0x0264, 0x00, 0x00 };
+struct slver _rolling_hash2_init_slver_00000264;
+struct slver _rolling_hash2_init_slver = { 0x0264, 0x00, 0x00 };
 
-struct slver rolling_hash2_reset_slver_00000265;
-struct slver rolling_hash2_reset_slver = { 0x0265, 0x00, 0x00 };
+struct slver _rolling_hash2_reset_slver_00000265;
+struct slver _rolling_hash2_reset_slver = { 0x0265, 0x00, 0x00 };
 
-struct slver rolling_hash2_run_slver_00000266;
-struct slver rolling_hash2_run_slver = { 0x0266, 0x00, 0x00 };
+struct slver _rolling_hash2_run_slver_00000266;
+struct slver _rolling_hash2_run_slver = { 0x0266, 0x00, 0x00 };

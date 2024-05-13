@@ -27,7 +27,7 @@
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; uint64_t rolling_hash2_run_until_04(uint32_t *idx, uint32_t max_idx, uint64_t *t1,
+;;; uint64_t _rolling_hash2_run_until_04(uint32_t *idx, uint32_t max_idx, uint64_t *t1,
 ;;; 			uint64_t *t2, uint8_t *b1, uint8_t *b2, uint64_t h, uint64_t mask,
 ;;;			uint64_t trigger)
 
@@ -148,8 +148,8 @@ default rel
 section .text
 
 align 16
-mk_global rolling_hash2_run_until_04, function
-func(rolling_hash2_run_until_04)
+mk_global _rolling_hash2_run_until_04, function, internal
+func(_rolling_hash2_run_until_04)
 	endbranch
 	FUNC_SAVE
 	mov	pos.w, dword [idx]

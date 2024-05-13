@@ -29,11 +29,11 @@
 
 #include <stdint.h>
 uint64_t
-rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
-                             uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger);
+_rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
+                              uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger);
 uint64_t
-rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
-                        uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger)
+_rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2, uint8_t *b1,
+                         uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger)
 {
-        return rolling_hash2_run_until_base(idx, max_idx, t1, t2, b1, b2, h, mask, trigger);
+        return _rolling_hash2_run_until_base(idx, max_idx, t1, t2, b1, b2, h, mask, trigger);
 }

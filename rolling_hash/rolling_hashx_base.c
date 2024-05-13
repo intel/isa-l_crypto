@@ -51,7 +51,7 @@ rol(uint32_t x, int i)
 }
 
 uint32_t
-rolling_hashx_mask_gen(long mean, int shift)
+_rolling_hashx_mask_gen(long mean, int shift)
 {
         if (mean <= 2)
                 mean = 2;
@@ -64,5 +64,5 @@ struct slver {
         uint8_t ver;
         uint8_t core;
 };
-struct slver rolling_hashx_mask_gen_slver_00000260;
-struct slver rolling_hashx_mask_gen_slver = { 0x0260, 0x00, 0x00 };
+struct slver _rolling_hashx_mask_gen_slver_00000260;
+struct slver _rolling_hashx_mask_gen_slver = { 0x0260, 0x00, 0x00 };
