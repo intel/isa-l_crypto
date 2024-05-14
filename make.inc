@@ -48,7 +48,6 @@ AS  = nasm
 AWK = awk
 
 DEBUG      = -g
-DEBUG_yasm = -g dwarf2
 DEBUG_nasm = -g
 
 # Default arch= build options
@@ -226,7 +225,7 @@ $(O)/%.o: $(host_cpu)/%.S
 $(O)/%.o   : $(host_cpu)/%.c
 	@echo "  ---> Building $< $(msg)"
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
-# yasm/nasm assembly files
+# nasm assembly files
 $(O)/%.o: %.asm
 	@echo "  ---> Building $< $(msg)"
 	@$(AS) $(ASFLAGS) -o $@ $<

@@ -93,6 +93,8 @@ Unreleased
 
 * Added ACVP test applications for AES-CBC, AES-GCM, AES-XTS and SHA1/256/512.
 
+* Removed YASM support, so only NASM assembler is supported for x86.
+
 v2.24
 
 * New optimized version of AES-CBC decode
