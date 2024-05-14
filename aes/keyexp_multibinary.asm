@@ -32,16 +32,16 @@ default rel
 
 %include "reg_sizes.asm"
 
-extern aes_keyexp_128_sse
-extern aes_keyexp_128_avx
-extern aes_keyexp_128_enc_sse
-extern aes_keyexp_128_enc_avx
+extern _aes_keyexp_128_sse
+extern _aes_keyexp_128_avx
+extern _aes_keyexp_128_enc_sse
+extern _aes_keyexp_128_enc_avx
 
-extern aes_keyexp_192_sse
-extern aes_keyexp_192_avx
+extern _aes_keyexp_192_sse
+extern _aes_keyexp_192_avx
 
-extern aes_keyexp_256_sse
-extern aes_keyexp_256_avx
+extern _aes_keyexp_256_sse
+extern _aes_keyexp_256_avx
 
 %include "multibinary.asm"
 
@@ -50,16 +50,16 @@ extern aes_keyexp_256_avx
 ; instantiate aes_keyexp_128 interfaces
 ;;;;
 mbin_interface     _aes_keyexp_128
-mbin_dispatch_init _aes_keyexp_128, aes_keyexp_128_sse, aes_keyexp_128_avx, aes_keyexp_128_avx
+mbin_dispatch_init _aes_keyexp_128, _aes_keyexp_128_sse, _aes_keyexp_128_avx, _aes_keyexp_128_avx
 
-mbin_interface     aes_keyexp_128_enc
-mbin_dispatch_init aes_keyexp_128_enc, aes_keyexp_128_enc_sse, aes_keyexp_128_enc_avx, aes_keyexp_128_enc_avx
+mbin_interface     _aes_keyexp_128_enc
+mbin_dispatch_init _aes_keyexp_128_enc, _aes_keyexp_128_enc_sse, _aes_keyexp_128_enc_avx, _aes_keyexp_128_enc_avx
 
 mbin_interface     _aes_keyexp_192
-mbin_dispatch_init _aes_keyexp_192, aes_keyexp_192_sse, aes_keyexp_192_avx, aes_keyexp_192_avx
+mbin_dispatch_init _aes_keyexp_192, _aes_keyexp_192_sse, _aes_keyexp_192_avx, _aes_keyexp_192_avx
 
 mbin_interface     _aes_keyexp_256
-mbin_dispatch_init _aes_keyexp_256, aes_keyexp_256_sse, aes_keyexp_256_avx, aes_keyexp_256_avx
+mbin_dispatch_init _aes_keyexp_256, _aes_keyexp_256_sse, _aes_keyexp_256_avx, _aes_keyexp_256_avx
 
 section .text
 ;;;       func            	core, ver, snum

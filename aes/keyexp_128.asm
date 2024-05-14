@@ -74,8 +74,8 @@ section .text
 ; arg 2: rdx: pointer to expanded key array for encrypt
 ; arg 3: r8:  pointer to expanded key array for decrypt
 ;
-mk_global aes_keyexp_128_sse, function, internal
-aes_keyexp_128_sse:
+mk_global _aes_keyexp_128_sse, function, internal
+_aes_keyexp_128_sse:
 	endbranch
         movdqu	xmm1, [KEY]	; loading the AES key
 	movdqu	[EXP_ENC_KEYS + 16*0], xmm1
@@ -148,8 +148,8 @@ aes_keyexp_128_sse:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-mk_global aes_keyexp_128_avx, function, internal
-aes_keyexp_128_avx:
+mk_global _aes_keyexp_128_avx, function, internal
+_aes_keyexp_128_avx:
 	endbranch
         vmovdqu	xmm1, [KEY]	; loading the AES key
 	vmovdqu	[EXP_ENC_KEYS + 16*0], xmm1
@@ -222,14 +222,14 @@ aes_keyexp_128_avx:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; void aes_keyexp_128_enc_sse(UINT8 *key,
+; void _aes_keyexp_128_enc_sse(UINT8 *key,
 ;                             UINT8 *enc_exp_keys);
 ;
 ; arg 1: rcx: pointer to key
 ; arg 2: rdx: pointer to expanded key array for encrypt
 ;
-mk_global aes_keyexp_128_enc_sse, function, internal
-aes_keyexp_128_enc_sse:
+mk_global _aes_keyexp_128_enc_sse, function, internal
+_aes_keyexp_128_enc_sse:
 	endbranch
         movdqu	xmm1, [KEY]	; loading the AES key
 	movdqu	[EXP_ENC_KEYS + 16*0], xmm1
@@ -277,8 +277,8 @@ aes_keyexp_128_enc_sse:
 
 	ret
 
-mk_global aes_keyexp_128_enc_avx, function, internal
-aes_keyexp_128_enc_avx:
+mk_global _aes_keyexp_128_enc_avx, function, internal
+_aes_keyexp_128_enc_avx:
 	endbranch
         vmovdqu	xmm1, [KEY]	; loading the AES key
 	vmovdqu	[EXP_ENC_KEYS + 16*0], xmm1

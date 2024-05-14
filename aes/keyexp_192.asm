@@ -117,8 +117,8 @@ section .text
 ; arg 2: rdx: pointer to expanded key array for encrypt
 ; arg 3: r8:  pointer to expanded key array for decrypt
 ;
-mk_global aes_keyexp_192_sse, function, internal
-aes_keyexp_192_sse:
+mk_global _aes_keyexp_192_sse, function, internal
+_aes_keyexp_192_sse:
 	endbranch
 
 %ifnidn __OUTPUT_FORMAT__, elf64
@@ -196,8 +196,8 @@ aes_keyexp_192_sse:
 
 
 
-mk_global aes_keyexp_192_avx, function, internal
-aes_keyexp_192_avx:
+mk_global _aes_keyexp_192_avx, function, internal
+_aes_keyexp_192_avx:
 	endbranch
 
 %ifnidn __OUTPUT_FORMAT__, elf64
