@@ -5,13 +5,18 @@ rc=0
 verbose=0
 clang_format_min_version=18
 
-function clang_format_version() {
+function clang_format_major_version() {
     version_str=$($clang_format --version)
     regex="[0-9]+"
     if [[ $version_str =~ $regex ]]; then
         major_version="${BASH_REMATCH[0]}"
 	echo $major_version
     fi
+}
+
+function clang_format_version() {
+    version_str=$($clang_format --version)
+    echo $version_str
 }
 
 # set clang-format binary if not set externally
@@ -40,8 +45,8 @@ if ! git rev-parse --is-inside-work-tree >& /dev/null; then
     exit 1
 fi
 
-if [ $(clang_format_version) -ge $clang_format_min_version ]; then
-    echo "Checking C files for coding style (clang-format v$(clang_format_version))..."
+if [ $(clang_format_major_version) -ge $clang_format_min_version ]; then
+    echo "Checking C files for coding style (clang-format $(clang_format_version))..."
     for f in `git ls-files '*.[c|h]'`; do
 	[ "$verbose" -gt 0 ] && echo "checking style on $f"
 	if ! $clang_format -style=file --dry-run --Werror "$f" >/dev/null 2>&1; then
