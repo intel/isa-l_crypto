@@ -322,9 +322,7 @@ static uint8_t aes_gcm_256_tag[] = { 0x76, 0xfc, 0x6e, 0xce, 0x0f, 0x4e, 0x17, 0
                                      0xcd, 0xdf, 0x88, 0x53, 0xbb, 0x2d, 0x55, 0x1b };
 
 #define ADD_CBC_VECTOR(_key, _iv, _plain, _cipher, _descr)                                         \
-        {                                                                                          \
-                _key, sizeof(_key), _iv, _plain, sizeof(_plain), _cipher, _descr                   \
-        }
+        { _key, sizeof(_key), _iv, _plain, sizeof(_plain), _cipher, _descr }
 
 static const struct self_test_cbc_vector cbc_vectors[] = {
         ADD_CBC_VECTOR(aes_cbc_128_key, aes_cbc_128_iv, aes_cbc_128_plaintext,
@@ -420,9 +418,7 @@ _aes_cbc_self_test(void)
 }
 
 #define ADD_XTS_VECTOR(_key1, _key2, _tweak, _plain, _cipher, _descr)                              \
-        {                                                                                          \
-                _key1, _key2, sizeof(_key1), _tweak, _plain, sizeof(_plain), _cipher, _descr       \
-        }
+        { _key1, _key2, sizeof(_key1), _tweak, _plain, sizeof(_plain), _cipher, _descr }
 
 static const struct self_test_xts_vector xts_vectors[] = {
         ADD_XTS_VECTOR(aes_xts_128_key1, aes_xts_128_key2, aes_xts_128_tweak, aes_xts_128_plaintext,
@@ -557,10 +553,8 @@ _aes_xts_self_test(void)
 }
 
 #define ADD_GCM_VECTOR(_key, _iv, _plain, _cipher, _aad, _tag, _descr)                             \
-        {                                                                                          \
-                _key, sizeof(_key), _iv, _plain, sizeof(_plain), _cipher, _aad, sizeof(_aad),      \
-                        _tag, sizeof(_tag), _descr                                                 \
-        }
+        { _key, sizeof(_key), _iv,  _plain,       sizeof(_plain), _cipher,                         \
+          _aad, sizeof(_aad), _tag, sizeof(_tag), _descr }
 
 static const struct self_test_gcm_vector gcm_vectors[] = {
         ADD_GCM_VECTOR(aes_gcm_128_key, aes_gcm_128_iv, aes_gcm_128_plaintext,

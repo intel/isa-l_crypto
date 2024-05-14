@@ -475,10 +475,8 @@ static uint8_t T11[] = { 0x76, 0xfc, 0x6e, 0xce, 0x0f, 0x4e, 0x17, 0x68,
 ///////
 
 #define vector(N)                                                                                  \
-        {                                                                                          \
-                K##N, (KBITS(K##N)), IV##N, sizeof(IV##N), A##N, A##N##_len, P##N, sizeof(P##N),   \
-                        C##N, T##N, sizeof(T##N)                                                   \
-        }
+        { K##N, (KBITS(K##N)), IV##N, sizeof(IV##N), A##N,        A##N##_len,                      \
+          P##N, sizeof(P##N),  C##N,  T##N,          sizeof(T##N) }
 
 gcm_vector const gcm_vectors[] = {
         // field order {K, Klen, IV, IVlen, A, Alen, P, Plen, C, T, Tlen};
