@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include <openssl/evp.h>
 #include "md5_mb.h"
 #include "endian_helper.h"
@@ -67,10 +69,12 @@ md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
         EVP_MD_CTX_destroy(c);
         return 1;
 }
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
+#ifndef FIPS_MODE
         ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
         ISAL_MD5_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
         unsigned char *bufs[TEST_BUFS];
@@ -190,4 +194,8 @@ main(void)
                 printf(" multibinary_md5_ssl rand: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }

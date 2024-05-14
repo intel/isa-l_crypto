@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FIPS_MODE
 #include <openssl/evp.h>
 #include "md5_mb.h"
 #include "test.h"
@@ -70,10 +72,12 @@ md5_ossl(const uint8_t *d, unsigned long n, uint8_t *md)
 
 /* Reference digest global to reduce stack usage */
 static uint8_t digest_ssl[TEST_BUFS][4 * ISAL_MD5_DIGEST_NWORDS];
+#endif /* !FIPS_MODE */
 
 int
 main(void)
 {
+#ifndef FIPS_MODE
         int ret;
         ISAL_MD5_HASH_CTX_MGR *mgr = NULL;
         ISAL_MD5_HASH_CTX ctxpool[TEST_BUFS], *ctx = NULL;
@@ -155,4 +159,8 @@ main(void)
                 printf(" multibinary_md5_ossl_perf: Pass\n");
 
         return fail;
+#else
+        printf("Not Executed\n");
+        return 0;
+#endif /* FIPS_MODE */
 }
