@@ -18,6 +18,7 @@ command -V gmake >/dev/null 2>&1 && MAKE=gmake
 command -V greadlink >/dev/null 2>&1 && READLINK=greadlink
 [ -n "$CC" ] && build_opt+="CC=$CC "
 [ -n "$AS" ] && build_opt+="AS=$AS "
+[ -n "$EXTRA_BUILD_OPTS" ] && build_opt+="$EXTRA_BUILD_OPTS "
 
 out="$PWD"
 src=$($READLINK -f $(dirname $0))/..
@@ -83,7 +84,7 @@ fi
 
 # Std makefile build perf tests
 test_start "extended_perf_test"
-time $MAKE -f Makefile.unx -j $cpus perfs
+time $MAKE -f Makefile.unx -j $cpus $build_opt perfs
 test_end "extended_perf_test" $?
 msg+=$'Std makefile build perf: Pass\n'
 
