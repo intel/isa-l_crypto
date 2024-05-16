@@ -30,9 +30,10 @@
 #include <stdint.h>
 #include <string.h>
 #include "sm3_mb.h"
+#include "sm3_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
-#define ISAL_SM3_LOG2_BLOCK_SIZE 6
+
 void
 sm3_mb_mgr_init_sve(ISAL_SM3_MB_JOB_MGR *state);
 ISAL_SM3_JOB *

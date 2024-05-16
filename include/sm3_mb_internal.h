@@ -47,6 +47,15 @@
 extern "C" {
 #endif
 
+#define ISAL_SM3_X8_LANES            8
+#define ISAL_SM3_LOG2_BLOCK_SIZE     6
+#define ISAL_SM3_PADLENGTHFIELD_SIZE 8
+#define ISAL_SM3_INITIAL_DIGEST                                                                    \
+        0x7380166f, 0x4914b2b9, 0x172442d7, 0xda8a0600, 0xa96f30bc, 0x163138aa, 0xe38dee4d,        \
+                0xb0fb0e4e
+
+typedef uint32_t ISAL_SM3_WORD_T;
+
 /**
  * @brief Initialize the SM3 multi-buffer manager structure.
  *

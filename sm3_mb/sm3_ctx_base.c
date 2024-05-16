@@ -29,6 +29,7 @@
 
 #include <string.h>
 #include "sm3_mb.h"
+#include "sm3_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
 

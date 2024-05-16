@@ -47,19 +47,29 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new enums.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+#define SM3_DIGEST_NWORDS ISAL_SM3_DIGEST_NWORDS
+#define SM3_MAX_LANES     ISAL_SM3_MAX_LANES
+#define SM3_BLOCK_SIZE    ISAL_SM3_BLOCK_SIZE
+#define sm3_digest_array  isal_sm3_digest_array
+#define SM3_JOB           ISAL_SM3_JOB
+#define SM3_MB_ARGS_X16   ISAL_SM3_MB_ARGS_X16
+#define SM3_LANE_DATA     ISAL_SM3_LANE_DATA
+#define SM3_MB_JOB_MGR    ISAL_SM3_MB_JOB_MGR
+#define SM3_HASH_CTX_MGR  ISAL_SM3_HASH_CTX_MGR
+#define SM3_HASH_CTX      ISAL_SM3_HASH_CTX
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
-#define ISAL_SM3_DIGEST_NWORDS       8 /* Word in SM3 is 32-bit */
-#define ISAL_SM3_MAX_LANES           16
-#define ISAL_SM3_X8_LANES            8
-#define ISAL_SM3_BLOCK_SIZE          64
-#define ISAL_SM3_LOG2_BLOCK_SIZE     6
-#define ISAL_SM3_PADLENGTHFIELD_SIZE 8
-#define ISAL_SM3_INITIAL_DIGEST                                                                    \
-        0x7380166f, 0x4914b2b9, 0x172442d7, 0xda8a0600, 0xa96f30bc, 0x163138aa, 0xe38dee4d,        \
-                0xb0fb0e4e
+#define ISAL_SM3_DIGEST_NWORDS 8 /* Word in SM3 is 32-bit */
+#define ISAL_SM3_MAX_LANES     16
+#define ISAL_SM3_BLOCK_SIZE    64
 
-typedef uint32_t sm3_digest_array[ISAL_SM3_DIGEST_NWORDS][ISAL_SM3_MAX_LANES];
-typedef uint32_t ISAL_SM3_WORD_T;
+typedef uint32_t isal_sm3_digest_array[ISAL_SM3_DIGEST_NWORDS][ISAL_SM3_MAX_LANES];
 
 /** @brief Scheduler layer - Holds info describing a single SM3 job for the multi-buffer manager */
 
@@ -74,7 +84,7 @@ typedef struct {
 /** @brief Scheduler layer -  Holds arguments for submitted SM3 job */
 
 typedef struct {
-        sm3_digest_array digest;
+        isal_sm3_digest_array digest;
         uint8_t *data_ptr[ISAL_SM3_MAX_LANES];
 } ISAL_SM3_MB_ARGS_X16;
 
