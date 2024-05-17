@@ -103,6 +103,17 @@
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define AES_XTS_MIN_LEN ISAL_AES_XTS_MIN_LEN
+#define AES_XTS_MAX_LEN ISAL_AES_XTS_MAX_LEN
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 #define ISAL_AES_XTS_MIN_LEN 16
 #define ISAL_AES_XTS_MAX_LEN (1 << 24)
 
