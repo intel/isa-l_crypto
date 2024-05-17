@@ -36,7 +36,7 @@
 #define AAD_SIZE 32
 #define TAG_SIZE 16 /* Valid values are 16, 12, or 8 */
 #define KEY_SIZE ISAL_GCM_256_KEY_LEN
-#define IV_SIZE  ISAL_GCM_IV_DATA_LEN
+#define IV_SIZE  ISAL_GCM_IV_LEN
 
 void
 mprint(const char *msg, uint8_t *buf, int len)

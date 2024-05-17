@@ -905,8 +905,8 @@ test_gcm_strm_efence(void)
                 }
                 test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_128_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
@@ -1022,8 +1022,8 @@ test_gcm_strm_combinations(int test_len)
                 }
                 test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_128_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
@@ -1137,8 +1137,8 @@ test_gcm_combinations(void)
                 }
                 test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_128_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
@@ -1252,8 +1252,8 @@ test_gcm256_combinations(void)
                 }
                 test.K = malloc(ISAL_GCM_256_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_256_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
@@ -1371,8 +1371,8 @@ test_gcm256_strm_combinations(int test_len)
                 }
                 test.K = malloc(ISAL_GCM_256_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_256_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
@@ -1476,7 +1476,7 @@ test_gcm_efence(void)
 
         test.Plen = PAGE_LEN / 2;
         // place buffers to end at page boundary
-        test.IVlen = ISAL_GCM_IV_DATA_LEN;
+        test.IVlen = ISAL_GCM_IV_LEN;
         test.Alen = test.Plen;
         test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
@@ -1848,8 +1848,8 @@ test_gcm_strm_combinations2(int length, int start, int breaks)
                 }
                 test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
                 test.Klen = ISAL_GCM_128_KEY_LEN;
-                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
-                test.IVlen = ISAL_GCM_IV_DATA_LEN;
+                test.IV = malloc(ISAL_GCM_IV_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
                 test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);

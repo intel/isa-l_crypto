@@ -326,8 +326,6 @@ struct gcm_context {
 static int
 gcm_enc_pre(struct aes_context *p)
 {
-        uint8_t const IVend[] = ISAL_GCM_IV_END_MARK;
-
         struct gcm_context *pCtx = (struct gcm_context *) p;
 
         pCtx->key = malloc(pCtx->base.bits / 8);
@@ -338,7 +336,6 @@ gcm_enc_pre(struct aes_context *p)
         mk_rand_data(pCtx->aad, AAD_LENGTH);
 
         mk_rand_data(pCtx->iv, ISAL_GCM_IV_LEN);
-        memcpy(&pCtx->iv[ISAL_GCM_IV_END_START], IVend, sizeof(IVend));
 
         mk_rand_data(pCtx->key, pCtx->base.bits / 8);
         if (pCtx->base.bits == 128)

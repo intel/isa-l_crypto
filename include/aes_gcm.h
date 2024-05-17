@@ -86,14 +86,19 @@ its Usage for Computing the GCM Mode. January, 2010.
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
 #ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
 /***** Previous hash constants and typedefs *****/
 #define MAX_TAG_LEN ISAL_GCM_MAX_TAG_LEN
 
-#define GCM_IV_LEN       ISAL_GCM_IV_LEN
-#define GCM_IV_DATA_LEN  ISAL_GCM_IV_DATA_LEN
-#define GCM_IV_END_MARK  ISAL_GCM_IV_END_MARK
-#define GCM_IV_END_START ISAL_GCM_IV_END_START
+#define GCM_IV_LEN       (16)
+#define GCM_IV_DATA_LEN  ISAL_GCM_IV_LEN
+#define GCM_IV_END_MARK  { 0x00, 0x00, 0x00, 0x01 };
+#define GCM_IV_END_START (12)
 
 #define GCM_128_KEY_LEN ISAL_GCM_128_KEY_LEN
 #define GCM_256_KEY_LEN ISAL_GCM_256_KEY_LEN
@@ -104,19 +109,15 @@ extern "C" {
 
 #define GCM_MAX_LEN ISAL_GCM_MAX_LEN
 
+#define LONGEST_TESTED_AAD_LENGTH (2 * 1024)
 #endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
 /* Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8. */
 #define ISAL_GCM_MAX_TAG_LEN (16)
 //
-// IV data is limited to 16 bytes. The last DWORD (4 bytes) must be 0x1
+// IV data is limited to 12 bytes.
 //
-#define ISAL_GCM_IV_LEN       (16)
-#define ISAL_GCM_IV_DATA_LEN  (12)
-#define ISAL_GCM_IV_END_MARK  { 0x00, 0x00, 0x00, 0x01 };
-#define ISAL_GCM_IV_END_START (12)
-
-#define LONGEST_TESTED_AAD_LENGTH (2 * 1024)
+#define ISAL_GCM_IV_LEN (12)
 
 // Key lengths of 128 and 256 supported
 #define ISAL_GCM_128_KEY_LEN (16)

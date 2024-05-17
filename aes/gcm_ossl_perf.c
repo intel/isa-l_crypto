@@ -246,7 +246,6 @@ aes_gcm_perf(void)
 int
 main(void)
 {
-        uint8_t const IVend[] = ISAL_GCM_IV_END_MARK;
         uint32_t OK = 1;
 
         plaintext = malloc(TEST_LEN);
@@ -268,8 +267,7 @@ main(void)
         mk_rand_data(plaintext, TEST_LEN);
         mk_rand_data(AAD, AAD_LENGTH);
         mk_rand_data(IV, ISAL_GCM_IV_LEN);
-        memcpy(&IV[ISAL_GCM_IV_END_START], IVend, sizeof(IVend));
-        iv_len = ISAL_GCM_IV_LEN - sizeof(IVend); // end marker not part of IV length
+        iv_len = ISAL_GCM_IV_LEN;
 
         aes_gcm_perf();
         printf("AES gcm ISA-L vs OpenSSL performance\n");
