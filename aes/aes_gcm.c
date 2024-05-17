@@ -47,7 +47,7 @@ isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -55,7 +55,7 @@ isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -85,7 +85,7 @@ isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -93,7 +93,7 @@ isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -123,7 +123,7 @@ isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -131,7 +131,7 @@ isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -160,7 +160,7 @@ isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -168,7 +168,7 @@ isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_dat
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -246,7 +246,7 @@ isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -274,7 +274,7 @@ isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -302,7 +302,7 @@ isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -330,7 +330,7 @@ isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
         _aes_gcm_dec_256_update(key_data, context_data, out, in, len);
@@ -350,7 +350,7 @@ isal_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -376,7 +376,7 @@ isal_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -402,7 +402,7 @@ isal_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -428,7 +428,7 @@ isal_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_CTX;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -497,7 +497,7 @@ isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -505,7 +505,7 @@ isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -535,7 +535,7 @@ isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -543,7 +543,7 @@ isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -573,7 +573,7 @@ isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -581,7 +581,7 @@ isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -611,7 +611,7 @@ isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_DST;
         if (in == NULL && len != 0)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
         if (iv == NULL)
                 return ISAL_CRYPTO_ERR_NULL_IV;
@@ -619,7 +619,7 @@ isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
                 return ISAL_CRYPTO_ERR_NULL_AAD;
         if (auth_tag == NULL)
                 return ISAL_CRYPTO_ERR_NULL_AUTH;
-        if (auth_tag_len != MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
+        if (auth_tag_len != ISAL_GCM_MAX_TAG_LEN && auth_tag_len != 12 && auth_tag_len != 8)
                 return ISAL_CRYPTO_ERR_AUTH_TAG_LEN;
 #endif
 
@@ -648,7 +648,7 @@ isal_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -675,7 +675,7 @@ isal_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -703,7 +703,7 @@ isal_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 
@@ -731,7 +731,7 @@ isal_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
                 return ISAL_CRYPTO_ERR_NULL_SRC;
         if (out == NULL && len > 0)
                 return ISAL_CRYPTO_ERR_NULL_DST;
-        if (len > GCM_MAX_LEN)
+        if (len > ISAL_GCM_MAX_LEN)
                 return ISAL_CRYPTO_ERR_CIPH_LEN;
 #endif
 

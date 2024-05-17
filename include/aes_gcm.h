@@ -86,27 +86,47 @@ its Usage for Computing the GCM Mode. January, 2010.
 extern "C" {
 #endif
 
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define MAX_TAG_LEN ISAL_GCM_MAX_TAG_LEN
+
+#define GCM_IV_LEN       ISAL_GCM_IV_LEN
+#define GCM_IV_DATA_LEN  ISAL_GCM_IV_DATA_LEN
+#define GCM_IV_END_MARK  ISAL_GCM_IV_END_MARK
+#define GCM_IV_END_START ISAL_GCM_IV_END_START
+
+#define GCM_128_KEY_LEN ISAL_GCM_128_KEY_LEN
+#define GCM_256_KEY_LEN ISAL_GCM_256_KEY_LEN
+
+#define GCM_BLOCK_LEN   ISAL_GCM_BLOCK_LEN
+#define GCM_ENC_KEY_LEN ISAL_GCM_ENC_KEY_LEN
+#define GCM_KEY_SETS    ISAL_GCM_KEY_SETS
+
+#define GCM_MAX_LEN ISAL_GCM_MAX_LEN
+
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 /* Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8. */
-#define MAX_TAG_LEN (16)
+#define ISAL_GCM_MAX_TAG_LEN (16)
 //
 // IV data is limited to 16 bytes. The last DWORD (4 bytes) must be 0x1
 //
-#define GCM_IV_LEN       (16)
-#define GCM_IV_DATA_LEN  (12)
-#define GCM_IV_END_MARK  { 0x00, 0x00, 0x00, 0x01 };
-#define GCM_IV_END_START (12)
+#define ISAL_GCM_IV_LEN       (16)
+#define ISAL_GCM_IV_DATA_LEN  (12)
+#define ISAL_GCM_IV_END_MARK  { 0x00, 0x00, 0x00, 0x01 };
+#define ISAL_GCM_IV_END_START (12)
 
 #define LONGEST_TESTED_AAD_LENGTH (2 * 1024)
 
 // Key lengths of 128 and 256 supported
-#define GCM_128_KEY_LEN (16)
-#define GCM_256_KEY_LEN (32)
+#define ISAL_GCM_128_KEY_LEN (16)
+#define ISAL_GCM_256_KEY_LEN (32)
 
-#define GCM_BLOCK_LEN   16
-#define GCM_ENC_KEY_LEN 16
-#define GCM_KEY_SETS    (15) /*exp key + 14 exp round keys */
+#define ISAL_GCM_BLOCK_LEN   16
+#define ISAL_GCM_ENC_KEY_LEN 16
+#define ISAL_GCM_KEY_SETS    (15) /*exp key + 14 exp round keys */
 
-#define GCM_MAX_LEN UINT64_C(((1ULL << 39) - 256) - 1)
+#define ISAL_GCM_MAX_LEN UINT64_C(((1ULL << 39) - 256) - 1)
 
 /**
  * @brief holds intermediate key data needed to improve performance
@@ -117,24 +137,25 @@ extern "C" {
 __declspec(align(16))
 #endif /* WIN32 */
 struct gcm_key_data {
-        uint8_t expanded_keys[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
-        uint8_t shifted_hkey_1[GCM_ENC_KEY_LEN];   // store HashKey <<1 mod poly here
-        uint8_t shifted_hkey_2[GCM_ENC_KEY_LEN];   // store HashKey^2 <<1 mod poly here
-        uint8_t shifted_hkey_3[GCM_ENC_KEY_LEN];   // store HashKey^3 <<1 mod poly here
-        uint8_t shifted_hkey_4[GCM_ENC_KEY_LEN];   // store HashKey^4 <<1 mod poly here
-        uint8_t shifted_hkey_5[GCM_ENC_KEY_LEN];   // store HashKey^5 <<1 mod poly here
-        uint8_t shifted_hkey_6[GCM_ENC_KEY_LEN];   // store HashKey^6 <<1 mod poly here
-        uint8_t shifted_hkey_7[GCM_ENC_KEY_LEN];   // store HashKey^7 <<1 mod poly here
-        uint8_t shifted_hkey_8[GCM_ENC_KEY_LEN];   // store HashKey^8 <<1 mod poly here
-        uint8_t shifted_hkey_1_k[GCM_ENC_KEY_LEN]; // store XOR of High 64 bits
-        uint8_t shifted_hkey_2_k[GCM_ENC_KEY_LEN]; // and Low 64b of HashKey^n <<1 mod poly
-        uint8_t shifted_hkey_3_k[GCM_ENC_KEY_LEN]; // here (for Karatsuba purposes)
-        uint8_t shifted_hkey_4_k[GCM_ENC_KEY_LEN];
-        uint8_t shifted_hkey_5_k[GCM_ENC_KEY_LEN];
-        uint8_t shifted_hkey_6_k[GCM_ENC_KEY_LEN];
-        uint8_t shifted_hkey_7_k[GCM_ENC_KEY_LEN];
-        uint8_t shifted_hkey_8_k[GCM_ENC_KEY_LEN];
-        uint8_t shifted_hkey_n_k[GCM_ENC_KEY_LEN * (64 - 16)]; // Others vaes version needs 2x32
+        uint8_t expanded_keys[ISAL_GCM_ENC_KEY_LEN * ISAL_GCM_KEY_SETS];
+        uint8_t shifted_hkey_1[ISAL_GCM_ENC_KEY_LEN];   // store HashKey <<1 mod poly here
+        uint8_t shifted_hkey_2[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^2 <<1 mod poly here
+        uint8_t shifted_hkey_3[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^3 <<1 mod poly here
+        uint8_t shifted_hkey_4[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^4 <<1 mod poly here
+        uint8_t shifted_hkey_5[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^5 <<1 mod poly here
+        uint8_t shifted_hkey_6[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^6 <<1 mod poly here
+        uint8_t shifted_hkey_7[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^7 <<1 mod poly here
+        uint8_t shifted_hkey_8[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^8 <<1 mod poly here
+        uint8_t shifted_hkey_1_k[ISAL_GCM_ENC_KEY_LEN]; // store XOR of High 64 bits
+        uint8_t shifted_hkey_2_k[ISAL_GCM_ENC_KEY_LEN]; // and Low 64b of HashKey^n <<1 mod poly
+        uint8_t shifted_hkey_3_k[ISAL_GCM_ENC_KEY_LEN]; // here (for Karatsuba purposes)
+        uint8_t shifted_hkey_4_k[ISAL_GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_5_k[ISAL_GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_6_k[ISAL_GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_7_k[ISAL_GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_8_k[ISAL_GCM_ENC_KEY_LEN];
+        uint8_t shifted_hkey_n_k[ISAL_GCM_ENC_KEY_LEN *
+                                 (64 - 16)]; // Others vaes version needs 2x32
 }
 #if defined(__unix__) || (__MINGW32__)
 __attribute__((aligned(16)));
@@ -147,12 +168,12 @@ __attribute__((aligned(16)));
  */
 struct gcm_context_data {
         // init, update and finalize context data
-        uint8_t aad_hash[GCM_BLOCK_LEN];
+        uint8_t aad_hash[ISAL_GCM_BLOCK_LEN];
         uint64_t aad_length;
         uint64_t in_length;
-        uint8_t partial_block_enc_key[GCM_BLOCK_LEN];
-        uint8_t orig_IV[GCM_BLOCK_LEN];
-        uint8_t current_counter[GCM_BLOCK_LEN];
+        uint8_t partial_block_enc_key[ISAL_GCM_BLOCK_LEN];
+        uint8_t orig_IV[ISAL_GCM_BLOCK_LEN];
+        uint8_t current_counter[ISAL_GCM_BLOCK_LEN];
         uint64_t partial_block_length;
 };
 

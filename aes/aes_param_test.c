@@ -197,69 +197,72 @@ test_aes_gcm_api(aes_gcm_func aes_gcm_func_ptr, const char *name)
         struct gcm_key_data gkey;
         struct gcm_context_data gctx;
         uint8_t buf[256] = { 0 };
-        uint8_t iv[GCM_IV_LEN] = { 0 };
+        uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t *aad = buf;
         uint8_t *tag = buf;
 
         // test null key data
-        CHECK_RETURN(
-                aes_gcm_func_ptr(NULL, &gctx, buf, buf, sizeof(buf), iv, aad, 16, tag, MAX_TAG_LEN),
-                ISAL_CRYPTO_ERR_NULL_EXP_KEY, name);
+        CHECK_RETURN(aes_gcm_func_ptr(NULL, &gctx, buf, buf, sizeof(buf), iv, aad, 16, tag,
+                                      ISAL_GCM_MAX_TAG_LEN),
+                     ISAL_CRYPTO_ERR_NULL_EXP_KEY, name);
 
         // test null context
-        CHECK_RETURN(
-                aes_gcm_func_ptr(&gkey, NULL, buf, buf, sizeof(buf), iv, aad, 16, tag, MAX_TAG_LEN),
-                ISAL_CRYPTO_ERR_NULL_CTX, name);
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, NULL, buf, buf, sizeof(buf), iv, aad, 16, tag,
+                                      ISAL_GCM_MAX_TAG_LEN),
+                     ISAL_CRYPTO_ERR_NULL_CTX, name);
 
         // test null dst
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, NULL, buf, sizeof(buf), iv, aad, 16, tag,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NULL_DST, name);
 
         // test null dst with zero len
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, NULL, buf, 0, iv, aad, 16, tag, MAX_TAG_LEN),
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, NULL, buf, 0, iv, aad, 16, tag,
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NONE, name);
 
         // test null src
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, NULL, sizeof(buf), iv, aad, 16, tag,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NULL_SRC, name);
 
         // test null src with zero len
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, NULL, 0, iv, aad, 16, tag, MAX_TAG_LEN),
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, NULL, 0, iv, aad, 16, tag,
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NONE, name);
 
         // test invalid len
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, GCM_MAX_LEN + 1, iv, aad, 16, tag,
-                                      MAX_TAG_LEN),
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, ISAL_GCM_MAX_LEN + 1, iv, aad, 16,
+                                      tag, ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_CIPH_LEN, name);
 
         // test zero len
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, 0, iv, aad, 16, tag, MAX_TAG_LEN),
-                     ISAL_CRYPTO_ERR_NONE, name);
+        CHECK_RETURN(
+                aes_gcm_func_ptr(&gkey, &gctx, buf, buf, 0, iv, aad, 16, tag, ISAL_GCM_MAX_TAG_LEN),
+                ISAL_CRYPTO_ERR_NONE, name);
 
         // test null iv
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, sizeof(buf), NULL, aad, 16, tag,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NULL_IV, name);
 
         // test null aad
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, sizeof(buf), iv, NULL, 16, tag,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NULL_AAD, name);
 
         // test null aad with zero len
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, sizeof(buf), iv, NULL, 0, tag,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NONE, name);
 
         // test null tag
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, sizeof(buf), iv, aad, 16, NULL,
-                                      MAX_TAG_LEN),
+                                      ISAL_GCM_MAX_TAG_LEN),
                      ISAL_CRYPTO_ERR_NULL_AUTH, name);
 
         // test auth tag lens
-        for (int i = 5; i <= MAX_TAG_LEN + 1; i++)
+        for (int i = 5; i <= ISAL_GCM_MAX_TAG_LEN + 1; i++)
                 if (i % 4 == 0)
                         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, sizeof(buf), iv, aad,
                                                       16, tag, i),
@@ -276,7 +279,7 @@ test_aes_gcm_init_api(aes_gcm_init_func aes_gcm_func_ptr, const char *name)
 {
         struct gcm_key_data gkey;
         struct gcm_context_data gctx;
-        uint8_t iv[GCM_IV_LEN] = { 0 };
+        uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t aad[64] = { 0 };
 
         // test null key data
@@ -331,7 +334,7 @@ test_aes_gcm_update_api(aes_gcm_update_func aes_gcm_func_ptr, const char *name)
         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, NULL, 0), ISAL_CRYPTO_ERR_NONE, name);
 
         // test invalid len
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, GCM_MAX_LEN + 1),
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, buf, buf, ISAL_GCM_MAX_LEN + 1),
                      ISAL_CRYPTO_ERR_CIPH_LEN, name);
 
         return 0;
@@ -343,8 +346,8 @@ test_aes_gcm_finalize_api(aes_gcm_finalize_func aes_gcm_func_ptr, const char *na
 {
         struct gcm_key_data gkey = { 0 };
         struct gcm_context_data gctx = { 0 };
-        uint8_t tag[MAX_TAG_LEN] = { 0 };
-        uint8_t iv[GCM_IV_LEN] = { 0 };
+        uint8_t tag[ISAL_GCM_MAX_TAG_LEN] = { 0 };
+        uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t aad[64] = { 0 };
 
         // init required for valid cases
@@ -354,19 +357,19 @@ test_aes_gcm_finalize_api(aes_gcm_finalize_func aes_gcm_func_ptr, const char *na
                 isal_aes_gcm_init_256(&gkey, &gctx, iv, aad, sizeof(aad));
 
         // test null key data
-        CHECK_RETURN(aes_gcm_func_ptr(NULL, &gctx, tag, MAX_TAG_LEN), ISAL_CRYPTO_ERR_NULL_EXP_KEY,
-                     name);
+        CHECK_RETURN(aes_gcm_func_ptr(NULL, &gctx, tag, ISAL_GCM_MAX_TAG_LEN),
+                     ISAL_CRYPTO_ERR_NULL_EXP_KEY, name);
 
         // test null context
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, NULL, tag, MAX_TAG_LEN), ISAL_CRYPTO_ERR_NULL_CTX,
-                     name);
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, NULL, tag, ISAL_GCM_MAX_TAG_LEN),
+                     ISAL_CRYPTO_ERR_NULL_CTX, name);
 
         // test null tag
-        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, NULL, MAX_TAG_LEN), ISAL_CRYPTO_ERR_NULL_AUTH,
-                     name);
+        CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, NULL, ISAL_GCM_MAX_TAG_LEN),
+                     ISAL_CRYPTO_ERR_NULL_AUTH, name);
 
         // test auth tag lens
-        for (int i = 5; i <= MAX_TAG_LEN + 1; i++)
+        for (int i = 5; i <= ISAL_GCM_MAX_TAG_LEN + 1; i++)
                 if (i % 4 == 0)
                         CHECK_RETURN(aes_gcm_func_ptr(&gkey, &gctx, tag, i), ISAL_CRYPTO_ERR_NONE,
                                      name);

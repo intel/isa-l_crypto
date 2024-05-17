@@ -326,19 +326,19 @@ struct gcm_context {
 static int
 gcm_enc_pre(struct aes_context *p)
 {
-        uint8_t const IVend[] = GCM_IV_END_MARK;
+        uint8_t const IVend[] = ISAL_GCM_IV_END_MARK;
 
         struct gcm_context *pCtx = (struct gcm_context *) p;
 
         pCtx->key = malloc(pCtx->base.bits / 8);
-        pCtx->iv = malloc(GCM_IV_LEN);
-        pCtx->gcm_tag = malloc(MAX_TAG_LEN);
+        pCtx->iv = malloc(ISAL_GCM_IV_LEN);
+        pCtx->gcm_tag = malloc(ISAL_GCM_MAX_TAG_LEN);
         pCtx->aad = malloc(AAD_LENGTH);
 
         mk_rand_data(pCtx->aad, AAD_LENGTH);
 
-        mk_rand_data(pCtx->iv, GCM_IV_LEN);
-        memcpy(&pCtx->iv[GCM_IV_END_START], IVend, sizeof(IVend));
+        mk_rand_data(pCtx->iv, ISAL_GCM_IV_LEN);
+        memcpy(&pCtx->iv[ISAL_GCM_IV_END_START], IVend, sizeof(IVend));
 
         mk_rand_data(pCtx->key, pCtx->base.bits / 8);
         if (pCtx->base.bits == 128)
@@ -369,10 +369,10 @@ gcm_enc_proc(struct aes_context *p, char *plaintext, char *ciphertext, uint64_t 
 
         if (pCtx->base.bits == 128)
                 isal_aes_gcm_enc_128(&pCtx->gkey, &pCtx->gctx, ciphertext, plaintext, len, pCtx->iv,
-                                     pCtx->aad, AAD_LENGTH, pCtx->gcm_tag, MAX_TAG_LEN);
+                                     pCtx->aad, AAD_LENGTH, pCtx->gcm_tag, ISAL_GCM_MAX_TAG_LEN);
         else if (pCtx->base.bits == 256)
                 isal_aes_gcm_enc_256(&pCtx->gkey, &pCtx->gctx, ciphertext, plaintext, len, pCtx->iv,
-                                     pCtx->aad, AAD_LENGTH, pCtx->gcm_tag, MAX_TAG_LEN);
+                                     pCtx->aad, AAD_LENGTH, pCtx->gcm_tag, ISAL_GCM_MAX_TAG_LEN);
         else {
                 printf("unsupported gcm encryption bits %d\n", pCtx->base.bits);
                 exit(1);

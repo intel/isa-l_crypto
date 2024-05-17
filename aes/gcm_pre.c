@@ -36,7 +36,7 @@
 void
 _aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
 {
-        uint8_t tmp_exp_key[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
+        uint8_t tmp_exp_key[ISAL_GCM_ENC_KEY_LEN * ISAL_GCM_KEY_SETS];
         _aes_keyexp_128((const uint8_t *) key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
         _aes_gcm_precomp_128(key_data);
 }
@@ -44,7 +44,7 @@ _aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
 void
 _aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
 {
-        uint8_t tmp_exp_key[GCM_ENC_KEY_LEN * GCM_KEY_SETS];
+        uint8_t tmp_exp_key[ISAL_GCM_ENC_KEY_LEN * ISAL_GCM_KEY_SETS];
         _aes_keyexp_256((const uint8_t *) key, (uint8_t *) key_data->expanded_keys, tmp_exp_key);
         _aes_gcm_precomp_256(key_data);
 }

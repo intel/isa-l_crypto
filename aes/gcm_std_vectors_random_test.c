@@ -934,14 +934,14 @@ test_gcm_strm_efence(void)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_128_KEY_LEN + offset);
-                test.Klen = GCM_128_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_128_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -975,7 +975,7 @@ test_gcm_strm_efence(void)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_strm_vector_efence(gkey, gctx, &test)) {
                                 free(test_free.A);
@@ -1051,14 +1051,14 @@ test_gcm_strm_combinations(int test_len)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_128_KEY_LEN + offset);
-                test.Klen = GCM_128_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_128_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -1092,7 +1092,7 @@ test_gcm_strm_combinations(int test_len)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_strm_vector(gkey, gctx, &test, test_len)) {
                                 free(test_free.A);
@@ -1166,14 +1166,14 @@ test_gcm_combinations(void)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_128_KEY_LEN + offset);
-                test.Klen = GCM_128_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_128_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -1207,7 +1207,7 @@ test_gcm_combinations(void)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_vector(gkey, gctx, &test)) {
                                 free(test_free.A);
@@ -1282,14 +1282,14 @@ test_gcm256_combinations(void)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_256_KEY_LEN + offset);
-                test.Klen = GCM_256_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_256_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_256_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -1325,7 +1325,7 @@ test_gcm256_combinations(void)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_256_vector(gkey, gctx, &test)) {
                                 free(test_free.A);
@@ -1402,14 +1402,14 @@ test_gcm256_strm_combinations(int test_len)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_256_KEY_LEN + offset);
-                test.Klen = GCM_256_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_256_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_256_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -1443,7 +1443,7 @@ test_gcm256_strm_combinations(int test_len)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_256_strm_vector(gkey, gctx, &test, test_len)) {
                                 free(test_free.A);
@@ -1509,13 +1509,13 @@ test_gcm_efence(void)
 
         test.Plen = PAGE_LEN / 2;
         // place buffers to end at page boundary
-        test.IVlen = GCM_IV_DATA_LEN;
+        test.IVlen = ISAL_GCM_IV_DATA_LEN;
         test.Alen = test.Plen;
-        test.Tlen = MAX_TAG_LEN;
+        test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
         printf("AES GCM efence test vectors:");
-        for (key_len = GCM_128_KEY_LEN; GCM_256_KEY_LEN >= key_len;
-             key_len += (GCM_256_KEY_LEN - GCM_128_KEY_LEN)) {
+        for (key_len = ISAL_GCM_128_KEY_LEN; ISAL_GCM_256_KEY_LEN >= key_len;
+             key_len += (ISAL_GCM_256_KEY_LEN - ISAL_GCM_128_KEY_LEN)) {
                 test.Klen = key_len;
                 for (offset = 0; MAX_UNALIGNED > offset; offset++) {
                         if (0 == (offset % 80))
@@ -1536,7 +1536,7 @@ test_gcm_efence(void)
                         mk_rand_data(test.K, test.Klen);
                         mk_rand_data(test.IV, test.IVlen);
                         mk_rand_data(test.A, test.Alen);
-                        if (GCM_128_KEY_LEN == key_len) {
+                        if (ISAL_GCM_128_KEY_LEN == key_len) {
                                 if (0 != check_vector(gkey, gctx, &test)) {
                                         free(gkey);
                                         free(gctx);
@@ -1874,14 +1874,14 @@ test_gcm_strm_combinations2(int length, int start, int breaks)
                         posix_ret |= posix_memalign((void **) &test.P, POSIX_ALIGNMENT, 16);
                         posix_ret |= posix_memalign((void **) &test.C, POSIX_ALIGNMENT, 16);
                 }
-                test.K = malloc(GCM_128_KEY_LEN + offset);
-                test.Klen = GCM_128_KEY_LEN;
-                test.IV = malloc(GCM_IV_DATA_LEN + offset);
-                test.IVlen = GCM_IV_DATA_LEN;
+                test.K = malloc(ISAL_GCM_128_KEY_LEN + offset);
+                test.Klen = ISAL_GCM_128_KEY_LEN;
+                test.IV = malloc(ISAL_GCM_IV_DATA_LEN + offset);
+                test.IVlen = ISAL_GCM_IV_DATA_LEN;
                 test.A = malloc(aad_len + offset);
                 test.Alen = aad_len;
-                test.T = malloc(MAX_TAG_LEN + offset);
-                test.Tlen = MAX_TAG_LEN;
+                test.T = malloc(ISAL_GCM_MAX_TAG_LEN + offset);
+                test.Tlen = ISAL_GCM_MAX_TAG_LEN;
 
                 if ((NULL == test.P && test.Plen != 0) || (NULL == test.C && test.Plen != 0) ||
                     (NULL == test.K) || (NULL == test.IV) || (NULL == test.A) || (NULL == test.T) ||
@@ -1915,7 +1915,7 @@ test_gcm_strm_combinations2(int length, int start, int breaks)
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
                 // Tag lengths of 8, 12 or 16
-                for (tag_len = 8; tag_len <= MAX_TAG_LEN;) {
+                for (tag_len = 8; tag_len <= ISAL_GCM_MAX_TAG_LEN;) {
                         test.Tlen = tag_len;
                         if (0 != check_strm_vector2(gkey, gctx, &test, length, start, breaks)) {
                                 free(test_free.A);

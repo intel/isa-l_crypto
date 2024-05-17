@@ -56,8 +56,8 @@
 
 static unsigned char *plaintext, *gcm_plaintext, *ciphertext, *ossl_plaintext, *ossl_ciphertext,
         *gcm_tag, *ossl_tag, *IV, *AAD;
-static uint8_t key128[GCM_128_KEY_LEN];
-static uint8_t key256[GCM_256_KEY_LEN];
+static uint8_t key128[ISAL_GCM_128_KEY_LEN];
+static uint8_t key256[ISAL_GCM_256_KEY_LEN];
 uint8_t iv_len = 0;
 
 void
@@ -102,7 +102,7 @@ aes_gcm_perf(void)
 
         printf("AES GCM performance parameters plain text length:%d; IV length:%d; ADD length:%d "
                "\n",
-               TEST_LEN, GCM_IV_LEN, AAD_LENGTH);
+               TEST_LEN, ISAL_GCM_IV_LEN, AAD_LENGTH);
 
         mk_rand_data(key128, sizeof(key128));
         mk_rand_data(key256, sizeof(key256));
@@ -113,19 +113,19 @@ aes_gcm_perf(void)
 
         // Preload code cache
         isal_aes_gcm_enc_128(&gkey, &gctx, ciphertext, plaintext, TEST_LEN, IV, AAD, AAD_LENGTH,
-                             gcm_tag, MAX_TAG_LEN);
-        openssl_aes_gcm_enc(key128, IV, iv_len, AAD, AAD_LENGTH, ossl_tag, MAX_TAG_LEN, plaintext,
-                            TEST_LEN, ossl_ciphertext);
+                             gcm_tag, ISAL_GCM_MAX_TAG_LEN);
+        openssl_aes_gcm_enc(key128, IV, iv_len, AAD, AAD_LENGTH, ossl_tag, ISAL_GCM_MAX_TAG_LEN,
+                            plaintext, TEST_LEN, ossl_ciphertext);
         check_data(ciphertext, ossl_ciphertext, TEST_LEN, 0,
                    "ISA-L vs OpenSSL 128 key cypher text (C)");
-        check_data(gcm_tag, ossl_tag, MAX_TAG_LEN, 0, "ISA-L vs OpenSSL 128 tag (T)");
+        check_data(gcm_tag, ossl_tag, ISAL_GCM_MAX_TAG_LEN, 0, "ISA-L vs OpenSSL 128 tag (T)");
         isal_aes_gcm_enc_256(&gkey256, &gctx, ciphertext, plaintext, TEST_LEN, IV, AAD, AAD_LENGTH,
-                             gcm_tag, MAX_TAG_LEN);
-        openssl_aes_256_gcm_enc(key256, IV, iv_len, AAD, AAD_LENGTH, ossl_tag, MAX_TAG_LEN,
+                             gcm_tag, ISAL_GCM_MAX_TAG_LEN);
+        openssl_aes_256_gcm_enc(key256, IV, iv_len, AAD, AAD_LENGTH, ossl_tag, ISAL_GCM_MAX_TAG_LEN,
                                 plaintext, TEST_LEN, ossl_ciphertext);
         check_data(ciphertext, ossl_ciphertext, TEST_LEN, 0,
                    "ISA-L vs OpenSSL 256 cypher text (C)");
-        check_data(gcm_tag, ossl_tag, MAX_TAG_LEN, 0, "ISA-L vs OpenSSL 256 tag (T)");
+        check_data(gcm_tag, ossl_tag, ISAL_GCM_MAX_TAG_LEN, 0, "ISA-L vs OpenSSL 256 tag (T)");
 
         {
                 struct perf start, stop;
@@ -133,7 +133,7 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         isal_aes_gcm_enc_128(&gkey, &gctx, ciphertext, plaintext, TEST_LEN, IV, AAD,
-                                             AAD_LENGTH, gcm_tag, MAX_TAG_LEN);
+                                             AAD_LENGTH, gcm_tag, ISAL_GCM_MAX_TAG_LEN);
                 }
 
                 perf_stop(&stop);
@@ -146,7 +146,7 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         openssl_aes_gcm_enc(key128, IV, iv_len, AAD, AAD_LENGTH, ossl_tag,
-                                            MAX_TAG_LEN, plaintext, TEST_LEN, ciphertext);
+                                            ISAL_GCM_MAX_TAG_LEN, plaintext, TEST_LEN, ciphertext);
                 }
 
                 perf_stop(&stop);
@@ -159,8 +159,9 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         isal_aes_gcm_dec_128(&gkey, &gctx, plaintext, ciphertext, TEST_LEN, IV, AAD,
-                                             AAD_LENGTH, gcm_tag, MAX_TAG_LEN);
-                        check_data(gcm_tag, gcm_tag, MAX_TAG_LEN, 0, "ISA-L check of tag (T)");
+                                             AAD_LENGTH, gcm_tag, ISAL_GCM_MAX_TAG_LEN);
+                        check_data(gcm_tag, gcm_tag, ISAL_GCM_MAX_TAG_LEN, 0,
+                                   "ISA-L check of tag (T)");
                 }
 
                 perf_stop(&stop);
@@ -173,7 +174,7 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         openssl_aes_gcm_dec(key128, IV, iv_len, AAD, AAD_LENGTH, ossl_tag,
-                                            MAX_TAG_LEN, ciphertext, TEST_LEN, plaintext);
+                                            ISAL_GCM_MAX_TAG_LEN, ciphertext, TEST_LEN, plaintext);
                 }
 
                 perf_stop(&stop);
@@ -188,7 +189,7 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         isal_aes_gcm_enc_256(&gkey256, &gctx, ciphertext, plaintext, TEST_LEN, IV,
-                                             AAD, AAD_LENGTH, gcm_tag, MAX_TAG_LEN);
+                                             AAD, AAD_LENGTH, gcm_tag, ISAL_GCM_MAX_TAG_LEN);
                 }
 
                 perf_stop(&stop);
@@ -202,7 +203,8 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         openssl_aes_256_gcm_enc(key256, IV, iv_len, AAD, AAD_LENGTH, ossl_tag,
-                                                MAX_TAG_LEN, plaintext, TEST_LEN, ciphertext);
+                                                ISAL_GCM_MAX_TAG_LEN, plaintext, TEST_LEN,
+                                                ciphertext);
                 }
 
                 perf_stop(&stop);
@@ -216,8 +218,9 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         isal_aes_gcm_dec_256(&gkey256, &gctx, plaintext, ciphertext, TEST_LEN, IV,
-                                             AAD, AAD_LENGTH, gcm_tag, MAX_TAG_LEN);
-                        check_data(gcm_tag, gcm_tag, MAX_TAG_LEN, 0, "ISA-L check of 256 tag (T)");
+                                             AAD, AAD_LENGTH, gcm_tag, ISAL_GCM_MAX_TAG_LEN);
+                        check_data(gcm_tag, gcm_tag, ISAL_GCM_MAX_TAG_LEN, 0,
+                                   "ISA-L check of 256 tag (T)");
                 }
 
                 perf_stop(&stop);
@@ -230,7 +233,8 @@ aes_gcm_perf(void)
                 perf_start(&start);
                 for (i = 0; i < TEST_LOOPS; i++) {
                         openssl_aes_256_gcm_dec(key256, IV, iv_len, AAD, AAD_LENGTH, ossl_tag,
-                                                MAX_TAG_LEN, ciphertext, TEST_LEN, plaintext);
+                                                ISAL_GCM_MAX_TAG_LEN, ciphertext, TEST_LEN,
+                                                plaintext);
                 }
 
                 perf_stop(&stop);
@@ -242,7 +246,7 @@ aes_gcm_perf(void)
 int
 main(void)
 {
-        uint8_t const IVend[] = GCM_IV_END_MARK;
+        uint8_t const IVend[] = ISAL_GCM_IV_END_MARK;
         uint32_t OK = 1;
 
         plaintext = malloc(TEST_LEN);
@@ -250,10 +254,10 @@ main(void)
         ciphertext = malloc(TEST_LEN);
         ossl_plaintext = malloc(TEST_LEN + 16);
         ossl_ciphertext = malloc(TEST_LEN);
-        gcm_tag = malloc(MAX_TAG_LEN);
-        ossl_tag = malloc(MAX_TAG_LEN);
+        gcm_tag = malloc(ISAL_GCM_MAX_TAG_LEN);
+        ossl_tag = malloc(ISAL_GCM_MAX_TAG_LEN);
         AAD = malloc(AAD_LENGTH);
-        IV = malloc(GCM_IV_LEN);
+        IV = malloc(ISAL_GCM_IV_LEN);
         if ((NULL == plaintext) || (NULL == ciphertext) || (NULL == gcm_plaintext) ||
             (NULL == ossl_plaintext) || (NULL == ossl_ciphertext) || (NULL == gcm_tag) ||
             (NULL == ossl_tag) || (NULL == AAD) || (NULL == IV)) {
@@ -263,9 +267,9 @@ main(void)
 
         mk_rand_data(plaintext, TEST_LEN);
         mk_rand_data(AAD, AAD_LENGTH);
-        mk_rand_data(IV, GCM_IV_LEN);
-        memcpy(&IV[GCM_IV_END_START], IVend, sizeof(IVend));
-        iv_len = GCM_IV_LEN - sizeof(IVend); // end marker not part of IV length
+        mk_rand_data(IV, ISAL_GCM_IV_LEN);
+        memcpy(&IV[ISAL_GCM_IV_END_START], IVend, sizeof(IVend));
+        iv_len = ISAL_GCM_IV_LEN - sizeof(IVend); // end marker not part of IV length
 
         aes_gcm_perf();
         printf("AES gcm ISA-L vs OpenSSL performance\n");
