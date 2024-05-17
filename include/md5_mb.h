@@ -114,6 +114,30 @@
 extern "C" {
 #endif
 
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define MD5_DIGEST_NWORDS       ISAL_MD5_DIGEST_NWORDS
+#define MD5_MAX_LANES           ISAL_MD5_MAX_LANES
+#define MD5_MIN_LANES           ISAL_MD5_MIN_LANES
+#define MD5_BLOCK_SIZE          ISAL_MD5_BLOCK_SIZE
+#define MD5_PADLENGTHFIELD_SIZE ISAL_MD5_PADLENGTHFIELD_SIZE
+
+#define MD5_HASH_CTX     ISAL_MD5_HASH_CTX
+#define md5_digest_array isal_md5_digest_array
+
+#define MD5_HASH_CTX_MGR ISAL_MD5_HASH_CTX_MGR
+#define MD5_JOB          ISAL_MD5_JOB
+#define MD5_WORD_T       ISAL_MD5_WORD_T
+#define MD5_MB_ARGS_X32  ISAL_MD5_MB_ARGS_X32
+#define MD5_LANE_DATA    ISAL_MD5_LANE_DATA
+#define MD5_MB_JOB_MGR   ISAL_MD5_MB_JOB_MGR
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
 // Hash Constants and Typedefs
 #define ISAL_MD5_DIGEST_NWORDS       4
 #define ISAL_MD5_MAX_LANES           32
@@ -121,7 +145,7 @@ extern "C" {
 #define ISAL_MD5_BLOCK_SIZE          64
 #define ISAL_MD5_PADLENGTHFIELD_SIZE 8
 
-typedef uint32_t md5_digest_array[ISAL_MD5_DIGEST_NWORDS][ISAL_MD5_MAX_LANES];
+typedef uint32_t isal_md5_digest_array[ISAL_MD5_DIGEST_NWORDS][ISAL_MD5_MAX_LANES];
 typedef uint32_t ISAL_MD5_WORD_T;
 
 /** @brief Scheduler layer - Holds info describing a single MD5 job for the multi-buffer manager */
@@ -137,9 +161,9 @@ typedef struct {
 /** @brief Scheduler layer -  Holds arguments for submitted MD5 job */
 
 typedef struct {
-        md5_digest_array digest;
+        isal_md5_digest_array digest;
         uint8_t *data_ptr[ISAL_MD5_MAX_LANES];
-} MD5_MB_ARGS_X32;
+} ISAL_MD5_MB_ARGS_X32;
 
 /** @brief Scheduler layer - Lane data */
 
@@ -150,7 +174,7 @@ typedef struct {
 /** @brief Scheduler layer - Holds state for multi-buffer MD5 jobs */
 
 typedef struct {
-        MD5_MB_ARGS_X32 args;
+        ISAL_MD5_MB_ARGS_X32 args;
         uint32_t lens[ISAL_MD5_MAX_LANES];
         uint64_t unused_lanes[4]; //!< each byte or nibble is index (0...31 or 15) of unused lanes.
         ISAL_MD5_LANE_DATA ldata[ISAL_MD5_MAX_LANES];
