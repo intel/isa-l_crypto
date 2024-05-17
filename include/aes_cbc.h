@@ -44,21 +44,48 @@ extern "C" {
 
 #endif
 
-typedef enum cbc_key_size { CBC_128_BITS = 16, CBC_192_BITS = 24, CBC_256_BITS = 32 } cbc_key_size;
-#define CBC_ROUND_KEY_LEN  (16)
-#define CBC_128_KEY_ROUNDS (10 + 1) /*expanded key holds 10 key rounds plus original key*/
-#define CBC_192_KEY_ROUNDS (12 + 1) /*expanded key holds 12 key rounds plus original key*/
-#define CBC_256_KEY_ROUNDS (14 + 1) /*expanded key holds 14 key rounds plus original key*/
-#define CBC_MAX_KEYS_SIZE  (CBC_ROUND_KEY_LEN * CBC_256_KEY_ROUNDS)
+/*
+ * Define enums from API v2.24, so applications that were using this version
+ * will still be compiled successfully.
+ * This list does not need to be extended for new definitions.
+ */
+#ifndef NO_COMPAT_ISAL_CRYPTO_API_2_24
+/***** Previous hash constants and typedefs *****/
+#define CBC_128_BITS ISAL_CBC_128_BITS
+#define CBC_192_BITS ISAL_CBC_192_BITS
+#define CBC_256_BITS ISAL_CBC_256_BITS
 
-#define CBC_IV_DATA_LEN (16)
+#define CBC_ROUND_KEY_LEN  ISAL_CBC_ROUND_KEY_LEN
+#define CBC_128_KEY_ROUNDS ISAL_CBC_128_KEY_ROUNDS
+#define CBC_192_KEY_ROUNDS ISAL_CBC_192_KEY_ROUNDS
+#define CBC_256_KEY_ROUNDS ISAL_CBC_256_KEY_ROUNDS
+#define CBC_MAX_KEYS_SIZE  ISAL_CBC_MAX_KEYS_SIZE
+
+#define CBC_IV_DATA_LEN ISAL_CBC_IV_DATA_LEN
+
+#define cbc_key_data isal_cbc_key_data
+#define cbc_key_size isal_cbc_key_size
+#endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
+
+typedef enum isal_cbc_key_size {
+        ISAL_CBC_128_BITS = 16,
+        ISAL_CBC_192_BITS = 24,
+        ISAL_CBC_256_BITS = 32
+} isal_cbc_key_size;
+#define ISAL_CBC_ROUND_KEY_LEN  (16)
+#define ISAL_CBC_128_KEY_ROUNDS (10 + 1) /*expanded key holds 10 key rounds plus original key*/
+#define ISAL_CBC_192_KEY_ROUNDS (12 + 1) /*expanded key holds 12 key rounds plus original key*/
+#define ISAL_CBC_256_KEY_ROUNDS (14 + 1) /*expanded key holds 14 key rounds plus original key*/
+#define ISAL_CBC_MAX_KEYS_SIZE  (ISAL_CBC_ROUND_KEY_LEN * ISAL_CBC_256_KEY_ROUNDS)
+
+#define ISAL_CBC_IV_DATA_LEN (16)
 
 /** @brief holds intermediate key data used in encryption/decryption
  *
  */
-struct cbc_key_data { // must be 16 byte aligned
-        uint8_t enc_keys[CBC_MAX_KEYS_SIZE];
-        uint8_t dec_keys[CBC_MAX_KEYS_SIZE];
+struct isal_cbc_key_data { // must be 16 byte aligned
+        uint8_t enc_keys[ISAL_CBC_MAX_KEYS_SIZE];
+        uint8_t dec_keys[ISAL_CBC_MAX_KEYS_SIZE];
 };
 
 /** @brief CBC-AES key pre-computation done once for a key
@@ -73,7 +100,7 @@ struct cbc_key_data { // must be 16 byte aligned
 ISAL_DEPRECATED(
         "Please use isal_aes_keyexp_128(), isal_aes_keyexp_192() or isal_aes_keyexp_256() instead")
 int
-aes_cbc_precomp(uint8_t *key, int key_size, struct cbc_key_data *keys_blk);
+aes_cbc_precomp(uint8_t *key, int key_size, struct isal_cbc_key_data *keys_blk);
 
 /** @brief CBC-AES 128 bit key Decryption
  *
@@ -91,7 +118,7 @@ void
 aes_cbc_dec_128(void *in,          //!< Input cipher text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or dec_keys of cbc_key_data
+                                   //!< rounds or dec_keys of isal_cbc_key_data
                 void *out,         //!< Output plain text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -107,7 +134,7 @@ void
 aes_cbc_dec_192(void *in,          //!< Input cipher text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or dec_keys of cbc_key_data
+                                   //!< rounds or dec_keys of isal_cbc_key_data
                 void *out,         //!< Output plain text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -123,7 +150,7 @@ void
 aes_cbc_dec_256(void *in,          //!< Input cipher text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or dec_keys of cbc_key_data
+                                   //!< rounds or dec_keys of isal_cbc_key_data
                 void *out,         //!< Output plain text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -144,7 +171,7 @@ int
 aes_cbc_enc_128(void *in,          //!< Input plain text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or enc_keys of cbc_key_data
+                                   //!< rounds or enc_keys of isal_cbc_key_data
                 void *out,         //!< Output cipher text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -159,7 +186,7 @@ int
 aes_cbc_enc_192(void *in,          //!< Input plain text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or enc_keys of cbc_key_data
+                                   //!< rounds or enc_keys of isal_cbc_key_data
                 void *out,         //!< Output cipher text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -175,7 +202,7 @@ int
 aes_cbc_enc_256(void *in,          //!< Input plain text
                 uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                 uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                   //!< rounds or enc_keys of cbc_key_data
+                                   //!< rounds or enc_keys of isal_cbc_key_data
                 void *out,         //!< Output cipher text
                 uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );

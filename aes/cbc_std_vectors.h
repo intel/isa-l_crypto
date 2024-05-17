@@ -33,16 +33,16 @@
 
 // struct to hold pointers to the cbc data vectors
 struct cbc_vector {
-        uint8_t *K;         // AES Key
-        cbc_key_size K_LEN; // length of key in bits
-        uint8_t *IV;        // initial value used by GCM
-        uint64_t P_LEN;     // length of our plaintext
-        uint8_t *P;         // Plain text
+        uint8_t *K;              // AES Key
+        isal_cbc_key_size K_LEN; // length of key in bits
+        uint8_t *IV;             // initial value used by GCM
+        uint64_t P_LEN;          // length of our plaintext
+        uint8_t *P;              // Plain text
         // outputs of encryption
         uint8_t *EXP_C; // same length as P
         // used in vector checks, not populated in std vector array
         uint8_t *C;
-        struct cbc_key_data *KEYS;
+        struct isal_cbc_key_data *KEYS;
 };
 
 ///////////////////////////////////////////

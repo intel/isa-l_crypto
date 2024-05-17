@@ -32,13 +32,13 @@
 #include "aes_keyexp_internal.h"
 
 int
-aes_cbc_precomp(uint8_t *key, int key_size, struct cbc_key_data *keys_blk)
+aes_cbc_precomp(uint8_t *key, int key_size, struct isal_cbc_key_data *keys_blk)
 {
-        if (CBC_128_BITS == key_size) {
+        if (ISAL_CBC_128_BITS == key_size) {
                 _aes_keyexp_128(key, keys_blk->enc_keys, keys_blk->dec_keys);
-        } else if (CBC_192_BITS == key_size) {
+        } else if (ISAL_CBC_192_BITS == key_size) {
                 _aes_keyexp_192(key, keys_blk->enc_keys, keys_blk->dec_keys);
-        } else if (CBC_256_BITS == key_size) {
+        } else if (ISAL_CBC_256_BITS == key_size) {
                 _aes_keyexp_256(key, keys_blk->enc_keys, keys_blk->dec_keys);
         } else {
                 // Invalid key length

@@ -56,7 +56,8 @@
 #define MAX_UNALINED (16)
 #endif
 
-static cbc_key_size const Ksize[] = { CBC_128_BITS, CBC_192_BITS, CBC_256_BITS };
+static isal_cbc_key_size const Ksize[] = { ISAL_CBC_128_BITS, ISAL_CBC_192_BITS,
+                                           ISAL_CBC_256_BITS };
 
 typedef void (*aes_cbc_generic)(uint8_t *in, uint8_t *IV, uint8_t *keys, uint8_t *out,
                                 uint64_t len_bytes);
@@ -64,17 +65,17 @@ typedef void (*aes_cbc_generic)(uint8_t *in, uint8_t *IV, uint8_t *keys, uint8_t
 int
 OpenSslEnc(uint8_t k_len, uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, uint64_t len_bytes)
 {
-        if (CBC_128_BITS == k_len) {
+        if (ISAL_CBC_128_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL128 ");
 #endif
                 openssl_aes_128_cbc_enc(key, (uint8_t *) iv, len_bytes, in, out);
-        } else if (CBC_192_BITS == k_len) {
+        } else if (ISAL_CBC_192_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL192 ");
 #endif
                 openssl_aes_192_cbc_enc(key, (uint8_t *) iv, len_bytes, in, out);
-        } else if (CBC_256_BITS == k_len) {
+        } else if (ISAL_CBC_256_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL256 ");
                 fflush(0);
@@ -90,17 +91,17 @@ OpenSslEnc(uint8_t k_len, uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, 
 int
 OpenSslDec(uint8_t k_len, uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, uint64_t len_bytes)
 {
-        if (CBC_128_BITS == k_len) {
+        if (ISAL_CBC_128_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL128 ");
 #endif
                 openssl_aes_128_cbc_dec(key, (uint8_t *) iv, len_bytes, in, out);
-        } else if (CBC_192_BITS == k_len) {
+        } else if (ISAL_CBC_192_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL192 ");
 #endif
                 openssl_aes_192_cbc_dec(key, (uint8_t *) iv, len_bytes, in, out);
-        } else if (CBC_256_BITS == k_len) {
+        } else if (ISAL_CBC_256_BITS == k_len) {
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" OpenSSL256 ");
 #endif
@@ -165,21 +166,21 @@ check_vector(struct cbc_vector *vector)
         printf(".");
 #endif
 
-        if (CBC_128_BITS == vector->K_LEN) {
+        if (ISAL_CBC_128_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
                 isal_aes_keyexp_128(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC128 ");
 #endif
-        } else if (CBC_192_BITS == vector->K_LEN) {
+        } else if (ISAL_CBC_192_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
                 isal_aes_keyexp_192(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" CBC192 ");
 #endif
-        } else if (CBC_256_BITS == vector->K_LEN) {
+        } else if (ISAL_CBC_256_BITS == vector->K_LEN) {
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
                 isal_aes_keyexp_256(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
@@ -259,7 +260,7 @@ test_std_combinations(void)
 #ifdef CBC_VECTORS_VERBOSE
         printf("\n");
 #endif
-        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &iv, 16, (ISAL_CBC_IV_DATA_LEN));
         if ((0 != ret) || (NULL == iv))
                 return 1;
 
@@ -273,7 +274,7 @@ test_std_combinations(void)
                 }
                 // IV data must be aligned to 16 byte boundary so move data in aligned buffer and
                 // change out the pointer
-                memcpy(iv, vect.IV, CBC_IV_DATA_LEN);
+                memcpy(iv, vect.IV, ISAL_CBC_IV_DATA_LEN);
                 vect.IV = iv;
                 vect.C = NULL;
                 vect.C = malloc(vect.P_LEN);
@@ -317,7 +318,7 @@ test_random_combinations(void)
         fflush(0);
 #endif
         test.IV = NULL;
-        ret = posix_memalign((void **) &test.IV, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &test.IV, 16, (ISAL_CBC_IV_DATA_LEN));
         if ((0 != ret) || (NULL == test.IV))
                 return 1;
         test.KEYS = NULL;
@@ -362,7 +363,7 @@ test_random_combinations(void)
 
                 mk_rand_data(test.P, test.P_LEN);
                 mk_rand_data(test.K, test.K_LEN);
-                mk_rand_data(test.IV, CBC_IV_DATA_LEN);
+                mk_rand_data(test.IV, ISAL_CBC_IV_DATA_LEN);
 
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                 printf(" Offset:0x%x ", offset);
@@ -428,18 +429,19 @@ test_efence_combinations(void)
                         test.P = P + PAGE_LEN - test.P_LEN - offset;
                         test.C = C + PAGE_LEN - test.P_LEN - offset;
                         test.K = K + PAGE_LEN - test.K_LEN - offset;
-                        test.IV = IV + PAGE_LEN - CBC_IV_DATA_LEN - offset;
+                        test.IV = IV + PAGE_LEN - ISAL_CBC_IV_DATA_LEN - offset;
                         test.IV =
                                 test.IV - ((uint64_t) test.IV & 0xff); // align to 16 byte boundary
-                        test.KEYS = (struct cbc_key_data *) (key_data + PAGE_LEN -
-                                                             sizeof(*test.KEYS) - offset);
-                        test.KEYS = (struct cbc_key_data *) ((uint8_t *) test.KEYS -
-                                                             ((uint64_t) test.KEYS &
-                                                              0xff)); // align to 16 byte boundary
+                        test.KEYS = (struct isal_cbc_key_data *) (key_data + PAGE_LEN -
+                                                                  sizeof(*test.KEYS) - offset);
+                        test.KEYS =
+                                (struct isal_cbc_key_data *) ((uint8_t *) test.KEYS -
+                                                              ((uint64_t) test.KEYS &
+                                                               0xff)); // align to 16 byte boundary
 
                         mk_rand_data(test.P, test.P_LEN);
                         mk_rand_data(test.K, test.K_LEN);
-                        mk_rand_data(test.IV, CBC_IV_DATA_LEN);
+                        mk_rand_data(test.IV, ISAL_CBC_IV_DATA_LEN);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                         printf(" Offset:0x%x ", offset);
 #endif

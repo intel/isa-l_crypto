@@ -56,7 +56,7 @@ void
 _aes_cbc_dec_128(void *in,          //!< Input cipher text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or dec_keys of cbc_key_data
+                                    //!< rounds or dec_keys of isal_cbc_key_data
                  void *out,         //!< Output plain text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -70,7 +70,7 @@ void
 _aes_cbc_dec_192(void *in,          //!< Input cipher text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or dec_keys of cbc_key_data
+                                    //!< rounds or dec_keys of isal_cbc_key_data
                  void *out,         //!< Output plain text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -84,7 +84,7 @@ void
 _aes_cbc_dec_256(void *in,          //!< Input cipher text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or dec_keys of cbc_key_data
+                                    //!< rounds or dec_keys of isal_cbc_key_data
                  void *out,         //!< Output plain text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -103,7 +103,7 @@ int
 _aes_cbc_enc_128(void *in,          //!< Input plain text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or enc_keys of cbc_key_data
+                                    //!< rounds or enc_keys of isal_cbc_key_data
                  void *out,         //!< Output cipher text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -116,7 +116,7 @@ int
 _aes_cbc_enc_192(void *in,          //!< Input plain text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or enc_keys of cbc_key_data
+                                    //!< rounds or enc_keys of isal_cbc_key_data
                  void *out,         //!< Output cipher text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );
@@ -130,7 +130,7 @@ int
 _aes_cbc_enc_256(void *in,          //!< Input plain text
                  uint8_t *IV,       //!< Must be 16 bytes aligned to a 16 byte boundary
                  uint8_t *keys,     //!< Must be on a 16 byte boundary and length of key size * key
-                                    //!< rounds or enc_keys of cbc_key_data
+                                    //!< rounds or enc_keys of isal_cbc_key_data
                  void *out,         //!< Output cipher text
                  uint64_t len_bytes //!< Must be a multiple of 16 bytes
 );

@@ -81,19 +81,19 @@ check_vector(struct cbc_vector *vector)
         printf(".");
 
         switch (vector->K_LEN) {
-        case CBC_128_BITS:
+        case ISAL_CBC_128_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_128;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_128;
                 isal_aes_keyexp_128(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
                 DEBUG_PRINT((" CBC128 "));
                 break;
-        case CBC_192_BITS:
+        case ISAL_CBC_192_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_192;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_192;
                 isal_aes_keyexp_192(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
                 DEBUG_PRINT((" CBC192 "));
                 break;
-        case CBC_256_BITS:
+        case ISAL_CBC_256_BITS:
                 enc = (aes_cbc_generic) &isal_aes_cbc_enc_256;
                 dec = (aes_cbc_generic) &isal_aes_cbc_dec_256;
                 isal_aes_keyexp_256(vector->K, vector->KEYS->enc_keys, vector->KEYS->dec_keys);
@@ -162,7 +162,7 @@ test_std_combinations(void)
 
         printf("AES CBC standard test vectors: ");
 
-        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &iv, 16, (ISAL_CBC_IV_DATA_LEN));
         if ((0 != ret) || (NULL == iv))
                 return 1;
 
@@ -176,7 +176,7 @@ test_std_combinations(void)
                 }
                 // IV data must be aligned to 16 byte boundary so move data in
                 // aligned buffer and change out the pointer
-                memcpy(iv, vect.IV, CBC_IV_DATA_LEN);
+                memcpy(iv, vect.IV, ISAL_CBC_IV_DATA_LEN);
                 vect.IV = iv;
                 vect.C = malloc(vect.P_LEN);
                 if (NULL == vect.C) {

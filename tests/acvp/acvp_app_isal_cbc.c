@@ -41,7 +41,7 @@ aes_cbc_handler(ACVP_TEST_CASE *test_case)
 {
         ACVP_RESULT ret = ACVP_SUCCESS;
         ACVP_SYM_CIPHER_TC *tc;
-        uint8_t expkey_enc[CBC_MAX_KEYS_SIZE], expkey_dec[CBC_MAX_KEYS_SIZE];
+        uint8_t expkey_enc[ISAL_CBC_MAX_KEYS_SIZE], expkey_dec[ISAL_CBC_MAX_KEYS_SIZE];
         static uint8_t next_iv[16];
         void *iv = NULL;
 

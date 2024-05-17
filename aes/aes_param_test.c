@@ -81,9 +81,9 @@ struct test_func {
 static int
 test_aes_keyexp_api(aes_keyexp_func aes_keyexp_func_ptr, const char *name)
 {
-        uint8_t key[CBC_ROUND_KEY_LEN] = { 0 };
-        uint8_t enc_keys[CBC_MAX_KEYS_SIZE] = { 0 };
-        uint8_t dec_keys[CBC_MAX_KEYS_SIZE] = { 0 };
+        uint8_t key[ISAL_CBC_ROUND_KEY_LEN] = { 0 };
+        uint8_t enc_keys[ISAL_CBC_MAX_KEYS_SIZE] = { 0 };
+        uint8_t dec_keys[ISAL_CBC_MAX_KEYS_SIZE] = { 0 };
 
         // test null key
         CHECK_RETURN(aes_keyexp_func_ptr(NULL, enc_keys, dec_keys), ISAL_CRYPTO_ERR_NULL_KEY, name);
@@ -103,7 +103,7 @@ test_aes_keyexp_api(aes_keyexp_func aes_keyexp_func_ptr, const char *name)
 static int
 test_aes_cbc_api(aes_cbc_func aes_cbc_func_ptr, const char *name)
 {
-        uint8_t exp_keys[CBC_MAX_KEYS_SIZE] = { 0 };
+        uint8_t exp_keys[ISAL_CBC_MAX_KEYS_SIZE] = { 0 };
         uint8_t buf[16] = { 0 };
         uint8_t iv[16] = { 0 };
 
@@ -132,9 +132,9 @@ static int
 test_aes_xts_api(aes_xts_func aes_xts_func_ptr, const char *name, const int expanded_key)
 {
         uint8_t key1[32] = { 0 };
-        uint8_t exp_keys1[CBC_MAX_KEYS_SIZE] = { 0 };
+        uint8_t exp_keys1[ISAL_CBC_MAX_KEYS_SIZE] = { 0 };
         uint8_t key2[32];
-        uint8_t exp_keys2[CBC_MAX_KEYS_SIZE];
+        uint8_t exp_keys2[ISAL_CBC_MAX_KEYS_SIZE];
         uint8_t buf[16] = { 0 };
         uint8_t tweak[16] = { 0 };
 

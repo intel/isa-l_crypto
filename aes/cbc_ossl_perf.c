@@ -65,7 +65,7 @@ static unsigned char *ciphertext = NULL;
 static unsigned char *ossl_plaintext = NULL;
 static unsigned char *ossl_ciphertext = NULL;
 
-static uint8_t test_key[CBC_256_BITS];
+static uint8_t test_key[ISAL_CBC_256_BITS];
 
 void
 mk_rand_data(uint8_t *data, uint32_t size)
@@ -83,9 +83,9 @@ aes_128_perf(uint8_t *key)
 
         /* Initialize our cipher context, which can use same input vectors */
         uint8_t *iv = NULL;
-        struct cbc_key_data *key_data = NULL;
+        struct isal_cbc_key_data *key_data = NULL;
 
-        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &iv, 16, (ISAL_CBC_IV_DATA_LEN));
         if (ret) {
                 printf("alloc error: Fail");
                 return 1;
@@ -97,7 +97,7 @@ aes_128_perf(uint8_t *key)
                 goto exit;
         }
 
-        memcpy(iv, ic, CBC_IV_DATA_LEN);
+        memcpy(iv, ic, ISAL_CBC_IV_DATA_LEN);
 
         isal_aes_keyexp_128(key, key_data->enc_keys, key_data->dec_keys);
         isal_aes_cbc_enc_128(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
@@ -169,9 +169,9 @@ aes_192_perf(uint8_t *key)
 {
         int i, ret;
         uint8_t *iv = NULL;
-        struct cbc_key_data *key_data = NULL;
+        struct isal_cbc_key_data *key_data = NULL;
 
-        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &iv, 16, (ISAL_CBC_IV_DATA_LEN));
         if (ret) {
                 printf("alloc error: Fail");
                 return 1;
@@ -183,7 +183,7 @@ aes_192_perf(uint8_t *key)
                 goto exit;
         }
 
-        memcpy(iv, ic, CBC_IV_DATA_LEN);
+        memcpy(iv, ic, ISAL_CBC_IV_DATA_LEN);
         isal_aes_keyexp_192(key, key_data->enc_keys, key_data->dec_keys);
         isal_aes_cbc_enc_192(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_192_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
@@ -254,9 +254,9 @@ aes_256_perf(uint8_t *key)
 {
         int i, ret;
         uint8_t *iv = NULL;
-        struct cbc_key_data *key_data = NULL;
+        struct isal_cbc_key_data *key_data = NULL;
 
-        ret = posix_memalign((void **) &iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &iv, 16, (ISAL_CBC_IV_DATA_LEN));
         if (ret) {
                 printf("alloc error: Fail");
                 return 1;
@@ -269,7 +269,7 @@ aes_256_perf(uint8_t *key)
         }
 
         isal_aes_keyexp_256(key, key_data->enc_keys, key_data->dec_keys);
-        memcpy(iv, ic, CBC_IV_DATA_LEN);
+        memcpy(iv, ic, ISAL_CBC_IV_DATA_LEN);
         isal_aes_cbc_enc_256(plaintext, iv, key_data->enc_keys, ciphertext, TEST_LEN);
         openssl_aes_256_cbc_enc(key, iv, TEST_LEN, plaintext, ossl_ciphertext);
 

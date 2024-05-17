@@ -120,8 +120,8 @@ mk_rand_data(uint8_t *data, uint32_t size)
 struct cbc_context {
         struct aes_context base;
         uint8_t *iv;
-        uint8_t key[CBC_256_BITS];
-        struct cbc_key_data *key_data;
+        uint8_t key[ISAL_CBC_256_BITS];
+        struct isal_cbc_key_data *key_data;
 };
 
 static int
@@ -130,14 +130,14 @@ cbc_dec_pre(struct aes_context *p)
         struct cbc_context *pCtx = (struct cbc_context *) p;
         int ret;
 
-        ret = posix_memalign((void **) &pCtx->iv, 16, (CBC_IV_DATA_LEN));
+        ret = posix_memalign((void **) &pCtx->iv, 16, (ISAL_CBC_IV_DATA_LEN));
         ret |= posix_memalign((void **) &pCtx->key_data, 16, (sizeof(*pCtx->key_data)));
 
         if ((0 != ret) || (NULL == pCtx->iv) || (NULL == pCtx->key_data))
                 return 1;
 
         mk_rand_data(pCtx->key, sizeof(pCtx->key));
-        memcpy(pCtx->iv, ic, CBC_IV_DATA_LEN);
+        memcpy(pCtx->iv, ic, ISAL_CBC_IV_DATA_LEN);
         switch (pCtx->base.bits) {
         case 128:
                 isal_aes_keyexp_128(pCtx->key, pCtx->key_data->enc_keys, pCtx->key_data->dec_keys);

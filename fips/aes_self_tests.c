@@ -351,17 +351,17 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
         memcpy(scratch, v->plaintext, v->plaintext_size);
 
         switch (v->cipher_key_size) {
-        case CBC_128_BITS:
+        case ISAL_CBC_128_BITS:
                 _aes_keyexp_128(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 _aes_cbc_enc_128(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                  v->plaintext_size);
                 break;
-        case CBC_192_BITS:
+        case ISAL_CBC_192_BITS:
                 _aes_keyexp_192(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 _aes_cbc_enc_192(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                  v->plaintext_size);
                 break;
-        case CBC_256_BITS:
+        case ISAL_CBC_256_BITS:
                 _aes_keyexp_256(v->cipher_key, aes_keys.expkey_enc, aes_keys.expkey_dec);
                 _aes_cbc_enc_256(scratch, v->cipher_iv, aes_keys.expkey_enc, scratch,
                                  v->plaintext_size);
@@ -380,15 +380,15 @@ cbc_self_test_vector(const struct self_test_cbc_vector *v)
         memcpy(scratch, v->ciphertext, v->plaintext_size);
 
         switch (v->cipher_key_size) {
-        case CBC_128_BITS:
+        case ISAL_CBC_128_BITS:
                 _aes_cbc_dec_128(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
                                  v->plaintext_size);
                 break;
-        case CBC_192_BITS:
+        case ISAL_CBC_192_BITS:
                 _aes_cbc_dec_192(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
                                  v->plaintext_size);
                 break;
-        case CBC_256_BITS:
+        case ISAL_CBC_256_BITS:
                 _aes_cbc_dec_256(scratch, v->cipher_iv, aes_keys.expkey_dec, scratch,
                                  v->plaintext_size);
                 break;
