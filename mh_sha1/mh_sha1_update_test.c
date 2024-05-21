@@ -118,7 +118,7 @@ main(int argc, char *argv[])
         uint8_t *buff = NULL;
         int update_count;
         int size1, size2, offset, addr_offset;
-        struct mh_sha1_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_ctx *update_ctx = NULL;
         uint8_t *mem_addr = NULL;
 
         printf(xstr(TEST_UPDATE_FUNCTION) "_test:");
@@ -231,7 +231,7 @@ main(int argc, char *argv[])
                 mh_sha1_ref(buff, TEST_LEN, hash_ref);
 
                 // a unaligned offset
-                update_ctx = (struct mh_sha1_ctx *) (mem_addr + addr_offset);
+                update_ctx = (struct isal_mh_sha1_ctx *) (mem_addr + addr_offset);
                 CHECK_RETURN(isal_mh_sha1_init(update_ctx));
                 CHECK_RETURN(TEST_UPDATE_FUNCTION(update_ctx, buff, TEST_LEN));
                 CHECK_RETURN(TEST_FINAL_FUNCTION(update_ctx, hash_test));

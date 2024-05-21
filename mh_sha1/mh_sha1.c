@@ -32,7 +32,7 @@
 #include "mh_sha1_internal.h"
 
 int
-_mh_sha1_init(struct mh_sha1_ctx *ctx)
+_mh_sha1_init(struct isal_mh_sha1_ctx *ctx)
 {
         uint32_t(*mh_sha1_segs_digests)[ISAL_HASH_SEGS];
         uint32_t i;
@@ -55,7 +55,7 @@ _mh_sha1_init(struct mh_sha1_ctx *ctx)
 }
 
 int
-isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
+isal_mh_sha1_init(struct isal_mh_sha1_ctx *ctx)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -69,7 +69,7 @@ isal_mh_sha1_init(struct mh_sha1_ctx *ctx)
 }
 
 int
-isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+isal_mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -85,7 +85,7 @@ isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 }
 
 int
-isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+isal_mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -107,31 +107,31 @@ isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
  */
 
 int
-mh_sha1_init(struct mh_sha1_ctx *ctx)
+mh_sha1_init(struct isal_mh_sha1_ctx *ctx)
 {
         return _mh_sha1_init(ctx);
 }
 
 int
-mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 {
         return _mh_sha1_update(ctx, buffer, len);
 }
 
 int
-mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
         return _mh_sha1_finalize(ctx, mh_sha1_digest);
 }
 
 int
-mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+mh_sha1_update_base(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 {
         return _mh_sha1_update_base(ctx, buffer, len);
 }
 
 int
-mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+mh_sha1_finalize_base(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
         return _mh_sha1_finalize_base(ctx, mh_sha1_digest);
 }
@@ -163,7 +163,7 @@ mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
 
 /***************mh_sha1_finalize AND mh_sha1_tail***********/
 // mh_sha1_tail is used to calculate the last incomplete src data block
-// mh_sha1_finalize is a mh_sha1_ctx wrapper of mh_sha1_tail
+// mh_sha1_finalize is a isal_mh_sha1_ctx wrapper of mh_sha1_tail
 
 // mh_sha1_finalize_sse.c and mh_sha1_tail_sse.c
 #define MH_SHA1_FINALIZE_FUNCTION _mh_sha1_finalize_sse

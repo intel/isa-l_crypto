@@ -50,9 +50,9 @@
  * Example
  * \code
  * uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
- * struct mh_sha1_ctx *ctx;
+ * struct isal_mh_sha1_ctx *ctx;
  *
- * ctx = malloc(sizeof(struct mh_sha1_ctx));
+ * ctx = malloc(sizeof(struct isal_mh_sha1_ctx));
  * isal_mh_sha1_init(ctx);
  * isal_mh_sha1_update(ctx, buff, block_len);
  * isal_mh_sha1_finalize(ctx, mh_sha1_digest);
@@ -81,6 +81,8 @@ extern "C" {
 
 #define MH_SHA1_CTX_ERROR_NONE ISAL_MH_SHA1_CTX_ERROR_NONE
 #define MH_SHA1_CTX_ERROR_NULL ISAL_MH_SHA1_CTX_ERROR_NULL
+
+#define mh_sha1_ctx isal_mh_sha1_ctx
 #endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
 // External Interface Definition
@@ -95,7 +97,7 @@ extern "C" {
  * It is better to use heap to allocate this data structure to avoid stack overflow.
  *
  */
-struct mh_sha1_ctx {
+struct isal_mh_sha1_ctx {
         uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
 
         uint64_t total_length;
@@ -111,10 +113,10 @@ struct mh_sha1_ctx {
 };
 
 /**
- *  @enum mh_sha1_ctx_error
+ *  @enum isal_mh_sha1_ctx_error
  *  @brief CTX error flags
  */
-enum mh_sha1_ctx_error {
+enum isal_mh_sha1_ctx_error {
         ISAL_MH_SHA1_CTX_ERROR_NONE = 0,  //!< ISAL_MH_SHA1_CTX_ERROR_NONE
         ISAL_MH_SHA1_CTX_ERROR_NULL = -1, //!< ISAL_MH_SHA1_CTX_ERROR_NULL
 };
@@ -124,7 +126,7 @@ enum mh_sha1_ctx_error {
  ******************************************************************/
 
 /**
- * @brief Initialize the mh_sha1_ctx structure.
+ * @brief Initialize the isal_mh_sha1_ctx structure.
  *
  * @param  ctx Structure holding mh_sha1 info
  * @returns int Return 0 if the function runs without errors
@@ -132,7 +134,7 @@ enum mh_sha1_ctx_error {
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_init() instead")
 int
-mh_sha1_init(struct mh_sha1_ctx *ctx);
+mh_sha1_init(struct isal_mh_sha1_ctx *ctx);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -149,7 +151,7 @@ mh_sha1_init(struct mh_sha1_ctx *ctx);
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_update() instead")
 int
-mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -166,7 +168,7 @@ mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_finalize() instead")
 int
-mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -181,7 +183,7 @@ mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  * @deprecated Please use isal_mh_sha1_update() instead.
  */
 int
-mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+mh_sha1_update_base(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -196,10 +198,10 @@ mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  * @deprecated Please use isal_mh_sha1_finalize() instead.
  */
 int
-mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+mh_sha1_finalize_base(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
- * @brief Initialize the mh_sha1_ctx structure.
+ * @brief Initialize the isal_mh_sha1_ctx structure.
  *
  * @param  ctx Structure holding mh_sha1 info
  * @return Operation status
@@ -207,7 +209,7 @@ mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_init(struct mh_sha1_ctx *ctx);
+isal_mh_sha1_init(struct isal_mh_sha1_ctx *ctx);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -224,7 +226,7 @@ isal_mh_sha1_init(struct mh_sha1_ctx *ctx);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+isal_mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -241,7 +243,7 @@ isal_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+isal_mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 #ifdef __cplusplus
 }

@@ -76,13 +76,13 @@ extern "C" {
 #define rol32(x, r) (((x) << (r)) ^ ((x) >> (32 - (r))))
 
 /**
- * @brief Initialize the mh_sha1_ctx structure.
+ * @brief Initialize the isal_mh_sha1_ctx structure.
  *
  * @param  ctx Structure holding mh_sha1 info
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha1_init(struct mh_sha1_ctx *ctx);
+_mh_sha1_init(struct isal_mh_sha1_ctx *ctx);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -97,7 +97,7 @@ _mh_sha1_init(struct mh_sha1_ctx *ctx);
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha1.
@@ -112,7 +112,7 @@ _mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /*******************************************************************
  * multi-types of mh_sha1 internal API
@@ -137,7 +137,7 @@ _mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update_base(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -152,7 +152,7 @@ _mh_sha1_update_base(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  *
  */
 int
-_mh_sha1_update_sse(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update_sse(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -167,7 +167,7 @@ _mh_sha1_update_sse(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  *
  */
 int
-_mh_sha1_update_avx(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update_avx(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -182,7 +182,7 @@ _mh_sha1_update_avx(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  *
  */
 int
-_mh_sha1_update_avx2(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update_avx2(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha1 update.
@@ -197,7 +197,7 @@ _mh_sha1_update_avx2(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
  *
  */
 int
-_mh_sha1_update_avx512(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha1_update_avx512(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -210,7 +210,7 @@ _mh_sha1_update_avx512(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize_base(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -226,7 +226,7 @@ _mh_sha1_finalize_base(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  *
  */
 int
-_mh_sha1_finalize_sse(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize_sse(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -242,7 +242,7 @@ _mh_sha1_finalize_sse(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  *
  */
 int
-_mh_sha1_finalize_avx(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize_avx(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -258,7 +258,7 @@ _mh_sha1_finalize_avx(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  *
  */
 int
-_mh_sha1_finalize_avx2(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize_avx2(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -274,7 +274,7 @@ _mh_sha1_finalize_avx2(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
  *
  */
 int
-_mh_sha1_finalize_avx512(struct mh_sha1_ctx *ctx, void *mh_sha1_digest);
+_mh_sha1_finalize_avx512(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest);
 /*******************************************************************
  * SHA1 API internal function prototypes
  ******************************************************************/

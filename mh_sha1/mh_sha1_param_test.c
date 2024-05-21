@@ -41,7 +41,7 @@ static int
 test_mh_sha1_init_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_ctx *update_ctx = NULL;
         const char *func_name = "isal_mh_sha1_init";
 
         update_ctx = malloc(sizeof(*update_ctx));
@@ -73,7 +73,7 @@ static int
 test_mh_sha1_update_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_ctx *update_ctx = NULL;
         uint8_t *buff = NULL;
         const char *func_name = "isal_mh_sha1_update";
 
@@ -111,7 +111,7 @@ static int
 test_mh_sha1_finalize_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_ctx *update_ctx = NULL;
         uint32_t hash_test[ISAL_SHA1_DIGEST_WORDS] = { 0 };
         const char *func_name = "isal_mh_sha1_finalize";
 

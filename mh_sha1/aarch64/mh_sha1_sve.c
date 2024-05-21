@@ -43,7 +43,7 @@ mh_sha1_block_sve(const uint8_t *input_data,
 
 /***************mh_sha1_finalize AND mh_sha1_tail***********/
 // mh_sha1_tail is used to calculate the last incomplete src data block
-// mh_sha1_finalize is a mh_sha1_ctx wrapper of mh_sha1_tail
+// mh_sha1_finalize is a isal_mh_sha1_ctx wrapper of mh_sha1_tail
 // mh_sha1_finalize_sve.c and mh_sha1_tail_sve.c
 #define MH_SHA1_FINALIZE_FUNCTION mh_sha1_finalize_sve
 #define MH_SHA1_TAIL_FUNCTION     mh_sha1_tail_sve

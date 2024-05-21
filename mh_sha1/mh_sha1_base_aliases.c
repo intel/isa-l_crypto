@@ -29,13 +29,13 @@
 #include "mh_sha1_internal.h"
 #include <string.h>
 int
-_mh_sha1_update(struct mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
+_mh_sha1_update(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32_t len)
 {
         return mh_sha1_update_base(ctx, buffer, len);
 }
 
 int
-_mh_sha1_finalize(struct mh_sha1_ctx *ctx, void *mh_sha1_digest)
+_mh_sha1_finalize(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest)
 {
         return mh_sha1_finalize_base(ctx, mh_sha1_digest);
 }
