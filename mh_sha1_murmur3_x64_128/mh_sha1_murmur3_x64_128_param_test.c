@@ -40,7 +40,7 @@ static int
 test_mh_sha1_murmur3_x64_128_init_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
+        struct isal_mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
         const char *func_name = "isal_mh_sha1_murmur3_x64_128_init";
         const uint64_t seed = 0;
 
@@ -76,7 +76,7 @@ static int
 test_mh_sha1_murmur3_x64_128_update_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
+        struct isal_mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
         uint8_t *buff = NULL;
         const char *func_name = "isal_mh_sha1_murmur3_x64_128_update";
         const int len = 1024;
@@ -119,7 +119,7 @@ static int
 test_mh_sha1_murmur3_x64_128_finalize_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
+        struct isal_mh_sha1_murmur3_x64_128_ctx *ctx = NULL;
         uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
         uint32_t murmur3_x64_128_digest[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
         const char *func_name = "isal_mh_sha1_murmur3_x64_128_finalize";

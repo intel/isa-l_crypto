@@ -52,9 +52,9 @@
  * \code
  * uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS];
  * uint32_t murmur_digest[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
- * struct mh_sha1_murmur3_x64_128_ctx *ctx;
+ * struct isal_mh_sha1_murmur3_x64_128_ctx *ctx;
  *
- * ctx = malloc(sizeof(struct mh_sha1_murmur3_x64_128_ctx));
+ * ctx = malloc(sizeof(struct isal_mh_sha1_murmur3_x64_128_ctx));
  * isal_mh_sha1_murmur3_x64_128_init(ctx, 0);
  * isal_mh_sha1_murmur3_x64_128_update(ctx, buff, block_len);
  * isal_mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest,
@@ -84,6 +84,9 @@ extern "C" {
 
 #define MH_SHA1_MURMUR3_CTX_ERROR_NONE ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE
 #define MH_SHA1_MURMUR3_CTX_ERROR_NULL ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL
+
+#define mh_sha1_murmur3_x64_128_ctx isal_mh_sha1_murmur3_x64_128_ctx
+#define mh_sha1_murmur3_ctx_error   isal_mh_sha1_murmur3_ctx_error
 #endif /* NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
 #define ISAL_MUR_BLOCK_SIZE               (2 * sizeof(uint64_t))
@@ -94,7 +97,7 @@ extern "C" {
  * It is better to use heap to allocate this data structure to avoid stack overflow.
  *
  */
-struct mh_sha1_murmur3_x64_128_ctx {
+struct isal_mh_sha1_murmur3_x64_128_ctx {
         uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; //!< the digest of multi-hash SHA1
         uint32_t murmur3_x64_128_digest[ISAL_MURMUR3_x64_128_DIGEST_WORDS]; //!< the digest of
                                                                             //!< murmur3_x64_128
@@ -112,10 +115,10 @@ struct mh_sha1_murmur3_x64_128_ctx {
 };
 
 /**
- *  @enum mh_sha1_murmur3_ctx_error
+ *  @enum isal_mh_sha1_murmur3_ctx_error
  *  @brief CTX error flags
  */
-enum mh_sha1_murmur3_ctx_error {
+enum isal_mh_sha1_murmur3_ctx_error {
         ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE = 0,  //!< ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NONE
         ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL = -1, //!< ISAL_MH_SHA1_MURMUR3_CTX_ERROR_NULL
 };
@@ -125,7 +128,7 @@ enum mh_sha1_murmur3_ctx_error {
  ******************************************************************/
 
 /**
- * @brief Initialize the mh_sha1_murmur3_x64_128_ctx structure.
+ * @brief Initialize the isal_mh_sha1_murmur3_x64_128_ctx structure.
  *
  * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
  * @param  murmur_seed Seed as an initial digest of murmur3
@@ -134,7 +137,7 @@ enum mh_sha1_murmur3_ctx_error {
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_init() instead")
 int
-mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed);
+mh_sha1_murmur3_x64_128_init(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed);
 
 /**
  * @brief Combined multi-hash and murmur hash update.
@@ -151,7 +154,7 @@ mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t m
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_update() instead")
 int
-mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+mh_sha1_murmur3_x64_128_update(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
                                uint32_t len);
 
 /**
@@ -170,7 +173,7 @@ mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const vo
  */
 ISAL_DEPRECATED("Please use isal_mh_sha1_murmur3_x64_128_finalize() instead")
 int
-mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+mh_sha1_murmur3_x64_128_finalize(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                                  void *murmur3_x64_128_digest);
 
 /*******************************************************************
@@ -197,8 +200,8 @@ mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *
  * @deprecated Please use isal_mh_sha1_murmur3_x64_128_update() instead.
  */
 int
-mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
-                                    uint32_t len);
+mh_sha1_murmur3_x64_128_update_base(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                    const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -214,11 +217,11 @@ mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, con
  * @deprecated Please use isal_mh_sha1_murmur3_x64_128_finalize() instead.
  */
 int
-mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
-                                      void *murmur3_x64_128_digest);
+mh_sha1_murmur3_x64_128_finalize_base(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                      void *mh_sha1_digest, void *murmur3_x64_128_digest);
 
 /**
- * @brief Initialize the mh_sha1_murmur3_x64_128_ctx structure.
+ * @brief Initialize the isal_mh_sha1_murmur3_x64_128_ctx structure.
  *
  * @param  ctx Structure holding mh_sha1_murmur3_x64_128 info
  * @param  murmur_seed Seed as an initial digest of murmur3
@@ -227,7 +230,7 @@ mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, v
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+isal_mh_sha1_murmur3_x64_128_init(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
                                   const uint64_t murmur_seed);
 
 /**
@@ -245,8 +248,8 @@ isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
-                                    const uint32_t len);
+isal_mh_sha1_murmur3_x64_128_update(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                    const void *buffer, const uint32_t len);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -264,8 +267,8 @@ isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, con
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
-                                      void *murmur3_x64_128_digest);
+isal_mh_sha1_murmur3_x64_128_finalize(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                      void *mh_sha1_digest, void *murmur3_x64_128_digest);
 #ifdef __cplusplus
 }
 #endif

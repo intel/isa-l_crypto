@@ -161,7 +161,7 @@ main(int argc, char *argv[])
         uint32_t murmur3_test[ISAL_MURMUR3_x64_128_DIGEST_WORDS],
                 murmur3_base[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
         uint8_t *buff = NULL;
-        struct mh_sha1_murmur3_x64_128_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_murmur3_x64_128_ctx *update_ctx = NULL;
         struct perf start, stop;
 
         printf(xstr(TEST_UPDATE_FUNCTION) "_perf:\n");

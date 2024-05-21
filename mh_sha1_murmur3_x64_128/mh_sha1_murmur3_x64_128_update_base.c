@@ -37,7 +37,7 @@
 #endif
 
 int
-UPDATE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uint32_t len)
+UPDATE_FUNCTION(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer, uint32_t len)
 {
 
         uint8_t *partial_block_buffer;

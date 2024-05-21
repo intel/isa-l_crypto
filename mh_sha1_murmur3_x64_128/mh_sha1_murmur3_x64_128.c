@@ -32,7 +32,7 @@
 #include "isal_crypto_api.h"
 
 int
-_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
+_mh_sha1_murmur3_x64_128_init(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
 {
         uint64_t *murmur3_x64_128_hash;
         uint32_t(*mh_sha1_segs_digests)[ISAL_HASH_SEGS];
@@ -76,7 +76,7 @@ _mh_sha1_murmur3_x64_128_block_base(
 }
 
 int
-isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
+isal_mh_sha1_murmur3_x64_128_init(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
                                   const uint64_t murmur_seed)
 {
 #ifdef FIPS_MODE
@@ -91,8 +91,8 @@ isal_mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx,
 }
 
 int
-isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
-                                    const uint32_t len)
+isal_mh_sha1_murmur3_x64_128_update(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                    const void *buffer, const uint32_t len)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -108,8 +108,8 @@ isal_mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, con
 }
 
 int
-isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
-                                      void *murmur3_x64_128_digest)
+isal_mh_sha1_murmur3_x64_128_finalize(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                      void *mh_sha1_digest, void *murmur3_x64_128_digest)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -131,35 +131,35 @@ isal_mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, v
  */
 
 int
-mh_sha1_murmur3_x64_128_init(struct mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
+mh_sha1_murmur3_x64_128_init(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, uint64_t murmur_seed)
 {
         return _mh_sha1_murmur3_x64_128_init(ctx, murmur_seed);
 }
 
 int
-mh_sha1_murmur3_x64_128_update(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
+mh_sha1_murmur3_x64_128_update(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
                                uint32_t len)
 {
         return _mh_sha1_murmur3_x64_128_update(ctx, buffer, len);
 }
 
 int
-mh_sha1_murmur3_x64_128_finalize(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+mh_sha1_murmur3_x64_128_finalize(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                                  void *murmur3_x64_128_digest)
 {
         return _mh_sha1_murmur3_x64_128_finalize(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 }
 
 int
-mh_sha1_murmur3_x64_128_update_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, const void *buffer,
-                                    uint32_t len)
+mh_sha1_murmur3_x64_128_update_base(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                    const void *buffer, uint32_t len)
 {
         return _mh_sha1_murmur3_x64_128_update_base(ctx, buffer, len);
 }
 
 int
-mh_sha1_murmur3_x64_128_finalize_base(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
-                                      void *murmur3_x64_128_digest)
+mh_sha1_murmur3_x64_128_finalize_base(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx,
+                                      void *mh_sha1_digest, void *murmur3_x64_128_digest)
 {
         return _mh_sha1_murmur3_x64_128_finalize_base(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 }

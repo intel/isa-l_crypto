@@ -40,7 +40,7 @@
 #define MURMUR_TAIL_FUNCTION  _murmur3_x64_128_tail
 
 int
-FINALIZE_FUNCTION(struct mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
+FINALIZE_FUNCTION(struct isal_mh_sha1_murmur3_x64_128_ctx *ctx, void *mh_sha1_digest,
                   void *murmur3_x64_128_digest)
 {
         uint8_t *partial_block_buffer, *murmur_tail_data;

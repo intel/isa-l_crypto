@@ -147,7 +147,7 @@ main(int argc, char *argv[])
                 murmur3_base[ISAL_MURMUR3_x64_128_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
-        struct mh_sha1_murmur3_x64_128_ctx *update_ctx = NULL;
+        struct isal_mh_sha1_murmur3_x64_128_ctx *update_ctx = NULL;
 
         printf(" " xstr(TEST_UPDATE_FUNCTION) "_test:");
 
