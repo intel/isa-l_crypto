@@ -28,7 +28,7 @@
 ########################################################################
 
 src_include     += -I $(srcdir)/fips
-extern_hdrs     += include/isal_crypto_api.h include/aes_cbc_internal.h include/aes_xts.h include/aes_keyexp.h include/sha1_mb.h include/sha256_mb.h
+extern_hdrs     += include/isal_crypto_api.h include/aes_xts.h include/aes_keyexp.h include/sha1_mb.h include/sha256_mb.h
 
 lsrc_x86_64     += fips/self_tests.c
 lsrc_aarch64    += fips/self_tests_generic.c
@@ -38,4 +38,4 @@ lsrc            += fips/sha_self_tests.c
 lsrc_x86_64     += fips/asm_self_tests.asm
 lsrc_x86_32 	+= $(lsrc_x86_64)
 
-other_src   += include/test.h include/types.h include/reg_sizes.asm include/aes_keyexp_internal.h
+other_src   += include/test.h include/types.h include/reg_sizes.asm include/aes_keyexp_internal.h include/aes_cbc_internal.h
