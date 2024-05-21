@@ -319,8 +319,8 @@ struct gcm_context {
         unsigned char *iv;
         unsigned char *aad;
         unsigned char *gcm_tag;
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
 };
 
 static int

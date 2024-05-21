@@ -27,7 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 /*
-void aes_gcm_precomp(struct gcm_key_data *key_data);
+void aes_gcm_precomp(struct isal_gcm_key_data *key_data);
 */
     declare_var_generic_reg key_data    ,0
     declare_var_generic_reg temp0       ,1

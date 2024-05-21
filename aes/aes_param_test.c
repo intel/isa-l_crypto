@@ -53,16 +53,16 @@ typedef int (*aes_keyexp_func)(const uint8_t *, uint8_t *, uint8_t *);
 typedef int (*aes_cbc_func)(const void *, const void *, const void *, void *, const uint64_t);
 typedef int (*aes_xts_func)(const uint8_t *, const uint8_t *, const uint8_t *, const uint64_t,
                             const void *, void *);
-typedef int (*aes_gcm_func)(const struct gcm_key_data *, struct gcm_context_data *, uint8_t *,
-                            const uint8_t *, const uint64_t, const uint8_t *, const uint8_t *,
-                            const uint64_t, uint8_t *, const uint64_t);
-typedef int (*aes_gcm_init_func)(const struct gcm_key_data *, struct gcm_context_data *,
+typedef int (*aes_gcm_func)(const struct isal_gcm_key_data *, struct isal_gcm_context_data *,
+                            uint8_t *, const uint8_t *, const uint64_t, const uint8_t *,
+                            const uint8_t *, const uint64_t, uint8_t *, const uint64_t);
+typedef int (*aes_gcm_init_func)(const struct isal_gcm_key_data *, struct isal_gcm_context_data *,
                                  const uint8_t *, const uint8_t *, const uint64_t);
-typedef int (*aes_gcm_update_func)(const struct gcm_key_data *, struct gcm_context_data *,
+typedef int (*aes_gcm_update_func)(const struct isal_gcm_key_data *, struct isal_gcm_context_data *,
                                    uint8_t *, const uint8_t *, const uint64_t);
-typedef int (*aes_gcm_finalize_func)(const struct gcm_key_data *, struct gcm_context_data *,
-                                     uint8_t *, const uint64_t);
-typedef int (*aes_gcm_pre_func)(const void *, struct gcm_key_data *);
+typedef int (*aes_gcm_finalize_func)(const struct isal_gcm_key_data *,
+                                     struct isal_gcm_context_data *, uint8_t *, const uint64_t);
+typedef int (*aes_gcm_pre_func)(const void *, struct isal_gcm_key_data *);
 
 struct test_func {
         union {
@@ -194,8 +194,8 @@ test_aes_xts_api(aes_xts_func aes_xts_func_ptr, const char *name, const int expa
 static int
 test_aes_gcm_api(aes_gcm_func aes_gcm_func_ptr, const char *name)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         uint8_t buf[256] = { 0 };
         uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t *aad = buf;
@@ -277,8 +277,8 @@ test_aes_gcm_api(aes_gcm_func aes_gcm_func_ptr, const char *name)
 static int
 test_aes_gcm_init_api(aes_gcm_init_func aes_gcm_func_ptr, const char *name)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t aad[64] = { 0 };
 
@@ -307,8 +307,8 @@ test_aes_gcm_init_api(aes_gcm_init_func aes_gcm_func_ptr, const char *name)
 static int
 test_aes_gcm_update_api(aes_gcm_update_func aes_gcm_func_ptr, const char *name)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         uint8_t buf[256] = { 0 };
 
         // test null key data
@@ -344,8 +344,8 @@ static int
 test_aes_gcm_finalize_api(aes_gcm_finalize_func aes_gcm_func_ptr, const char *name,
                           const gcm_key_size key_size)
 {
-        struct gcm_key_data gkey = { 0 };
-        struct gcm_context_data gctx = { 0 };
+        struct isal_gcm_key_data gkey = { 0 };
+        struct isal_gcm_context_data gctx = { 0 };
         uint8_t tag[ISAL_GCM_MAX_TAG_LEN] = { 0 };
         uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t aad[64] = { 0 };
@@ -382,7 +382,7 @@ test_aes_gcm_finalize_api(aes_gcm_finalize_func aes_gcm_func_ptr, const char *na
 static int
 test_aes_gcm_pre_api(aes_gcm_pre_func aes_gcm_func_ptr, const char *name)
 {
-        struct gcm_key_data gkey;
+        struct isal_gcm_key_data gkey;
         int key[8] = { 0 };
 
         // test null key

@@ -41,8 +41,8 @@ aes_gcm_handler(ACVP_TEST_CASE *test_case)
         ACVP_RESULT ret = ACVP_SUCCESS;
         ACVP_SYM_CIPHER_TC *tc;
 
-        static struct gcm_key_data key;
-        static struct gcm_context_data gctx;
+        static struct isal_gcm_key_data key;
+        static struct isal_gcm_context_data gctx;
         uint8_t res_tag[16] = { 0 };
 
         if (verbose > 2)

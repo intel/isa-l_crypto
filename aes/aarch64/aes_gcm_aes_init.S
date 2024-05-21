@@ -30,8 +30,8 @@
 #include "gcm_common.S"
 /*
 void gist_aes_gcm_init_##mode(
-    const struct gcm_key_data *key_data,
-    struct gcm_context_data *context,
+    const struct isal_gcm_key_data *key_data,
+    struct isal_gcm_context_data *context,
     uint8_t *iv,
     uint8_t const *aad,
     uint64_t aad_len

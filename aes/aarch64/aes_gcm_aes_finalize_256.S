@@ -30,8 +30,8 @@
 #include "gcm_common_256.S"
 /*
     void gist_aes_gcm_enc_finalize_##mode(                              \
-        const struct gcm_key_data *key_data,                            \
-        struct gcm_context_data *context,                               \
+        const struct isal_gcm_key_data *key_data,                       \
+        struct isal_gcm_context_data *context,                          \
         uint8_t *auth_tag,                                              \
         uint64_t auth_tag_len                                           \
     )

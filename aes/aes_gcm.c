@@ -33,10 +33,10 @@
 #include "aes_gcm_internal.h"
 
 int
-isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                     uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                     const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                     const uint64_t auth_tag_len)
+isal_aes_gcm_enc_128(const struct isal_gcm_key_data *key_data,
+                     struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                     const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                     const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -71,10 +71,10 @@ isal_aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_dat
 }
 
 int
-isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                     uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                     const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                     const uint64_t auth_tag_len)
+isal_aes_gcm_enc_256(const struct isal_gcm_key_data *key_data,
+                     struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                     const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                     const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -109,10 +109,10 @@ isal_aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_dat
 }
 
 int
-isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                     uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                     const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                     const uint64_t auth_tag_len)
+isal_aes_gcm_dec_128(const struct isal_gcm_key_data *key_data,
+                     struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                     const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                     const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -146,10 +146,10 @@ isal_aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_dat
 }
 
 int
-isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                     uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                     const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                     const uint64_t auth_tag_len)
+isal_aes_gcm_dec_256(const struct isal_gcm_key_data *key_data,
+                     struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                     const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                     const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -183,8 +183,9 @@ isal_aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_dat
 }
 
 int
-isal_aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                      const uint8_t *iv, const uint8_t *aad, const uint64_t aad_len)
+isal_aes_gcm_init_128(const struct isal_gcm_key_data *key_data,
+                      struct isal_gcm_context_data *context_data, const uint8_t *iv,
+                      const uint8_t *aad, const uint64_t aad_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -208,8 +209,9 @@ isal_aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_da
 }
 
 int
-isal_aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                      const uint8_t *iv, const uint8_t *aad, const uint64_t aad_len)
+isal_aes_gcm_init_256(const struct isal_gcm_key_data *key_data,
+                      struct isal_gcm_context_data *context_data, const uint8_t *iv,
+                      const uint8_t *aad, const uint64_t aad_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -233,9 +235,9 @@ isal_aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_da
 }
 
 int
-isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,
-                            struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                            const uint64_t len)
+isal_aes_gcm_enc_128_update(const struct isal_gcm_key_data *key_data,
+                            struct isal_gcm_context_data *context_data, uint8_t *out,
+                            const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -261,9 +263,9 @@ isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,
-                            struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                            const uint64_t len)
+isal_aes_gcm_enc_256_update(const struct isal_gcm_key_data *key_data,
+                            struct isal_gcm_context_data *context_data, uint8_t *out,
+                            const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -289,9 +291,9 @@ isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,
-                            struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                            const uint64_t len)
+isal_aes_gcm_dec_128_update(const struct isal_gcm_key_data *key_data,
+                            struct isal_gcm_context_data *context_data, uint8_t *out,
+                            const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -317,9 +319,9 @@ isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,
-                            struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                            const uint64_t len)
+isal_aes_gcm_dec_256_update(const struct isal_gcm_key_data *key_data,
+                            struct isal_gcm_context_data *context_data, uint8_t *out,
+                            const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -339,8 +341,8 @@ isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,
-                              struct gcm_context_data *context_data, uint8_t *auth_tag,
+isal_aes_gcm_enc_128_finalize(const struct isal_gcm_key_data *key_data,
+                              struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
                               const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
@@ -365,8 +367,8 @@ isal_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,
-                              struct gcm_context_data *context_data, uint8_t *auth_tag,
+isal_aes_gcm_enc_256_finalize(const struct isal_gcm_key_data *key_data,
+                              struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
                               const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
@@ -391,8 +393,8 @@ isal_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,
-                              struct gcm_context_data *context_data, uint8_t *auth_tag,
+isal_aes_gcm_dec_128_finalize(const struct isal_gcm_key_data *key_data,
+                              struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
                               const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
@@ -417,8 +419,8 @@ isal_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,
-                              struct gcm_context_data *context_data, uint8_t *auth_tag,
+isal_aes_gcm_dec_256_finalize(const struct isal_gcm_key_data *key_data,
+                              struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
                               const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
@@ -443,7 +445,7 @@ isal_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
+isal_aes_gcm_pre_128(const void *key, struct isal_gcm_key_data *key_data)
 {
 #ifdef SAFE_PARAM
         if (key == NULL)
@@ -463,7 +465,7 @@ isal_aes_gcm_pre_128(const void *key, struct gcm_key_data *key_data)
 }
 
 int
-isal_aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
+isal_aes_gcm_pre_256(const void *key, struct isal_gcm_key_data *key_data)
 {
 #ifdef SAFE_PARAM
         if (key == NULL)
@@ -483,10 +485,10 @@ isal_aes_gcm_pre_256(const void *key, struct gcm_key_data *key_data)
 }
 
 int
-isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                        uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                        const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                        const uint64_t auth_tag_len)
+isal_aes_gcm_enc_128_nt(const struct isal_gcm_key_data *key_data,
+                        struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                        const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                        const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -521,10 +523,10 @@ isal_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
 }
 
 int
-isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                        uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                        const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                        const uint64_t auth_tag_len)
+isal_aes_gcm_enc_256_nt(const struct isal_gcm_key_data *key_data,
+                        struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                        const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                        const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -559,10 +561,10 @@ isal_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
 }
 
 int
-isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                        uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                        const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                        const uint64_t auth_tag_len)
+isal_aes_gcm_dec_128_nt(const struct isal_gcm_key_data *key_data,
+                        struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                        const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                        const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -597,10 +599,10 @@ isal_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_
 }
 
 int
-isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                        uint8_t *out, const uint8_t *in, const uint64_t len, const uint8_t *iv,
-                        const uint8_t *aad, const uint64_t aad_len, uint8_t *auth_tag,
-                        const uint64_t auth_tag_len)
+isal_aes_gcm_dec_256_nt(const struct isal_gcm_key_data *key_data,
+                        struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                        const uint64_t len, const uint8_t *iv, const uint8_t *aad,
+                        const uint64_t aad_len, uint8_t *auth_tag, const uint64_t auth_tag_len)
 {
 #ifdef SAFE_PARAM
         if (key_data == NULL)
@@ -635,8 +637,8 @@ isal_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_
 }
 
 int
-isal_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
-                               struct gcm_context_data *context_data, uint8_t *out,
+isal_aes_gcm_enc_128_update_nt(const struct isal_gcm_key_data *key_data,
+                               struct isal_gcm_context_data *context_data, uint8_t *out,
                                const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
@@ -662,8 +664,8 @@ isal_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
-                               struct gcm_context_data *context_data, uint8_t *out,
+isal_aes_gcm_enc_256_update_nt(const struct isal_gcm_key_data *key_data,
+                               struct isal_gcm_context_data *context_data, uint8_t *out,
                                const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
@@ -690,8 +692,8 @@ isal_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
-                               struct gcm_context_data *context_data, uint8_t *out,
+isal_aes_gcm_dec_128_update_nt(const struct isal_gcm_key_data *key_data,
+                               struct isal_gcm_context_data *context_data, uint8_t *out,
                                const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
@@ -718,8 +720,8 @@ isal_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
 }
 
 int
-isal_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
-                               struct gcm_context_data *context_data, uint8_t *out,
+isal_aes_gcm_dec_256_update_nt(const struct isal_gcm_key_data *key_data,
+                               struct isal_gcm_context_data *context_data, uint8_t *out,
                                const uint8_t *in, const uint64_t len)
 {
 #ifdef SAFE_PARAM
@@ -752,107 +754,121 @@ isal_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
  */
 
 void
-aes_gcm_enc_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_128(const struct isal_gcm_key_data *key_data,
+                struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
+                uint64_t auth_tag_len)
 {
         _aes_gcm_enc_128(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                          auth_tag_len);
 }
 
 void
-aes_gcm_enc_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_256(const struct isal_gcm_key_data *key_data,
+                struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
+                uint64_t auth_tag_len)
 {
         _aes_gcm_enc_256(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                          auth_tag_len);
 }
 
 void
-aes_gcm_dec_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_128(const struct isal_gcm_key_data *key_data,
+                struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
+                uint64_t auth_tag_len)
 {
         _aes_gcm_dec_128(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                          auth_tag_len);
 }
 
 void
-aes_gcm_dec_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_256(const struct isal_gcm_key_data *key_data,
+                struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
+                uint64_t auth_tag_len)
 {
         _aes_gcm_dec_256(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                          auth_tag_len);
 }
 
 void
-aes_gcm_init_128(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                 uint8_t *iv, uint8_t const *aad, uint64_t aad_len)
+aes_gcm_init_128(const struct isal_gcm_key_data *key_data,
+                 struct isal_gcm_context_data *context_data, uint8_t *iv, uint8_t const *aad,
+                 uint64_t aad_len)
 {
         _aes_gcm_init_128(key_data, context_data, iv, aad, aad_len);
 }
 
 void
-aes_gcm_init_256(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                 uint8_t *iv, uint8_t const *aad, uint64_t aad_len)
+aes_gcm_init_256(const struct isal_gcm_key_data *key_data,
+                 struct isal_gcm_context_data *context_data, uint8_t *iv, uint8_t const *aad,
+                 uint64_t aad_len)
 {
         _aes_gcm_init_256(key_data, context_data, iv, aad, aad_len);
 }
 
 void
-aes_gcm_enc_128_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                       uint8_t *out, const uint8_t *in, uint64_t len)
+aes_gcm_enc_128_update(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                       uint64_t len)
 {
         _aes_gcm_enc_128_update(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_enc_256_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                       uint8_t *out, const uint8_t *in, uint64_t len)
+aes_gcm_enc_256_update(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                       uint64_t len)
 {
         _aes_gcm_enc_256_update(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_dec_128_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                       uint8_t *out, const uint8_t *in, uint64_t len)
+aes_gcm_dec_128_update(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                       uint64_t len)
 {
         _aes_gcm_dec_128_update(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_dec_256_update(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                       uint8_t *out, const uint8_t *in, uint64_t len)
+aes_gcm_dec_256_update(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
+                       uint64_t len)
 {
         _aes_gcm_dec_256_update(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                         uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_128_finalize(const struct isal_gcm_key_data *key_data,
+                         struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
+                         uint64_t auth_tag_len)
 {
         _aes_gcm_enc_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 }
 
 void
-aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                         uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_256_finalize(const struct isal_gcm_key_data *key_data,
+                         struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
+                         uint64_t auth_tag_len)
 {
         _aes_gcm_enc_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 }
 
 void
-aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                         uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_128_finalize(const struct isal_gcm_key_data *key_data,
+                         struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
+                         uint64_t auth_tag_len)
 {
         _aes_gcm_dec_128_finalize(key_data, context_data, auth_tag, auth_tag_len);
 }
 
 void
-aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                         uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_256_finalize(const struct isal_gcm_key_data *key_data,
+                         struct isal_gcm_context_data *context_data, uint8_t *auth_tag,
+                         uint64_t auth_tag_len)
 {
         _aes_gcm_dec_256_finalize(key_data, context_data, auth_tag, auth_tag_len);
 }
@@ -860,69 +876,73 @@ aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data, struct gcm_context
 /* ---- NT versions ---- */
 
 void
-aes_gcm_enc_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_128_nt(const struct isal_gcm_key_data *key_data,
+                   struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                   uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                   uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         _aes_gcm_enc_128_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                             auth_tag_len);
 }
 
 void
-aes_gcm_enc_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_enc_256_nt(const struct isal_gcm_key_data *key_data,
+                   struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                   uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                   uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         _aes_gcm_enc_256_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                             auth_tag_len);
 }
 
 void
-aes_gcm_dec_128_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_128_nt(const struct isal_gcm_key_data *key_data,
+                   struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                   uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                   uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         _aes_gcm_dec_128_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                             auth_tag_len);
 }
 
 void
-aes_gcm_dec_256_nt(const struct gcm_key_data *key_data, struct gcm_context_data *context_data,
-                   uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv, uint8_t const *aad,
-                   uint64_t aad_len, uint8_t *auth_tag, uint64_t auth_tag_len)
+aes_gcm_dec_256_nt(const struct isal_gcm_key_data *key_data,
+                   struct isal_gcm_context_data *context_data, uint8_t *out, uint8_t const *in,
+                   uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                   uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         _aes_gcm_dec_256_nt(key_data, context_data, out, in, len, iv, aad, aad_len, auth_tag,
                             auth_tag_len);
 }
 
 void
-aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,
-                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                          uint64_t len)
+aes_gcm_enc_128_update_nt(const struct isal_gcm_key_data *key_data,
+                          struct isal_gcm_context_data *context_data, uint8_t *out,
+                          const uint8_t *in, uint64_t len)
 {
         _aes_gcm_enc_128_update_nt(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,
-                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                          uint64_t len)
+aes_gcm_enc_256_update_nt(const struct isal_gcm_key_data *key_data,
+                          struct isal_gcm_context_data *context_data, uint8_t *out,
+                          const uint8_t *in, uint64_t len)
 {
         _aes_gcm_enc_256_update_nt(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,
-                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                          uint64_t len)
+aes_gcm_dec_128_update_nt(const struct isal_gcm_key_data *key_data,
+                          struct isal_gcm_context_data *context_data, uint8_t *out,
+                          const uint8_t *in, uint64_t len)
 {
         _aes_gcm_dec_128_update_nt(key_data, context_data, out, in, len);
 }
 
 void
-aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,
-                          struct gcm_context_data *context_data, uint8_t *out, const uint8_t *in,
-                          uint64_t len)
+aes_gcm_dec_256_update_nt(const struct isal_gcm_key_data *key_data,
+                          struct isal_gcm_context_data *context_data, uint8_t *out,
+                          const uint8_t *in, uint64_t len)
 {
         _aes_gcm_dec_256_update_nt(key_data, context_data, out, in, len);
 }

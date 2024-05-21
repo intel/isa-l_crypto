@@ -566,8 +566,8 @@ static const struct self_test_gcm_vector gcm_vectors[] = {
 static int
 gcm_self_test_vector(const struct self_test_gcm_vector *v)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         uint8_t scratch[512];
         uint8_t result_tag[16];
 

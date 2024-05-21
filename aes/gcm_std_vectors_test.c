@@ -68,8 +68,8 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 int
 test_gcm128_std_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -143,8 +143,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
 int
 test_gcm256_std_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -217,10 +217,10 @@ test_gcm256_std_vectors(gcm_vector const *vector)
 }
 
 void
-aes_gcm_stream_enc_128(const struct gcm_key_data *key_data, struct gcm_context_data *context,
-                       uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv,
-                       uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
-                       uint64_t auth_tag_len)
+aes_gcm_stream_enc_128(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context, uint8_t *out, uint8_t const *in,
+                       uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                       uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         isal_aes_gcm_init_128(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
@@ -242,10 +242,10 @@ aes_gcm_stream_enc_128(const struct gcm_key_data *key_data, struct gcm_context_d
 }
 
 void
-aes_gcm_stream_dec_128(const struct gcm_key_data *key_data, struct gcm_context_data *context,
-                       uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv,
-                       uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
-                       uint64_t auth_tag_len)
+aes_gcm_stream_dec_128(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context, uint8_t *out, uint8_t const *in,
+                       uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                       uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         isal_aes_gcm_init_128(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
@@ -269,8 +269,8 @@ aes_gcm_stream_dec_128(const struct gcm_key_data *key_data, struct gcm_context_d
 int
 test_gcm128_std_stream_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -344,10 +344,10 @@ test_gcm128_std_stream_vectors(gcm_vector const *vector)
 }
 
 void
-aes_gcm_stream_enc_256(const struct gcm_key_data *key_data, struct gcm_context_data *context,
-                       uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv,
-                       uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
-                       uint64_t auth_tag_len)
+aes_gcm_stream_enc_256(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context, uint8_t *out, uint8_t const *in,
+                       uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                       uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         isal_aes_gcm_init_256(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
@@ -369,10 +369,10 @@ aes_gcm_stream_enc_256(const struct gcm_key_data *key_data, struct gcm_context_d
 }
 
 void
-aes_gcm_stream_dec_256(const struct gcm_key_data *key_data, struct gcm_context_data *context,
-                       uint8_t *out, uint8_t const *in, uint64_t len, uint8_t *iv,
-                       uint8_t const *aad, uint64_t aad_len, uint8_t *auth_tag,
-                       uint64_t auth_tag_len)
+aes_gcm_stream_dec_256(const struct isal_gcm_key_data *key_data,
+                       struct isal_gcm_context_data *context, uint8_t *out, uint8_t const *in,
+                       uint64_t len, uint8_t *iv, uint8_t const *aad, uint64_t aad_len,
+                       uint8_t *auth_tag, uint64_t auth_tag_len)
 {
         isal_aes_gcm_init_256(key_data, context, iv, aad, aad_len);
         uint8_t test_sequence[] = {
@@ -396,8 +396,8 @@ aes_gcm_stream_dec_256(const struct gcm_key_data *key_data, struct gcm_context_d
 int
 test_gcm256_std_stream_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;

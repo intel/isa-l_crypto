@@ -110,6 +110,9 @@ extern "C" {
 #define GCM_MAX_LEN ISAL_GCM_MAX_LEN
 
 #define LONGEST_TESTED_AAD_LENGTH (2 * 1024)
+
+#define gcm_key_data     isal_gcm_key_data
+#define gcm_context_data isal_gcm_context_data
 #endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
 /* Authenticated Tag Length in bytes. Valid values are 16 (most likely), 12 or 8. */
@@ -132,12 +135,12 @@ extern "C" {
 /**
  * @brief holds intermediate key data needed to improve performance
  *
- * gcm_key_data hold internal key information used by gcm128, gcm192 and gcm256.
+ * isal_gcm_key_data hold internal key information used by gcm128, gcm192 and gcm256.
  */
 #ifdef __WIN32
 __declspec(align(16))
 #endif /* WIN32 */
-struct gcm_key_data {
+struct isal_gcm_key_data {
         uint8_t expanded_keys[ISAL_GCM_ENC_KEY_LEN * ISAL_GCM_KEY_SETS];
         uint8_t shifted_hkey_1[ISAL_GCM_ENC_KEY_LEN];   // store HashKey <<1 mod poly here
         uint8_t shifted_hkey_2[ISAL_GCM_ENC_KEY_LEN];   // store HashKey^2 <<1 mod poly here
@@ -167,7 +170,7 @@ __attribute__((aligned(16)));
 /**
  * @brief holds GCM operation context
  */
-struct gcm_context_data {
+struct isal_gcm_context_data {
         // init, update and finalize context data
         uint8_t aad_hash[ISAL_GCM_BLOCK_LEN];
         uint64_t aad_length;
@@ -188,8 +191,8 @@ struct gcm_context_data {
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128() instead.")
 void
-aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                struct isal_gcm_context_data *context_data, //!< GCM operation context data
                 uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                 uint8_t const *in, //!< Plaintext input
                 uint64_t len,      //!< Length of data in Bytes for encryption
@@ -211,8 +214,8 @@ aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256() instead.")
 void
-aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                struct isal_gcm_context_data *context_data, //!< GCM operation context data
                 uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                 uint8_t const *in, //!< Plaintext input
                 uint64_t len,      //!< Length of data in Bytes for encryption
@@ -234,8 +237,8 @@ aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128() instead.")
 void
-aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                struct isal_gcm_context_data *context_data, //!< GCM operation context data
                 uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                 uint8_t const *in, //!< Ciphertext input
                 uint64_t len,      //!< Length of data in Bytes for decryption
@@ -257,8 +260,8 @@ aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256() instead.")
 void
-aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                struct isal_gcm_context_data *context_data, //!< GCM operation context data
                 uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                 uint8_t const *in, //!< Ciphertext input
                 uint64_t len,      //!< Length of data in Bytes for decryption
@@ -280,9 +283,9 @@ aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key dat
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_init_128() instead.")
 void
-aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
-                 uint8_t *iv,                           //!< Pointer to 12 byte IV structure
+aes_gcm_init_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                 uint8_t *iv,                                //!< Pointer to 12 byte IV structure
                  //!< Internally, library concates 0x00000001 value to it
                  uint8_t const *aad, //!< Additional Authentication Data (AAD)
                  uint64_t aad_len    //!< Length of AAD
@@ -296,9 +299,9 @@ aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_init_256() instead.")
 void
-aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
-                 uint8_t *iv,                           //!< Pointer to 12 byte IV structure
+aes_gcm_init_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                 uint8_t *iv,                                //!< Pointer to 12 byte IV structure
                  //!< Internally, library concates 0x00000001 value to it
                  uint8_t const *aad, //!< Additional Authentication Data (AAD)
                  uint64_t aad_len    //!< Length of AAD
@@ -312,8 +315,8 @@ aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_update() instead.")
 void
-aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                       struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_128_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                       struct isal_gcm_context_data *context_data, //!< GCM operation context data
                        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
                        const uint8_t *in, //!< Plaintext input
                        uint64_t len       //!< Length of data in Bytes for encryption
@@ -327,8 +330,8 @@ aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_update() instead.")
 void
-aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                       struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_256_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                       struct isal_gcm_context_data *context_data, //!< GCM operation context data
                        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
                        const uint8_t *in, //!< Plaintext input
                        uint64_t len       //!< Length of data in Bytes for encryption
@@ -342,8 +345,8 @@ aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_update() instead.")
 void
-aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                       struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_128_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                       struct isal_gcm_context_data *context_data, //!< GCM operation context data
                        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
                        const uint8_t *in, //!< Ciphertext input
                        uint64_t len       //!< Length of data in Bytes for decryption
@@ -357,8 +360,8 @@ aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_update() instead.")
 void
-aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                       struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_256_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                       struct isal_gcm_context_data *context_data, //!< GCM operation context data
                        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
                        const uint8_t *in, //!< Ciphertext input
                        uint64_t len       //!< Length of data in Bytes for decryption
@@ -372,9 +375,9 @@ aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_finalize() instead.")
 void
-aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                         struct gcm_context_data *context_data, //!< GCM operation context data
-                         uint8_t *auth_tag,                     //!< Authenticated Tag output
+aes_gcm_enc_128_finalize(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                         struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                         uint8_t *auth_tag,                          //!< Authenticated Tag output
                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
                                                //!< multiple of 4 bytes).
                                                //!< Valid values are 16 (most likely), 12 or 8
@@ -388,9 +391,9 @@ aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_finalize() instead.")
 void
-aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                         struct gcm_context_data *context_data, //!< GCM operation context data
-                         uint8_t *auth_tag,                     //!< Authenticated Tag output
+aes_gcm_enc_256_finalize(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                         struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                         uint8_t *auth_tag,                          //!< Authenticated Tag output
                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
                                                //!< multiple of 4 bytes).
                                                //!< Valid values are 16 (most likely), 12 or 8
@@ -404,9 +407,9 @@ aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_finalize() instead.")
 void
-aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                         struct gcm_context_data *context_data, //!< GCM operation context data
-                         uint8_t *auth_tag,                     //!< Authenticated Tag output
+aes_gcm_dec_128_finalize(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                         struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                         uint8_t *auth_tag,                          //!< Authenticated Tag output
                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
                                                //!< multiple of 4 bytes).
                                                //!< Valid values are 16 (most likely), 12 or 8
@@ -420,9 +423,9 @@ aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_finalize() instead.")
 void
-aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                         struct gcm_context_data *context_data, //!< GCM operation context data
-                         uint8_t *auth_tag,                     //!< Authenticated Tag output
+aes_gcm_dec_256_finalize(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                         struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                         uint8_t *auth_tag,                          //!< Authenticated Tag output
                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
                                                //!< multiple of 4 bytes).
                                                //!< Valid values are 16 (most likely), 12 or 8
@@ -439,8 +442,8 @@ aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expande
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_pre_128() instead.")
 void
-aes_gcm_pre_128(const void *key,              //!< Pointer to key data
-                struct gcm_key_data *key_data //!< GCM expanded key data
+aes_gcm_pre_128(const void *key,                   //!< Pointer to key data
+                struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /**
@@ -454,8 +457,8 @@ aes_gcm_pre_128(const void *key,              //!< Pointer to key data
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_pre_256() instead.")
 void
-aes_gcm_pre_256(const void *key,              //!< Pointer to key data
-                struct gcm_key_data *key_data //!< GCM expanded key data
+aes_gcm_pre_256(const void *key,                   //!< Pointer to key data
+                struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /* ---- NT versions ---- */
@@ -471,8 +474,8 @@ aes_gcm_pre_256(const void *key,              //!< Pointer to key data
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_nt() instead.")
 void
-aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                   struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_128_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                   struct isal_gcm_context_data *context_data, //!< GCM operation context data
                    uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                    uint8_t const *in, //!< Plaintext input
                    uint64_t len,      //!< Length of data in Bytes for encryption
@@ -498,8 +501,8 @@ aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_nt() instead.")
 void
-aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                   struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_enc_256_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                   struct isal_gcm_context_data *context_data, //!< GCM operation context data
                    uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                    uint8_t const *in, //!< Plaintext input
                    uint64_t len,      //!< Length of data in Bytes for encryption
@@ -525,8 +528,8 @@ aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_nt() instead.")
 void
-aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                   struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_128_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                   struct isal_gcm_context_data *context_data, //!< GCM operation context data
                    uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                    uint8_t const *in, //!< Ciphertext input
                    uint64_t len,      //!< Length of data in Bytes for decryption
@@ -552,8 +555,8 @@ aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_nt() instead.")
 void
-aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                   struct gcm_context_data *context_data, //!< GCM operation context data
+aes_gcm_dec_256_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                   struct isal_gcm_context_data *context_data, //!< GCM operation context data
                    uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                    uint8_t const *in, //!< Ciphertext input
                    uint64_t len,      //!< Length of data in Bytes for decryption
@@ -581,11 +584,12 @@ aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key 
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_128_update_nt() instead.")
 void
-aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                          const uint8_t *in, //!< Plaintext input
-                          uint64_t len       //!< Length of data in Bytes for encryption
+aes_gcm_enc_128_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        uint64_t len       //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -602,11 +606,12 @@ aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_enc_256_update_nt() instead.")
 void
-aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                          const uint8_t *in, //!< Plaintext input
-                          uint64_t len       //!< Length of data in Bytes for encryption
+aes_gcm_enc_256_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        uint64_t len       //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -623,11 +628,12 @@ aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_128_update_nt() instead.")
 void
-aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                          const uint8_t *in, //!< Ciphertext input
-                          uint64_t len       //!< Length of data in Bytes for decryption
+aes_gcm_dec_128_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        uint64_t len       //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -644,11 +650,12 @@ aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  */
 ISAL_DEPRECATED("Please use isal_aes_gcm_dec_256_update_nt() instead.")
 void
-aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                          const uint8_t *in, //!< Ciphertext input
-                          uint64_t len       //!< Length of data in Bytes for decryption
+aes_gcm_dec_256_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        uint64_t len       //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -661,12 +668,12 @@ aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expand
  */
 int
 isal_aes_gcm_enc_128(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len,                    //!< Length of data in Bytes for encryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,  //!< Plaintext input
+        const uint64_t len, //!< Length of data in Bytes for encryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -686,12 +693,12 @@ isal_aes_gcm_enc_128(
  */
 int
 isal_aes_gcm_enc_256(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len,                    //!< Length of data in Bytes for encryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,  //!< Plaintext input
+        const uint64_t len, //!< Length of data in Bytes for encryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -711,12 +718,12 @@ isal_aes_gcm_enc_256(
  */
 int
 isal_aes_gcm_dec_128(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len,                    //!< Length of data in Bytes for decryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,  //!< Ciphertext input
+        const uint64_t len, //!< Length of data in Bytes for decryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -736,12 +743,12 @@ isal_aes_gcm_dec_128(
  */
 int
 isal_aes_gcm_dec_256(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len,                    //!< Length of data in Bytes for decryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,  //!< Ciphertext input
+        const uint64_t len, //!< Length of data in Bytes for decryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -760,9 +767,9 @@ isal_aes_gcm_dec_256(
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                      struct gcm_context_data *context_data, //!< GCM operation context data
-                      const uint8_t *iv,                     //!< Pointer to 12 byte IV structure
+isal_aes_gcm_init_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                      struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                      const uint8_t *iv, //!< Pointer to 12 byte IV structure
                       //!< Internally, library concates 0x00000001 value to it
                       const uint8_t *aad,    //!< Additional Authenticated Data (AAD)
                       const uint64_t aad_len //!< Length of AAD
@@ -777,9 +784,9 @@ isal_aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded k
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                      struct gcm_context_data *context_data, //!< GCM operation context data
-                      const uint8_t *iv,                     //!< Pointer to 12 byte IV structure
+isal_aes_gcm_init_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                      struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                      const uint8_t *iv, //!< Pointer to 12 byte IV structure
                       //!< Internally, library concates 0x00000001 value to it
                       const uint8_t *aad,    //!< Additional Authenticated Data (AAD)
                       const uint64_t aad_len //!< Length of AAD
@@ -794,11 +801,12 @@ isal_aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded k
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                            struct gcm_context_data *context_data, //!< GCM operation context data
-                            uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                            const uint8_t *in, //!< Plaintext input
-                            const uint64_t len //!< Length of data in Bytes for encryption
+isal_aes_gcm_enc_128_update(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        const uint64_t len //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -810,11 +818,12 @@ isal_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expa
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                            struct gcm_context_data *context_data, //!< GCM operation context data
-                            uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                            const uint8_t *in, //!< Plaintext input
-                            const uint64_t len //!< Length of data in Bytes for encryption
+isal_aes_gcm_enc_256_update(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        const uint64_t len //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -826,11 +835,12 @@ isal_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expa
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                            struct gcm_context_data *context_data, //!< GCM operation context data
-                            uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                            const uint8_t *in, //!< Ciphertext input
-                            const uint64_t len //!< Length of data in Bytes for decryption
+isal_aes_gcm_dec_128_update(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        const uint64_t len //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -842,11 +852,12 @@ isal_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expa
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                            struct gcm_context_data *context_data, //!< GCM operation context data
-                            uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                            const uint8_t *in, //!< Ciphertext input
-                            const uint64_t len //!< Length of data in Bytes for decryption
+isal_aes_gcm_dec_256_update(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        const uint64_t len //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -859,12 +870,12 @@ isal_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expa
  */
 int
 isal_aes_gcm_enc_128_finalize(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *auth_tag,                     //!< Authenticated Tag output
-        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
-                                               //!< multiple of 4 bytes).
-                                               //!< Valid values are 16 (most likely), 12 or 8
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                                    //!< multiple of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -877,12 +888,12 @@ isal_aes_gcm_enc_128_finalize(
  */
 int
 isal_aes_gcm_enc_256_finalize(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *auth_tag,                     //!< Authenticated Tag output
-        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
-                                               //!< multiple of 4 bytes).
-                                               //!< Valid values are 16 (most likely), 12 or 8
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                                    //!< multiple of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -895,12 +906,12 @@ isal_aes_gcm_enc_256_finalize(
  */
 int
 isal_aes_gcm_dec_128_finalize(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *auth_tag,                     //!< Authenticated Tag output
-        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
-                                               //!< multiple of 4 bytes).
-                                               //!< Valid values are 16 (most likely), 12 or 8
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                                    //!< multiple of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -913,12 +924,12 @@ isal_aes_gcm_dec_128_finalize(
  */
 int
 isal_aes_gcm_dec_256_finalize(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *auth_tag,                     //!< Authenticated Tag output
-        const uint64_t auth_tag_len            //!< Authenticated Tag Length in bytes (must be a
-                                               //!< multiple of 4 bytes).
-                                               //!< Valid values are 16 (most likely), 12 or 8
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        const uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                                    //!< multiple of 4 bytes).
+                                    //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -934,8 +945,8 @@ isal_aes_gcm_dec_256_finalize(
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_pre_128(const void *key,              //!< Pointer to key data
-                     struct gcm_key_data *key_data //!< GCM expanded key data
+isal_aes_gcm_pre_128(const void *key,                   //!< Pointer to key data
+                     struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /**
@@ -951,8 +962,8 @@ isal_aes_gcm_pre_128(const void *key,              //!< Pointer to key data
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_aes_gcm_pre_256(const void *key,              //!< Pointer to key data
-                     struct gcm_key_data *key_data //!< GCM expanded key data
+isal_aes_gcm_pre_256(const void *key,                   //!< Pointer to key data
+                     struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /* ---- NT versions ---- */
@@ -971,12 +982,12 @@ isal_aes_gcm_pre_256(const void *key,              //!< Pointer to key data
  */
 int
 isal_aes_gcm_enc_128_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len,                    //!< Length of data in Bytes for encryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,  //!< Plaintext input
+        const uint64_t len, //!< Length of data in Bytes for encryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -1001,12 +1012,12 @@ isal_aes_gcm_enc_128_nt(
  */
 int
 isal_aes_gcm_enc_256_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len,                    //!< Length of data in Bytes for encryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Ciphertext output. Encrypt in-place is allowed
+        const uint8_t *in,  //!< Plaintext input
+        const uint64_t len, //!< Length of data in Bytes for encryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -1031,12 +1042,12 @@ isal_aes_gcm_enc_256_nt(
  */
 int
 isal_aes_gcm_dec_128_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len,                    //!< Length of data in Bytes for decryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,  //!< Ciphertext input
+        const uint64_t len, //!< Length of data in Bytes for decryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -1061,12 +1072,12 @@ isal_aes_gcm_dec_128_nt(
  */
 int
 isal_aes_gcm_dec_256_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len,                    //!< Length of data in Bytes for decryption
-        const uint8_t *iv,                     //!< iv pointer to 12 byte IV structure.
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,       //!< Plaintext output. Decrypt in-place is allowed
+        const uint8_t *in,  //!< Ciphertext input
+        const uint64_t len, //!< Length of data in Bytes for decryption
+        const uint8_t *iv,  //!< iv pointer to 12 byte IV structure.
         //!< Internally, library concates 0x00000001 value to it.
         const uint8_t *aad,         //!< Additional Authenticated Data (AAD)
         const uint64_t aad_len,     //!< Length of AAD
@@ -1093,11 +1104,11 @@ isal_aes_gcm_dec_256_nt(
  */
 int
 isal_aes_gcm_enc_128_update_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed.
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len                     //!< Length of data in Bytes for encryption
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        const uint64_t len //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -1117,11 +1128,11 @@ isal_aes_gcm_enc_128_update_nt(
  */
 int
 isal_aes_gcm_enc_256_update_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Ciphertext output. Encrypt in-place is allowed.
-        const uint8_t *in,                     //!< Plaintext input
-        const uint64_t len                     //!< Length of data in Bytes for encryption
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        const uint64_t len //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -1141,11 +1152,11 @@ isal_aes_gcm_enc_256_update_nt(
  */
 int
 isal_aes_gcm_dec_128_update_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed.
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len                     //!< Length of data in Bytes for decryption
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        const uint64_t len //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -1165,11 +1176,11 @@ isal_aes_gcm_dec_128_update_nt(
  */
 int
 isal_aes_gcm_dec_256_update_nt(
-        const struct gcm_key_data *key_data,   //!< GCM expanded key data
-        struct gcm_context_data *context_data, //!< GCM operation context data
-        uint8_t *out,                          //!< Plaintext output. Decrypt in-place is allowed.
-        const uint8_t *in,                     //!< Ciphertext input
-        const uint64_t len                     //!< Length of data in Bytes for decryption
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        const uint64_t len //!< Length of data in Bytes for decryption
 );
 
 #ifdef __cplusplus

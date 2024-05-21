@@ -54,8 +54,8 @@ mprint(const char *msg, uint8_t *buf, int len)
 int
 main(void)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         uint8_t ct[TXT_SIZE], pt[TXT_SIZE], pt2[TXT_SIZE]; // Cipher text and plain text
         uint8_t iv[IV_SIZE], aad[AAD_SIZE], key[KEY_SIZE]; // Key and authentication data
         uint8_t tag1[TAG_SIZE], tag2[TAG_SIZE]; // Authentication tags for encode and decode

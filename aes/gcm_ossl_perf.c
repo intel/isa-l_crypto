@@ -96,8 +96,8 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, int vect, char *data_
 void
 aes_gcm_perf(void)
 {
-        struct gcm_key_data gkey, gkey256;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey, gkey256;
+        struct isal_gcm_context_data gctx;
         int i;
 
         printf("AES GCM performance parameters plain text length:%d; IV length:%d; ADD length:%d "

@@ -70,8 +70,8 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 int
 test_gcm128_std_vectors_nt(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -149,8 +149,8 @@ test_gcm128_std_vectors_nt(gcm_vector const *vector)
 int
 test_gcm256_std_vectors_nt(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;

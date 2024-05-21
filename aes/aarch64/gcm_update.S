@@ -28,8 +28,8 @@
 **********************************************************************/
 /*
 void gist_aes_gcm_dec_update_##mode(                                \
-    const struct gcm_key_data *key_data,                            \
-    struct gcm_context_data *context,                               \
+    const struct isal_gcm_key_data *key_data,                       \
+    struct isal_gcm_context_data *context,                          \
     uint8_t *out,                                                   \
     const uint8_t *in,                                              \
     uint64_t len                                                    \

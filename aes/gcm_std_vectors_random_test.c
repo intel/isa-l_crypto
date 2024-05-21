@@ -93,7 +93,7 @@ dump_table(char *title, uint8_t *table, uint8_t count)
 }
 
 void
-dump_gcm_data(struct gcm_key_data *gkey)
+dump_gcm_data(struct isal_gcm_key_data *gkey)
 {
 #ifdef GCM_VECTORS_EXTRA_VERBOSE
         printf("gcm_data {\n");
@@ -153,7 +153,7 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, char *data_name)
 }
 
 int
-check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector)
+check_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx, gcm_vector *vector)
 {
         uint8_t *pt_test = NULL;
         uint8_t *ct_test = NULL;
@@ -231,8 +231,8 @@ check_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vecto
 }
 
 int
-check_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector,
-                  int test_len)
+check_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx,
+                  gcm_vector *vector, int test_len)
 {
         uint8_t *pt_test = NULL;
         uint8_t *ct_test = NULL;
@@ -383,8 +383,8 @@ error_exit:
 }
 
 int
-check_strm_vector2(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector,
-                   int length, int start, int breaks)
+check_strm_vector2(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx,
+                   gcm_vector *vector, int length, int start, int breaks)
 {
         uint8_t *pt_test = NULL;
         uint8_t *ct_test = NULL;
@@ -512,7 +512,7 @@ error_exit:
 }
 
 int
-check_strm_vector_efence(struct gcm_key_data *gkey, struct gcm_context_data *gctx,
+check_strm_vector_efence(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx,
                          gcm_vector *vector)
 {
         uint8_t *pt_test = NULL;
@@ -657,7 +657,8 @@ error_exit:
 }
 
 int
-check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector)
+check_256_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx,
+                 gcm_vector *vector)
 {
         uint8_t *pt_test = NULL;
         uint8_t *ct_test = NULL;
@@ -734,8 +735,8 @@ check_256_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_v
 }
 
 int
-check_256_strm_vector(struct gcm_key_data *gkey, struct gcm_context_data *gctx, gcm_vector *vector,
-                      int test_len)
+check_256_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *gctx,
+                      gcm_vector *vector, int test_len)
 {
         uint8_t *pt_test = NULL;
         uint8_t *ct_test = NULL;
@@ -893,11 +894,11 @@ test_gcm_strm_efence(void)
 {
         int tag_len = 8;
         int t = 0;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkey = malloc(sizeof(struct gcm_key_data));
-        gctx = malloc(sizeof(struct gcm_context_data));
+        gkey = malloc(sizeof(struct isal_gcm_key_data));
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
         if (NULL == gkey || NULL == gctx) {
                 free(gkey);
                 free(gctx);
@@ -1009,12 +1010,12 @@ test_gcm_strm_combinations(int test_len)
         int tag_len = 8;
         int t = 0;
         uint8_t *gkeytemp = NULL;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkeytemp = malloc(sizeof(struct gcm_key_data) + 16);
-        gctx = malloc(sizeof(struct gcm_context_data));
-        gkey = (struct gcm_key_data *) (gkeytemp + rand() % 16);
+        gkeytemp = malloc(sizeof(struct isal_gcm_key_data) + 16);
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
+        gkey = (struct isal_gcm_key_data *) (gkeytemp + rand() % 16);
         if (NULL == gkeytemp || NULL == gctx) {
                 free(gkeytemp);
                 free(gctx);
@@ -1125,11 +1126,11 @@ test_gcm_combinations(void)
 {
         int tag_len = 8;
         int t = 0;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkey = malloc(sizeof(struct gcm_key_data));
-        gctx = malloc(sizeof(struct gcm_context_data));
+        gkey = malloc(sizeof(struct isal_gcm_key_data));
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
         if (NULL == gkey || NULL == gctx) {
                 free(gctx);
                 free(gkey);
@@ -1241,11 +1242,11 @@ test_gcm256_combinations(void)
 {
         int tag_len = 8;
         int t = 0;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkey = malloc(sizeof(struct gcm_key_data));
-        gctx = malloc(sizeof(struct gcm_context_data));
+        gkey = malloc(sizeof(struct isal_gcm_key_data));
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
         if (NULL == gkey || NULL == gctx) {
                 free(gkey);
                 free(gctx);
@@ -1359,12 +1360,12 @@ test_gcm256_strm_combinations(int test_len)
         int tag_len = 8;
         int t = 0;
         uint8_t *gkeytemp = NULL;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkeytemp = malloc(sizeof(struct gcm_key_data) + 16);
-        gctx = malloc(sizeof(struct gcm_context_data));
-        gkey = (struct gcm_key_data *) (gkeytemp + rand() % 16);
+        gkeytemp = malloc(sizeof(struct isal_gcm_key_data) + 16);
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
+        gkey = (struct isal_gcm_key_data *) (gkeytemp + rand() % 16);
         if (NULL == gkeytemp || NULL == gctx) {
                 free(gkeytemp);
                 free(gctx);
@@ -1481,12 +1482,12 @@ test_gcm_efence(void)
         gcm_vector test;
         int offset = 0;
         gcm_key_size key_len;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
         uint8_t *P = NULL, *C = NULL, *K = NULL, *IV = NULL, *A = NULL, *T = NULL;
 
-        gkey = malloc(sizeof(struct gcm_key_data));
-        gctx = malloc(sizeof(struct gcm_context_data));
+        gkey = malloc(sizeof(struct isal_gcm_key_data));
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
         posix_ret |= posix_memalign((void **) &P, POSIX_ALIGNMENT, PAGE_LEN);
         posix_ret |= posix_memalign((void **) &C, POSIX_ALIGNMENT, PAGE_LEN);
         K = malloc(PAGE_LEN);
@@ -1579,8 +1580,8 @@ test_gcm_efence(void)
 int
 test_gcm128_std_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -1686,8 +1687,8 @@ test_gcm128_std_vectors(gcm_vector const *vector)
 int
 test_gcm256_std_vectors(gcm_vector const *vector)
 {
-        struct gcm_key_data gkey;
-        struct gcm_context_data gctx;
+        struct isal_gcm_key_data gkey;
+        struct isal_gcm_context_data gctx;
         int OK = 0;
         // Temporary array for the calculated vectors
         uint8_t *ct_test = NULL;
@@ -1832,11 +1833,11 @@ test_gcm_strm_combinations2(int length, int start, int breaks)
 {
         int tag_len = 8;
         int t = 0;
-        struct gcm_key_data *gkey = NULL;
-        struct gcm_context_data *gctx = NULL;
+        struct isal_gcm_key_data *gkey = NULL;
+        struct isal_gcm_context_data *gctx = NULL;
 
-        gkey = malloc(sizeof(struct gcm_key_data));
-        gctx = malloc(sizeof(struct gcm_context_data));
+        gkey = malloc(sizeof(struct isal_gcm_key_data));
+        gctx = malloc(sizeof(struct isal_gcm_context_data));
         if (NULL == gkey || NULL == gctx) {
                 free(gkey);
                 free(gctx);

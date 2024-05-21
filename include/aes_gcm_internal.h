@@ -48,8 +48,8 @@ extern "C" {
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
                  uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                  uint8_t const *in, //!< Plaintext input
                  uint64_t len,      //!< Length of data in Bytes for encryption
@@ -69,8 +69,8 @@ _aes_gcm_enc_128(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
                  uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                  uint8_t const *in, //!< Plaintext input
                  uint64_t len,      //!< Length of data in Bytes for encryption
@@ -90,8 +90,8 @@ _aes_gcm_enc_256(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
                  uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                  uint8_t const *in, //!< Ciphertext input
                  uint64_t len,      //!< Length of data in Bytes for decryption
@@ -111,8 +111,8 @@ _aes_gcm_dec_128(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                 struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                 struct isal_gcm_context_data *context_data, //!< GCM operation context data
                  uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                  uint8_t const *in, //!< Ciphertext input
                  uint64_t len,      //!< Length of data in Bytes for decryption
@@ -132,9 +132,9 @@ _aes_gcm_dec_256(const struct gcm_key_data *key_data,   //!< GCM expanded key da
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                  struct gcm_context_data *context_data, //!< GCM operation context data
-                  uint8_t *iv,                           //!< Pointer to 12 byte IV structure
+_aes_gcm_init_128(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                  struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                  uint8_t *iv,                                //!< Pointer to 12 byte IV structure
                   //!< Internally, library concates 0x00000001 value to it
                   uint8_t const *aad, //!< Additional Authentication Data (AAD)
                   uint64_t aad_len    //!< Length of AAD
@@ -146,9 +146,9 @@ _aes_gcm_init_128(const struct gcm_key_data *key_data,   //!< GCM expanded key d
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                  struct gcm_context_data *context_data, //!< GCM operation context data
-                  uint8_t *iv,                           //!< Pointer to 12 byte IV structure
+_aes_gcm_init_256(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                  struct isal_gcm_context_data *context_data, //!< GCM operation context data
+                  uint8_t *iv,                                //!< Pointer to 12 byte IV structure
                   //!< Internally, library concates 0x00000001 value to it
                   uint8_t const *aad, //!< Additional Authentication Data (AAD)
                   uint64_t aad_len    //!< Length of AAD
@@ -160,8 +160,8 @@ _aes_gcm_init_256(const struct gcm_key_data *key_data,   //!< GCM expanded key d
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                        struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_128_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                        struct isal_gcm_context_data *context_data, //!< GCM operation context data
                         uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
                         const uint8_t *in, //!< Plaintext input
                         uint64_t len       //!< Length of data in Bytes for encryption
@@ -173,8 +173,8 @@ _aes_gcm_enc_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                        struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_256_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                        struct isal_gcm_context_data *context_data, //!< GCM operation context data
                         uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
                         const uint8_t *in, //!< Plaintext input
                         uint64_t len       //!< Length of data in Bytes for encryption
@@ -186,8 +186,8 @@ _aes_gcm_enc_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                        struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_128_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                        struct isal_gcm_context_data *context_data, //!< GCM operation context data
                         uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
                         const uint8_t *in, //!< Ciphertext input
                         uint64_t len       //!< Length of data in Bytes for decryption
@@ -199,8 +199,8 @@ _aes_gcm_dec_128_update(const struct gcm_key_data *key_data,   //!< GCM expanded
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                        struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_256_update(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                        struct isal_gcm_context_data *context_data, //!< GCM operation context data
                         uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
                         const uint8_t *in, //!< Ciphertext input
                         uint64_t len       //!< Length of data in Bytes for decryption
@@ -212,12 +212,13 @@ _aes_gcm_dec_256_update(const struct gcm_key_data *key_data,   //!< GCM expanded
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *auth_tag,                     //!< Authenticated Tag output
-                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
-                                                //!< multiple of 4 bytes).
-                                                //!< Valid values are 16 (most likely), 12 or 8
+_aes_gcm_enc_128_finalize(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                              //!< multiple of 4 bytes).
+                              //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -226,12 +227,13 @@ _aes_gcm_enc_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expand
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *auth_tag,                     //!< Authenticated Tag output
-                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
-                                                //!< multiple of 4 bytes).
-                                                //!< Valid values are 16 (most likely), 12 or 8
+_aes_gcm_enc_256_finalize(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                              //!< multiple of 4 bytes).
+                              //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -240,12 +242,13 @@ _aes_gcm_enc_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expand
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *auth_tag,                     //!< Authenticated Tag output
-                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
-                                                //!< multiple of 4 bytes).
-                                                //!< Valid values are 16 (most likely), 12 or 8
+_aes_gcm_dec_128_finalize(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                              //!< multiple of 4 bytes).
+                              //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -254,12 +257,13 @@ _aes_gcm_dec_128_finalize(const struct gcm_key_data *key_data,   //!< GCM expand
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                          struct gcm_context_data *context_data, //!< GCM operation context data
-                          uint8_t *auth_tag,                     //!< Authenticated Tag output
-                          uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
-                                                //!< multiple of 4 bytes).
-                                                //!< Valid values are 16 (most likely), 12 or 8
+_aes_gcm_dec_256_finalize(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *auth_tag,                          //!< Authenticated Tag output
+        uint64_t auth_tag_len //!< Authenticated Tag Length in bytes (must be a
+                              //!< multiple of 4 bytes).
+                              //!< Valid values are 16 (most likely), 12 or 8
 );
 
 /**
@@ -271,8 +275,8 @@ _aes_gcm_dec_256_finalize(const struct gcm_key_data *key_data,   //!< GCM expand
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_pre_128(const void *key,              //!< Pointer to key data
-                 struct gcm_key_data *key_data //!< GCM expanded key data
+_aes_gcm_pre_128(const void *key,                   //!< Pointer to key data
+                 struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /**
@@ -284,8 +288,8 @@ _aes_gcm_pre_128(const void *key,              //!< Pointer to key data
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_pre_256(const void *key,              //!< Pointer to key data
-                 struct gcm_key_data *key_data //!< GCM expanded key data
+_aes_gcm_pre_256(const void *key,                   //!< Pointer to key data
+                 struct isal_gcm_key_data *key_data //!< GCM expanded key data
 );
 
 /* ---- NT versions ---- */
@@ -299,8 +303,8 @@ _aes_gcm_pre_256(const void *key,              //!< Pointer to key data
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                    struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_128_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                    struct isal_gcm_context_data *context_data, //!< GCM operation context data
                     uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                     uint8_t const *in, //!< Plaintext input
                     uint64_t len,      //!< Length of data in Bytes for encryption
@@ -324,8 +328,8 @@ _aes_gcm_enc_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                    struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_enc_256_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                    struct isal_gcm_context_data *context_data, //!< GCM operation context data
                     uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed
                     uint8_t const *in, //!< Plaintext input
                     uint64_t len,      //!< Length of data in Bytes for encryption
@@ -349,8 +353,8 @@ _aes_gcm_enc_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                    struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_128_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                    struct isal_gcm_context_data *context_data, //!< GCM operation context data
                     uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                     uint8_t const *in, //!< Ciphertext input
                     uint64_t len,      //!< Length of data in Bytes for decryption
@@ -374,8 +378,8 @@ _aes_gcm_dec_128_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                    struct gcm_context_data *context_data, //!< GCM operation context data
+_aes_gcm_dec_256_nt(const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+                    struct isal_gcm_context_data *context_data, //!< GCM operation context data
                     uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed
                     uint8_t const *in, //!< Ciphertext input
                     uint64_t len,      //!< Length of data in Bytes for decryption
@@ -401,11 +405,12 @@ _aes_gcm_dec_256_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                           struct gcm_context_data *context_data, //!< GCM operation context data
-                           uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                           const uint8_t *in, //!< Plaintext input
-                           uint64_t len       //!< Length of data in Bytes for encryption
+_aes_gcm_enc_128_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        uint64_t len       //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -420,11 +425,12 @@ _aes_gcm_enc_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expan
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                           struct gcm_context_data *context_data, //!< GCM operation context data
-                           uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
-                           const uint8_t *in, //!< Plaintext input
-                           uint64_t len       //!< Length of data in Bytes for encryption
+_aes_gcm_enc_256_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Ciphertext output. Encrypt in-place is allowed.
+        const uint8_t *in, //!< Plaintext input
+        uint64_t len       //!< Length of data in Bytes for encryption
 );
 
 /**
@@ -439,11 +445,12 @@ _aes_gcm_enc_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expan
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                           struct gcm_context_data *context_data, //!< GCM operation context data
-                           uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                           const uint8_t *in, //!< Ciphertext input
-                           uint64_t len       //!< Length of data in Bytes for decryption
+_aes_gcm_dec_128_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        uint64_t len       //!< Length of data in Bytes for decryption
 );
 
 /**
@@ -458,18 +465,19 @@ _aes_gcm_dec_128_update_nt(const struct gcm_key_data *key_data,   //!< GCM expan
  * @requires SSE4.1 and AESNI
  */
 void
-_aes_gcm_dec_256_update_nt(const struct gcm_key_data *key_data,   //!< GCM expanded key data
-                           struct gcm_context_data *context_data, //!< GCM operation context data
-                           uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
-                           const uint8_t *in, //!< Ciphertext input
-                           uint64_t len       //!< Length of data in Bytes for decryption
+_aes_gcm_dec_256_update_nt(
+        const struct isal_gcm_key_data *key_data,   //!< GCM expanded key data
+        struct isal_gcm_context_data *context_data, //!< GCM operation context data
+        uint8_t *out,      //!< Plaintext output. Decrypt in-place is allowed.
+        const uint8_t *in, //!< Ciphertext input
+        uint64_t len       //!< Length of data in Bytes for decryption
 );
 
 void
-_aes_gcm_precomp_128(struct gcm_key_data *key_data);
+_aes_gcm_precomp_128(struct isal_gcm_key_data *key_data);
 
 void
-_aes_gcm_precomp_256(struct gcm_key_data *key_data);
+_aes_gcm_precomp_256(struct isal_gcm_key_data *key_data);
 
 #ifdef __cplusplus
 }
