@@ -62,7 +62,7 @@
 
 #ifndef FIPS_MODE
 static uint64_t
-rolling_hash2_ref(struct rh_state2 *state, unsigned char *p, int len, uint64_t hash_init)
+rolling_hash2_ref(struct isal_rh_state2 *state, unsigned char *p, int len, uint64_t hash_init)
 {
         int i;
         uint64_t h = hash_init;
@@ -115,7 +115,7 @@ main(void)
         uint32_t w, max, mask, trigger, offset = 0;
         int i, r, ret, match, errors = 0;
         uint32_t offset_fut;
-        struct rh_state2 state;
+        struct isal_rh_state2 state;
 
         printf(xstr(FUT_run) ": " xstr(MAX_BUFFER_SIZE));
 

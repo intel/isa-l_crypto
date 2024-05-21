@@ -176,7 +176,7 @@ main(void)
         uint32_t mask, trigger, offset = 0;
         uint32_t min_chunk, max_chunk, mean_chunk;
         long remain;
-        struct rh_state2 state;
+        struct isal_rh_state2 state;
         struct perf start, stop;
 
         // Chunking parameters

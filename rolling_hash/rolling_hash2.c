@@ -39,7 +39,7 @@ _rolling_hash2_run_until(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t *t2,
                          uint8_t *b2, uint64_t h, uint64_t mask, uint64_t trigger);
 
 int
-_rolling_hash2_init(struct rh_state2 *state, uint32_t w)
+_rolling_hash2_init(struct isal_rh_state2 *state, uint32_t w)
 {
         uint32_t i;
         uint64_t v;
@@ -57,7 +57,7 @@ _rolling_hash2_init(struct rh_state2 *state, uint32_t w)
 }
 
 void
-_rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
+_rolling_hash2_reset(struct isal_rh_state2 *state, uint8_t *init_bytes)
 {
         uint64_t hash;
         uint32_t i, w;
@@ -73,7 +73,7 @@ _rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
 }
 
 static uint64_t
-hash_fn(struct rh_state2 *state, uint64_t h, uint8_t new_char, uint8_t old_char)
+hash_fn(struct isal_rh_state2 *state, uint64_t h, uint8_t new_char, uint8_t old_char)
 {
         h = (h << 1) | (h >> (64 - 1));
         h ^= state->table1[new_char] ^ state->table2[old_char];
@@ -110,8 +110,8 @@ _rolling_hash2_run_until_base(uint32_t *idx, int max_idx, uint64_t *t1, uint64_t
 }
 
 int
-_rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_length, uint32_t mask,
-                   uint32_t trigger, uint32_t *offset)
+_rolling_hash2_run(struct isal_rh_state2 *state, uint8_t *buffer, uint32_t buffer_length,
+                   uint32_t mask, uint32_t trigger, uint32_t *offset)
 {
 
         uint32_t i;
@@ -158,7 +158,7 @@ _rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t buffer_len
 }
 
 int
-isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
+isal_rolling_hash2_init(struct isal_rh_state2 *state, const uint32_t w)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -175,7 +175,7 @@ isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w)
 }
 
 int
-isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
+isal_rolling_hash2_reset(struct isal_rh_state2 *state, const uint8_t *init_bytes)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -193,7 +193,7 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes)
 }
 
 int
-isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
+isal_rolling_hash2_run(struct isal_rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
                        const uint32_t mask, const uint32_t trigger, uint32_t *offset, int *match)
 {
 #ifdef FIPS_MODE
@@ -238,19 +238,19 @@ isal_rolling_hashx_mask_gen(const uint32_t mean, const uint32_t shift, uint32_t 
  */
 
 int
-rolling_hash2_init(struct rh_state2 *state, uint32_t w)
+rolling_hash2_init(struct isal_rh_state2 *state, uint32_t w)
 {
         return _rolling_hash2_init(state, w);
 }
 
 void
-rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes)
+rolling_hash2_reset(struct isal_rh_state2 *state, uint8_t *init_bytes)
 {
         _rolling_hash2_reset(state, init_bytes);
 }
 
 int
-rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
+rolling_hash2_run(struct isal_rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
                   uint32_t trigger, uint32_t *offset)
 {
         return _rolling_hash2_run(state, buffer, max_len, mask, trigger, offset);

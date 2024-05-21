@@ -77,7 +77,7 @@ main(int argc, char *argv[])
         uint32_t mask, trigger, offset = 0;
         int i, w, ret, match;
         long long run_length;
-        struct rh_state2 *state;
+        struct isal_rh_state2 *state;
         struct perf start, stop;
 
         // Case
@@ -92,7 +92,7 @@ main(int argc, char *argv[])
                 printf("alloc error: Fail\n");
                 return -1;
         }
-        if (posix_memalign((void **) &state, 64, sizeof(struct rh_state2))) {
+        if (posix_memalign((void **) &state, 64, sizeof(struct isal_rh_state2))) {
                 printf("alloc error rh_state: Fail\n");
                 ;
                 return -1;

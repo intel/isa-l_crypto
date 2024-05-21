@@ -52,7 +52,7 @@ extern "C" {
  * @returns 0 - success, -1 - failure
  */
 int
-_rolling_hash2_init(struct rh_state2 *state, uint32_t w);
+_rolling_hash2_init(struct isal_rh_state2 *state, uint32_t w);
 
 /**
  * @brief Reset the hash state history
@@ -62,7 +62,7 @@ _rolling_hash2_init(struct rh_state2 *state, uint32_t w);
  * @returns none
  */
 void
-_rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
+_rolling_hash2_reset(struct isal_rh_state2 *state, uint8_t *init_bytes);
 
 /**
  * @brief Run rolling hash function until trigger met or max length reached
@@ -77,7 +77,7 @@ _rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
  * @returns ISAL_FINGERPRINT_RET_HIT - match found, ISAL_FINGERPRINT_RET_MAX - exceeded max length
  */
 int
-_rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
+_rolling_hash2_run(struct isal_rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
                    uint32_t trigger, uint32_t *offset);
 
 /**

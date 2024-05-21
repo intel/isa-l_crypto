@@ -56,6 +56,8 @@ extern "C" {
 #define FINGERPRINT_RET_OTHER ISAL_FINGERPRINT_RET_OTHER
 
 #define FINGERPRINT_MAX_WINDOW ISAL_FINGERPRINT_MAX_WINDOW
+
+#define rh_state2 isal_rh_state2
 #endif /* !NO_COMPAT_ISAL_CRYPTO_API_2_24 */
 
 /**
@@ -72,7 +74,7 @@ enum {
 /**
  * @brief Context for rolling_hash2 functions
  */
-struct rh_state2 {
+struct isal_rh_state2 {
         uint8_t history[ISAL_FINGERPRINT_MAX_WINDOW];
         uint64_t table1[256];
         uint64_t table2[256];
@@ -90,7 +92,7 @@ struct rh_state2 {
  */
 ISAL_DEPRECATED("Please use isal_rolling_hash2_init() instead")
 int
-rolling_hash2_init(struct rh_state2 *state, uint32_t w);
+rolling_hash2_init(struct isal_rh_state2 *state, uint32_t w);
 
 /**
  * @brief Reset the hash state history
@@ -102,7 +104,7 @@ rolling_hash2_init(struct rh_state2 *state, uint32_t w);
  */
 ISAL_DEPRECATED("Please use isal_rolling_hash2_reset() instead")
 void
-rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
+rolling_hash2_reset(struct isal_rh_state2 *state, uint8_t *init_bytes);
 
 /**
  * @brief Run rolling hash function until trigger met or max length reached
@@ -119,7 +121,7 @@ rolling_hash2_reset(struct rh_state2 *state, uint8_t *init_bytes);
  */
 ISAL_DEPRECATED("Please use isal_rolling_hash2_run() instead")
 int
-rolling_hash2_run(struct rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
+rolling_hash2_run(struct isal_rh_state2 *state, uint8_t *buffer, uint32_t max_len, uint32_t mask,
                   uint32_t trigger, uint32_t *offset);
 
 /**
@@ -144,7 +146,7 @@ rolling_hashx_mask_gen(long mean, int shift);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w);
+isal_rolling_hash2_init(struct isal_rh_state2 *state, const uint32_t w);
 
 /**
  * @brief Reset the hash state history
@@ -156,7 +158,7 @@ isal_rolling_hash2_init(struct rh_state2 *state, const uint32_t w);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes);
+isal_rolling_hash2_reset(struct isal_rh_state2 *state, const uint8_t *init_bytes);
 
 /**
  * @brief Run rolling hash function until trigger met or max length reached
@@ -177,7 +179,7 @@ isal_rolling_hash2_reset(struct rh_state2 *state, const uint8_t *init_bytes);
  * @retval Non-zero \a ISAL_CRYPTO_ERR on failure
  */
 int
-isal_rolling_hash2_run(struct rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
+isal_rolling_hash2_run(struct isal_rh_state2 *state, const uint8_t *buffer, const uint32_t max_len,
                        const uint32_t mask, const uint32_t trigger, uint32_t *offset, int *match);
 
 /**

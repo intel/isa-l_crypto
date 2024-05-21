@@ -39,7 +39,7 @@ test_rolling_hash2_init_api(void)
 {
         int ret = -1;
         const char *fn_name = "isal_rolling_hash2_init";
-        struct rh_state2 state = { 0 };
+        struct isal_rh_state2 state = { 0 };
 
 #ifdef FIPS_MODE
         // check for invalid algorithm
@@ -68,7 +68,7 @@ test_rolling_hash2_reset_api(void)
 {
         int ret = -1;
         const char *fn_name = "isal_rolling_hash2_reset";
-        struct rh_state2 state = { 0 };
+        struct isal_rh_state2 state = { 0 };
         uint8_t init_bytes[64] = { 0 };
 
 #ifdef FIPS_MODE
@@ -99,7 +99,7 @@ test_rolling_hash2_run_api(void)
 {
         int ret = -1;
         const char *fn_name = "isal_rolling_hash2_run";
-        struct rh_state2 state = { 0 };
+        struct isal_rh_state2 state = { 0 };
         uint8_t buffer[64] = { 0 };
         uint32_t len = (uint32_t) sizeof(buffer);
         uint32_t mask = 0xffff0;
