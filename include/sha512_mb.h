@@ -169,7 +169,7 @@ typedef struct {
 typedef struct {
         sha512_digest_array digest;
         uint8_t *data_ptr[ISAL_SHA512_MAX_LANES];
-} SHA512_MB_ARGS_X8;
+} ISAL_SHA512_MB_ARGS_X8;
 
 /** @brief Scheduler layer - Lane data */
 
@@ -180,7 +180,7 @@ typedef struct {
 /** @brief Scheduler layer - Holds state for multi-buffer SHA512 jobs */
 
 typedef struct {
-        SHA512_MB_ARGS_X8 args;
+        ISAL_SHA512_MB_ARGS_X8 args;
         uint64_t lens[ISAL_SHA512_MAX_LANES];
         uint64_t unused_lanes; //!< each byte is index (00, 01 or 00...03) of unused lanes, byte 2
                                //!< or 4 is set to FF as a flag

@@ -338,7 +338,7 @@ FIELD	_RSP,		8,	        8
 
 align 64
 
-; void sha512_mb_x8_avx512(SHA512_MB_ARGS_X8, uint32_t size)
+; void sha512_mb_x8_avx512(ISAL_SHA512_MB_ARGS_X8, uint32_t size)
 ; arg 1 : pointer to input data
 ; arg 2 : size (in blocks) ;; assumed to be >= 1
 local_func_decl(sha512_mb_x8_avx512)
