@@ -97,8 +97,7 @@ struct isal_cbc_key_data { // must be 16 byte aligned
  * arg 1: in:   pointer to key
  * arg 2: OUT:  pointer to a key expanded data
  */
-ISAL_DEPRECATED(
-        "Please use isal_aes_keyexp_128(), isal_aes_keyexp_192() or isal_aes_keyexp_256() instead")
+ISAL_DEPRECATED("Please use isal_aes_keyexp_128/192/256() instead")
 int
 aes_cbc_precomp(uint8_t *key, int key_size, struct isal_cbc_key_data *keys_blk);
 

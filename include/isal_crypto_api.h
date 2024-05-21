@@ -34,6 +34,9 @@
 extern "C" {
 #endif
 
+/**
+ * @brief Library error types
+ */
 typedef enum {
         ISAL_CRYPTO_ERR_NONE = 0,
         ISAL_CRYPTO_ERR_NULL_SRC = 2000,
