@@ -43,7 +43,7 @@ mh_sha256_block_ce(const uint8_t *input_data,
 
 /***************mh_sha256_finalize AND mh_sha256_tail***********/
 // mh_sha256_tail is used to calculate the last incomplete src data block
-// mh_sha256_finalize is a mh_sha256_ctx wrapper of mh_sha256_tail
+// mh_sha256_finalize is a isal_mh_sha256_ctx wrapper of mh_sha256_tail
 // mh_sha256_finalize_ce.c and mh_sha256_tail_ce.c
 #define MH_SHA256_FINALIZE_FUNCTION mh_sha256_finalize_ce
 #define MH_SHA256_TAIL_FUNCTION     mh_sha256_tail_ce

@@ -42,7 +42,7 @@
 #endif
 
 int
-MH_SHA256_UPDATE_FUNCTION(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+MH_SHA256_UPDATE_FUNCTION(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
 {
 
         uint8_t *partial_block_buffer;

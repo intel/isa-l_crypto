@@ -32,7 +32,7 @@
 #include "isal_crypto_api.h"
 
 int
-_mh_sha256_init(struct mh_sha256_ctx *ctx)
+_mh_sha256_init(struct isal_mh_sha256_ctx *ctx)
 {
         uint32_t(*mh_sha256_segs_digests)[ISAL_HASH_SEGS];
         uint32_t i;
@@ -58,7 +58,7 @@ _mh_sha256_init(struct mh_sha256_ctx *ctx)
 }
 
 int
-isal_mh_sha256_init(struct mh_sha256_ctx *ctx)
+isal_mh_sha256_init(struct isal_mh_sha256_ctx *ctx)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -72,7 +72,7 @@ isal_mh_sha256_init(struct mh_sha256_ctx *ctx)
 }
 
 int
-isal_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+isal_mh_sha256_update(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -88,7 +88,7 @@ isal_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t le
 }
 
 int
-isal_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+isal_mh_sha256_finalize(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest)
 {
 #ifdef FIPS_MODE
         return ISAL_CRYPTO_ERR_FIPS_INVALID_ALGO;
@@ -110,31 +110,31 @@ isal_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
  */
 
 int
-mh_sha256_init(struct mh_sha256_ctx *ctx)
+mh_sha256_init(struct isal_mh_sha256_ctx *ctx)
 {
         return _mh_sha256_init(ctx);
 }
 
 int
-mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+mh_sha256_update(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
 {
         return _mh_sha256_update(ctx, buffer, len);
 }
 
 int
-mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+mh_sha256_finalize(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest)
 {
         return _mh_sha256_finalize(ctx, mh_sha256_digest);
 }
 
 int
-mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
+mh_sha256_update_base(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len)
 {
         return _mh_sha256_update_base(ctx, buffer, len);
 }
 
 int
-mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+mh_sha256_finalize_base(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest)
 {
         return _mh_sha256_finalize_base(ctx, mh_sha256_digest);
 }
@@ -165,7 +165,7 @@ mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
 
 /***************mh_sha256_finalize AND mh_sha256_tail***********/
 // mh_sha256_tail is used to calculate the last incomplete src data block
-// mh_sha256_finalize is a mh_sha256_ctx wrapper of mh_sha256_tail
+// mh_sha256_finalize is a isal_mh_sha256_ctx wrapper of mh_sha256_tail
 
 // mh_sha256_finalize_sse.c and mh_sha256_tail_sse.c
 #define MH_SHA256_FINALIZE_FUNCTION _mh_sha256_finalize_sse

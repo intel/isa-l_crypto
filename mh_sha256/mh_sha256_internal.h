@@ -81,13 +81,13 @@ extern "C" {
  ******************************************************************/
 
 /**
- * @brief Initialize the mh_sha256_ctx structure.
+ * @brief Initialize the isal_mh_sha256_ctx structure.
  *
  * @param  ctx Structure holding mh_sha256 info
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha256_init(struct mh_sha256_ctx *ctx);
+_mh_sha256_init(struct isal_mh_sha256_ctx *ctx);
 
 /**
  * @brief Multi-hash sha256 update.
@@ -102,7 +102,7 @@ _mh_sha256_init(struct mh_sha256_ctx *ctx);
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha256.
@@ -117,7 +117,7 @@ _mh_sha256_update(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
  * @returns int Return 0 if the function runs without errors
  */
 int
-_mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /*******************************************************************
  * multi-types of mh_sha256 internal API
@@ -144,7 +144,7 @@ _mh_sha256_finalize(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  *
  */
 int
-_mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update_base(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for multi-hash sha256.
@@ -159,7 +159,7 @@ _mh_sha256_update_base(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t l
  *
  */
 int
-_mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize_base(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Multi-hash sha256 update.
@@ -174,7 +174,7 @@ _mh_sha256_finalize_base(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  *
  */
 int
-_mh_sha256_update_sse(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update_sse(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha256 update.
@@ -189,7 +189,7 @@ _mh_sha256_update_sse(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t le
  *
  */
 int
-_mh_sha256_update_avx(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update_avx(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha256 update.
@@ -204,7 +204,7 @@ _mh_sha256_update_avx(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t le
  *
  */
 int
-_mh_sha256_update_avx2(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update_avx2(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Multi-hash sha256 update.
@@ -219,7 +219,7 @@ _mh_sha256_update_avx2(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t l
  *
  */
 int
-_mh_sha256_update_avx512(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
+_mh_sha256_update_avx512(struct isal_mh_sha256_ctx *ctx, const void *buffer, uint32_t len);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -235,7 +235,7 @@ _mh_sha256_update_avx512(struct mh_sha256_ctx *ctx, const void *buffer, uint32_t
  *
  */
 int
-_mh_sha256_finalize_sse(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize_sse(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -251,7 +251,7 @@ _mh_sha256_finalize_sse(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  *
  */
 int
-_mh_sha256_finalize_avx(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize_avx(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -267,7 +267,7 @@ _mh_sha256_finalize_avx(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  *
  */
 int
-_mh_sha256_finalize_avx2(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize_avx2(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Finalize the message digests for combined multi-hash and murmur.
@@ -283,7 +283,7 @@ _mh_sha256_finalize_avx2(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
  *
  */
 int
-_mh_sha256_finalize_avx512(struct mh_sha256_ctx *ctx, void *mh_sha256_digest);
+_mh_sha256_finalize_avx512(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest);
 
 /**
  * @brief Performs complete SHA256 algorithm.

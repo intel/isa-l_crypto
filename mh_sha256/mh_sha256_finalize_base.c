@@ -33,7 +33,7 @@
  * mh_sha256_finalize_base and mh_sha256_tail_base. Other types are generated
  * through different predefined macros by mh_sha256.c.
  * mh_sha256_tail is used to calculate the last incomplete block of input
- * data. mh_sha256_finalize is the mh_sha256_ctx wrapper of mh_sha256_tail.
+ * data. mh_sha256_finalize is the isal_mh_sha256_ctx wrapper of mh_sha256_tail.
  */
 #ifndef MH_SHA256_FINALIZE_FUNCTION
 #include <string.h>
@@ -79,7 +79,7 @@ MH_SHA256_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
 }
 
 int
-MH_SHA256_FINALIZE_FUNCTION(struct mh_sha256_ctx *ctx, void *mh_sha256_digest)
+MH_SHA256_FINALIZE_FUNCTION(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest)
 {
         uint8_t i;
         uint8_t *partial_block_buffer;

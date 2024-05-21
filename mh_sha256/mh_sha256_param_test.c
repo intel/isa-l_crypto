@@ -41,7 +41,7 @@ static int
 test_mh_sha256_init_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha256_ctx *update_ctx = NULL;
+        struct isal_mh_sha256_ctx *update_ctx = NULL;
         const char *func_name = "isal_mh_sha256_init";
 
         update_ctx = malloc(sizeof(*update_ctx));
@@ -73,7 +73,7 @@ static int
 test_mh_sha256_update_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha256_ctx *update_ctx = NULL;
+        struct isal_mh_sha256_ctx *update_ctx = NULL;
         uint8_t *buff = NULL;
         const char *func_name = "isal_mh_sha256_update";
 
@@ -112,7 +112,7 @@ static int
 test_mh_sha256_finalize_api(void)
 {
         int ret, retval = 1;
-        struct mh_sha256_ctx *update_ctx = NULL;
+        struct isal_mh_sha256_ctx *update_ctx = NULL;
         uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS] = { 0 };
         const char *func_name = "isal_mh_sha256_finalize";
 

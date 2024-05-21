@@ -117,7 +117,7 @@ main(int argc, char *argv[])
         uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS], hash_ref[ISAL_SHA256_DIGEST_WORDS];
         uint8_t *buff = NULL;
         int size, offset;
-        struct mh_sha256_ctx *update_ctx = NULL;
+        struct isal_mh_sha256_ctx *update_ctx = NULL;
 
         printf(xstr(TEST_UPDATE_FUNCTION) "_test:\n");
 

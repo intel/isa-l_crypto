@@ -126,7 +126,7 @@ main(int argc, char *argv[])
         int i, fail = -1;
         uint32_t hash_test[ISAL_SHA256_DIGEST_WORDS], hash_base[ISAL_SHA256_DIGEST_WORDS];
         uint8_t *buff = NULL;
-        struct mh_sha256_ctx *update_ctx_test = NULL, *update_ctx_base = NULL;
+        struct isal_mh_sha256_ctx *update_ctx_test = NULL, *update_ctx_base = NULL;
         struct perf start, stop;
 
         printf(xstr(TEST_UPDATE_FUNCTION) "_perf:\n");
