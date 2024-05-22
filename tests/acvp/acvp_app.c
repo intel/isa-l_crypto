@@ -33,6 +33,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <acvp/acvp.h>
+#include <isa-l_crypto.h>
 
 #if defined(__GNUC__) || defined(__clang__)
 #define ATTRIBUTE(x) __attribute__((x))
@@ -131,6 +132,7 @@ main(int argc, char **argv)
                 }
         }
 
+        printf("ISA-L Crypto library version: %s\n", isal_crypto_get_version_str());
         printf("ACVP test app, ACVP library version(protocol version): %s(%s)\n", acvp_version(),
                acvp_protocol_version());
 
