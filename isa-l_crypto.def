@@ -148,3 +148,5 @@ isal_rolling_hashx_mask_gen            @143
 isal_rolling_hash2_run                 @144
 isal_rolling_hash2_reset               @145
 isal_rolling_hash2_init                @146
+isal_crypto_get_version                @147
+isal_crypto_get_version_str            @148

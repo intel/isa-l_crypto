@@ -1,5 +1,5 @@
 ########################################################################
-#  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+#  Copyright(c) 2024 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
@@ -26,32 +26,9 @@
 #  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
-host_cpu ?= $(shell uname -m | sed -e 's/amd/x86_/')
-arch ?= $(shell uname | grep -v -e Linux -e BSD )
 
+lsrc +=	misc/version.c
 
+extern_hdrs	+= include/isal_crypto_api.h
 
-units ?=sha1_mb sha256_mb sha512_mb md5_mb mh_sha1 mh_sha1_murmur3_x64_128 \
-	mh_sha256 rolling_hash sm3_mb fips misc
-
-
-ifneq ($(arch),noarch)
-  ifneq ($(filter x86_%,$(host_cpu)),)
-    units +=aes
-  endif
-
-  ifeq ($(host_cpu)_$(arch),aarch64_)
-    arch = aarch64
-    units +=aes
-  endif
-endif
-
-default: lib
-include $(foreach unit,$(units), $(unit)/Makefile.am)
-
-# Override individual lib names to make one inclusive library.
-lib_name := bin/isa-l_crypto.a
-
-include make.inc
-include tools/gen_nmake.mk
-VPATH = . $(units) include intel-ipsec-mb/lib
+check_tests	+= misc/version_test

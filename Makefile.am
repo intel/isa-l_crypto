@@ -41,6 +41,7 @@ include mh_sha1_murmur3_x64_128/Makefile.am
 include mh_sha256/Makefile.am
 include rolling_hash/Makefile.am
 include sm3_mb/Makefile.am
+include misc/Makefile.am
 if CPU_X86_64
 include aes/Makefile.am
 endif
@@ -147,12 +148,6 @@ isa-l_crypto.h:
 	@echo ''			>> $@
 	@echo '#ifndef _ISAL_CRYPTO_H_'	>> $@
 	@echo '#define _ISAL_CRYPTO_H_'	>> $@
-	@echo ''			>> $@
-	@echo '#define.ISAL_CRYPTO_MAJOR_VERSION.${VERSION}' |  ${AWK} -F . '{print $$1, $$2, $$3}' >> $@
-	@echo '#define.ISAL_CRYPTO_MINOR_VERSION.${VERSION}' |  ${AWK} -F . '{print $$1, $$2, $$4}' >> $@
-	@echo '#define.ISAL_CRYPTO_PATCH_VERSION.${VERSION}' |  ${AWK} -F . '{print $$1, $$2, $$5}' >> $@
-	@echo '#define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch)  ((maj) * 0x10000 + (min) * 0x100 + (patch))' >> $@
-	@echo '#define ISAL_CRYPTO_VERSION ISAL_CRYPTO_MAKE_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION, ISAL_CRYPTO_PATCH_VERSION)' >> $@
 	@echo ''			>> $@
 	@for unit in $(sort $(extern_hdrs)); do echo "#include <isa-l_crypto/$$unit>" | sed -e 's;include/;;' >> $@; done
 	@echo '#endif //_ISAL_CRYPTO_H_'	>> $@

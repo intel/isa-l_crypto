@@ -304,12 +304,6 @@ isa-l_crypto.h:
 	@echo '#ifndef _ISAL_CRYPTO_H_'	>> $@
 	@echo '#define _ISAL_CRYPTO_H_'	>> $@
 	@echo ''			>> $@
-	@echo '#define.ISAL_CRYPTO_MAJOR_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$3}' >> $@
-	@echo '#define.ISAL_CRYPTO_MINOR_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$4}' >> $@
-	@echo '#define.ISAL_CRYPTO_PATCH_VERSION.${version}' |  ${AWK} -F . '{print $$1, $$2, $$5}' >> $@
-	@echo '#define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch)  ((maj) * 0x10000 + (min) * 0x100 + (patch))' >> $@
-	@echo '#define ISAL_CRYPTO_VERSION ISAL_CRYPTO_MAKE_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION, ISAL_CRYPTO_PATCH_VERSION)' >> $@
-	@echo ''			>> $@
 	@for unit in $(sort $(extern_hdrs)); do echo "#include <isa-l_crypto/$$unit>" | sed -e 's;include/;;' >> $@; done
 	@echo '#endif //_ISAL_CRYPTO_H_'	>> $@
 
@@ -377,5 +371,5 @@ CS_IGNORE_WORDS ?= iinclude,struc,fo,ue,od,ba,padd,hist,unx,sav,datas
 spellcheck:
 	$(CODESPELL) -d -L $(CS_IGNORE_WORDS) \
 	-S "*.obj,*.o,*.a,*.so,*.lib,*~,*.so,*.so.*,*.d" \
-	./aes ./examples/saturation_test ./include ./md5_mb ./mh_sha1 ./mh_sha1_murmur3_x86_128 ./mh_sha256 ./rolling_hash ./sha1_mb ./sha256_mb ./sha512_mb ./sm3_mb ./tests ./fips README.md SECURITY.md CONTRIBUTING.md \
+	./aes ./examples/saturation_test ./include ./md5_mb ./mh_sha1 ./mh_sha1_murmur3_x86_128 ./mh_sha256 ./rolling_hash ./sha1_mb ./sha256_mb ./sha512_mb ./sm3_mb ./tests ./fips ./misc README.md SECURITY.md CONTRIBUTING.md \
 	Makefile.unx Makefile.nmake Release_notes.txt LICENSE $(CS_EXTRA_OPTS)

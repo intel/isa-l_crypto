@@ -260,7 +260,8 @@ objs = \
 	bin\sha_self_tests.obj \
 	bin\self_tests.obj \
 	bin\asm_self_tests.obj \
-	bin\sm3_mb.obj
+	bin\sm3_mb.obj \
+	bin\version.obj
 
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/ -Iintel-ipsec-mb/lib
@@ -360,6 +361,8 @@ $?
 	$(CC) $(CFLAGS) /c -Fo$@ $?
 {fips}.asm.obj:
 	$(AS) $(AFLAGS) -o $@ $?
+{misc}.c.obj:
+	$(CC) $(CFLAGS) /c -Fo$@ $?
 
 
 # Examples
@@ -410,7 +413,8 @@ checks = \
 	sha512_mb_param_test.exe \
 	mh_sha1_murmur3_x64_128_param_test.exe \
 	sm3_mb_param_test.exe \
-	rolling_hash2_param_test.exe
+	rolling_hash2_param_test.exe \
+	version_test.exe
 
 
 checks: lib $(checks)

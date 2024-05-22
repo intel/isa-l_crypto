@@ -34,6 +34,25 @@
 extern "C" {
 #endif
 
+/* Utility macros */
+#define CONCAT_VERSION_(a, b, c) a##.##b##.##c
+#define CONCAT_VERSION(a, b, c)  CONCAT_VERSION_(a, b, c)
+#define TO_STRING_(a)            #a
+#define TO_STRING(a)             TO_STRING_(a)
+
+/* Library version numbers */
+#define ISAL_CRYPTO_MAJOR_VERSION 2
+#define ISAL_CRYPTO_MINOR_VERSION 24
+#define ISAL_CRYPTO_PATCH_VERSION 0
+
+#define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch) ((maj) * 0x10000 + (min) * 0x100 + (patch))
+#define ISAL_CRYPTO_VERSION                                                                        \
+        ISAL_CRYPTO_MAKE_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION,             \
+                                 ISAL_CRYPTO_PATCH_VERSION)
+#define ISAL_CRYPTO_VERSION_STR                                                                    \
+        TO_STRING(CONCAT_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION,             \
+                                 ISAL_CRYPTO_PATCH_VERSION))
+
 /**
  * @brief Library error types
  */
@@ -87,6 +106,25 @@ typedef enum {
  */
 int
 isal_self_tests(void);
+
+/**
+ * @brief Get library version in string format
+ *
+ * @return library version string
+ */
+const char *
+isal_crypto_get_version_str(void);
+
+/**
+ * @brief Get library version in numerical format
+ *
+ * Use ISAL_CRYPTO_MAKE_VERSION macro to compare this
+ * numerical version against known library version.
+ *
+ * @return library version number
+ */
+unsigned
+isal_crypto_get_version(void);
 
 #ifdef __cplusplus
 }
