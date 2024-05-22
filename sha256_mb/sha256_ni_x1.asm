@@ -30,8 +30,6 @@
 %include "sha256_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_SHANI
-
 [bits 64]
 default rel
 section .text
@@ -353,9 +351,3 @@ TABLE:	dd	0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5
 	dd      0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3
 	dd      0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208
 	dd      0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sha256_ni_x1
-no_sha256_ni_x1:
-%endif
-%endif ; HAVE_AS_KNOWS_SHANI

@@ -46,11 +46,9 @@ extern _md5_ctx_mgr_init_avx2
 extern _md5_ctx_mgr_submit_avx2
 extern _md5_ctx_mgr_flush_avx2
 
-%ifdef HAVE_AS_KNOWS_AVX512
- extern _md5_ctx_mgr_init_avx512
- extern _md5_ctx_mgr_submit_avx512
- extern _md5_ctx_mgr_flush_avx512
-%endif
+extern _md5_ctx_mgr_init_avx512
+extern _md5_ctx_mgr_submit_avx512
+extern _md5_ctx_mgr_flush_avx512
 
 extern _md5_ctx_mgr_init_base
 extern _md5_ctx_mgr_submit_base
@@ -64,15 +62,9 @@ mbin_interface _md5_ctx_mgr_init
 mbin_interface _md5_ctx_mgr_submit
 mbin_interface _md5_ctx_mgr_flush
 
-%ifdef HAVE_AS_KNOWS_AVX512
- mbin_dispatch_init6 _md5_ctx_mgr_init, _md5_ctx_mgr_init_base, _md5_ctx_mgr_init_sse, _md5_ctx_mgr_init_avx, _md5_ctx_mgr_init_avx2, _md5_ctx_mgr_init_avx512
- mbin_dispatch_init6 _md5_ctx_mgr_submit, _md5_ctx_mgr_submit_base, _md5_ctx_mgr_submit_sse, _md5_ctx_mgr_submit_avx, _md5_ctx_mgr_submit_avx2, _md5_ctx_mgr_submit_avx512
- mbin_dispatch_init6 _md5_ctx_mgr_flush, _md5_ctx_mgr_flush_base, _md5_ctx_mgr_flush_sse, _md5_ctx_mgr_flush_avx, _md5_ctx_mgr_flush_avx2, _md5_ctx_mgr_flush_avx512
-%else
- mbin_dispatch_init _md5_ctx_mgr_init, _md5_ctx_mgr_init_sse, _md5_ctx_mgr_init_avx, _md5_ctx_mgr_init_avx2
- mbin_dispatch_init _md5_ctx_mgr_submit, _md5_ctx_mgr_submit_sse, _md5_ctx_mgr_submit_avx, _md5_ctx_mgr_submit_avx2
- mbin_dispatch_init _md5_ctx_mgr_flush, _md5_ctx_mgr_flush_sse, _md5_ctx_mgr_flush_avx, _md5_ctx_mgr_flush_avx2
-%endif
+mbin_dispatch_init6 _md5_ctx_mgr_init, _md5_ctx_mgr_init_base, _md5_ctx_mgr_init_sse, _md5_ctx_mgr_init_avx, _md5_ctx_mgr_init_avx2, _md5_ctx_mgr_init_avx512
+mbin_dispatch_init6 _md5_ctx_mgr_submit, _md5_ctx_mgr_submit_base, _md5_ctx_mgr_submit_sse, _md5_ctx_mgr_submit_avx, _md5_ctx_mgr_submit_avx2, _md5_ctx_mgr_submit_avx512
+mbin_dispatch_init6 _md5_ctx_mgr_flush, _md5_ctx_mgr_flush_base, _md5_ctx_mgr_flush_sse, _md5_ctx_mgr_flush_avx, _md5_ctx_mgr_flush_avx2, _md5_ctx_mgr_flush_avx512
 
 ;;       func                  core, ver, snum
 slversion _md5_ctx_mgr_init,	00,   04,  0189

@@ -185,12 +185,8 @@ as_feature_level := $(call test-as, 6,  $(tmpf), $(as_6),  $(as_feature_level))
 as_feature_level := $(call test-as, 10, $(tmpf), $(as_10), $(as_feature_level))
 tmpf := $(shell rm ${tmpf})
 
-ifneq ($(findstring $(as_feature_level),6 10),)
-  D_HAVE_AS_KNOWS_AVX512_y := -DHAVE_AS_KNOWS_AVX512
-endif
-
-CFLAGS  += -DAS_FEATURE_LEVEL=$(as_feature_level) $(D_HAVE_AS_KNOWS_AVX512_y)
-ASFLAGS += -DAS_FEATURE_LEVEL=$(as_feature_level) $(D_HAVE_AS_KNOWS_AVX512_y)
+CFLAGS  += -DAS_FEATURE_LEVEL=$(as_feature_level)
+ASFLAGS += -DAS_FEATURE_LEVEL=$(as_feature_level)
 
 sim test trace: $(addsuffix .run,$(all_unit_tests))
 perf: $(addsuffix .run,$(all_perf_tests))

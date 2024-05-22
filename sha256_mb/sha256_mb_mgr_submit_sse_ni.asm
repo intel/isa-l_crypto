@@ -32,7 +32,6 @@
 
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_SHANI
 extern  sha256_mb_x4_sse
 extern  sha256_ni_x2
 
@@ -292,5 +291,3 @@ H4:     dd  0x510e527f
 H5:     dd  0x9b05688c
 H6:     dd  0x1f83d9ab
 H7:     dd  0x5be0cd19
-
-%endif ; HAVE_AS_KNOWS_SHANI

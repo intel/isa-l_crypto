@@ -36,9 +36,6 @@
 ; ISAL_SM3_JOB* _sm3_mb_mgr_submit_avx512 (ISAL_SM3_MB_JOB_MGR *state, ISAL_SM3_JOB* job);
 ;
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
-;todo sm3_mb_x16_avx512
 extern sm3_mb_x16_avx512
 
 [bits 64]
@@ -262,12 +259,3 @@ align 32
 clear_low_nibble:
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
-
-
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sm3_mb_mgr_submit_avx512
-no_sm3_mb_mgr_submit_avx512:
-%endif
-%endif ; HAVE_AS_KNOWS_AVX512

@@ -31,8 +31,6 @@
 %include "reg_sizes.asm"
 %include "clear_regs.inc"
 
-%if (AS_FEATURE_LEVEL) >= 10
-
 [bits 64]
 default rel
 
@@ -526,10 +524,3 @@ _aes_cbc_dec_256_vaes_avx512:
 
         FUNC_RESTORE
         ret
-
-%else  ; Assembler doesn't understand these opcodes. Add empty symbol for windows.
-%ifidn __OUTPUT_FORMAT__, win64
-global no__aes_cbc_dec_256_vaes_avx512
-no__aes_cbc_dec_256_vaes_avx512:
-%endif
-%endif ; (AS_FEATURE_LEVEL) >= 10

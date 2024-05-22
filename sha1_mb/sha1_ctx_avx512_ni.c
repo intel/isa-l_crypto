@@ -56,8 +56,6 @@
  *  than a threshold.
  *
  */
-#if defined(HAVE_AS_KNOWS_AVX512) && defined(HAVE_AS_KNOWS_SHANI)
-
 static inline void
 hash_init_digest(ISAL_SHA1_WORD_T *digest);
 static inline uint32_t
@@ -285,8 +283,6 @@ struct slver _sha1_ctx_mgr_submit_avx512_ni_slver = { 0x02c5, 0x00, 0x08 };
 
 struct slver _sha1_ctx_mgr_flush_avx512_ni_slver_080002c6;
 struct slver _sha1_ctx_mgr_flush_avx512_ni_slver = { 0x02c6, 0x00, 0x08 };
-
-#endif // HAVE_AS_KNOWS_AVX512 and HAVE_AS_KNOWS_SHANI
 
 #if defined(__clang__)
 #pragma clang attribute pop

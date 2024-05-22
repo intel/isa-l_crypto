@@ -46,8 +46,6 @@
 #define inline __inline
 #endif
 
-#ifdef HAVE_AS_KNOWS_AVX512
-
 static inline void
 hash_init_digest(ISAL_SHA512_WORD_T *digest);
 static inline uint32_t
@@ -275,8 +273,6 @@ struct slver _sha512_ctx_mgr_submit_avx512_slver = { 0x016b, 0x00, 0x06 };
 
 struct slver _sha512_ctx_mgr_flush_avx512_slver_0600016c;
 struct slver _sha512_ctx_mgr_flush_avx512_slver = { 0x016c, 0x00, 0x06 };
-
-#endif // HAVE_AS_KNOWS_AVX512
 
 #if defined(__clang__)
 #pragma clang attribute pop

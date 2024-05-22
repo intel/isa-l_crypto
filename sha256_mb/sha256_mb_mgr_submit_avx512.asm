@@ -32,8 +32,6 @@
 %include "sha256_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 extern sha256_mb_x16_avx512
 
 [bits 64]
@@ -252,5 +250,3 @@ align 32
 clear_low_nibble:
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
 	dq 0x00000000FFFFFFF0, 0x0000000000000000
-
-%endif ; HAVE_AS_KNOWS_AVX512

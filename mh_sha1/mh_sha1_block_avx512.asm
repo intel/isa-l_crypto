@@ -32,8 +32,6 @@
 
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 [bits 64]
 default rel
 section .text
@@ -397,4 +395,3 @@ K60_79:			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
 			dq  0xCA62C1D6CA62C1D6
-%endif ; HAVE_AS_KNOWS_AVX512

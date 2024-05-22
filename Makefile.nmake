@@ -266,7 +266,7 @@ objs = \
 
 INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_sha1_murmur3_x64_128/ -Imh_sha256/ -Irolling_hash/ -Ism3_mb/ -Iaes/ -Iinclude/ -Iintel-ipsec-mb/lib
 # Modern asm feature level, consider upgrading nasm before decreasing feature_level
-FEAT_FLAGS = -DHAVE_AS_KNOWS_AVX512 -DAS_FEATURE_LEVEL=10 -DHAVE_AS_KNOWS_SHANI
+FEAT_FLAGS = -DAS_FEATURE_LEVEL=10
 CFLAGS_REL = -O2 -DNDEBUG /Z7 /Gy
 CFLAGS_DBG = -Od -DDEBUG /Z7
 LINKFLAGS  = -nologo -incremental:no -debug

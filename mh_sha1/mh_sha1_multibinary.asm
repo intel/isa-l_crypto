@@ -44,10 +44,8 @@
  extern _mh_sha1_finalize_avx
  extern _mh_sha1_finalize_avx2
 
- %ifdef HAVE_AS_KNOWS_AVX512
-  extern _mh_sha1_update_avx512
-  extern _mh_sha1_finalize_avx512
- %endif
+ extern _mh_sha1_update_avx512
+ extern _mh_sha1_finalize_avx512
 
 %endif
 
@@ -59,13 +57,8 @@ mbin_interface _mh_sha1_finalize
 
 %ifidn __OUTPUT_FORMAT__, elf64
 
- %ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 _mh_sha1_update, _mh_sha1_update_base, _mh_sha1_update_sse, _mh_sha1_update_avx, _mh_sha1_update_avx2, _mh_sha1_update_avx512
-  mbin_dispatch_init6 _mh_sha1_finalize, _mh_sha1_finalize_base, _mh_sha1_finalize_sse, _mh_sha1_finalize_avx, _mh_sha1_finalize_avx2, _mh_sha1_finalize_avx512
- %else
-  mbin_dispatch_init5 _mh_sha1_update, _mh_sha1_update_base, _mh_sha1_update_sse, _mh_sha1_update_avx, _mh_sha1_update_avx2
-  mbin_dispatch_init5 _mh_sha1_finalize, _mh_sha1_finalize_base, _mh_sha1_finalize_sse, _mh_sha1_finalize_avx, _mh_sha1_finalize_avx2
- %endif
+ mbin_dispatch_init6 _mh_sha1_update, _mh_sha1_update_base, _mh_sha1_update_sse, _mh_sha1_update_avx, _mh_sha1_update_avx2, _mh_sha1_update_avx512
+ mbin_dispatch_init6 _mh_sha1_finalize, _mh_sha1_finalize_base, _mh_sha1_finalize_sse, _mh_sha1_finalize_avx, _mh_sha1_finalize_avx2, _mh_sha1_finalize_avx512
 
 %else
  mbin_dispatch_init2 _mh_sha1_update, _mh_sha1_update_base

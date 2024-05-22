@@ -31,9 +31,6 @@
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
- %ifdef HAVE_AS_KNOWS_SHANI
-
 extern sha1_mb_x16_avx512
 extern sha1_ni_x1
 
@@ -263,16 +260,3 @@ lane_12:    dq  12
 lane_13:    dq  13
 lane_14:    dq  14
 lane_15:    dq  15
-
- %else
-  %ifidn __OUTPUT_FORMAT__, win64
-   global no_sha1_mb_mgr_flush_avx512_ni
-   no_sha1_mb_mgr_flush_avx512_ni:
-  %endif
- %endif ; HAVE_AS_KNOWS_SHANI
-%else
-%ifidn __OUTPUT_FORMAT__, win64
- global no_sha1_mb_mgr_flush_avx512_ni
-  no_sha1_mb_mgr_flush_avx512_ni:
- %endif
-%endif ; HAVE_AS_KNOWS_AVX512

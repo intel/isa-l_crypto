@@ -30,9 +30,6 @@
 %include "sm3_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-
-%ifdef HAVE_AS_KNOWS_AVX512
-
 [bits 64]
 default rel
 section .text
@@ -1026,10 +1023,3 @@ SHUF_MASK:			dq 0x0405060700010203,0x0c0d0e0f08090a0b
 				dq 0x0405060700010203,0x0c0d0e0f08090a0b
 				dq 0x0405060700010203,0x0c0d0e0f08090a0b
 				dq 0x0405060700010203,0x0c0d0e0f08090a0b
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sm3_mb_x16_avx512
-no_sm3_mb_x16_avx512:
-%endif
-%endif ; HAVE_AS_KNOWS_AVX512

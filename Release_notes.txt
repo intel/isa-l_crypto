@@ -95,6 +95,8 @@ Unreleased
 
 * Removed YASM support, so only NASM assembler is supported for x86.
 
+* Bumped minimum NASM version to 2.14.01, which supports all x86 ISA used in this library.
+
 v2.24
 
 * New optimized version of AES-CBC decode

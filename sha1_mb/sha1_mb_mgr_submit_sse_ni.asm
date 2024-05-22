@@ -32,7 +32,6 @@
 
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_SHANI
 extern sha1_mb_x4_sse
 extern sha1_ni_x2
 
@@ -281,10 +280,3 @@ H1:     dd  0xefcdab89
 H2:     dd  0x98badcfe
 H3:     dd  0x10325476
 H4:     dd  0xc3d2e1f0
-
-%else
- %ifidn __OUTPUT_FORMAT__, win64
-  global no_sha1_mb_mgr_submit_sse_ni
-  no_sha1_mb_mgr_submit_sse_ni:
- %endif
-%endif ; HAVE_AS_KNOWS_SHANI

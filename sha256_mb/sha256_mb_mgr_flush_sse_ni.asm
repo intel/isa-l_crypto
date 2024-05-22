@@ -32,8 +32,7 @@
 
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_SHANI
-extern  sha256_mb_x4_sse
+extern sha256_mb_x4_sse
 extern sha256_ni_x1
 
 [bits 64]
@@ -252,10 +251,3 @@ align 16
 one:    dq  1
 two:    dq  2
 three:  dq  3
-
-%else
- %ifidn __OUTPUT_FORMAT__, win64
-  global no_sha256_mb_mgr_flush_sse_ni
-  no_sha256_mb_mgr_flush_sse_ni:
- %endif
-%endif ; HAVE_AS_KNOWS_SHANI

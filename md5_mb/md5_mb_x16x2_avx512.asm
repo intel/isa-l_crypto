@@ -30,8 +30,6 @@
 %include "md5_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 [bits 64]
 default rel
 section .text
@@ -844,10 +842,3 @@ PSHUFFLE_TRANSPOSE16_MASK2: 	dq 0x0000000000000002
 				dq 0x0000000000000007
 				dq 0x000000000000000E
 				dq 0x000000000000000F
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_md5_mb_x16x2_avx512
-no_md5_mb_x16x2_avx512:
-%endif
-%endif ; HAVE_AS_KNOWS_AVX512

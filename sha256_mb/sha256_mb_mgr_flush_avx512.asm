@@ -31,8 +31,6 @@
 %include "sha256_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 extern sha256_mb_x16_avx512
 extern sha256_opt_x1
 
@@ -279,10 +277,3 @@ lane_12:    dq  12
 lane_13:    dq  13
 lane_14:    dq  14
 lane_15:    dq  15
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sha256_mb_mgr_flush_avx512
-no_sha256_mb_mgr_flush_avx512:
-%endif
-%endif ; HAVE_AS_KNOWS_AVX512

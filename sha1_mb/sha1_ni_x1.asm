@@ -30,8 +30,6 @@
 %include "sha1_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_SHANI
-
 [bits 64]
 default rel
 section .text
@@ -309,10 +307,3 @@ backto_mgr:
 section .data align=16
 PSHUFFLE_SHANI_MASK:	dq 0x08090a0b0c0d0e0f, 0x0001020304050607
 IDX3_WORD_MASK:		dq 0x0000000000000000, 0xFFFFFFFF00000000
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_sha1_ni_x1
-no_sha1_ni_x1:
-%endif
-%endif ; HAVE_AS_KNOWS_SHANI

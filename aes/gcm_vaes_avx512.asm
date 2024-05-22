@@ -49,10 +49,6 @@
 %define FN_NAME(x,y) _aes_gcm_ %+ x %+ _256 %+ y %+ vaes_avx512 %+ FUNCT_EXTENSION
 %endif
 
-%if (AS_FEATURE_LEVEL) >= 10
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;void   _aes_gcm_precomp_128_vaes_avx512 /
 ;       _aes_gcm_precomp_192_vaes_avx512 /
@@ -273,10 +269,3 @@ FN_NAME(dec,_):
 %endif ;; SAFE_DATA
         FUNC_RESTORE
         ret
-
-%else  ; Assembler doesn't understand these opcodes. Add empty symbol for windows.
-%ifidn __OUTPUT_FORMAT__, win64
-global no_ %+ FN_NAME(avx512,_)
-no_ %+ FN_NAME(avx512,_) %+ :
-%endif
-%endif ; (AS_FEATURE_LEVEL) >= 10

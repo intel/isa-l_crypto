@@ -181,19 +181,8 @@ int main(int argc, char **argv)
       fi
     fi
 
-    AC_MSG_CHECKING([for optional nasm SHA-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha256rnds2 xmm2,xmm1,xmm0;]])])
-    sed -i -e '/sha256rnds2/!d' conftest.c
-    if nasm -f elf64  conftest.c 2> /dev/null; then
-      nasm_knows_shani=yes
-      AC_MSG_RESULT([yes])
-    else
-      AC_MSG_RESULT([no])
-    fi
-
     AS=nasm
     as_feature_level=$nasm_feature_level
-    as_knows_shani=$nasm_knows_shani
 
   else
     # Check for $AS supported features
@@ -251,8 +240,8 @@ int main(int argc, char **argv)
 
   fi
 
-  if test $as_feature_level -lt 2 ; then
-    AC_MSG_ERROR([No modern nasm found as required. Nasm should be v2.11.01 or later (v2.13 for AVX512).])
+  if test $as_feature_level -lt 10 ; then
+    AC_MSG_ERROR([No modern nasm found as required. Nasm should be v2.14.01 or later.])
   fi
 
   if test x"$as_knows_shani" = x"yes"; then

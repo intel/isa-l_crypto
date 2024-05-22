@@ -30,8 +30,6 @@
 #include <string.h>
 #include "mh_sha256_internal.h"
 
-#ifdef HAVE_AS_KNOWS_AVX512
-
 /***************mh_sha256_update***********/
 // mh_sha256_update_avx512.c
 #define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_avx512
@@ -66,5 +64,3 @@ struct slver _mh_sha256_update_avx512_slver = { 0x02bc, 0x00, 0x06 };
 // mh_sha256_finalize version info
 struct slver _mh_sha256_finalize_avx512_slver_060002bd;
 struct slver _mh_sha256_finalize_avx512_slver = { 0x02bd, 0x00, 0x06 };
-
-#endif // HAVE_AS_KNOWS_AVX512

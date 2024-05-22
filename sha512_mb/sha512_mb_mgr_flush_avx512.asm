@@ -31,7 +31,6 @@
 %include "sha512_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
 extern sha512_mb_x8_avx512
 
 [bits 64]
@@ -261,4 +260,3 @@ lane_4:     dq  4
 lane_5:     dq  5
 lane_6:     dq  6
 lane_7:     dq  7
-%endif ; HAVE_AS_KNOWS_AVX512

@@ -56,25 +56,17 @@ extern _sha1_ctx_mgr_init_base
 extern _sha1_ctx_mgr_submit_base
 extern _sha1_ctx_mgr_flush_base
 
-%ifdef HAVE_AS_KNOWS_AVX512
- extern _sha1_ctx_mgr_init_avx512
- extern _sha1_ctx_mgr_submit_avx512
- extern _sha1_ctx_mgr_flush_avx512
-%endif
+extern _sha1_ctx_mgr_init_avx512
+extern _sha1_ctx_mgr_submit_avx512
+extern _sha1_ctx_mgr_flush_avx512
 
-%ifdef HAVE_AS_KNOWS_SHANI
- extern _sha1_ctx_mgr_init_sse_ni
- extern _sha1_ctx_mgr_submit_sse_ni
- extern _sha1_ctx_mgr_flush_sse_ni
-%endif
+extern _sha1_ctx_mgr_init_sse_ni
+extern _sha1_ctx_mgr_submit_sse_ni
+extern _sha1_ctx_mgr_flush_sse_ni
 
-%ifdef HAVE_AS_KNOWS_AVX512
- %ifdef HAVE_AS_KNOWS_SHANI
-  extern _sha1_ctx_mgr_init_avx512_ni
-  extern _sha1_ctx_mgr_submit_avx512_ni
-  extern _sha1_ctx_mgr_flush_avx512_ni
- %endif
-%endif
+extern _sha1_ctx_mgr_init_avx512_ni
+extern _sha1_ctx_mgr_submit_avx512_ni
+extern _sha1_ctx_mgr_flush_avx512_ni
 
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.
 ;;; Therefore, *_dispatch_init is only executed on first call.
@@ -84,46 +76,15 @@ mbin_interface _sha1_ctx_mgr_init
 mbin_interface _sha1_ctx_mgr_submit
 mbin_interface _sha1_ctx_mgr_flush
 
-%ifdef HAVE_AS_KNOWS_AVX512
- ; Reuse mbin_dispatch_init6's extension through replacing base by sse version
- %ifdef HAVE_AS_KNOWS_SHANI
-  mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_init, _sha1_ctx_mgr_init_base, \
-	_sha1_ctx_mgr_init_sse, _sha1_ctx_mgr_init_avx, _sha1_ctx_mgr_init_avx2, \
-	_sha1_ctx_mgr_init_avx512, _sha1_ctx_mgr_init_sse_ni, _sha1_ctx_mgr_init_avx512_ni
-  mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_submit, _sha1_ctx_mgr_submit_base, \
-	_sha1_ctx_mgr_submit_sse, _sha1_ctx_mgr_submit_avx, _sha1_ctx_mgr_submit_avx2, \
-	_sha1_ctx_mgr_submit_avx512, _sha1_ctx_mgr_submit_sse_ni, _sha1_ctx_mgr_submit_avx512_ni
-  mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_flush, _sha1_ctx_mgr_flush_base, \
-	_sha1_ctx_mgr_flush_sse, _sha1_ctx_mgr_flush_avx, _sha1_ctx_mgr_flush_avx2, \
-	_sha1_ctx_mgr_flush_avx512, _sha1_ctx_mgr_flush_sse_ni, _sha1_ctx_mgr_flush_avx512_ni
- %else
-  mbin_dispatch_init6 _sha1_ctx_mgr_init, _sha1_ctx_mgr_init_base, \
-	_sha1_ctx_mgr_init_sse, _sha1_ctx_mgr_init_avx, _sha1_ctx_mgr_init_avx2, \
-	_sha1_ctx_mgr_init_avx512
-  mbin_dispatch_init6 _sha1_ctx_mgr_submit, _sha1_ctx_mgr_submit_base, \
-	_sha1_ctx_mgr_submit_sse, _sha1_ctx_mgr_submit_avx, _sha1_ctx_mgr_submit_avx2, \
-	_sha1_ctx_mgr_submit_avx512
-  mbin_dispatch_init6 _sha1_ctx_mgr_flush, _sha1_ctx_mgr_flush_base, \
-	_sha1_ctx_mgr_flush_sse, _sha1_ctx_mgr_flush_avx, _sha1_ctx_mgr_flush_avx2, \
-	_sha1_ctx_mgr_flush_avx512
- %endif
-%else
- %ifdef HAVE_AS_KNOWS_SHANI
-  mbin_dispatch_sse_to_avx2_shani _sha1_ctx_mgr_init, _sha1_ctx_mgr_init_sse, \
-	_sha1_ctx_mgr_init_avx, _sha1_ctx_mgr_init_avx2, _sha1_ctx_mgr_init_sse_ni
-  mbin_dispatch_sse_to_avx2_shani _sha1_ctx_mgr_submit, _sha1_ctx_mgr_submit_sse, \
-	_sha1_ctx_mgr_submit_avx, _sha1_ctx_mgr_submit_avx2, _sha1_ctx_mgr_submit_sse_ni
-  mbin_dispatch_sse_to_avx2_shani _sha1_ctx_mgr_flush, _sha1_ctx_mgr_flush_sse, \
-	_sha1_ctx_mgr_flush_avx, _sha1_ctx_mgr_flush_avx2, _sha1_ctx_mgr_flush_sse_ni
- %else
-  mbin_dispatch_init _sha1_ctx_mgr_init, _sha1_ctx_mgr_init_sse, \
-	_sha1_ctx_mgr_init_avx, _sha1_ctx_mgr_init_avx2
-  mbin_dispatch_init _sha1_ctx_mgr_submit, _sha1_ctx_mgr_submit_sse, \
-	_sha1_ctx_mgr_submit_avx, _sha1_ctx_mgr_submit_avx2
-  mbin_dispatch_init _sha1_ctx_mgr_flush, _sha1_ctx_mgr_flush_sse, \
-	_sha1_ctx_mgr_flush_avx, _sha1_ctx_mgr_flush_avx2
- %endif
-%endif
+mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_init, _sha1_ctx_mgr_init_base, \
+      _sha1_ctx_mgr_init_sse, _sha1_ctx_mgr_init_avx, _sha1_ctx_mgr_init_avx2, \
+      _sha1_ctx_mgr_init_avx512, _sha1_ctx_mgr_init_sse_ni, _sha1_ctx_mgr_init_avx512_ni
+mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_submit, _sha1_ctx_mgr_submit_base, \
+      _sha1_ctx_mgr_submit_sse, _sha1_ctx_mgr_submit_avx, _sha1_ctx_mgr_submit_avx2, \
+      _sha1_ctx_mgr_submit_avx512, _sha1_ctx_mgr_submit_sse_ni, _sha1_ctx_mgr_submit_avx512_ni
+mbin_dispatch_base_to_avx512_shani _sha1_ctx_mgr_flush, _sha1_ctx_mgr_flush_base, \
+      _sha1_ctx_mgr_flush_sse, _sha1_ctx_mgr_flush_avx, _sha1_ctx_mgr_flush_avx2, \
+      _sha1_ctx_mgr_flush_avx512, _sha1_ctx_mgr_flush_sse_ni, _sha1_ctx_mgr_flush_avx512_ni
 
 ;;;       func                  core, ver, snum
 slversion _sha1_ctx_mgr_init,	00,   04,  0148

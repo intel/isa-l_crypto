@@ -36,8 +36,6 @@
 #define inline __inline
 #endif
 
-#ifdef HAVE_AS_KNOWS_SHANI
-
 static inline void
 hash_init_digest(ISAL_SHA1_WORD_T *digest);
 static inline uint32_t
@@ -266,5 +264,3 @@ struct slver _sha1_ctx_mgr_submit_sse_ni_slver = { 0x02c2, 0x00, 0x07 };
 
 struct slver _sha1_ctx_mgr_flush_sse_ni_slver_070002c3;
 struct slver _sha1_ctx_mgr_flush_sse_ni_slver = { 0x02c3, 0x00, 0x07 };
-
-#endif // HAVE_AS_KNOWS_SHANI

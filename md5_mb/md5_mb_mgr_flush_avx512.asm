@@ -31,7 +31,6 @@
 %include "md5_mb_mgr_datastruct.asm"
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
 extern md5_mb_x16x2_avx512
 
 [bits 64]
@@ -306,10 +305,3 @@ lane_28:    dq  28
 lane_29:    dq  29
 lane_30:    dq  30
 lane_31:    dq  31
-
-%else
-%ifidn __OUTPUT_FORMAT__, win64
-global no_md5_mb_mgr_flush_avx512
-no_md5_mb_mgr_flush_avx512:
-%endif
-%endif ; HAVE_AS_KNOWS_AVX512

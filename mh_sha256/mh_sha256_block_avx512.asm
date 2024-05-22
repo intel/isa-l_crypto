@@ -32,8 +32,6 @@
 
 %include "reg_sizes.asm"
 
-%ifdef HAVE_AS_KNOWS_AVX512
-
 [bits 64]
 default rel
 section .text
@@ -672,5 +670,3 @@ PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 			 dq 0x0405060700010203, 0x0c0d0e0f08090a0b
-%endif ; HAVE_AS_KNOWS_AVX512
-

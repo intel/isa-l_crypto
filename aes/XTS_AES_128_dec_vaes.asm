@@ -36,8 +36,6 @@
 %include "reg_sizes.asm"
 %include "clear_regs.inc"
 
-%if (AS_FEATURE_LEVEL) >= 10
-
 default rel
 %define TW              rsp     ; store 8 tweak values
 %define keys    rsp + 16*8      ; store 11 expanded keys
@@ -1689,10 +1687,3 @@ const_dq7654: dq 4, 4, 5, 5, 6, 6, 7, 7
 const_dq1234: dq 4, 4, 3, 3, 2, 2, 1, 1
 
 shufb_15_7: db 15, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 7, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-
-%else  ; Assembler doesn't understand these opcodes. Add empty symbol for windows.
-%ifidn __OUTPUT_FORMAT__, win64
-global no_XTS_AES_128_dec_vaes
-no_XTS_AES_128_dec_vaes:
-%endif
-%endif ; (AS_FEATURE_LEVEL) >= 10

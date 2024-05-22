@@ -197,11 +197,9 @@ extern _sha512_ctx_mgr_init_base
 extern _sha512_ctx_mgr_submit_base
 extern _sha512_ctx_mgr_flush_base
 
-%ifdef HAVE_AS_KNOWS_AVX512
- extern _sha512_ctx_mgr_init_avx512
- extern _sha512_ctx_mgr_submit_avx512
- extern _sha512_ctx_mgr_flush_avx512
-%endif
+extern _sha512_ctx_mgr_init_avx512
+extern _sha512_ctx_mgr_submit_avx512
+extern _sha512_ctx_mgr_flush_avx512
 
 extern _sha512_ctx_mgr_init_sb_sse4
 extern _sha512_ctx_mgr_submit_sb_sse4
@@ -215,36 +213,21 @@ mbin_interface _sha512_ctx_mgr_init
 mbin_interface _sha512_ctx_mgr_submit
 mbin_interface _sha512_ctx_mgr_flush
 
-%ifdef HAVE_AS_KNOWS_AVX512
- ; Reuse mbin_dispatch_init6 through replacing base by sse version
- mbin_dispatch_init6_avoton _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
-			_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \
-			_sha512_ctx_mgr_init_avx2, _sha512_ctx_mgr_init_avx512, \
-			_sha512_ctx_mgr_init_sb_sse4
+; Reuse mbin_dispatch_init6 through replacing base by sse version
+mbin_dispatch_init6_avoton _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
+       		_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \
+       		_sha512_ctx_mgr_init_avx2, _sha512_ctx_mgr_init_avx512, \
+       		_sha512_ctx_mgr_init_sb_sse4
 
- mbin_dispatch_init6_avoton _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
-			_sha512_ctx_mgr_submit_sse, _sha512_ctx_mgr_submit_avx, \
-			_sha512_ctx_mgr_submit_avx2, _sha512_ctx_mgr_submit_avx512, \
-			_sha512_ctx_mgr_submit_sb_sse4
+mbin_dispatch_init6_avoton _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
+       		_sha512_ctx_mgr_submit_sse, _sha512_ctx_mgr_submit_avx, \
+       		_sha512_ctx_mgr_submit_avx2, _sha512_ctx_mgr_submit_avx512, \
+       		_sha512_ctx_mgr_submit_sb_sse4
 
- mbin_dispatch_init6_avoton _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
-			_sha512_ctx_mgr_flush_sse, _sha512_ctx_mgr_flush_avx, \
-			_sha512_ctx_mgr_flush_avx2, _sha512_ctx_mgr_flush_avx512, \
-			_sha512_ctx_mgr_flush_sb_sse4
-%else
- mbin_dispatch_init_avoton _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_sse, \
-			_sha512_ctx_mgr_init_avx, _sha512_ctx_mgr_init_avx2, \
-			_sha512_ctx_mgr_init_sb_sse4
-
- mbin_dispatch_init_avoton _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_sse, \
-			_sha512_ctx_mgr_submit_avx, _sha512_ctx_mgr_submit_avx2, \
-			_sha512_ctx_mgr_submit_sb_sse4
-
- mbin_dispatch_init_avoton _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_sse, \
-			_sha512_ctx_mgr_flush_avx, _sha512_ctx_mgr_flush_avx2, \
-			_sha512_ctx_mgr_flush_sb_sse4
-%endif
-
+mbin_dispatch_init6_avoton _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
+       		_sha512_ctx_mgr_flush_sse, _sha512_ctx_mgr_flush_avx, \
+       		_sha512_ctx_mgr_flush_avx2, _sha512_ctx_mgr_flush_avx512, \
+       		_sha512_ctx_mgr_flush_sb_sse4
 
 ;;;       func				core, ver, snum
 slversion _sha512_ctx_mgr_init,		00,   04,  0175
