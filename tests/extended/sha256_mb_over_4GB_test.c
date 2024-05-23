@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
+
 #include "sha256_mb.h"
 #include "endian_helper.h"
 #include <openssl/evp.h>
@@ -138,7 +140,8 @@ main(void)
 
         printf("multibuffer SHA256 digest: \n");
         for (i = 0; i < TEST_BUFS; i++) {
-                printf("Total processing size of buf[%d] is %ld \n", i, ctxpool[i].total_length);
+                printf("Total processing size of buf[%d] is %" PRIu64 "\n", i,
+                       ctxpool[i].total_length);
                 for (j = 0; j < ISAL_SHA256_DIGEST_NWORDS; j++) {
                         printf("digest%d : %08X\n", j, ctxpool[i].job.result_digest[j]);
                 }

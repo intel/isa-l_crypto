@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
+
 #include "sha512_mb.h"
 #include "endian_helper.h"
 #include <openssl/evp.h>
@@ -138,16 +140,17 @@ main(void)
 
         printf("multibuffer sha512 digest: \n");
         for (i = 0; i < TEST_BUFS; i++) {
-                printf("Total processing size of buf[%d] is %ld \n", i, ctxpool[i].total_length);
+                printf("Total processing size of buf[%d] is %" PRIu64 "\n", i,
+                       ctxpool[i].total_length);
                 for (j = 0; j < ISAL_SHA512_DIGEST_NWORDS; j++) {
-                        printf("digest%d : %016lX\n", j, ctxpool[i].job.result_digest[j]);
+                        printf("digest%d : %" PRIx64 "\n", j, ctxpool[i].job.result_digest[j]);
                 }
         }
         printf("\n");
 
         printf("openssl sha512 update digest: \n");
         for (i = 0; i < ISAL_SHA512_DIGEST_NWORDS; i++)
-                printf("%016lX - ", to_be64(((uint64_t *) digest_ref_upd)[i]));
+                printf("%" PRIx64 " - ", to_be64(((uint64_t *) digest_ref_upd)[i]));
         printf("\n");
 
         for (i = 0; i < TEST_BUFS; i++) {
