@@ -29,6 +29,7 @@ Also see:
   isa-l crypto.
 * [Contributing](CONTRIBUTING.md).
 * [Security Policy](SECURITY.md).
+* [FIPS Mode](FIPS.md).
 
 Building ISA-L
 --------------
