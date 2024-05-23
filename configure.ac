@@ -3,10 +3,9 @@
 
 AC_PREREQ(2.69)
 AC_INIT([libisal_crypto],
-        [2.24.0],
-        [sg.support.isal@intel.com],
-        [isa-l_crypto],
-        [http://01.org/storage-acceleration-library])
+        [2.25.0],
+        [https://github.com/intel/isa-l_crypto/issues],
+        [isa-l_crypto])
 AC_CONFIG_SRCDIR([])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([

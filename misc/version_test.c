@@ -36,7 +36,7 @@ main(void)
 {
 #ifdef ISAL_CRYPTO_VERSION_STR
         /* Check version number */
-        if (isal_crypto_get_version() < ISAL_CRYPTO_MAKE_VERSION(2, 24, 0)) {
+        if (isal_crypto_get_version() < ISAL_CRYPTO_MAKE_VERSION(2, 25, 0)) {
                 printf("Library version detection unsupported!\n");
         } else {
                 printf("Detected library version: %s\n", isal_crypto_get_version_str());

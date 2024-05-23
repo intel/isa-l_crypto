@@ -42,7 +42,7 @@ extern "C" {
 
 /* Library version numbers */
 #define ISAL_CRYPTO_MAJOR_VERSION 2
-#define ISAL_CRYPTO_MINOR_VERSION 24
+#define ISAL_CRYPTO_MINOR_VERSION 25
 #define ISAL_CRYPTO_PATCH_VERSION 0
 
 #define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch) ((maj) * 0x10000 + (min) * 0x100 + (patch))
