@@ -269,8 +269,15 @@ INCLUDES  = -I./ -Isha1_mb/ -Isha256_mb/ -Isha512_mb/ -Imd5_mb/ -Imh_sha1/ -Imh_
 FEAT_FLAGS = -DAS_FEATURE_LEVEL=10
 CFLAGS_REL = -O2 -DNDEBUG /Z7 /Gy
 CFLAGS_DBG = -Od -DDEBUG /Z7
+
+!if "$(CONFIG)" == "DEBUG"
+CFLAGS=$(CFLAGS_DBG)
+!else
+CFLAGS=$(CFLAGS_REL)
+!endif
+
 LINKFLAGS  = -nologo -incremental:no -debug
-CFLAGS     = $(CFLAGS_REL) -nologo -D_USE_MATH_DEFINES -DNO_COMPAT_ISAL_CRYPTO_API_2_24 $(FEAT_FLAGS) $(INCLUDES) $(D) /W3
+CFLAGS     = $(CFLAGS) -nologo -D_USE_MATH_DEFINES -DNO_COMPAT_ISAL_CRYPTO_API_2_24 $(FEAT_FLAGS) $(INCLUDES) $(D) /W3
 AFLAGS     = -f win64 $(FEAT_FLAGS) $(INCLUDES) $(D)
 CC         = cl
 # or CC    = icl -Qstd=c99
