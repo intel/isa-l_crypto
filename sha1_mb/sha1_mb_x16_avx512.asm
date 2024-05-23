@@ -419,7 +419,7 @@ lloop:
 	vmovdqa32	DD, D
 	vmovdqa32	EE, E
 
-	vmovdqa32	KT, [K00_19]
+	vpbroadcastd	KT, [K00_19]
 %assign I 0xCA
 %assign J 0
 %assign K 2
@@ -522,6 +522,7 @@ K60_79:                 dd 0xCA62C1D6
 
 PSHUFFLE_BYTE_FLIP_MASK: dq 0x0405060700010203, 0x0c0d0e0f08090a0b
 
+align 64
 PSHUFFLE_TRANSPOSE16_MASK1: 	dq 0x0000000000000000
 				dq 0x0000000000000001
 				dq 0x0000000000000008
