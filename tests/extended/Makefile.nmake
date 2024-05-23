@@ -40,7 +40,7 @@ DLL 		= 	isa-l_crypto.dll
 
 tests: lib $(tests)
 $(tests): $(@B).obj
-	link /out:$@ $(LINKFLAGS) libeay32.lib $(LIBS) $*.obj
+	link /out:$@ $(LINKFLAGS) libcrypto.lib $(LIBS) $*.obj
 %.obj: %.c
 	$(CC) $(CFLAGS) -Fo$@ $?
 
