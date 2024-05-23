@@ -81,6 +81,14 @@ v2.7
 ================================================================================
 Unreleased
 
+* Added new API including parameter checking (starting with isal_ prefix).
+
+* Added new API returning the library version.
+
+* Added FIPS mode, including self tests in NIST approved algorithms (more information in https://github.com/intel/isa-l_crypto/blob/master/FIPS.md).
+
+* Deprecated previous API in favour of new API (more information in https://github.com/intel/isa-l_crypto/wiki/New-API-introduced-from-v2.25).
+
 * Optimized AES-GCM for AVX512-VAES x86 implementation.
 
 * Optimized SM3 for AVX512 x86 implementation.
