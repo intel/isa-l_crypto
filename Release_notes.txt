@@ -83,6 +83,8 @@ Unreleased
 
 * Optimized AES-GCM for AVX512-VAES x86 implementation.
 
+* Optimized SM3 for AVX512 x86 implementation.
+
 * Optimized MD5 and SM3 for aarch64.
 
 * New optimized version of AES-CBC and AES-XTS for aarch64.
