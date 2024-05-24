@@ -154,6 +154,7 @@ typedef struct {
         uint8_t *buffer; //!< pointer to data buffer for this job
         uint32_t len;    //!< length of buffer for this job in blocks.
         DECLARE_ALIGNED(uint32_t result_digest[ISAL_MD5_DIGEST_NWORDS], 64);
+        //!< Digest output (in array of little-endian double words, different than SHA's).
         ISAL_JOB_STS status; //!< output job status
         void *user_data;     //!< pointer for user's job-related data
 } ISAL_MD5_JOB;
