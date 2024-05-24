@@ -81,6 +81,7 @@ typedef enum {
         ISAL_CRYPTO_ERR_NULL_MATCH,
         ISAL_CRYPTO_ERR_NULL_MASK,
         ISAL_CRYPTO_ERR_NULL_INIT_VAL,
+        ISAL_CRYPTO_ERR_FIPS_DISABLED, //!< FIPS Mode is not enabled
         /* add new error types above this comment */
         ISAL_CRYPTO_ERR_MAX /* don't move this one */
 } ISAL_CRYPTO_ERROR;

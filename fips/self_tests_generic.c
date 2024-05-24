@@ -38,10 +38,12 @@
 #define SELF_TEST_DONE_AND_FAIL 1
 #define SELF_TEST_NOT_DONE      2
 #define SELF_TEST_RUNNING       3
+#endif /* FIPS_MODE */
 
 int
 isal_self_tests(void)
 {
+#ifdef FIPS_MODE
         static atomic_int self_tests_status = SELF_TEST_NOT_DONE;
         int self_tests_not_done = SELF_TEST_NOT_DONE;
 
@@ -76,14 +78,7 @@ isal_self_tests(void)
                 else
                         return ISAL_CRYPTO_ERR_SELF_TEST;
         }
-}
-#else /* FIPS_MODE disabled */
-#include <stdio.h>
-int
-isal_self_tests(void)
-{
-        fprintf(stderr, "FIPS Mode is not enabled\n");
-
-        return ISAL_CRYPTO_ERR_SELF_TEST;
-}
+#else  /* FIPS_MODE disabled */
+        return ISAL_CRYPTO_ERR_FIPS_DISABLED;
 #endif /* FIPS_MODE */
+}
