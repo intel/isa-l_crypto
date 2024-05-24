@@ -341,10 +341,8 @@ FIELD	_rsp,		8,	8
 %define %%Z 	%3
 	; I > 16 return (x & y) | (x & z) | (y & z)
 	; Same as (x & y) | (z & (x | y))
-	vporq TMP0,%%X,%%Y
-	vpandq TMP0,%%Z
-	vpandq TMP1,%%X,%%Y
-	vporq TMP0,TMP1
+	vmovdqa32 TMP0,%%X
+	vpternlogd TMP0, %%Y, %%Z, 0xE8 ; Majority function
 %endmacro
 
 
@@ -367,9 +365,8 @@ FIELD	_rsp,		8,	8
 %define %%Z 	%3
 
 	; I > 16 return (x & y) | ((~x) & z)
-	vpandq TMP0,%%X,%%Y
-	vpandnd TMP1,%%X,%%Z
-	vporq TMP0,TMP1
+	vmovdqa32 TMP0,%%X
+	vpternlogd TMP0, %%Y, %%Z, 0xCA	; X? Y : Z
 %endmacro
 
 ;; void sm3_mb_x16_avx512(ISAL_SM3_MB_ARGS_X8, uint32_t size)
@@ -521,13 +518,11 @@ lloop:
 	; F = E
 	; E = P(TT2)
 	vmovups D,C
-	vprold B,9
-	vmovups C,B
+	vprold C,B,9
 	vmovups B,A
 	vmovups A,TMP3
 	vmovups H,G
-	vprold F,19
-	vmovups G,F
+	vprold G,F,19
 	vmovups F,E
 	P TMP2
 	vmovups E,TMP0
@@ -556,14 +551,12 @@ lloop:
 
 	; clac WB(I+4)
 	vprold APPEND(WB,J),APPEND(WB,J_3),15
-	vpxord APPEND(WB,J),APPEND(WB,J_16)
-	vpxord APPEND(WB,J),APPEND(WB,J_9)
+	vpternlogd APPEND(WB,J),APPEND(WB,J_9), APPEND(WB,J_16), 0x96; 3-way XOR
 
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpxord APPEND(WB,J),TMP0
-	vpxord APPEND(WB,J),APPEND(WB,J_6)
+	vpternlogd APPEND(WB,J),APPEND(WB,J_6), TMP0, 0x96; 3-way XOR
 
 	; (A <<< 12)
 	; store in TMP0
@@ -607,13 +600,11 @@ lloop:
 	; F = E
 	; E = P(TT2)
 	vmovups D,C
-	vprold B,9
-	vmovups C,B
+	vprold C,B,9
 	vmovups B,A
 	vmovups A,TMP3
 	vmovups H,G
-	vprold F,19
-	vmovups G,F
+	vprold G,F,19
 	vmovups F,E
 	P TMP2
 	vmovups E,TMP0
@@ -634,14 +625,12 @@ lloop:
 	%assign J (((I+4) % 20))
 
 	vprold APPEND(WB,J),APPEND(WB,J_3),15
-	vpxord APPEND(WB,J),APPEND(WB,J_16)
-	vpxord APPEND(WB,J),APPEND(WB,J_9)
+	vpternlogd APPEND(WB,J),APPEND(WB,J_9),APPEND(WB,J_16), 0x96; 3-way XOR
 
 	P1 APPEND(WB,J)
 
 	vprold APPEND(WB,J),APPEND(WB,J_13),7
-	vpxord APPEND(WB,J),TMP0
-	vpxord APPEND(WB,J),APPEND(WB,J_6)
+	vpternlogd APPEND(WB,J),APPEND(WB,J_6),TMP0, 0x96; 3-way XOR
 
 	; (A <<< 12)
 	; store in TMP0
@@ -685,13 +674,11 @@ lloop:
 	; F = E
 	; E = P(TT2)
 	vmovups D,C
-	vprold B,9
-	vmovups C,B
+	vprold C,B,9
 	vmovups B,A
 	vmovups A,TMP3
 	vmovups H,G
-	vprold F,19
-	vmovups G,F
+	vprold G,F,19
 	vmovups F,E
 	P TMP2
 	vmovups E,TMP0
@@ -710,9 +697,7 @@ lloop:
 
 	%assign cur_loop cur_loop+1
 	sub 	SIZE, 1
-	je	last_loop
-
-	jmp	lloop
+	jnz	lloop
 
 
 last_loop:
