@@ -143,7 +143,7 @@ non_blocksize_updates_test(ISAL_MD5_HASH_CTX_MGR *mgr)
                 }
                 for (int i = 0; i < ISAL_MD5_DIGEST_NWORDS; i++) {
                         if (ctx_refer.job.result_digest[i] != ctx_pool[c].job.result_digest[i]) {
-                                printf("sm3 calc error! chunk %d, digest[%d], (%d) != (%d)\n",
+                                printf("md5 calc error! chunk %d, digest[%d], (%d) != (%d)\n",
                                        update_chunks[c], i, ctx_refer.job.result_digest[i],
                                        ctx_pool[c].job.result_digest[i]);
                                 return -2;
