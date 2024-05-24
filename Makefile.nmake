@@ -421,7 +421,8 @@ checks = \
 	mh_sha1_murmur3_x64_128_param_test.exe \
 	sm3_mb_param_test.exe \
 	rolling_hash2_param_test.exe \
-	version_test.exe
+	version_test.exe \
+	self_tests_test.exe
 
 
 checks: lib $(checks)

@@ -41,3 +41,5 @@ lsrc_x86_32 	+= $(lsrc_x86_64)
 lsrc_base_aliases += fips/self_tests_generic.c
 
 other_src   += include/test.h include/types.h include/reg_sizes.asm include/aes_keyexp_internal.h include/aes_cbc_internal.h
+
+check_tests += fips/self_tests_test
