@@ -135,7 +135,7 @@ extern "C" {
 /**
  * @brief holds intermediate key data needed to improve performance
  *
- * isal_gcm_key_data hold internal key information used by gcm128, gcm192 and gcm256.
+ * isal_gcm_key_data hold internal key information used by gcm128 and gcm256.
  */
 #ifdef __WIN32
 __declspec(align(16))
