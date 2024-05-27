@@ -100,7 +100,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                       tc->msg_len, ISAL_HASH_FIRST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -110,7 +110,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                       tc->msg_len, ISAL_HASH_UPDATE);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -120,7 +120,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                       tc->msg_len, ISAL_HASH_LAST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -132,7 +132,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         if (rc)
                                 return EXIT_FAILURE;
 
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha1_ctx_mgr_flush(&sha1_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -155,7 +155,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_FIRST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -165,7 +165,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_UPDATE);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -175,7 +175,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_LAST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -187,7 +187,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         if (rc)
                                 return EXIT_FAILURE;
 
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha256_ctx_mgr_flush(&sha256_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -209,7 +209,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_FIRST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -219,7 +219,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_UPDATE);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -229,7 +229,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                                                         tc->msg_len, ISAL_HASH_LAST);
                         if (rc)
                                 return EXIT_FAILURE;
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
@@ -241,7 +241,7 @@ sha_handler(ACVP_TEST_CASE *test_case)
                         if (rc)
                                 return EXIT_FAILURE;
 
-                        if (ctx != NULL) {
+                        if (ctx == NULL) {
                                 rc = isal_sha512_ctx_mgr_flush(&sha512_mgr, &ctx);
                                 if (rc)
                                         return EXIT_FAILURE;
