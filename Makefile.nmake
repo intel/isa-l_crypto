@@ -276,7 +276,7 @@ CFLAGS=$(CFLAGS_DBG)
 CFLAGS=$(CFLAGS_REL)
 !endif
 
-LINKFLAGS  = -nologo -incremental:no -debug -guard:cf -DYNAMICBASE
+LINKFLAGS  = -nologo -incremental:no -debug -guard:cf -DYNAMICBASE -CETCOMPAT
 CFLAGS     = $(CFLAGS) -nologo -D_USE_MATH_DEFINES -DNO_COMPAT_ISAL_CRYPTO_API_2_24 $(FEAT_FLAGS) $(INCLUDES) $(D) /W3
 AFLAGS     = -f win64 $(FEAT_FLAGS) $(INCLUDES) $(D)
 CC         = cl

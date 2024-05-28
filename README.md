@@ -38,7 +38,7 @@ Building ISA-L
 
 x86_64:
 * Assembler: nasm v2.14.01 or later
-* Compiler: gcc, clang, icc or VC compiler.
+* Compiler: gcc, clang, icc or MSVC (Visual Studio 2019 or later).
 * Make: GNU 'make' or 'nmake' (Windows).
 * Optional: Building with autotools requires autoconf/automake packages.
 
