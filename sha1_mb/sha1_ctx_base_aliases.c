@@ -32,28 +32,28 @@
 #include "memcpy_inline.h"
 
 extern void
-_sha1_ctx_mgr_init_base(SHA1_HASH_CTX_MGR *mgr);
-extern SHA1_HASH_CTX *
-_sha1_ctx_mgr_submit_base(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer,
+_sha1_ctx_mgr_init_base(ISAL_SHA1_HASH_CTX_MGR *mgr);
+extern ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_submit_base(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
                           uint32_t len, ISAL_HASH_CTX_FLAG flags);
-extern SHA1_HASH_CTX *
-_sha1_ctx_mgr_flush_base(SHA1_HASH_CTX_MGR *mgr);
+extern ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_flush_base(ISAL_SHA1_HASH_CTX_MGR *mgr);
 
 void
-_sha1_ctx_mgr_init(SHA1_HASH_CTX_MGR *mgr)
+_sha1_ctx_mgr_init(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         return _sha1_ctx_mgr_init_base(mgr);
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_submit(SHA1_HASH_CTX_MGR *mgr, SHA1_HASH_CTX *ctx, const void *buffer, uint32_t len,
-                     ISAL_HASH_CTX_FLAG flags)
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_submit(ISAL_SHA1_HASH_CTX_MGR *mgr, ISAL_SHA1_HASH_CTX *ctx, const void *buffer,
+                     uint32_t len, ISAL_HASH_CTX_FLAG flags)
 {
         return _sha1_ctx_mgr_submit_base(mgr, ctx, buffer, len, flags);
 }
 
-SHA1_HASH_CTX *
-_sha1_ctx_mgr_flush(SHA1_HASH_CTX_MGR *mgr)
+ISAL_SHA1_HASH_CTX *
+_sha1_ctx_mgr_flush(ISAL_SHA1_HASH_CTX_MGR *mgr)
 {
         return _sha1_ctx_mgr_flush_base(mgr);
 }
