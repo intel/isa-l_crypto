@@ -475,22 +475,13 @@ lloop:
 	vmovdqu	[arg1 + 4*32], E
 
 	;; update input pointers
-	add	inp0, IDX
-	add	inp1, IDX
-	add	inp2, IDX
-	add	inp3, IDX
-	add	inp4, IDX
-	add	inp5, IDX
-	add	inp6, IDX
-	add	inp7, IDX
-	mov	[arg1+_data_ptr+0*8], inp0
-	mov	[arg1+_data_ptr+1*8], inp1
-	mov	[arg1+_data_ptr+2*8], inp2
-	mov	[arg1+_data_ptr+3*8], inp3
-	mov	[arg1+_data_ptr+4*8], inp4
-	mov	[arg1+_data_ptr+5*8], inp5
-	mov	[arg1+_data_ptr+6*8], inp6
-	mov	[arg1+_data_ptr+7*8], inp7
+	vmovq   xmm1, IDX
+	vpbroadcastq ymm1, xmm1
+	lea	IDX, [arg1+_data_ptr]
+	vpaddq	ymm0, ymm1, [IDX]
+	vpaddq	ymm1, ymm1, [IDX+32]
+	vmovdqu [IDX], ymm0
+	vmovdqu [IDX+32], ymm1
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
