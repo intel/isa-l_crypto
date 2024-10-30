@@ -490,16 +490,11 @@ lastLoop:
 	vpaddd		E,E,EE
 
         ;; update into data pointers
-%assign I 0
-%rep 8
-        mov    inp0, [IN + (2*I)*8]
-        mov    inp1, [IN + (2*I +1)*8]
-        add    inp0, IDX
-        add    inp1, IDX
-        mov    [IN + (2*I)*8], inp0
-        mov    [IN + (2*I+1)*8], inp1
-%assign I (I+1)
-%endrep
+	vpbroadcastq TMP1, IDX
+	vpaddq	TMP0, TMP1, [IN]
+	vpaddq	TMP1, TMP1, [IN+64]
+	vmovdqu64 [IN], TMP0
+	vmovdqu64 [IN+64], TMP1
 
 	; Write out digest
 	; Do we need to untranspose digests???

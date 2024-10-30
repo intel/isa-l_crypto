@@ -379,14 +379,11 @@ Lrounds_16_xx:
 	vmovdqu	[STATE+ 7*SHA512_DIGEST_ROW_SIZE ],h
 
 	;; update input data pointers
-	add inp0, IDX
-	mov	[STATE + _data_ptr_sha512 + 0*PTR_SZ], inp0
-	add inp1, IDX
-	mov	[STATE + _data_ptr_sha512 + 1*PTR_SZ], inp1
-	add inp2, IDX
-	mov	[STATE + _data_ptr_sha512 + 2*PTR_SZ], inp2
-	add inp3, IDX
-	mov	[STATE + _data_ptr_sha512 + 3*PTR_SZ], inp3
+	vmovq xmm0, IDX
+	lea  IDX, [STATE + _data_ptr_sha512]
+	vpbroadcastq ymm0, xmm0
+	vpaddq	ymm0, ymm0, [IDX]
+	vmovdqu [IDX], ymm0
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble

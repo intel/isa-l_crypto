@@ -463,22 +463,13 @@ Lrounds_16_xx:
 	vmovdqu	[STATE + 7*SHA256_DIGEST_ROW_SIZE],h
 
 	; update input pointers
-	add	inp0, IDX
-	mov	[STATE + _args_data_ptr + 0*8], inp0
-	add	inp1, IDX
-	mov	[STATE + _args_data_ptr + 1*8], inp1
-	add	inp2, IDX
-	mov	[STATE + _args_data_ptr + 2*8], inp2
-	add	inp3, IDX
-	mov	[STATE + _args_data_ptr + 3*8], inp3
-	add	inp4, IDX
-	mov	[STATE + _args_data_ptr + 4*8], inp4
-	add	inp5, IDX
-	mov	[STATE + _args_data_ptr + 5*8], inp5
-	add	inp6, IDX
-	mov	[STATE + _args_data_ptr + 6*8], inp6
-	add	inp7, IDX
-	mov	[STATE + _args_data_ptr + 7*8], inp7
+	vmovq	XWORD(TMP0), IDX
+	vpbroadcastq TMP1, XWORD(TMP0)
+	lea	IDX, [STATE + _args_data_ptr]
+	vpaddq	TMP0, TMP1, [IDX]
+	vpaddq	TMP1, TMP1, [IDX + 32]
+	vmovdqu  [IDX], TMP0
+	vmovdqu  [IDX+32], TMP1
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble

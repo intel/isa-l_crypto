@@ -494,16 +494,9 @@ lastLoop:
         vpaddq		H, H, [rsp + _DIGEST_SAVE + 64*7]
 
 ;; update into data pointers
-%assign I 0
-%rep 4
-        mov    inp0, [IN + (2*I)*8]
-        mov    inp1, [IN + (2*I +1)*8]
-        add    inp0, IDX
-        add    inp1, IDX
-        mov    [IN + (2*I)*8], inp0
-        mov    [IN + (2*I+1)*8], inp1
-%assign I (I+1)
-%endrep
+	vpbroadcastq TMP0, IDX
+	vpaddq	TMP0, TMP0, [IN]
+	vmovdqu64 [IN], TMP0
 
         VMOVDQ32	[DIGEST + 0*8*8], A
         VMOVDQ32	[DIGEST + 1*8*8], B
