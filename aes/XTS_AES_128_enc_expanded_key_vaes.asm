@@ -38,18 +38,17 @@
 
 default rel
 %define TW              rsp     ; store 8 tweak values
-%define keys    rsp + 16*8      ; store 11 expanded keys
 
 %ifidn __OUTPUT_FORMAT__, win64
-	%define _xmm    rsp + 16*(8+11)     ; store xmm6:xmm15
+	%define _xmm    rsp + 16*8     ; store xmm6:xmm15
 %endif
 
 %ifidn __OUTPUT_FORMAT__, elf64
-%define _gpr    rsp + 16*(8+11)     ; store rbx
-%define VARIABLE_OFFSET 16*8 + 16*11 + 8*1     ; VARIABLE_OFFSET has to be an odd multiple of 8
+%define _gpr    rsp + 16*8     ; store rbx
+%define VARIABLE_OFFSET 16*8 + 8*1     ; stack frame size for tweak values and rbx
 %else
-%define _gpr    rsp + 16*(8+11+10)     ; store rdi, rsi, rbx
-%define VARIABLE_OFFSET 16*8 + 16*11 + 16*10 + 8*3     ; VARIABLE_OFFSET has to be an odd multiple of 8
+%define _gpr    rsp + 16*(8+10)     ; store rdi, rsi, rbx
+%define VARIABLE_OFFSET 16*8 + 16*10 + 8*3     ; stack frame size for tweak values, XMM6-15 and GP regs
 %endif
 
 %define GHASH_POLY 0x87
@@ -99,85 +98,31 @@ default rel
 
 ; macro to encrypt the tweak value
 
-%macro  encrypt_T 8
-%define %%xkey2         %1
-%define %%xstate_tweak  %2
-%define %%xkey1         %3
-%define %%xraw_key      %4
-%define %%xtmp          %5
-%define %%ptr_key2      %6
-%define %%ptr_key1      %7
-%define %%ptr_expanded_keys     %8
+%macro  encrypt_T 2
+%define %%xstate_tweak  %1
+%define %%ptr_key2      %2
 
-	vmovdqu  %%xkey2, [%%ptr_key2]
-	vpxor    %%xstate_tweak, %%xkey2                         ; ARK for tweak encryption
+	vpxor    %%xstate_tweak, [%%ptr_key2]                    ; ARK for tweak encryption
 
-	vmovdqu  %%xkey1, [%%ptr_key1]
-	vmovdqa  [%%ptr_expanded_keys+16*0], %%xkey1             ; store round keys in stack
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*1]             ; round 1 for tweak encryption
 
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*1]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 1 for tweak encryption
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*2]             ; round 2 for tweak encryption
 
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*1]
-	vmovdqa  [%%ptr_expanded_keys+16*1], %%xkey1             ; store round keys in stack
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*3]             ; round 3 for tweak encryption
 
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*4]             ; round 4 for tweak encryption
 
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*2]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 2 for tweak encryption
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*5]             ; round 5 for tweak encryption
 
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*2]
-	vmovdqa  [%%ptr_expanded_keys+16*2], %%xkey1             ; store round keys in stack
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*6]             ; round 6 for tweak encryption
 
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*3]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 3 for tweak encryption
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*7]             ; round 7 for tweak encryption
 
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*3]
-	vmovdqa  [%%ptr_expanded_keys+16*3], %%xkey1             ; store round keys in stack
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*8]             ; round 8 for tweak encryption
 
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*4]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 4 for tweak encryption
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*9]             ; round 9 for tweak encryption
 
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*4]
-	vmovdqa  [%%ptr_expanded_keys+16*4], %%xkey1             ; store round keys in stack
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*5]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 5 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*5]
-	vmovdqa  [%%ptr_expanded_keys+16*5], %%xkey1             ; store round keys in stack
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*6]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 6 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*6]
-	vmovdqa  [%%ptr_expanded_keys+16*6], %%xkey1             ; store round keys in stack
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*7]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 7 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*7]
-	vmovdqa  [%%ptr_expanded_keys+16*7], %%xkey1             ; store round keys in stack
-
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*8]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 8 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*8]
-	vmovdqa  [%%ptr_expanded_keys+16*8], %%xkey1             ; store round keys in stack
-
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*9]
-	vaesenc  %%xstate_tweak, %%xkey2                         ; round 9 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*9]
-	vmovdqa  [%%ptr_expanded_keys+16*9], %%xkey1             ; store round keys in stack
-
-
-	vmovdqu  %%xkey2, [%%ptr_key2 + 16*10]
-	vaesenclast      %%xstate_tweak, %%xkey2                 ; round 10 for tweak encryption
-
-	vmovdqu  %%xkey1, [%%ptr_key1 + 16*10]
-	vmovdqa  [%%ptr_expanded_keys+16*10], %%xkey1            ; store round keys in stack
+	vaesenclast      %%xstate_tweak, [%%ptr_key2 + 16*10]    ; round 10 for tweak encryption
 
 	vmovdqa  [TW], %%xstate_tweak                            ; Store the encrypted Tweak value
 %endmacro
@@ -332,7 +277,7 @@ default rel
 
 
 	; ARK
-	vmovdqa  %%T0, [keys]
+	vmovdqu  %%T0, [ptr_key1]
 	vpxor    %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vpxor    %%ST2, %%T0
@@ -361,7 +306,7 @@ default rel
 	%endif
 
 	; round 1
-	vmovdqa  %%T0, [keys + 16*1]
+	vmovdqu  %%T0, [ptr_key1 + 16*1]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -390,7 +335,7 @@ default rel
 	%endif
 
 	; round 2
-	vmovdqa  %%T0, [keys + 16*2]
+	vmovdqu  %%T0, [ptr_key1 + 16*2]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -420,7 +365,7 @@ default rel
 	%endif
 
 	; round 3
-	vmovdqa  %%T0, [keys + 16*3]
+	vmovdqu  %%T0, [ptr_key1 + 16*3]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -449,7 +394,7 @@ default rel
 	%endif
 
 	; round 4
-	vmovdqa  %%T0, [keys + 16*4]
+	vmovdqu  %%T0, [ptr_key1 + 16*4]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -479,7 +424,7 @@ default rel
 	%endif
 
 	; round 5
-	vmovdqa  %%T0, [keys + 16*5]
+	vmovdqu  %%T0, [ptr_key1 + 16*5]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -509,7 +454,7 @@ default rel
 	%endif
 
 	; round 6
-	vmovdqa  %%T0, [keys + 16*6]
+	vmovdqu  %%T0, [ptr_key1 + 16*6]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -541,7 +486,7 @@ default rel
 	%endif
 
 	; round 7
-	vmovdqa  %%T0, [keys + 16*7]
+	vmovdqu  %%T0, [ptr_key1 + 16*7]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -572,7 +517,7 @@ default rel
 		mov     [TW + 8*11], twtemph
 	%endif
 	; round 8
-	vmovdqa  %%T0, [keys + 16*8]
+	vmovdqu  %%T0, [ptr_key1 + 16*8]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -603,7 +548,7 @@ default rel
 		mov     [TW + 8*13], twtemph
 	%endif
 	; round 9
-	vmovdqa  %%T0, [keys + 16*9]
+	vmovdqu  %%T0, [ptr_key1 + 16*9]
 	vaesenc  %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenc  %%ST2, %%T0
@@ -636,7 +581,7 @@ default rel
 
 
 	; round 10
-	vmovdqa  %%T0, [keys + 16*10]
+	vmovdqu  %%T0, [ptr_key1 + 16*10]
 	vaesenclast      %%ST1, %%T0
 %if (%%num_blocks>=2)
 	vaesenclast      %%ST2, %%T0
@@ -712,7 +657,7 @@ default rel
 	vpxorq    %%ST2, %%TW2
 
 	; ARK
-	vbroadcasti32x4 %%T0, [keys]
+	vbroadcasti32x4 %%T0, [ptr_key1]
 	vpxorq    %%ST1, %%T0
 	vpxorq    %%ST2, %%T0
 
@@ -723,17 +668,17 @@ default rel
 		vpxord		zmm15, zmm15, zmm14
 %endif
 	; round 1
-	vbroadcasti32x4 %%T0, [keys + 16*1]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*1]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 2
-	vbroadcasti32x4 %%T0, [keys + 16*2]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*2]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 3
-	vbroadcasti32x4 %%T0, [keys + 16*3]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*3]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 %if (0 == %%last_eight)
@@ -743,37 +688,37 @@ default rel
 		vpxord		zmm16, zmm16, zmm14
 %endif
 	; round 4
-	vbroadcasti32x4 %%T0, [keys + 16*4]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*4]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 5
-	vbroadcasti32x4 %%T0, [keys + 16*5]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*5]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 6
-	vbroadcasti32x4 %%T0, [keys + 16*6]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*6]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 7
-	vbroadcasti32x4 %%T0, [keys + 16*7]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*7]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 8
-	vbroadcasti32x4 %%T0, [keys + 16*8]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*8]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 9
-	vbroadcasti32x4 %%T0, [keys + 16*9]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*9]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 
 	; round 10
-	vbroadcasti32x4 %%T0, [keys + 16*10]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*10]
 	vaesenclast  %%ST1, %%T0
 	vaesenclast  %%ST2, %%T0
 
@@ -810,7 +755,7 @@ default rel
 	vpxorq    %%ST4, %%TW4
 
 	; ARK
-	vbroadcasti32x4 %%T0, [keys]
+	vbroadcasti32x4 %%T0, [ptr_key1]
 	vpxorq    %%ST1, %%T0
 	vpxorq    %%ST2, %%T0
 	vpxorq    %%ST3, %%T0
@@ -823,21 +768,21 @@ default rel
 		vpxord		zmm15, zmm15, zmm14
 %endif
 	; round 1
-	vbroadcasti32x4 %%T0, [keys + 16*1]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*1]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 2
-	vbroadcasti32x4 %%T0, [keys + 16*2]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*2]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 3
-	vbroadcasti32x4 %%T0, [keys + 16*3]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*3]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
@@ -849,21 +794,21 @@ default rel
 		vpxord		zmm16, zmm16, zmm14
 %endif
 	; round 4
-	vbroadcasti32x4 %%T0, [keys + 16*4]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*4]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 5
-	vbroadcasti32x4 %%T0, [keys + 16*5]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*5]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 6
-	vbroadcasti32x4 %%T0, [keys + 16*6]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*6]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
@@ -875,21 +820,21 @@ default rel
 		vpxord		zmm17, zmm17, zmm14
 %endif
 	; round 7
-	vbroadcasti32x4 %%T0, [keys + 16*7]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*7]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 8
-	vbroadcasti32x4 %%T0, [keys + 16*8]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*8]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
 
 	; round 9
-	vbroadcasti32x4 %%T0, [keys + 16*9]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*9]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
@@ -901,7 +846,7 @@ default rel
 		vpxord		zmm18, zmm18, zmm14
 %endif
 	; round 10
-	vbroadcasti32x4 %%T0, [keys + 16*10]
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*10]
 	vaesenclast  %%ST1, %%T0
 	vaesenclast  %%ST2, %%T0
 	vaesenclast  %%ST3, %%T0
@@ -927,15 +872,10 @@ mk_global _XTS_AES_128_enc_expanded_key_vaes, function, internal
 _XTS_AES_128_enc_expanded_key_vaes:
 	endbranch
 
-%define ALIGN_STACK
-%ifdef ALIGN_STACK
 	push		rbp
 	mov		rbp, rsp
 	sub		rsp, VARIABLE_OFFSET
 	and		rsp, ~63
-%else
-	sub		rsp, VARIABLE_OFFSET
-%endif
 
 	mov		[_gpr + 8*0], rbx
 %ifidn __OUTPUT_FORMAT__, win64
@@ -958,18 +898,12 @@ _XTS_AES_128_enc_expanded_key_vaes:
 
 
 	vmovdqu		xmm1, [T_val]                   ; read initial Tweak value
-	vpxor		xmm4, xmm4                      ; for key expansion
-	encrypt_T       xmm0, xmm1, xmm2, xmm3, xmm4, ptr_key2, ptr_key1, keys
+	encrypt_T       xmm1, ptr_key2
 
 
 %ifidn __OUTPUT_FORMAT__, win64
-%ifdef ALIGN_STACK
 	mov		ptr_plaintext, [rbp + 8 + 8*5]	; plaintext pointer
 	mov             ptr_ciphertext, [rbp + 8 + 8*6]	; ciphertext pointer
-%else
-	mov             ptr_plaintext, [rsp + VARIABLE_OFFSET + 8*5]	; plaintext pointer
-	mov             ptr_ciphertext, [rsp + VARIABLE_OFFSET + 8*6]	; ciphertext pointer
-%endif
 %endif
 
 	cmp		N_val, 128
@@ -1259,17 +1193,17 @@ _steal_cipher:
 	vpxor		xmm8, xmm3, xmm0
 
 	;encrypt last block with cipher stealing
-	vpxor		xmm8, [keys]		; ARK
-	vaesenc		xmm8, [keys + 16*1]	; round 1
-	vaesenc		xmm8, [keys + 16*2]	; round 2
-	vaesenc		xmm8, [keys + 16*3]	; round 3
-	vaesenc		xmm8, [keys + 16*4]	; round 4
-	vaesenc		xmm8, [keys + 16*5]	; round 5
-	vaesenc		xmm8, [keys + 16*6]	; round 6
-	vaesenc		xmm8, [keys + 16*7]	; round 7
-	vaesenc		xmm8, [keys + 16*8]	; round 8
-	vaesenc		xmm8, [keys + 16*9]	; round 9
-	vaesenclast	xmm8, [keys + 16*10]	; round 10
+	vpxor		xmm8, [ptr_key1]		; ARK
+	vaesenc		xmm8, [ptr_key1 + 16*1]	; round 1
+	vaesenc		xmm8, [ptr_key1 + 16*2]	; round 2
+	vaesenc		xmm8, [ptr_key1 + 16*3]	; round 3
+	vaesenc		xmm8, [ptr_key1 + 16*4]	; round 4
+	vaesenc		xmm8, [ptr_key1 + 16*5]	; round 5
+	vaesenc		xmm8, [ptr_key1 + 16*6]	; round 6
+	vaesenc		xmm8, [ptr_key1 + 16*7]	; round 7
+	vaesenc		xmm8, [ptr_key1 + 16*8]	; round 8
+	vaesenc		xmm8, [ptr_key1 + 16*9]	; round 9
+	vaesenclast	xmm8, [ptr_key1 + 16*10]	; round 10
 
 	; xor Tweak value
 	vpxor		xmm8, xmm8, xmm0
@@ -1280,11 +1214,6 @@ _steal_cipher:
 _ret_:
 %ifdef SAFE_DATA
         clear_all_zmms_asm
-        ; Clear expanded keys (16*11 bytes)
-        vmovdqa64       [keys], zmm0
-        vmovdqa64       [keys + 4*16], zmm0
-        vmovdqa64       [keys + 8*16], ymm0
-        vmovdqa64       [keys + 10*16], xmm0
 %else
         vzeroupper
 %endif
@@ -1306,12 +1235,8 @@ _ret_:
 	vmovdqa		xmm15, [_xmm + 16*9]
 %endif
 
-%ifndef ALIGN_STACK
-	add		rsp, VARIABLE_OFFSET
-%else
 	mov		rsp, rbp
 	pop		rbp
-%endif
 	ret
 
 
