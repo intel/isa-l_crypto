@@ -989,7 +989,7 @@ _remaining_num_blocks_is_5:
 	vmovdqu		[ptr_ciphertext+16*4], xmm2
 	add		ptr_ciphertext, 16*5
 
-	movdqa		xmm8, xmm2
+	vmovdqa		xmm8, xmm2
 	vextracti32x4	xmm0, zmm10, 0x1
 	and		N_val, 15
 	je		_ret_
