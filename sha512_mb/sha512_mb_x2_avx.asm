@@ -341,7 +341,7 @@ Lrounds_16_xx:
 	vpunpcklqdq xmm0, xmm0
 	lea	IDX, [STATE + _data_ptr_sha512]
 	vpaddq	xmm0, xmm0, [IDX]
-	vmovdqu32 [IDX], xmm0
+	vmovdqu [IDX], xmm0
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
