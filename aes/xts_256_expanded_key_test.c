@@ -1,5 +1,5 @@
 /**********************************************************************
-  Copyright(c) 2011-2016 Intel Corporation All rights reserved.
+  Copyright(c) 2011-2024 Intel Corporation All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -29,9 +29,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <aes_keyexp.h>
-#include "xts_256_vect.h"
+#include <string.h>
 
+#include <aes_keyexp.h>
+#include <aes_xts.h>
+
+#include "aes_256_xts_test.json.h"
 int
 main(void)
 {
@@ -44,34 +47,43 @@ main(void)
         uint8_t expkey1_enc[16 * 15], expkey2_enc[16 * 15];
         uint8_t expkey1_dec[16 * 15], null_key[16 * 15];
 
-        int i, j, ret = -1;
+        size_t j;
+        int retval, ret = -1;
+
+        const struct cipher_test *v = xts_256_test_json;
 
         // --- Encryption test ---
 
         // Loop over the vectors
-        for (i = 0; i < NVEC; i++) {
+        for (; v->msg != NULL; v++) {
+                const size_t buf_size = v->msgSize / 8;
 
                 // Allocate space for the calculated ciphertext
-                ct_test = malloc(vlist[i].ptlen);
+                ct_test = malloc(buf_size);
                 if (ct_test == NULL) {
                         printf("Can't allocate ciphertext memory\n");
-                        return ret;
+                        goto end;
                 }
-                // Pre-expand our keys (will only use the encryption ones here)
-                isal_aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
-                isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
+                // Pre-expand keys (will only use the encryption ones here)
+                isal_aes_keyexp_256((const uint8_t *) v->key, expkey1_enc, expkey1_dec);
+                isal_aes_keyexp_256((const uint8_t *) v->key + 32, expkey2_enc, null_key);
 
-                isal_aes_xts_enc_256_expanded_key(expkey2_enc, expkey1_enc, vlist[i].TW,
-                                                  vlist[i].ptlen, vlist[i].PTX, ct_test);
+                isal_aes_xts_enc_256_expanded_key(expkey2_enc, expkey1_enc, (const uint8_t *) v->iv,
+                                                  buf_size, v->msg, ct_test);
 
                 // Carry out comparison of the calculated ciphertext with
                 // the reference
-                for (j = 0; j < vlist[i].ptlen; j++) {
+                retval = memcmp(ct_test, v->ct, buf_size);
 
-                        if (ct_test[j] != vlist[i].CTX[j]) {
-                                printf("\nXTS_AES_256_enc: Vector %d: ", i + 10);
-                                printf("failed at byte %d! \n", j);
-                                goto end;
+                if (retval != 0) {
+                        for (j = 0; j < buf_size; j++) {
+                                if (ct_test[j] != (const uint8_t) v->ct[j]) {
+                                        printf("\nXTS_AES_256_expanded_key_enc: Vector %zu: (size "
+                                               "= %zu bytes) ",
+                                               v->tcId, buf_size);
+                                        printf("failed at byte %zu! \n", j);
+                                        goto end;
+                                }
                         }
                 }
                 printf(".");
@@ -83,30 +95,34 @@ main(void)
         // --- Decryption test ---
 
         // Loop over the vectors
-        for (i = 0; i < NVEC; i++) {
+        for (v = xts_256_test_json; v->msg != NULL; v++) {
+                const size_t buf_size = v->msgSize / 8;
 
-                // Allocate space for the calculated plaintext
-                pt_test = malloc(vlist[i].ptlen);
+                // Allocate space for the calculated ciphertext
+                pt_test = malloc(buf_size);
                 if (pt_test == NULL) {
                         printf("Can't allocate plaintext memory\n");
                         goto end;
                 }
                 // Pre-expand keys for the decryption
-                isal_aes_keyexp_256(vlist[i].key1, expkey1_enc, expkey1_dec);
-                isal_aes_keyexp_256(vlist[i].key2, expkey2_enc, null_key);
+                isal_aes_keyexp_256((const uint8_t *) v->key, expkey1_enc, expkey1_dec);
+                isal_aes_keyexp_256((const uint8_t *) v->key + 32, expkey2_enc, null_key);
 
                 // Note, encryption key is re-used for the tweak decryption step
-                isal_aes_xts_dec_256_expanded_key(expkey2_enc, expkey1_dec, vlist[i].TW,
-                                                  vlist[i].ptlen, vlist[i].CTX, pt_test);
+                isal_aes_xts_dec_256_expanded_key(expkey2_enc, expkey1_dec, (const uint8_t *) v->iv,
+                                                  buf_size, v->ct, pt_test);
 
-                // Carry out comparison of the calculated ciphertext with
-                // the reference
-                for (j = 0; j < vlist[i].ptlen; j++) {
+                retval = memcmp(pt_test, v->msg, buf_size);
 
-                        if (pt_test[j] != vlist[i].PTX[j]) {
-                                printf("\nXTS_AES_256_dec: Vector %d: ", i + 10);
-                                printf("failed at byte %d! \n", j);
-                                goto end;
+                if (retval != 0) {
+                        for (j = 0; j < buf_size; j++) {
+                                if (pt_test[j] != (const uint8_t) v->msg[j]) {
+                                        printf("\nXTS_AES_256_expanded_key_dec: Vector %zu: (size "
+                                               "= %zu bytes) ",
+                                               v->tcId, buf_size);
+                                        printf("failed at byte %zu! \n", j);
+                                        goto end;
+                                }
                         }
                 }
                 printf(".");
