@@ -345,14 +345,13 @@ Lrounds_16_xx:
 	vmovdqa	[arg1+7*SZ4],h
 
 	; update input pointers
-	add	inp0, IDX
-	mov	[arg1 + _data_ptr + 0*8], inp0
-	add	inp1, IDX
-	mov	[arg1 + _data_ptr + 1*8], inp1
-	add	inp2, IDX
-	mov	[arg1 + _data_ptr + 2*8], inp2
-	add	inp3, IDX
-	mov	[arg1 + _data_ptr + 3*8], inp3
+	vmovq	xmm1, IDX
+	vpunpcklqdq xmm1, xmm1, xmm1
+	lea	IDX, [arg1 + _data_ptr]
+	vpaddq	xmm0, xmm1, [IDX]
+	vpaddq	xmm1, xmm1, [IDX+16]
+	vmovdqu [IDX], xmm0
+	vmovdqu [IDX+16], xmm1
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble

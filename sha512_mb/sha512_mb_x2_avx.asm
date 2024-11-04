@@ -338,7 +338,7 @@ Lrounds_16_xx:
 
 	; update input pointers
 	vmovq	xmm0, IDX
-	vpbroadcastq xmm0, xmm0
+	vpunpcklqdq xmm0, xmm0
 	lea	IDX, [STATE + _data_ptr_sha512]
 	vpaddq	xmm0, xmm0, [IDX]
 	vmovdqu32 [IDX], xmm0

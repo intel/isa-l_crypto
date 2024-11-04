@@ -390,7 +390,7 @@ lloop:
 
 	; update input pointers
 	vmovq	xmm1, IDX
-	vpbroadcastq xmm1, xmm1
+	vpunpcklqdq xmm1, xmm1, xmm1
 	lea	IDX, [ARG1 + _data_ptr]
 	vpaddq	xmm0, xmm1, [IDX]
 	vpaddq	xmm1, xmm1, [IDX+16]
