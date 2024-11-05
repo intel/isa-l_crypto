@@ -35,6 +35,17 @@
 #include <acvp/acvp.h>
 #include "include/isal_crypto_api.h"
 
+#define LIB_VER(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+
+/* Available from libacvp 2.1.0 */
+#ifdef ACVP_LIBRARY_VERSION_MAJOR
+#define INT_ACVP_LIB_VER_NUM                                                                       \
+        LIB_VER(ACVP_LIBRARY_VERSION_MAJOR, ACVP_LIBRARY_VERSION_MINOR, ACVP_LIBRARY_VERSION_PATCH)
+#else
+/* Assume version 2.0.0 (minimum required for this app) */
+#define INT_ACVP_LIB_VER_NUM LIB_VER(2, 0, 0)
+#endif
+
 #if defined(__GNUC__) || defined(__clang__)
 #define ATTRIBUTE(x) __attribute__((x))
 #else
@@ -167,7 +178,11 @@ main(int argc, char **argv)
 
         // Parse request file, run crypto tests and write out response file
         if (req_filename != NULL && rsp_filename != NULL) {
+#if INT_ACVP_LIB_VER_NUM >= LIB_VER(2, 2, 0)
+                ret = acvp_run_vectors_from_file_offline(ctx, req_filename, rsp_filename);
+#else
                 ret = acvp_run_vectors_from_file(ctx, req_filename, rsp_filename);
+#endif
                 goto exit;
         }
         // Run the test session from server
