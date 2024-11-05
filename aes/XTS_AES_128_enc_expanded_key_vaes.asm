@@ -51,6 +51,8 @@ default rel
 %define VARIABLE_OFFSET 16*8 + 16*10 + 8*3     ; stack frame size for tweak values, XMM6-15 and GP regs
 %endif
 
+%define NROUNDS 9
+
 %define GHASH_POLY 0x87
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,25 +106,14 @@ default rel
 
 	vpxor    %%xstate_tweak, [%%ptr_key2]                    ; ARK for tweak encryption
 
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*1]             ; round 1 for tweak encryption
+        ; Do N AES rounds for tweak encryption
+%assign %%I 1
+%rep NROUNDS
+	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*%%I]           ; round 1 for tweak encryption
+%assign %%I (%%I + 1)
+%endrep
 
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*2]             ; round 2 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*3]             ; round 3 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*4]             ; round 4 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*5]             ; round 5 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*6]             ; round 6 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*7]             ; round 7 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*8]             ; round 8 for tweak encryption
-
-	vaesenc  %%xstate_tweak, [%%ptr_key2 + 16*9]             ; round 9 for tweak encryption
-
-	vaesenclast      %%xstate_tweak, [%%ptr_key2 + 16*10]    ; round 10 for tweak encryption
+	vaesenclast      %%xstate_tweak, [%%ptr_key2 + 16*(NROUNDS + 1)]    ; round 10 for tweak encryption
 
 	vmovdqa  [TW], %%xstate_tweak                            ; Store the encrypted Tweak value
 %endmacro
@@ -153,286 +144,37 @@ default rel
 ; %%num_blocks blocks encrypted
 ; %%num_blocks can be 1, 2, 3, 4, 5, 6, 7
 
-	; xor Tweak value
-	vpxor    %%ST1, %%TW1
-%if (%%num_blocks>=2)
-	vpxor    %%ST2, %%TW2
-%endif
-%if (%%num_blocks>=3)
-	vpxor    %%ST3, %%TW3
-%endif
-%if (%%num_blocks>=4)
-	vpxor    %%ST4, %%TW4
-%endif
-%if (%%num_blocks>=5)
-	vpxor    %%ST5, %%TW5
-%endif
-%if (%%num_blocks>=6)
-	vpxor    %%ST6, %%TW6
-%endif
-%if (%%num_blocks>=7)
-	vpxor    %%ST7, %%TW7
-%endif
-
-
-	; ARK
+	; xor Tweak value + ARK
 	vmovdqu  %%T0, [ptr_key1]
-	vpxor    %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vpxor    %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vpxor    %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vpxor    %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vpxor    %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vpxor    %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vpxor    %%ST7, %%T0
-%endif
-	; round 1
-	vmovdqu  %%T0, [ptr_key1 + 16*1]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-	; round 2
-	vmovdqu  %%T0, [ptr_key1 + 16*2]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
+%assign %%I 1
+%rep %%num_blocks
+	vpternlogq %%ST %+ %%I, %%TW %+ %%I, %%T0, 0x96
+%assign %%I (%%I + 1)
+%endrep
 
-	; round 3
-	vmovdqu  %%T0, [ptr_key1 + 16*3]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
+	; AES rounds
+%assign %%ROUND 1
+%rep (NROUNDS + 1)
+	vmovdqu  %%T0, [ptr_key1 + 16*%%ROUND]
+%assign %%IDX 1
+%rep %%num_blocks
+%if %%ROUND == (NROUNDS + 1)
+	vaesenclast  %%ST %+ %%IDX, %%T0
+%else
+	vaesenc  %%ST %+ %%IDX, %%T0
 %endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-	; round 4
-	vmovdqu  %%T0, [ptr_key1 + 16*4]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
+%assign %%IDX (%%IDX + 1)
+%endrep
 
-	; round 5
-	vmovdqu  %%T0, [ptr_key1 + 16*5]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 
-	; round 6
-	vmovdqu  %%T0, [ptr_key1 + 16*6]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-
-	; round 7
-	vmovdqu  %%T0, [ptr_key1 + 16*7]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-
-	; round 8
-	vmovdqu  %%T0, [ptr_key1 + 16*8]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-
-	; round 9
-	vmovdqu  %%T0, [ptr_key1 + 16*9]
-	vaesenc  %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenc  %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenc  %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenc  %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenc  %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenc  %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenc  %%ST7, %%T0
-%endif
-
-	; round 10
-	vmovdqu  %%T0, [ptr_key1 + 16*10]
-	vaesenclast      %%ST1, %%T0
-%if (%%num_blocks>=2)
-	vaesenclast      %%ST2, %%T0
-%endif
-%if (%%num_blocks>=3)
-	vaesenclast      %%ST3, %%T0
-%endif
-%if (%%num_blocks>=4)
-	vaesenclast      %%ST4, %%T0
-%endif
-%if (%%num_blocks>=5)
-	vaesenclast      %%ST5, %%T0
-%endif
-%if (%%num_blocks>=6)
-	vaesenclast      %%ST6, %%T0
-%endif
-%if (%%num_blocks>=7)
-	vaesenclast      %%ST7, %%T0
-%endif
 	; xor Tweak values
-	vpxor    %%ST1, %%TW1
-%if (%%num_blocks>=2)
-	vpxor    %%ST2, %%TW2
-%endif
-%if (%%num_blocks>=3)
-	vpxor    %%ST3, %%TW3
-%endif
-%if (%%num_blocks>=4)
-	vpxor    %%ST4, %%TW4
-%endif
-%if (%%num_blocks>=5)
-	vpxor    %%ST5, %%TW5
-%endif
-%if (%%num_blocks>=6)
-	vpxor    %%ST6, %%TW6
-%endif
-%if (%%num_blocks>=7)
-	vpxor    %%ST7, %%TW7
-%endif
+%assign %%I 1
+%rep %%num_blocks
+	vpxor   %%ST %+ %%I, %%TW %+ %%I
+%assign %%I (%%I + 1)
+%endrep
 
 %endmacro
 
@@ -442,52 +184,21 @@ default rel
 %define %%TW1   %2      ; tweak 1
 %define %%T0    %3     ; Temp register
 
-	; xor Tweak values
-	vpxorq    %%ST1, %%TW1
-
-	; ARK
+	; xor Tweak values + ARK
 	vbroadcasti32x4 %%T0, [ptr_key1]
-	vpxorq    %%ST1, %%T0
+	vpternlogq    %%ST1, %%TW1, %%T0, 0x96
 
-	; round 1
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*1]
-	vaesenc  %%ST1, %%T0
-
-	; round 2
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*2]
-	vaesenc  %%ST1, %%T0
-
-	; round 3
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*3]
-	vaesenc  %%ST1, %%T0
-
-	; round 4
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*4]
-	vaesenc  %%ST1, %%T0
-
-	; round 5
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*5]
-	vaesenc  %%ST1, %%T0
-
-	; round 6
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*6]
-	vaesenc  %%ST1, %%T0
-
-	; round 7
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*7]
-	vaesenc  %%ST1, %%T0
-
-	; round 8
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*8]
-	vaesenc  %%ST1, %%T0
-
-	; round 9
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*9]
-	vaesenc  %%ST1, %%T0
-
-	; round 10
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*10]
+	; AES rounds
+%assign %%ROUND 1
+%rep (NROUNDS + 1)
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
+%if %%ROUND == (NROUNDS + 1)
 	vaesenclast  %%ST1, %%T0
+%else
+	vaesenc  %%ST1, %%T0
+%endif
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 
 	; xor Tweak values
 	vpxorq    %%ST1, %%TW1
@@ -505,14 +216,10 @@ default rel
 %define %%T0    %5     ; Temp register
 %define %%last_eight     %6
 
-	; xor Tweak values
-	vpxorq    %%ST1, %%TW1
-	vpxorq    %%ST2, %%TW2
-
-	; ARK
+	; xor Tweak values + ARK
 	vbroadcasti32x4 %%T0, [ptr_key1]
-	vpxorq    %%ST1, %%T0
-	vpxorq    %%ST2, %%T0
+	vpternlogq    %%ST1, %%TW1, %%T0, 0x96
+	vpternlogq    %%ST2, %%TW2, %%T0, 0x96
 
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, %%TW1, 15
@@ -520,60 +227,35 @@ default rel
 		vpslldq		zmm15, %%TW1, 1
 		vpxord		zmm15, zmm15, zmm14
 %endif
-	; round 1
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*1]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
 
-	; round 2
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*2]
+	; AES rounds 1-3
+%assign %%ROUND 1
+%rep 3
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 
-	; round 3
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*3]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, %%TW2, 15
 		vpclmulqdq	zmm14, zmm13, zpoly, 0
 		vpslldq		zmm16, %%TW2, 1
 		vpxord		zmm16, zmm16, zmm14
 %endif
-	; round 4
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*4]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
 
-	; round 5
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*5]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-
-	; round 6
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*6]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-
-	; round 7
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*7]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-
-	; round 8
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*8]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-
-	; round 9
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*9]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-
-	; round 10
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*10]
+	; Remaining AES rounds
+%rep (NROUNDS + 1 - 3)
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
+%if %%ROUND == (NROUNDS + 1)
 	vaesenclast  %%ST1, %%T0
 	vaesenclast  %%ST2, %%T0
+%else
+	vaesenc  %%ST1, %%T0
+	vaesenc  %%ST2, %%T0
+%endif
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 
 	; xor Tweak values
 	vpxorq    %%ST1, %%TW1
@@ -588,7 +270,7 @@ default rel
 
 
 ; Encrypt 16 blocks in parallel
-; generate next 8 tweak values
+; generate next 16 tweak values
 %macro  encrypt_by_16_zmm 10
 %define %%ST1   %1      ; state 1
 %define %%ST2   %2      ; state 2
@@ -603,18 +285,13 @@ default rel
 %define %%T0    %9     ; Temp register
 %define %%last_eight     %10
 
-	; xor Tweak values
-	vpxorq    %%ST1, %%TW1
-	vpxorq    %%ST2, %%TW2
-	vpxorq    %%ST3, %%TW3
-	vpxorq    %%ST4, %%TW4
-
-	; ARK
+	; xor Tweak values + ARK
 	vbroadcasti32x4 %%T0, [ptr_key1]
-	vpxorq    %%ST1, %%T0
-	vpxorq    %%ST2, %%T0
-	vpxorq    %%ST3, %%T0
-	vpxorq    %%ST4, %%T0
+	vpternlogq    %%ST1, %%TW1, %%T0, 0x96
+	vpternlogq    %%ST2, %%TW2, %%T0, 0x96
+	vpternlogq    %%ST3, %%TW3, %%T0, 0x96
+	vpternlogq    %%ST4, %%TW4, %%T0, 0x96
+
 
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, %%TW3, 15
@@ -622,90 +299,69 @@ default rel
 		vpslldq		zmm15, %%TW3, 1
 		vpxord		zmm15, zmm15, zmm14
 %endif
-	; round 1
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*1]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
 
-	; round 2
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*2]
+	; AES rounds 1-3
+%assign %%ROUND 1
+%rep 3
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
-
-	; round 3
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*3]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, %%TW4, 15
 		vpclmulqdq	zmm14, zmm13, zpoly, 0
 		vpslldq		zmm16, %%TW4, 1
 		vpxord		zmm16, zmm16, zmm14
 %endif
-	; round 4
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*4]
+	; AES rounds 4-6
+%rep 3
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
-
-	; round 5
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*5]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
-
-	; round 6
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*6]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, zmm15, 15
 		vpclmulqdq	zmm14, zmm13, zpoly, 0
 		vpslldq		zmm17, zmm15, 1
 		vpxord		zmm17, zmm17, zmm14
 %endif
-	; round 7
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*7]
+	; AES rounds 7-9
+%rep 3
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
 	vaesenc  %%ST1, %%T0
 	vaesenc  %%ST2, %%T0
 	vaesenc  %%ST3, %%T0
 	vaesenc  %%ST4, %%T0
-
-	; round 8
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*8]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
-
-	; round 9
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*9]
-	vaesenc  %%ST1, %%T0
-	vaesenc  %%ST2, %%T0
-	vaesenc  %%ST3, %%T0
-	vaesenc  %%ST4, %%T0
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 %if (0 == %%last_eight)
 		vpsrldq		zmm13, zmm16, 15
 		vpclmulqdq	zmm14, zmm13, zpoly, 0
 		vpslldq		zmm18, zmm16, 1
 		vpxord		zmm18, zmm18, zmm14
 %endif
-	; round 10
-	vbroadcasti32x4 %%T0, [ptr_key1 + 16*10]
+	; Remaining AES rounds
+%rep (NROUNDS + 1 - 9)
+	vbroadcasti32x4 %%T0, [ptr_key1 + 16*%%ROUND]
+%if (%%ROUND == (NROUNDS + 1))
 	vaesenclast  %%ST1, %%T0
 	vaesenclast  %%ST2, %%T0
 	vaesenclast  %%ST3, %%T0
 	vaesenclast  %%ST4, %%T0
+%else
+	vaesenc  %%ST1, %%T0
+	vaesenc  %%ST2, %%T0
+	vaesenc  %%ST3, %%T0
+	vaesenc  %%ST4, %%T0
+%endif
+%assign %%ROUND (%%ROUND + 1)
+%endrep
 
 	; xor Tweak values
 	vpxorq    %%ST1, %%TW1
@@ -1022,23 +678,18 @@ _steal_cipher:
 	vpxor		xmm10, [mask1]
 	vpshufb		xmm3, xmm10
 
-	vpblendvb	xmm3, xmm3, xmm2, xmm10
+	vpblendvb	xmm8, xmm3, xmm2, xmm10
 
-	; xor Tweak value
-	vpxor		xmm8, xmm3, xmm0
+	; xor Tweak value and ARK round of last block encryption
+	vpternlogq	xmm8, xmm0, [ptr_key1], 0x96
 
-	;encrypt last block with cipher stealing
-	vpxor		xmm8, [ptr_key1]		; ARK
-	vaesenc		xmm8, [ptr_key1 + 16*1]	; round 1
-	vaesenc		xmm8, [ptr_key1 + 16*2]	; round 2
-	vaesenc		xmm8, [ptr_key1 + 16*3]	; round 3
-	vaesenc		xmm8, [ptr_key1 + 16*4]	; round 4
-	vaesenc		xmm8, [ptr_key1 + 16*5]	; round 5
-	vaesenc		xmm8, [ptr_key1 + 16*6]	; round 6
-	vaesenc		xmm8, [ptr_key1 + 16*7]	; round 7
-	vaesenc		xmm8, [ptr_key1 + 16*8]	; round 8
-	vaesenc		xmm8, [ptr_key1 + 16*9]	; round 9
-	vaesenclast	xmm8, [ptr_key1 + 16*10]	; round 10
+        ; AES rounds
+%assign I 1
+%rep NROUNDS
+	vaesenc         xmm8, [ptr_key1 + 16*I]
+%assign I (I + 1)
+%endrep
+	vaesenclast	xmm8, [ptr_key1 + 16*(NROUNDS+1)]
 
 	; xor Tweak value
 	vpxor		xmm8, xmm8, xmm0
