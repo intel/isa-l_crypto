@@ -850,7 +850,7 @@ _remaining_num_blocks_is_5:
 _remaining_num_blocks_is_4:
 	vmovdqu8	zmm1, [ptr_plaintext+16*0]
 	add		ptr_plaintext, 16*4
-	encrypt_by_eight_zmm  zmm1, zmm2, zmm9, zmm10, zmm0, 1
+	encrypt_by_four_zmm  zmm1, zmm9, zmm0
 	vmovdqu8	[ptr_ciphertext+16*0], zmm1
 	add		ptr_ciphertext, 16*4
 
@@ -861,36 +861,30 @@ _remaining_num_blocks_is_4:
 	jmp		_steal_cipher
 
 _remaining_num_blocks_is_3:
-	vextracti32x4	xmm10, zmm9, 1
-	vextracti32x4	xmm11, zmm9, 2
-	vmovdqu		xmm1, [ptr_plaintext+16*0]
-	vmovdqu		xmm2, [ptr_plaintext+16*1]
-	vmovdqu		xmm3, [ptr_plaintext+16*2]
+	mov		tmp1, -1
+	shr		tmp1, 16
+	kmovq		k1, tmp1
+	vmovdqu8	zmm1{k1}, [ptr_plaintext+16*0]
 	add		ptr_plaintext, 16*3
-	encrypt_final xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, xmm0, 3
-	vmovdqu		[ptr_ciphertext+16*0], xmm1
-	vmovdqu		[ptr_ciphertext+16*1], xmm2
-	vmovdqu		[ptr_ciphertext+16*2], xmm3
+	encrypt_by_four_zmm  zmm1, zmm9, zmm0
+	vmovdqu8	[ptr_ciphertext+16*0]{k1}, zmm1
 	add		ptr_ciphertext, 16*3
 
-	vmovdqa		xmm8, xmm3
-	vextracti32x4	xmm0, zmm9, 3
+	vextracti32x4	xmm8, zmm1, 0x2
+	vextracti32x4	xmm0, zmm9, 0x3
 	and		N_val, 15
 	je		_ret_
 	jmp		_steal_cipher
 
 _remaining_num_blocks_is_2:
-	vextracti32x4	xmm10, zmm9, 1
-	vmovdqu		xmm1, [ptr_plaintext+16*0]
-	vmovdqu		xmm2, [ptr_plaintext+16*1]
+	vmovdqu8	ymm1, [ptr_plaintext+16*0]
 	add		ptr_plaintext, 16*2
-	encrypt_final xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10, xmm11, xmm12, xmm13, xmm14, xmm15, xmm0, 2
-	vmovdqu		[ptr_ciphertext+16*0], xmm1
-	vmovdqu		[ptr_ciphertext+16*1], xmm2
+	encrypt_by_four_zmm  ymm1, ymm9, ymm0
+	vmovdqu8	[ptr_ciphertext+16*0], ymm1
 	add		ptr_ciphertext, 16*2
 
-	vmovdqa		xmm8, xmm2
-	vextracti32x4	xmm0, zmm9, 2
+	vextracti32x4	xmm8, zmm1, 0x1
+	vextracti32x4	xmm0, zmm9, 0x2
 	and		N_val, 15
 	je		_ret_
 	jmp		_steal_cipher
@@ -910,10 +904,10 @@ _remaining_num_blocks_is_1:
 
 
 _start_by16:
-	; Make first 7 tweek values
+	; Make first 7 tweak values (after initial tweak)
 	vbroadcasti32x4	zmm0, [TW]
 	vbroadcasti32x4	zmm8, [shufb_15_7]
-	mov		tmp1, 0xaa
+	mov		DWORD(tmp1), 0xaa
 	kmovq		k2, tmp1
 
 	; Mult tweak by 2^{3, 2, 1, 0}
@@ -931,7 +925,7 @@ _start_by16:
 	vpxorq		zmm5 {k2}, zmm5, zmm6		; tweaks shifted by 7-4
 	vpxord		zmm10, zmm7, zmm5
 
-	; Make next 8 tweek values by all x 2^8
+	; Make next 8 tweak values by all x 2^8
 	vpsrldq		zmm13, zmm9, 15
 	vpclmulqdq	zmm14, zmm13, zpoly, 0
 	vpslldq		zmm11, zmm9, 1
@@ -968,10 +962,10 @@ _main_loop_run_16:
 	jmp		_do_last_n_blocks
 
 _start_by8:
-	; Make first 7 tweek values
+	; Make first 7 tweak values (after initial tweak)
 	vbroadcasti32x4	zmm0, [TW]
 	vbroadcasti32x4	zmm8, [shufb_15_7]
-	mov		tmp1, 0xaa
+	mov		DWORD(tmp1), 0xaa
 	kmovq		k2, tmp1
 
 	; Mult tweak by 2^{3, 2, 1, 0}
