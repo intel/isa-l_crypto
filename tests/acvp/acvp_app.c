@@ -33,7 +33,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <acvp/acvp.h>
-#include <isa-l_crypto.h>
+#include "include/isal_crypto_api.h"
 
 #if defined(__GNUC__) || defined(__clang__)
 #define ATTRIBUTE(x) __attribute__((x))

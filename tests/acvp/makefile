@@ -1,6 +1,6 @@
 ACVP_PATH = /usr/local/acvp
 
-INCLUDES = -I $(ACVP_PATH)/include -L $(ACVP_PATH)/lib
+INCLUDES = -I $(ACVP_PATH)/include -L $(ACVP_PATH)/lib -I ../../
 CFLAGS = -Wall -O2 $(INCLUDES) -DNO_COMPAT_ISAL_CRYPTO_API_2_24
 LDLIBS = -lacvp -lisal_crypto
 
