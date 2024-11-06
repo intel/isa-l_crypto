@@ -337,11 +337,10 @@ Lrounds_16_xx:
 	vmovdqa	[STATE+7*SHA512_DIGEST_ROW_SIZE],h
 
 	; update input pointers
-	vmovq	xmm0, IDX
-	vpunpcklqdq xmm0, xmm0
-	lea	IDX, [STATE + _data_ptr_sha512]
-	vpaddq	xmm0, xmm0, [IDX]
-	vmovdqu [IDX], xmm0
+	add	inp0, IDX
+	mov	[STATE + _data_ptr_sha512 + 0*PTR_SZ], inp0
+	add	inp1, IDX
+	mov [STATE + _data_ptr_sha512 + 1*PTR_SZ], inp1
 
 	;;;;;;;;;;;;;;;;
 	;; Postamble
