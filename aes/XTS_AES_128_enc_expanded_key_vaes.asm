@@ -51,7 +51,10 @@ default rel
 %define VARIABLE_OFFSET 16*8 + 16*10 + 8*3     ; stack frame size for tweak values, XMM6-15 and GP regs
 %endif
 
+%ifndef NROUNDS
 %define NROUNDS 9
+%define FUNC _XTS_AES_128_enc_expanded_key_vaes
+%endif
 
 %define GHASH_POLY 0x87
 
@@ -379,8 +382,8 @@ default rel
 
 section .text
 
-mk_global _XTS_AES_128_enc_expanded_key_vaes, function, internal
-_XTS_AES_128_enc_expanded_key_vaes:
+mk_global FUNC, function, internal
+FUNC:
 	endbranch
 
 	push		rbp
