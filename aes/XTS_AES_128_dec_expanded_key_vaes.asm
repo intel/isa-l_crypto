@@ -368,12 +368,12 @@ FUNC:
 %endif
 
 	cmp		N_val, 128
-	jl              _less_than_128_bytes
+	jb              _less_than_128_bytes
 
 	vpbroadcastq	zpoly, ghash_poly_8b
 
 	cmp		N_val, 256
-	jge		_start_by16
+	jae		_start_by16
 	jmp		_start_by8
 
 _do_last_n_blocks:
@@ -381,25 +381,25 @@ _do_last_n_blocks:
 	je		_ret_
 
 	cmp		N_val, (7*16)
-	jge		_remaining_num_blocks_is_7
+	jae		_remaining_num_blocks_is_7
 
 	cmp		N_val, (6*16)
-	jge		_remaining_num_blocks_is_6
+	jae		_remaining_num_blocks_is_6
 
 	cmp		N_val, (5*16)
-	jge		_remaining_num_blocks_is_5
+	jae		_remaining_num_blocks_is_5
 
 	cmp		N_val, (4*16)
-	jge		_remaining_num_blocks_is_4
+	jae		_remaining_num_blocks_is_4
 
 	cmp		N_val, (3*16)
-	jge		_remaining_num_blocks_is_3
+	jae		_remaining_num_blocks_is_3
 
 	cmp		N_val, (2*16)
-	jge		_remaining_num_blocks_is_2
+	jae		_remaining_num_blocks_is_2
 
 	cmp		N_val, (1*16)
-	jge		_remaining_num_blocks_is_1
+	jae		_remaining_num_blocks_is_1
 
 ;; _remaining_num_blocks_is_0:
 	vmovdqu		xmm1, xmm5 ; xmm5 contains last full block to decrypt with next teawk
@@ -572,10 +572,10 @@ _main_loop_run_16:
 	sub		N_val, 256
 
 	cmp		N_val, 256
-	jge		_main_loop_run_16
+	jae		_main_loop_run_16
 
 	cmp		N_val, 128
-	jge		_main_loop_run_8
+	jae		_main_loop_run_8
 
 	vextracti32x4	xmm0, zmm4, 0x3 ; keep last decrypted block
 	jmp		_do_last_n_blocks
@@ -618,7 +618,7 @@ _main_loop_run_8:
 	sub		N_val, 128
 
 	cmp		N_val, 128
-	jge		_main_loop_run_8
+	jae		_main_loop_run_8
 
 	vextracti32x4	xmm0, zmm2, 0x3 ; keep last decrypted block
 	jmp		_do_last_n_blocks
