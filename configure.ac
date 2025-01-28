@@ -217,7 +217,7 @@ int main(int argc, char **argv)
     fi
     if test x"$as_feature_level" = x"6"; then
       AC_MSG_CHECKING([for additional as AVX512 support])
-      AC_LANG_CONFTEST([AC_LANG_SOURCE([[vpcompressb zmm0, k1, zmm1;]])])
+      AC_LANG_CONFTEST([AC_LANG_SOURCE([[vpcompressb zmm0 {k1}, zmm1;]])])
       sed -i -e '/vpcompressb/!d' conftest.c
       if $AS -f elf64  conftest.c 2> /dev/null; then
         AC_MSG_RESULT([yes])
