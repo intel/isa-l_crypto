@@ -37,18 +37,15 @@
 %include "clear_regs.inc"
 
 default rel
-%define TW              rsp     ; store 8 tweak values
 
-%ifidn __OUTPUT_FORMAT__, win64
-	%define _xmm    rsp + 16*8     ; store xmm6:xmm15
-%endif
 
 %ifidn __OUTPUT_FORMAT__, elf64
-%define _gpr    rsp + 16*8     ; store rbx
-%define VARIABLE_OFFSET 16*8 + 8*1     ; stack frame size for tweak values and rbx
+%define _gpr    rsp     ; store rbx
+%define VARIABLE_OFFSET 8*1     ; stack frame size for rbx
 %else
-%define _gpr    rsp + 16*(8+10)     ; store rdi, rsi, rbx
-%define VARIABLE_OFFSET 16*8 + 16*10 + 8*3     ; stack frame size for tweak values, XMM6-15 and GP regs
+%define _xmm    rsp             ; store xmm6:xmm15
+%define _gpr    rsp + 16*10     ; store rdi, rsi, rbx
+%define VARIABLE_OFFSET 16*10 + 8*3     ; stack frame size for XMM6-15 and GP regs
 %endif
 
 %ifndef NROUNDS
@@ -98,6 +95,7 @@ default rel
 %define twtempl rax     ; global temp registers used for tweak computation
 %define twtemph rbx
 %define zpoly   zmm25
+%define prev_tweak zmm31
 
 
 ; macro to encrypt the tweak value
@@ -106,7 +104,7 @@ default rel
 %define %%xstate_tweak  %1
 %define %%ptr_key2      %2
 
-	vpxor    %%xstate_tweak, [%%ptr_key2]                    ; ARK for tweak encryption
+	vpxorq   %%xstate_tweak, [%%ptr_key2]                    ; ARK for tweak encryption
 
         ; Do N AES rounds for tweak encryption
 %assign %%I 1
@@ -116,8 +114,6 @@ default rel
 %endrep
 
 	vaesenclast      %%xstate_tweak, [%%ptr_key2 + 16*(NROUNDS + 1)]    ; round 10 for tweak encryption
-
-	vmovdqa  [TW], %%xstate_tweak                            ; Store the encrypted Tweak value
 %endmacro
 
 ; Decrypt 4 blocks in parallel
@@ -358,8 +354,8 @@ FUNC:
 
 	mov		ghash_poly_8b, GHASH_POLY       ; load 0x87 to ghash_poly_8b
 
-	vmovdqu		xmm1, [T_val]                   ; read initial Tweak value
-	encrypt_T       xmm1, ptr_key2
+	vmovdqu64	XWORD(prev_tweak), [T_val]                   ; read initial Tweak value
+	encrypt_T       XWORD(prev_tweak), ptr_key2
 
 
 %ifidn __OUTPUT_FORMAT__, win64
@@ -523,7 +519,7 @@ _remaining_num_blocks_is_1:
 
 _start_by16:
 	; Make first 7 tweak values (after initial tweak)
-	vbroadcasti32x4	zmm0, [TW]
+	vshufi32x4     	zmm0, prev_tweak, prev_tweak, 0x00
 	vbroadcasti32x4	zmm8, [shufb_15_7]
 	mov		DWORD(tmp1), 0xaa
 	kmovq		k2, tmp1
@@ -582,7 +578,7 @@ _main_loop_run_16:
 
 _start_by8:
 	; Make first 7 tweak values (after initial tweak)
-	vbroadcasti32x4	zmm0, [TW]
+	vshufi32x4     	zmm0, prev_tweak, prev_tweak, 0x00
 	vbroadcasti32x4	zmm8, [shufb_15_7]
 	mov		DWORD(tmp1), 0xaa
 	kmovq		k2, tmp1
@@ -696,7 +692,7 @@ _less_than_128_bytes:
 	cmp		N_val, 16
 	jb		_ret_
 
-	vbroadcasti32x4	zmm0, [TW]
+	vshufi32x4     	zmm0, prev_tweak, prev_tweak, 0x00
 	vbroadcasti32x4	zmm8, [shufb_15_7]
 	mov		DWORD(tmp1), 0xaa
 	kmovq		k2, tmp1
