@@ -30,9 +30,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <malloc.h>
 
 #include <aes_xts.h>
 #include <aes_cbc.h>
+#include <aes_gcm.h>
 #include <aes_keyexp.h>
 
 /**
@@ -52,6 +54,516 @@ LLVMFuzzerInitialize(int *, char ***);
 int
 LLVMFuzzerInitialize(int *argc, char ***argv)
 {
+        return 0;
+}
+
+/**
+ * @brief Fill a buffer with data from a source buffer
+ *
+ * @param d Destination buffer
+ * @param d_size Size of the destination buffer
+ * @param s Source buffer
+ * @param s_size Size of the source buffer
+ */
+static void
+fill_data(void *d, const size_t d_size, const void *s, const size_t s_size)
+{
+        if (d == NULL || d_size == 0)
+                return;
+
+        memset(d, 0, d_size);
+
+        if (s == NULL || s_size == 0)
+                return;
+
+        const size_t m_size = (s_size > d_size) ? d_size : s_size;
+        memcpy(d, s, m_size);
+}
+
+/* AES-GCM */
+static struct isal_gcm_key_data *gcm_key = NULL;     /**< GCM key data */
+static struct isal_gcm_context_data *gcm_ctx = NULL; /**< GCM context data */
+static uint8_t *gcm_iv = NULL;                       /**< Initialization vector */
+static uint8_t *gcm_aad = NULL;                      /**< Additional authenticated data */
+static uint64_t gcm_aad_len;                         /**< Length of AAD */
+static uint8_t *gcm_auth_tag = NULL;                 /**< Authentication tag */
+static uint64_t gcm_tag_len;                         /**< Length of the authentication tag */
+
+/**
+ * @brief Clean up all GCM resources
+ *
+ * Frees all allocated memory and resets all GCM-related variables.
+ */
+static void
+gcm_end(void)
+{
+        if (gcm_key != NULL)
+                free(gcm_key);
+        if (gcm_ctx != NULL)
+                free(gcm_ctx);
+        if (gcm_iv != NULL)
+                free(gcm_iv);
+        if (gcm_aad != NULL)
+                free(gcm_aad);
+        if (gcm_auth_tag != NULL)
+                free(gcm_auth_tag);
+        gcm_key = NULL;
+        gcm_ctx = NULL;
+        gcm_iv = NULL;
+        gcm_aad = NULL;
+        gcm_aad_len = 0;
+        gcm_auth_tag = NULL;
+        gcm_tag_len = 0;
+}
+
+/**
+ * @brief Initialize GCM resources for testing
+ *
+ * Allocates memory for GCM key data, initialization vector,
+ * additional authenticated data, and authentication tag.
+ * Then fills them with data from the provided buffer.
+ *
+ * @param data_size Size of the input data
+ * @param data Pointer to the input data
+ * @return int 0 on success, -1 on failure (memory allocation)
+ */
+static int
+gcm_start(const size_t data_size, const uint8_t *data)
+{
+        gcm_key = (struct isal_gcm_key_data *) memalign(16, sizeof(struct isal_gcm_key_data));
+        gcm_iv = (uint8_t *) malloc(16);
+        gcm_aad_len = data_size;
+        gcm_aad = (uint8_t *) malloc(gcm_aad_len);
+        gcm_tag_len = data_size;
+        gcm_auth_tag = (uint8_t *) malloc(gcm_tag_len);
+        if (gcm_key == NULL || gcm_iv == NULL || gcm_aad == NULL || gcm_auth_tag == NULL) {
+                gcm_end();
+                return -1;
+        }
+        fill_data(gcm_key, sizeof(struct isal_gcm_key_data), data, data_size);
+        fill_data(gcm_iv, 12, data, data_size);
+        fill_data(gcm_aad, gcm_aad_len, data, data_size);
+        fill_data(gcm_auth_tag, gcm_tag_len, data, data_size);
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM encryption
+ *
+ * Tests the AES-128 GCM encryption functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_enc(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_enc_128(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad, gcm_aad_len,
+                                     gcm_auth_tag, gcm_tag_len);
+        else
+                isal_aes_gcm_enc_128_nt(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad,
+                                        gcm_aad_len, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM encryption
+ *
+ * Tests the AES-256 GCM encryption functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_enc(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_enc_256(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad, gcm_aad_len,
+                                     gcm_auth_tag, gcm_tag_len);
+        else
+                isal_aes_gcm_enc_256_nt(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad,
+                                        gcm_aad_len, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM decryption
+ *
+ * Tests the AES-128 GCM decryption functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_dec(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_dec_128(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad, gcm_aad_len,
+                                     gcm_auth_tag, gcm_tag_len);
+        else
+                isal_aes_gcm_dec_128_nt(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad,
+                                        gcm_aad_len, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM decryption
+ *
+ * Tests the AES-256 GCM decryption functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_dec(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_dec_256(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad, gcm_aad_len,
+                                     gcm_auth_tag, gcm_tag_len);
+        else
+                isal_aes_gcm_dec_256_nt(gcm_key, gcm_ctx, out, in, len, gcm_iv, gcm_aad,
+                                        gcm_aad_len, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM initialization
+ *
+ * Tests the AES-128 GCM initialization functionality with the provided data.
+ * This initializes the GCM context with the key, IV, and AAD.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_init(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_init_128(gcm_key, gcm_ctx, gcm_iv, gcm_aad, gcm_aad_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM initialization
+ *
+ * Tests the AES-256 GCM initialization functionality with the provided data.
+ * This initializes the GCM context with the key, IV, and AAD.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_init(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_init_256(gcm_key, gcm_ctx, gcm_iv, gcm_aad, gcm_aad_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM encryption update
+ *
+ * Tests the AES-128 GCM encryption update functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ * This function is used for incremental encryption of data.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_enc_update(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_enc_128_update(gcm_key, gcm_ctx, out, in, len);
+        else
+                isal_aes_gcm_enc_128_update_nt(gcm_key, gcm_ctx, out, in, len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM encryption update
+ *
+ * Tests the AES-256 GCM encryption update functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ * This function is used for incremental encryption of data.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_enc_update(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_enc_256_update(gcm_key, gcm_ctx, out, in, len);
+        else
+                isal_aes_gcm_enc_256_update_nt(gcm_key, gcm_ctx, out, in, len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM decryption update
+ *
+ * Tests the AES-128 GCM decryption update functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ * This function is used for incremental decryption of data.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_dec_update(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_dec_128_update(gcm_key, gcm_ctx, out, in, len);
+        else
+                isal_aes_gcm_dec_128_update_nt(gcm_key, gcm_ctx, out, in, len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM decryption update
+ *
+ * Tests the AES-256 GCM decryption update functionality with the provided data,
+ * alternating between normal and non-temporal versions based on the input.
+ * This function is used for incremental decryption of data.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_dec_update(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        /* Choose between "normal" and non-temporal version */
+        if ((buff[0] % 2) == 0)
+                isal_aes_gcm_dec_256_update(gcm_key, gcm_ctx, out, in, len);
+        else
+                isal_aes_gcm_dec_256_update_nt(gcm_key, gcm_ctx, out, in, len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM encryption finalization
+ *
+ * Tests the AES-128 GCM encryption finalization functionality,
+ * which generates the authentication tag after processing all data.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_enc_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_enc_128_finalize(gcm_key, gcm_ctx, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM encryption finalization
+ *
+ * Tests the AES-256 GCM encryption finalization functionality,
+ * which generates the authentication tag after processing all data.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_enc_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_enc_256_finalize(gcm_key, gcm_ctx, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 GCM decryption finalization
+ *
+ * Tests the AES-128 GCM decryption finalization functionality,
+ * which verifies the authentication tag after processing all data.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_128_gcm_dec_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_dec_128_finalize(gcm_key, gcm_ctx, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 GCM decryption finalization
+ *
+ * Tests the AES-256 GCM decryption finalization functionality,
+ * which verifies the authentication tag after processing all data.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_256_gcm_dec_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint64_t len = data_size;
+
+        isal_aes_gcm_dec_256_finalize(gcm_key, gcm_ctx, gcm_auth_tag, gcm_tag_len);
+        gcm_end();
+        return 0;
+}
+
+/**
+ * @brief Test AES GCM pre-computation
+ *
+ * Tests the AES GCM pre-computation function that computes
+ * tables used in GCM operations.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_aes_gcm_pre(uint8_t *buff, const size_t data_size)
+{
+        if (gcm_start(data_size, buff) != 0)
+                return -1;
+
+        if (data_size >= 32)
+                isal_aes_gcm_pre_256(buff, gcm_key);
+        else if (data_size >= 16)
+                isal_aes_gcm_pre_128(buff, gcm_key);
+
+        gcm_end();
+
         return 0;
 }
 
@@ -546,6 +1058,22 @@ struct {
         { test_aes_256_enc_xts_expanded_key, "test_aes_256_enc_xts_expanded_key" },
         { test_aes_128_dec_xts_expanded_key, "test_aes_128_dec_xts_expanded_key" },
         { test_aes_256_dec_xts_expanded_key, "test_aes_256_dec_xts_expanded_key" },
+        { test_aes_gcm_pre, "test_aes_gcm_pre" },
+        { test_aes_128_gcm_enc, "test_aes_128_gcm_enc" },
+        { test_aes_256_gcm_enc, "test_aes_256_gcm_enc" },
+        { test_aes_128_gcm_dec, "test_aes_128_gcm_dec" },
+        { test_aes_256_gcm_dec, "test_aes_256_gcm_dec" },
+        { test_aes_128_gcm_init, "test_aes_128_gcm_init" },
+        { test_aes_256_gcm_init, "test_aes_256_gcm_init" },
+        /* AES-GCM functions */
+        { test_aes_128_gcm_enc_update, "test_aes_128_gcm_enc_update" },
+        { test_aes_256_gcm_enc_update, "test_aes_256_gcm_enc_update" },
+        { test_aes_128_gcm_dec_update, "test_aes_128_gcm_dec_update" },
+        { test_aes_256_gcm_dec_update, "test_aes_256_gcm_dec_update" },
+        { test_aes_128_gcm_enc_finalize, "test_aes_128_gcm_enc_finalize" },
+        { test_aes_256_gcm_enc_finalize, "test_aes_256_gcm_enc_finalize" },
+        { test_aes_128_gcm_dec_finalize, "test_aes_128_gcm_dec_finalize" },
+        { test_aes_256_gcm_dec_finalize, "test_aes_256_gcm_dec_finalize" },
 };
 
 /**
