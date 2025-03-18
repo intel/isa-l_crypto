@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <aes_xts.h>
 #include <aes_cbc.h>
 #include <aes_keyexp.h>
 
@@ -51,6 +52,239 @@ LLVMFuzzerInitialize(int *, char ***);
 int
 LLVMFuzzerInitialize(int *argc, char ***argv)
 {
+        return 0;
+}
+
+/* AES-XTS */
+/**
+ * @brief Test AES-128 XTS encryption
+ *
+ * Tests the AES-128 XTS encryption functionality with the provided data.
+ * XTS mode requires two keys and a tweak value, all reused from the input buffer.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_128_enc_xts(uint8_t *buff, const size_t data_size)
+{
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_enc_128(k2, k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 XTS encryption
+ *
+ * Tests the AES-256 XTS encryption functionality with the provided data.
+ * XTS mode requires two keys and a tweak value, all reused from the input buffer.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_256_enc_xts(uint8_t *buff, const size_t data_size)
+{
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 32)
+                return -1;
+
+        isal_aes_xts_enc_256(k2, k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 XTS decryption
+ *
+ * Tests the AES-128 XTS decryption functionality with the provided data.
+ * XTS mode requires two keys and a tweak value, all reused from the input buffer.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_128_dec_xts(uint8_t *buff, const size_t data_size)
+{
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_dec_128(k2, k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 XTS decryption
+ *
+ * Tests the AES-256 XTS decryption functionality with the provided data.
+ * XTS mode requires two keys and a tweak value, all reused from the input buffer.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_256_dec_xts(uint8_t *buff, const size_t data_size)
+{
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 32)
+                return -1;
+
+        isal_aes_xts_dec_256(k2, k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 XTS encryption with expanded keys
+ *
+ * Tests the AES-128 XTS encryption functionality with pre-expanded keys.
+ * This variant can be more efficient when the same key is used multiple times.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_128_enc_xts_expanded_key(uint8_t *buff, const size_t data_size)
+{
+        uint8_t expanded_k1[16 * 11];
+        uint8_t expanded_k2[16 * 11];
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_enc_128_expanded_key(expanded_k2, expanded_k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 XTS encryption with expanded keys
+ *
+ * Tests the AES-256 XTS encryption functionality with pre-expanded keys.
+ * This variant can be more efficient when the same key is used multiple times.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_256_enc_xts_expanded_key(uint8_t *buff, const size_t data_size)
+{
+        uint8_t expanded_k1[16 * 15];
+        uint8_t expanded_k2[16 * 15];
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_enc_256_expanded_key(expanded_k2, expanded_k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-128 XTS decryption with expanded keys
+ *
+ * Tests the AES-128 XTS decryption functionality with pre-expanded keys.
+ * This variant can be more efficient when the same key is used multiple times.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_128_dec_xts_expanded_key(uint8_t *buff, const size_t data_size)
+{
+        uint8_t expanded_k1[16 * 11];
+        uint8_t expanded_k2[16 * 11];
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_dec_128_expanded_key(expanded_k2, expanded_k1, tweak, len, in, out);
+
+        return 0;
+}
+
+/**
+ * @brief Test AES-256 XTS decryption with expanded keys
+ *
+ * Tests the AES-256 XTS decryption functionality with pre-expanded keys.
+ * This variant can be more efficient when the same key is used multiple times.
+ *
+ * @param buff Buffer containing test data and used for output
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure (insufficient data)
+ */
+static int
+test_aes_256_dec_xts_expanded_key(uint8_t *buff, const size_t data_size)
+{
+        uint8_t expanded_k1[16 * 15];
+        uint8_t expanded_k2[16 * 15];
+        uint8_t *out = buff;
+        const uint8_t *in = buff;
+        const uint8_t *tweak = buff;
+        const uint8_t *k1 = buff;
+        const uint8_t *k2 = buff;
+        const uint64_t len = data_size;
+
+        if (data_size < 16)
+                return -1;
+
+        isal_aes_xts_dec_256_expanded_key(expanded_k2, expanded_k1, tweak, len, in, out);
+
         return 0;
 }
 
@@ -303,6 +537,15 @@ struct {
         { test_aes_128_dec_cbc, "test_aes_128_dec_cbc" },
         { test_aes_192_dec_cbc, "test_aes_192_dec_cbc" },
         { test_aes_256_dec_cbc, "test_aes_256_dec_cbc" },
+        /* AES-XTS functions */
+        { test_aes_128_enc_xts, "test_aes_128_enc_xts" },
+        { test_aes_256_enc_xts, "test_aes_256_enc_xts" },
+        { test_aes_128_dec_xts, "test_aes_128_dec_xts" },
+        { test_aes_256_dec_xts, "test_aes_256_dec_xts" },
+        { test_aes_128_enc_xts_expanded_key, "test_aes_128_enc_xts_expanded_key" },
+        { test_aes_256_enc_xts_expanded_key, "test_aes_256_enc_xts_expanded_key" },
+        { test_aes_128_dec_xts_expanded_key, "test_aes_128_dec_xts_expanded_key" },
+        { test_aes_256_dec_xts_expanded_key, "test_aes_256_dec_xts_expanded_key" },
 };
 
 /**
