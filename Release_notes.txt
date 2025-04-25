@@ -15,10 +15,6 @@ RELEASE NOTE CONTENTS
 
 * Perf tests do not run in Windows environment.
 
-* 32-bit lib is not supported in Windows.
-
-* 32-bit lib is not validated.
-
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
@@ -79,6 +75,10 @@ v2.7
 ================================================================================
 3. CHANGE LOG & FEATURES ADDED
 ================================================================================
+v2.26
+
+* Remove 32-bit x86 support.
+
 v2.25
 
 * Added new API including parameter checking (starting with isal_ prefix).

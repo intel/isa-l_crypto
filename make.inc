@@ -56,11 +56,6 @@ ASFLAGS_   = -f elf64
 ARFLAGS_   = cr $@
 STRIP_gcc  = strip -d -R .comment $@
 
-# arch=32 build options
-ASFLAGS_32 = -f elf32
-CFLAGS_32  = -m32
-ARFLAGS_32 = cr $@
-
 # arch=win64 build options
 ASFLAGS_win64 = -f win64
 CFLAGS_icl    = -Qstd=c99

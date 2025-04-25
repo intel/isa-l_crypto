@@ -29,15 +29,6 @@
 
 %include "reg_sizes.asm"
 
-%ifidn __OUTPUT_FORMAT__, elf32
-
-[bits 32]
-%define def_wrd		dd
-%define wrd_sz  	dword
-%define arg1		esi
-
-%else
-
 default rel
 [bits 64]
 %define def_wrd 	dq
@@ -46,7 +37,6 @@ default rel
 
 extern _rolling_hash2_run_until_00
 extern _rolling_hash2_run_until_04
-%endif
 
 extern _rolling_hash2_run_until_base
 
@@ -73,9 +63,6 @@ _rolling_hash2_run_until:
 
 _rolling_hash2_run_until_dispatch_init:
 	push    arg1
-%ifidn __OUTPUT_FORMAT__, elf32		;; 32-bit check
-	lea     arg1, [_rolling_hash2_run_until_base]
-%else
 	push    rax
 	push    rbx
 	push    rcx
@@ -116,7 +103,7 @@ _done_rolling_hash2_run_until_data_init:
 	pop     rcx
 	pop     rbx
 	pop     rax
-%endif			;; END 32-bit check
+
 	mov     [_rolling_hash2_run_until_dispatched], arg1
 	pop     arg1
 	ret

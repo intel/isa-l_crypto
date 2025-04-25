@@ -30,25 +30,14 @@
 %ifndef _MULTIBINARY_ASM_
 %define _MULTIBINARY_ASM_
 
-%ifidn __OUTPUT_FORMAT__, elf32
- %define mbin_def_ptr	dd
- %define mbin_ptr_sz	dword
- %define mbin_rdi	edi
- %define mbin_rsi	esi
- %define mbin_rax	eax
- %define mbin_rbx	ebx
- %define mbin_rcx	ecx
- %define mbin_rdx	edx
-%else
- %define mbin_def_ptr	dq
- %define mbin_ptr_sz	qword
- %define mbin_rdi	rdi
- %define mbin_rsi	rsi
- %define mbin_rax	rax
- %define mbin_rbx	rbx
- %define mbin_rcx	rcx
- %define mbin_rdx	rdx
-%endif
+%define mbin_def_ptr	dq
+%define mbin_ptr_sz	qword
+%define mbin_rdi	rdi
+%define mbin_rsi	rsi
+%define mbin_rax	rax
+%define mbin_rbx	rbx
+%define mbin_rcx	rcx
+%define mbin_rdx	rdx
 
 ;;;;
 ; multibinary macro:
@@ -121,22 +110,6 @@
 		pop	mbin_rcx
 		pop	mbin_rbx
 		pop	mbin_rax
-		mov	[%1_dispatched], mbin_rsi
-		pop	mbin_rsi
-		ret
-%endmacro
-
-;;;;;
-; mbin_dispatch_init2 parameters
-;  Cases where only base functions are available
-; 1-> function name
-; 2-> base function
-;;;;;
-%macro mbin_dispatch_init2 2
-	section .text
-	%1_dispatch_init:
-		push	mbin_rsi
-		lea	mbin_rsi, [%2 WRT_OPT] ; Default
 		mov	[%1_dispatched], mbin_rsi
 		pop	mbin_rsi
 		ret
