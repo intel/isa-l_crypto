@@ -180,13 +180,7 @@ as_6  := "vinserti32x8 zmm0, ymm1, 1;"
 as_10 := "vpcompressb zmm0 {k1}, zmm1;"
 
 tmpf := $(shell mktemp)
-as_feature_level := $(call test-as, 4,  $(tmpf), $(as_4),  $(as_feature_level))
-as_feature_level := $(call test-as, 6,  $(tmpf), $(as_6),  $(as_feature_level))
-as_feature_level := $(call test-as, 10, $(tmpf), $(as_10), $(as_feature_level))
 tmpf := $(shell rm ${tmpf})
-
-CFLAGS  += -DAS_FEATURE_LEVEL=$(as_feature_level)
-ASFLAGS += -DAS_FEATURE_LEVEL=$(as_feature_level)
 
 sim test trace: $(addsuffix .run,$(all_unit_tests))
 perf: $(addsuffix .run,$(all_perf_tests))

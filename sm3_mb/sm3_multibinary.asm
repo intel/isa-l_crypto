@@ -40,11 +40,9 @@ extern _sm3_ctx_mgr_init_avx2
 extern _sm3_ctx_mgr_submit_avx2
 extern _sm3_ctx_mgr_flush_avx2
 
-%ifdef HAVE_AS_KNOWS_AVX512
- extern _sm3_ctx_mgr_init_avx512
- extern _sm3_ctx_mgr_submit_avx512
- extern _sm3_ctx_mgr_flush_avx512
-%endif
+extern _sm3_ctx_mgr_init_avx512
+extern _sm3_ctx_mgr_submit_avx512
+extern _sm3_ctx_mgr_flush_avx512
 
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.
 ;;; Therefore, *_dispatch_init is only executed on first call.
@@ -55,24 +53,15 @@ mbin_interface _sm3_ctx_mgr_submit
 mbin_interface _sm3_ctx_mgr_flush
 
 ;; have not implement see/avx yet
-%ifdef HAVE_AS_KNOWS_AVX512
-  mbin_dispatch_init6 _sm3_ctx_mgr_init, _sm3_ctx_mgr_init_base, \
+mbin_dispatch_init6 _sm3_ctx_mgr_init, _sm3_ctx_mgr_init_base, \
 	_sm3_ctx_mgr_init_base, _sm3_ctx_mgr_init_base, _sm3_ctx_mgr_init_avx2, \
 	_sm3_ctx_mgr_init_avx512
-  mbin_dispatch_init6 _sm3_ctx_mgr_submit, _sm3_ctx_mgr_submit_base, \
+mbin_dispatch_init6 _sm3_ctx_mgr_submit, _sm3_ctx_mgr_submit_base, \
 	_sm3_ctx_mgr_submit_base, _sm3_ctx_mgr_submit_base, _sm3_ctx_mgr_submit_avx2, \
 	_sm3_ctx_mgr_submit_avx512
-  mbin_dispatch_init6 _sm3_ctx_mgr_flush, _sm3_ctx_mgr_flush_base, \
+mbin_dispatch_init6 _sm3_ctx_mgr_flush, _sm3_ctx_mgr_flush_base, \
 	_sm3_ctx_mgr_flush_base, _sm3_ctx_mgr_flush_base, _sm3_ctx_mgr_flush_avx2, \
 	_sm3_ctx_mgr_flush_avx512
-%else
-  mbin_dispatch_init _sm3_ctx_mgr_init, _sm3_ctx_mgr_init_base, \
-	_sm3_ctx_mgr_init_base, _sm3_ctx_mgr_init_avx2
-  mbin_dispatch_init _sm3_ctx_mgr_submit, _sm3_ctx_mgr_submit_base, \
-	_sm3_ctx_mgr_submit_base,_sm3_ctx_mgr_submit_avx2
-  mbin_dispatch_init _sm3_ctx_mgr_flush, _sm3_ctx_mgr_flush_base, \
-	_sm3_ctx_mgr_flush_base,_sm3_ctx_mgr_flush_avx2
-%endif
 
 ;;;       func  			core, ver, snum
 slversion _sm3_ctx_mgr_init,  	00,   00, 2300

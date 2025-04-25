@@ -20,7 +20,6 @@ Makefile.nmake tst.nmake: FORCE
 	@echo ''			>> $@
 	@echo 'INCLUDES  = $(INCLUDE)'	>> $@
 	@echo '# Modern asm feature level, consider upgrading nasm before decreasing feature_level'	>> $@
-	@echo 'FEAT_FLAGS = -DAS_FEATURE_LEVEL=10'	>> $@
 	@echo 'CFLAGS_REL = -O2 -DNDEBUG /Z7 /Gy'		>> $@
 	@echo 'CFLAGS_DBG = -Od -DDEBUG /Z7'			>> $@
 	@echo 'LINKFLAGS  = -nologo -incremental:no -debug'	>> $@

@@ -50,10 +50,6 @@
  %define mbin_rdx	rdx
 %endif
 
-%ifndef AS_FEATURE_LEVEL
-%define AS_FEATURE_LEVEL 4
-%endif
-
 ;;;;
 ; multibinary macro:
 ;   creates the visible entry point that uses HW optimized call pointer
@@ -203,7 +199,6 @@
 		ret
 %endmacro
 
-%if AS_FEATURE_LEVEL >= 6
 ;;;;;
 ; mbin_dispatch_init6 parameters
 ; 1-> function name
@@ -273,13 +268,6 @@
 		ret
 %endmacro
 
-%else
-%macro mbin_dispatch_init6 6
-	mbin_dispatch_init5 %1, %2, %3, %4, %5
-%endmacro
-%endif
-
-%if AS_FEATURE_LEVEL >= 10
 ;;;;;
 ; mbin_dispatch_init7 parameters
 ; 1-> function name
@@ -354,11 +342,6 @@
 		pop	mbin_rsi
 		ret
 %endmacro
-%else
-%macro mbin_dispatch_init7 7
-	mbin_dispatch_init6 %1, %2, %3, %4, %5, %6
-%endmacro
-%endif
 
 ;;;;;
 ; mbin_dispatch_sse_to_avx2_shani parameters

@@ -88,7 +88,6 @@ extern _aes_gcm_precomp_256_sse
 extern _aes_gcm_precomp_256_avx_gen4
 extern _aes_gcm_precomp_256_avx_gen2
 
-%if (AS_FEATURE_LEVEL) >= 10
 extern _aes_gcm_precomp_128_vaes_avx512
 extern _aes_gcm_init_128_vaes_avx512
 extern _aes_gcm_enc_128_update_vaes_avx512
@@ -106,7 +105,6 @@ extern _aes_gcm_enc_256_finalize_vaes_avx512
 extern _aes_gcm_dec_256_finalize_vaes_avx512
 extern _aes_gcm_enc_256_vaes_avx512
 extern _aes_gcm_dec_256_vaes_avx512
-%endif
 
 section .text
 

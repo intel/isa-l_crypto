@@ -44,12 +44,10 @@ extern _XTS_AES_256_dec_avx
 extern _XTS_AES_256_dec_expanded_key_sse
 extern _XTS_AES_256_dec_expanded_key_avx
 
-%if (AS_FEATURE_LEVEL) >= 10
 extern _XTS_AES_256_enc_vaes
 extern _XTS_AES_256_enc_expanded_key_vaes
 extern _XTS_AES_256_dec_vaes
 extern _XTS_AES_256_dec_expanded_key_vaes
-%endif
 
 section .text
 

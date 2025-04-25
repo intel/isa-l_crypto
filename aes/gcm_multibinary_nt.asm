@@ -60,7 +60,6 @@ extern _aes_gcm_dec_256_update_sse_nt
 extern _aes_gcm_dec_256_update_avx_gen4_nt
 extern _aes_gcm_dec_256_update_avx_gen2_nt
 
-%if (AS_FEATURE_LEVEL) >= 10
 extern _aes_gcm_enc_128_update_vaes_avx512_nt
 extern _aes_gcm_dec_128_update_vaes_avx512_nt
 extern _aes_gcm_enc_128_vaes_avx512_nt
@@ -70,7 +69,6 @@ extern _aes_gcm_enc_256_update_vaes_avx512_nt
 extern _aes_gcm_dec_256_update_vaes_avx512_nt
 extern _aes_gcm_enc_256_vaes_avx512_nt
 extern _aes_gcm_dec_256_vaes_avx512_nt
-%endif
 
 section .text
 

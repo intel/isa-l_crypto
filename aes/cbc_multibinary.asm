@@ -46,11 +46,9 @@ extern _aes_cbc_enc_192_x8
 extern _aes_cbc_enc_256_x4
 extern _aes_cbc_enc_256_x8
 
-%if (AS_FEATURE_LEVEL) >= 10
 extern _aes_cbc_dec_128_vaes_avx512
 extern _aes_cbc_dec_192_vaes_avx512
 extern _aes_cbc_dec_256_vaes_avx512
-%endif
 
 %include "multibinary.asm"
 

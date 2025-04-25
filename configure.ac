@@ -258,18 +258,9 @@ int main(int argc, char **argv)
        *)        arch=unknown asm_args="-f elf64";;
   esac
 
-  AC_DEFINE_UNQUOTED(AS_FEATURE_LEVEL, [$as_feature_level], [Assembler feature level.])
-  if test $as_feature_level -ge 6 ; then
-    AC_DEFINE(HAVE_AS_KNOWS_AVX512, [1], [Assembler can do AVX512.])
-    have_as_knows_avx512=yes
-  else
-    AC_MSG_RESULT([Assembler does not understand AVX512 opcodes.  Consider upgrading for best performance.])
-  fi
-
   AM_CONDITIONAL(SAFE_DATA, test x"$SAFE_DATA" = x"yes")
   AM_CONDITIONAL(FIPS_MODE, test x"$FIPS_MODE" = x"yes")
   AM_CONDITIONAL(USE_NASM, test x"$AS" = x"nasm")
-  AM_CONDITIONAL(WITH_AVX512, test x"$have_as_knows_avx512" = x"yes")
   AM_CONDITIONAL(WITH_SHANI, test x"$have_as_knows_shani" = x"yes")
   AC_SUBST([asm_args])
   AM_CONDITIONAL(DARWIN, test x"$arch" = x"darwin")
@@ -279,7 +270,6 @@ else
   AM_CONDITIONAL(SAFE_DATA, test "x" = "y")
   AM_CONDITIONAL(FIPS_MODE, test "x" = "y")
   AM_CONDITIONAL(USE_NASM, test "x" = "y")
-  AM_CONDITIONAL(WITH_AVX512, test "x" = "y")
   AM_CONDITIONAL(WITH_SHANI, test "x" = "y")
   AM_CONDITIONAL(DARWIN, test "x" = "y")
 fi
