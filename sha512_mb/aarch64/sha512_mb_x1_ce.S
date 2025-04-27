@@ -137,7 +137,8 @@ sha512_mb_ce_x1:
 
 
 start_loop:
-	adr	key_adr, KEY
+	adrp	key_adr, KEY
+	add	key_adr, key_adr, :lo12:KEY
 	//load msgs
 	ld1	{l0_msg0_v.4s-l0_msg3_v.4s},[l0_data]
 	add	l0_data,l0_data,64

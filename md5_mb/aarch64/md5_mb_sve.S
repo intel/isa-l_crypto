@@ -109,7 +109,8 @@ md5_mb_sve_max_lanes:
 	mov	tmpw,total_lanes,lsl 6
 	sub	databuf,abcd_buf,tmp
 	mov	sp,databuf
-	adr	md5key_adr,MD5_CONST_KEYS
+	adrp	md5key_adr,MD5_CONST_KEYS
+	add	md5key_adr,md5key_adr,:lo12:MD5_CONST_KEYS
 	whilelo	p0.s,wzr,total_lanes
 	mov	src,job_vec
 	mov	dst,abcd_buf

@@ -115,7 +115,8 @@ sha1_mb_ce_x2:
 	//push 	d8,d9 to stack
 	stp	d8, d9, [sp, -256]!
 
-	adr	tmp, KEY
+	adrp	tmp, KEY
+	add	tmp, tmp, :lo12:KEY
 	ld1	{key_0_v.4s-key_3_v.4s},[tmp]
 	ldr	l0_data,	[l0_job]
 	ldr	l1_data,	[l1_job]
