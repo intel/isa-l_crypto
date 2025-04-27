@@ -192,7 +192,8 @@ sha256_mb_ce_x4:
 start_loop:
 
 	//load key addr
-	adr	tmp, KEY
+	adrp	tmp, KEY
+	add	tmp, tmp, :lo12:KEY
 	//load msgs
 	ld1	{l0_msg0_v.4s-l0_msg3_v.4s},[l0_data]
 	ld1	{l1_msg0_v.4s-l1_msg3_v.4s},[l1_data]

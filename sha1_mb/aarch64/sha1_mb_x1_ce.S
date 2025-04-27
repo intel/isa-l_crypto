@@ -100,7 +100,8 @@ sha1_mb_ce_x1:
 	ldr	data, [job]
 	ldr	abcd_q, [job, 64]
 	ldr	e0_s, [job, 80]
-	adr	tmp, KEY
+	adrp	tmp, KEY
+	add	tmp, tmp, :lo12:KEY
 	ld1	{key_0_v.4s-key_3_v.4s},[tmp]
 
 start_loop:

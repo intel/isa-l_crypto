@@ -134,13 +134,17 @@ mh_sha1_murmur3_block_asimd:
 	mov	mur_data, input_data
 	ldr	mur_hash1, [mur_digest]
 	ldr	mur_hash2, [mur_digest, 8]
-	adr	mur_c1, C1
+	adrp	mur_c1, C1
+	add	mur_c1, mur_c1, :lo12:C1
 	ldr	mur_c1, [mur_c1]
-	adr	mur_c2, C2
+	adrp	mur_c2, C2
+	add	mur_c2, mur_c2, :lo12:C2
 	ldr	mur_c2, [mur_c2]
-	adr	tmp, N1
+	adrp	tmp, N1
+	add	tmp, tmp, :lo12:N1
 	ldr	mur_n1_w, [tmp]
-	adr	tmp, N2
+	adrp	tmp, N2
+	add	tmp, tmp, :lo12:N2
 	ldr	mur_n2_w, [tmp]
 
 	mov	mh_segs, #0

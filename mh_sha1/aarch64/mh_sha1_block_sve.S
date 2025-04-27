@@ -217,7 +217,8 @@
 	and	data_buf,data_buf,#-64
 	mov	sp,data_buf
 	mov	lane_offset,0
-	adr	sha1key_adr, SHA1KEY
+	adrp	sha1key_adr, SHA1KEY
+	add	sha1key_adr, sha1key_adr, :lo12:SHA1KEY
 .seg_loops\sve2_flag\():
 	mov	block_ptr,input_data
 	mov	ctr,num_blocks
