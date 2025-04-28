@@ -93,7 +93,6 @@ objs = \
 	bin\sha512_ctx_sse.obj \
 	bin\sha512_ctx_avx.obj \
 	bin\sha512_ctx_avx2.obj \
-	bin\sha512_ctx_sb_sse4.obj \
 	bin\sha512_ctx_base.obj \
 	bin\sha512_mb_mgr_init_sse.obj \
 	bin\sha512_mb_mgr_init_avx2.obj \
