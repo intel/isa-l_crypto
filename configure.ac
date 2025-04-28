@@ -180,6 +180,16 @@ int main(int argc, char **argv)
       fi
     fi
 
+    AC_MSG_CHECKING([for optional nasm SHA512-NI support])
+    AC_LANG_CONFTEST([AC_LANG_SOURCE([[vsha512rnds2 ymm2, ymm1, xmm0;]])])
+    sed -i -e '/vsha512rnds2/!d' conftest.c
+    if nasm -f elf64  conftest.c 2> /dev/null; then
+      AC_MSG_RESULT([yes])
+      as_knows_sha512ni=yes
+    else
+      AC_MSG_RESULT([no])
+    fi
+
     AS=nasm
     as_feature_level=$nasm_feature_level
 
@@ -227,12 +237,12 @@ int main(int argc, char **argv)
       fi
     fi
 
-    AC_MSG_CHECKING([for optional nasm SHA-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[sha256rnds2 xmm2,xmm1,xmm0;]])])
-    sed -i -e '/sha256rnds2/!d' conftest.c
+    AC_MSG_CHECKING([for optional nasm SHA512-NI support])
+    AC_LANG_CONFTEST([AC_LANG_SOURCE([[vsha512rnds2 ymm2, ymm1, xmm0;]])])
+    sed -i -e '/vsha512rnds2/!d' conftest.c
     if $AS -f elf64  conftest.c 2> /dev/null; then
       AC_MSG_RESULT([yes])
-      as_knows_shani=yes
+      as_knows_sha512ni=yes
     else
       AC_MSG_RESULT([no])
     fi
@@ -243,11 +253,11 @@ int main(int argc, char **argv)
     AC_MSG_ERROR([No modern nasm found as required. Nasm should be v2.14.01 or later.])
   fi
 
-  if test x"$as_knows_shani" = x"yes"; then
-    AC_DEFINE(HAVE_AS_KNOWS_SHANI, [1], [Assembler can do SHANI.])
-    have_as_knows_shani=yes
+  if test x"$as_knows_sha512ni" = x"yes"; then
+    AC_DEFINE(HAVE_AS_KNOWS_SHA512NI, [1], [Assembler can do SHA521NI.])
+    have_as_knows_sha512ni=yes
   else
-    AC_MSG_RESULT([Assembler does not understand SHANI opcodes.  Consider upgrading for best performance.])
+    AC_MSG_RESULT([Assembler does not understand SHA512NI opcodes.  Consider upgrading for best performance.])
   fi
 
   case $host_os in
@@ -261,7 +271,7 @@ int main(int argc, char **argv)
   AM_CONDITIONAL(SAFE_DATA, test x"$SAFE_DATA" = x"yes")
   AM_CONDITIONAL(FIPS_MODE, test x"$FIPS_MODE" = x"yes")
   AM_CONDITIONAL(USE_NASM, test x"$AS" = x"nasm")
-  AM_CONDITIONAL(WITH_SHANI, test x"$have_as_knows_shani" = x"yes")
+  AM_CONDITIONAL(WITH_SHA512NI, test x"$have_as_knows_sha512ni" = x"yes")
   AC_SUBST([asm_args])
   AM_CONDITIONAL(DARWIN, test x"$arch" = x"darwin")
   AC_MSG_RESULT([Using $AS args target "$arch" "$asm_args"])
@@ -270,7 +280,7 @@ else
   AM_CONDITIONAL(SAFE_DATA, test "x" = "y")
   AM_CONDITIONAL(FIPS_MODE, test "x" = "y")
   AM_CONDITIONAL(USE_NASM, test "x" = "y")
-  AM_CONDITIONAL(WITH_SHANI, test "x" = "y")
+  AM_CONDITIONAL(WITH_SHA512NI, test "x" = "y")
   AM_CONDITIONAL(DARWIN, test "x" = "y")
 fi
 
