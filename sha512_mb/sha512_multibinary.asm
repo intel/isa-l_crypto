@@ -129,6 +129,10 @@ extern _sha512_ctx_mgr_init_avx2
 extern _sha512_ctx_mgr_submit_avx2
 extern _sha512_ctx_mgr_flush_avx2
 
+extern _sha512_ctx_mgr_init_avx2_ni
+extern _sha512_ctx_mgr_submit_avx2_ni
+extern _sha512_ctx_mgr_flush_avx2_ni
+
 extern _sha512_ctx_mgr_init_base
 extern _sha512_ctx_mgr_submit_base
 extern _sha512_ctx_mgr_flush_base
@@ -157,17 +161,17 @@ mbin_interface _sha512_ctx_mgr_flush
 mbin_dispatch_init6_sha512ni _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
        		_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \
        		_sha512_ctx_mgr_init_avx2, _sha512_ctx_mgr_init_avx512, \
-       		_sha512_ctx_mgr_init_avx2 ; TODO: to replace with sha512ni version
+       		_sha512_ctx_mgr_init_avx2_ni
 
 mbin_dispatch_init6_sha512ni _sha512_ctx_mgr_submit, _sha512_ctx_mgr_submit_base, \
        		_sha512_ctx_mgr_submit_sse, _sha512_ctx_mgr_submit_avx, \
        		_sha512_ctx_mgr_submit_avx2, _sha512_ctx_mgr_submit_avx512, \
-       		_sha512_ctx_mgr_submit_avx512 ; TODO: to replace with sha512ni version
+       		_sha512_ctx_mgr_submit_avx2_ni
 
 mbin_dispatch_init6_sha512ni _sha512_ctx_mgr_flush, _sha512_ctx_mgr_flush_base, \
        		_sha512_ctx_mgr_flush_sse, _sha512_ctx_mgr_flush_avx, \
        		_sha512_ctx_mgr_flush_avx2, _sha512_ctx_mgr_flush_avx512, \
-       		_sha512_ctx_mgr_flush_avx512 ; TODO: to replace with sha512ni version
+       		_sha512_ctx_mgr_flush_avx2_ni
 %else
 mbin_dispatch_init6 _sha512_ctx_mgr_init, _sha512_ctx_mgr_init_base, \
        		_sha512_ctx_mgr_init_sse, _sha512_ctx_mgr_init_avx, \

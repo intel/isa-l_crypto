@@ -79,6 +79,8 @@ v2.26
 
 * Remove 32-bit x86 support.
 
+* Added SHA512-NI AVX2 implementation.
+
 v2.25
 
 * Added new API including parameter checking (starting with isal_ prefix).
