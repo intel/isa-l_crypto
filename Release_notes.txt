@@ -81,6 +81,8 @@ v2.26
 
 * Added SHA512-NI AVX2 implementation.
 
+* Added SM3-NI AVX2 implementation.
+
 v2.25
 
 * Added new API including parameter checking (starting with isal_ prefix).

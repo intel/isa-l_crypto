@@ -70,6 +70,11 @@ lsrc_x86_64 += sm3_mb/sm3_ctx_avx2.c \
 		sm3_mb/sm3_mb_mgr_flush_avx2.asm \
 		sm3_mb/sm3_mb_x8_avx2.asm
 
+lsrc_x86_64 += sm3_mb/sm3_ctx_avx2_ni.c \
+		sm3_mb/sm3_mb_mgr_submit_avx2_ni.asm \
+		sm3_mb/sm3_mb_mgr_flush_avx2_ni.asm \
+		sm3_mb/sm3_mb_x1_avx2_ni.asm
+
 other_src +=	include/datastruct.asm \
 		include/multibinary.asm \
 		include/reg_sizes.asm \
