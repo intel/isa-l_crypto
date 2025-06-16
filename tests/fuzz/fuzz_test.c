@@ -41,6 +41,7 @@
 #include <sha256_mb.h>
 #include <mh_sha256.h>
 #include <sha512_mb.h>
+#include <mh_sha1_murmur3_x64_128.h>
 
 /**
  * @brief Calculate the dimension of an array
@@ -1825,6 +1826,111 @@ test_sha512_mb_submit_full(uint8_t *buff, const size_t data_size)
         return 0;
 }
 
+/* MH-SHA1-MURMUR3-X64-128 */
+static struct isal_mh_sha1_murmur3_x64_128_ctx *mh_sha1_murmur3_ctx =
+        NULL; /**< MH-SHA1-MURMUR3 context */
+static uint32_t
+        mh_sha1_murmur3_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; /**< SHA1 output digest buffer */
+static uint64_t mh_sha1_murmur3_murmur_digest[2];            /**< Murmur3 output digest buffer */
+
+/**
+ * @brief Clean up MH-SHA1-MURMUR3 resources
+ *
+ * Frees all allocated memory for MH-SHA1-MURMUR3 operations
+ * and resets the related pointers.
+ */
+static void
+mh_sha1_murmur3_end(void)
+{
+        if (mh_sha1_murmur3_ctx != NULL)
+                free(mh_sha1_murmur3_ctx);
+        mh_sha1_murmur3_ctx = NULL;
+}
+
+/**
+ * @brief Initialize MH-SHA1-MURMUR3 resources
+ *
+ * Allocates memory for the MH-SHA1-MURMUR3 context and initializes it
+ * with a seed value of 0 for testing purposes.
+ *
+ * @return int 0 on success, -1 on failure (memory allocation)
+ */
+static int
+mh_sha1_murmur3_start()
+{
+        mh_sha1_murmur3_ctx = (struct isal_mh_sha1_murmur3_x64_128_ctx *) malloc(
+                sizeof(struct isal_mh_sha1_murmur3_x64_128_ctx));
+        if (mh_sha1_murmur3_ctx == NULL) {
+                return -1;
+        }
+
+        uint64_t seed = 0; // Use seed 0 for testing purposes
+        isal_mh_sha1_murmur3_x64_128_init(mh_sha1_murmur3_ctx, seed);
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA1-MURMUR3 init, update, and finalize sequence
+ *
+ * Tests the MH-SHA1-MURMUR3 API by initializing the context,
+ * updating with the entire data buffer at once,
+ * and then finalizing to produce both SHA1 and Murmur3 digests.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha1_murmur3_init_update_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha1_murmur3_start() != 0)
+                return -1;
+
+        isal_mh_sha1_murmur3_x64_128_update(mh_sha1_murmur3_ctx, buff, data_size);
+        isal_mh_sha1_murmur3_x64_128_finalize(mh_sha1_murmur3_ctx, mh_sha1_murmur3_sha1_digest,
+                                              mh_sha1_murmur3_murmur_digest);
+
+        mh_sha1_murmur3_end();
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA1-MURMUR3 with chunked data updates
+ *
+ * Tests the MH-SHA1-MURMUR3 API by initializing the context,
+ * updating it with multiple smaller chunks of data (each 64 bytes, which is
+ * the SHA1 block size, or smaller for the last chunk), and finally
+ * finalizing to produce both SHA1 and Murmur3 digests.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha1_murmur3_update_chunks(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha1_murmur3_start() != 0)
+                return -1;
+
+        // Split the buffer into chunks
+        const size_t chunk_size = 64; // SHA1 block size
+        size_t offset = 0;
+
+        while (offset < data_size) {
+                const size_t process_size =
+                        (offset + chunk_size <= data_size) ? chunk_size : data_size - offset;
+                isal_mh_sha1_murmur3_x64_128_update(mh_sha1_murmur3_ctx, buff + offset,
+                                                    process_size);
+                offset += process_size;
+        }
+
+        isal_mh_sha1_murmur3_x64_128_finalize(mh_sha1_murmur3_ctx, mh_sha1_murmur3_sha1_digest,
+                                              mh_sha1_murmur3_murmur_digest);
+
+        mh_sha1_murmur3_end();
+        return 0;
+}
+
 /**
  * @brief Structure defining a test function and its name
  *
@@ -1893,6 +1999,9 @@ struct {
         { test_sha512_mb_submit_update, "test_sha512_mb_submit_update" },
         { test_sha512_mb_submit_complete, "test_sha512_mb_submit_complete" },
         { test_sha512_mb_submit_full, "test_sha512_mb_submit_full" },
+        /* SHA1-MURMUR3-X64-128 functions */
+        { test_mh_sha1_murmur3_init_update_finalize, "test_mh_sha1_murmur3_init_update_finalize" },
+        { test_mh_sha1_murmur3_update_chunks, "test_mh_sha1_murmur3_update_chunks" },
 };
 
 /**
