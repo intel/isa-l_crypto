@@ -39,6 +39,7 @@
 #include <sha1_mb.h>
 #include <mh_sha1.h>
 #include <sha256_mb.h>
+#include <mh_sha256.h>
 
 /**
  * @brief Calculate the dimension of an array
@@ -1523,6 +1524,102 @@ test_sha256_mb_submit_full(uint8_t *buff, const size_t data_size)
         return 0;
 }
 
+/* MH-SHA256 (multi-hash SHA256) */
+static struct isal_mh_sha256_ctx *mh_sha256_ctx = NULL;     /**< MH-SHA256 context */
+static uint32_t mh_sha256_digest[ISAL_SHA256_DIGEST_WORDS]; /**< Output digest buffer */
+
+/**
+ * @brief Clean up MH-SHA256 resources
+ *
+ * Frees all allocated memory for MH-SHA256 operations
+ * and resets the related pointers.
+ */
+static void
+mh_sha256_end(void)
+{
+        if (mh_sha256_ctx != NULL)
+                free(mh_sha256_ctx);
+        mh_sha256_ctx = NULL;
+}
+
+/**
+ * @brief Initialize MH-SHA256 resources
+ *
+ * Allocates memory for the MH-SHA256 context and initializes it.
+ *
+ * @return int 0 on success, -1 on failure (memory allocation)
+ */
+static int
+mh_sha256_start()
+{
+        mh_sha256_ctx = (struct isal_mh_sha256_ctx *) malloc(sizeof(struct isal_mh_sha256_ctx));
+        if (mh_sha256_ctx == NULL) {
+                return -1;
+        }
+
+        isal_mh_sha256_init(mh_sha256_ctx);
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA256 init, update, and finalize sequence
+ *
+ * Tests the MH-SHA256 API by initializing the context,
+ * updating with the entire data buffer at once,
+ * and then finalizing to produce the digest.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha256_init_update_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha256_start() != 0)
+                return -1;
+
+        isal_mh_sha256_update(mh_sha256_ctx, buff, data_size);
+        isal_mh_sha256_finalize(mh_sha256_ctx, mh_sha256_digest);
+
+        mh_sha256_end();
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA256 with chunked data updates
+ *
+ * Tests the MH-SHA256 API by initializing the context,
+ * updating it with multiple smaller chunks of data (each 64 bytes, which is
+ * the SHA256 block size, or smaller for the last chunk), and finally
+ * finalizing to produce the digest.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha256_update_chunks(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha256_start() != 0)
+                return -1;
+
+        // Split the buffer into chunks
+        const size_t chunk_size = 64; // SHA256 block size
+        size_t offset = 0;
+
+        while (offset < data_size) {
+                const size_t process_size =
+                        (offset + chunk_size <= data_size) ? chunk_size : data_size - offset;
+                isal_mh_sha256_update(mh_sha256_ctx, buff + offset, process_size);
+                offset += process_size;
+        }
+
+        isal_mh_sha256_finalize(mh_sha256_ctx, mh_sha256_digest);
+
+        mh_sha256_end();
+        return 0;
+}
+
 /**
  * @brief Structure defining a test function and its name
  *
@@ -1583,6 +1680,9 @@ struct {
         { test_sha256_mb_submit_update, "test_sha256_mb_submit_update" },
         { test_sha256_mb_submit_complete, "test_sha256_mb_submit_complete" },
         { test_sha256_mb_submit_full, "test_sha256_mb_submit_full" },
+        /* SHA256 multihash functions */
+        { test_mh_sha256_init_update_finalize, "test_mh_sha256_init_update_finalize" },
+        { test_mh_sha256_update_chunks, "test_mh_sha256_update_chunks" },
 };
 
 /**
