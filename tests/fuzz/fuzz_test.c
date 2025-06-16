@@ -37,6 +37,7 @@
 #include <aes_gcm.h>
 #include <aes_keyexp.h>
 #include <sha1_mb.h>
+#include <mh_sha1.h>
 
 /**
  * @brief Calculate the dimension of an array
@@ -1226,6 +1227,97 @@ test_sha1_mb_submit_full(uint8_t *buff, const size_t data_size)
         return 0;
 }
 
+/* MH-SHA1 (multi-hash SHA1) */
+static struct isal_mh_sha1_ctx *mh_sha1_ctx = NULL;     /**< MH-SHA1 context */
+static uint32_t mh_sha1_digest[ISAL_SHA1_DIGEST_WORDS]; /**< Output digest buffer */
+
+/**
+ * @brief Clean up MH-SHA1 resources
+ *
+ * Frees allocated memory for the MH-SHA1 context.
+ */
+static void
+mh_sha1_end(void)
+{
+        if (mh_sha1_ctx != NULL)
+                free(mh_sha1_ctx);
+        mh_sha1_ctx = NULL;
+}
+
+/**
+ * @brief Initialize MH-SHA1 resources
+ *
+ * Allocates memory for the MH-SHA1 context and initializes it.
+ *
+ * @return int 0 on success, -1 on failure (memory allocation)
+ */
+static int
+mh_sha1_start()
+{
+        mh_sha1_ctx = (struct isal_mh_sha1_ctx *) malloc(sizeof(struct isal_mh_sha1_ctx));
+        if (mh_sha1_ctx == NULL) {
+                return -1;
+        }
+
+        isal_mh_sha1_init(mh_sha1_ctx);
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA1 full hash sequence
+ *
+ * Tests the MH-SHA1 init, update, and finalize sequence with the provided data.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha1_init_update_finalize(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha1_start() != 0)
+                return -1;
+
+        isal_mh_sha1_update(mh_sha1_ctx, buff, data_size);
+        isal_mh_sha1_finalize(mh_sha1_ctx, mh_sha1_digest);
+
+        mh_sha1_end();
+        return 0;
+}
+
+/**
+ * @brief Test MH-SHA1 chunked hash processing
+ *
+ * Tests the MH-SHA1 with chunked updates, processing the buffer in 64-byte chunks
+ * (SHA1 block size), followed by finalization.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_mh_sha1_update_chunks(uint8_t *buff, const size_t data_size)
+{
+        if (mh_sha1_start() != 0)
+                return -1;
+
+        // Split the buffer into chunks
+        const size_t chunk_size = 64; // SHA1 block size
+        size_t offset = 0;
+
+        while (offset < data_size) {
+                const size_t process_size =
+                        (offset + chunk_size <= data_size) ? chunk_size : data_size - offset;
+                isal_mh_sha1_update(mh_sha1_ctx, buff + offset, process_size);
+                offset += process_size;
+        }
+
+        isal_mh_sha1_finalize(mh_sha1_ctx, mh_sha1_digest);
+
+        mh_sha1_end();
+        return 0;
+}
+
 /**
  * @brief Structure defining a test function and its name
  *
@@ -1278,6 +1370,9 @@ struct {
         { test_sha1_mb_submit_update, "test_sha1_mb_submit_update" },
         { test_sha1_mb_submit_complete, "test_sha1_mb_submit_complete" },
         { test_sha1_mb_submit_full, "test_sha1_mb_submit_full" },
+        /* SHA1 multihash functions */
+        { test_mh_sha1_init_update_finalize, "test_mh_sha1_init_update_finalize" },
+        { test_mh_sha1_update_chunks, "test_mh_sha1_update_chunks" },
 };
 
 /**
