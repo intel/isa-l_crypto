@@ -40,6 +40,7 @@
 #include <mh_sha1.h>
 #include <sha256_mb.h>
 #include <mh_sha256.h>
+#include <sha512_mb.h>
 
 /**
  * @brief Calculate the dimension of an array
@@ -1620,6 +1621,210 @@ test_mh_sha256_update_chunks(uint8_t *buff, const size_t data_size)
         return 0;
 }
 
+/* SHA512 multi-buffer */
+static ISAL_SHA512_HASH_CTX_MGR *sha512_mgr = NULL; /**< SHA512 multi-buffer context manager */
+static ISAL_SHA512_HASH_CTX *sha512_ctx = NULL;     /**< SHA512 hash context */
+static uint64_t sha512_digest[ISAL_SHA512_DIGEST_NWORDS]; /**< Output digest buffer */
+
+/**
+ * @brief Clean up SHA512 multi-buffer resources
+ *
+ * Frees all allocated memory for SHA512 multi-buffer operations
+ * and resets the related pointers.
+ */
+static void
+sha512_mb_end(void)
+{
+        if (sha512_mgr != NULL)
+                free(sha512_mgr);
+        if (sha512_ctx != NULL)
+                free(sha512_ctx);
+        sha512_mgr = NULL;
+        sha512_ctx = NULL;
+}
+
+/**
+ * @brief Initialize SHA512 multi-buffer resources
+ *
+ * Allocates memory for the SHA512 multi-buffer context manager and
+ * hash context, then initializes both the context manager and hash context.
+ *
+ * @return int 0 on success, -1 on failure (memory allocation)
+ */
+static int
+sha512_mb_start()
+{
+        sha512_mgr = (ISAL_SHA512_HASH_CTX_MGR *) malloc(sizeof(ISAL_SHA512_HASH_CTX_MGR));
+        sha512_ctx = (ISAL_SHA512_HASH_CTX *) malloc(sizeof(ISAL_SHA512_HASH_CTX));
+
+        if (sha512_mgr == NULL || sha512_ctx == NULL) {
+                sha512_mb_end();
+                return -1;
+        }
+
+        isal_sha512_ctx_mgr_init(sha512_mgr);
+        isal_hash_ctx_init(sha512_ctx);
+
+        return 0;
+}
+
+/**
+ * @brief Test SHA512 multi-buffer initial submission
+ *
+ * Tests the SHA512 multi-buffer initial submission functionality.
+ * This submits data with the FIRST flag, indicating the start of
+ * a hashing operation.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_sha512_mb_submit_initial(uint8_t *buff, const size_t data_size)
+{
+        if (sha512_mb_start() != 0)
+                return -1;
+
+        ISAL_SHA512_HASH_CTX *ctx_out = NULL;
+        const void *buffer = buff;
+
+        isal_sha512_ctx_mgr_submit(sha512_mgr, sha512_ctx, &ctx_out, buffer, data_size,
+                                   ISAL_HASH_FIRST);
+        while (ctx_out == NULL) {
+                isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+        }
+
+        sha512_mb_end();
+        return 0;
+}
+
+/**
+ * @brief Test SHA512 multi-buffer update submission
+ *
+ * Tests the SHA512 multi-buffer update functionality by splitting the input
+ * into two parts: an initial part with the FIRST flag and a second part
+ * with the UPDATE flag.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_sha512_mb_submit_update(uint8_t *buff, const size_t data_size)
+{
+        if (sha512_mb_start() != 0)
+                return -1;
+
+        ISAL_SHA512_HASH_CTX *ctx_out = NULL;
+        const void *buffer = buff;
+
+        // Split the input into two parts for separate first/update operations
+        const size_t part1 = data_size / 2;
+        const size_t part2 = data_size - part1;
+
+        isal_sha512_ctx_mgr_submit(sha512_mgr, sha512_ctx, &ctx_out, buffer, part1,
+                                   ISAL_HASH_FIRST);
+        while (ctx_out == NULL) {
+                isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+        }
+
+        if (part2 > 0) {
+                isal_sha512_ctx_mgr_submit(sha512_mgr, ctx_out, &ctx_out,
+                                           (const uint8_t *) buffer + part1, part2,
+                                           ISAL_HASH_UPDATE);
+                while (ctx_out == NULL) {
+                        isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+                }
+        }
+
+        sha512_mb_end();
+        return 0;
+}
+
+/**
+ * @brief Test SHA512 multi-buffer complete submission sequence
+ *
+ * Tests the SHA512 multi-buffer complete functionality by splitting the input
+ * into three parts: an initial part with the FIRST flag, a middle part with the
+ * UPDATE flag, and a final part with the LAST flag to complete the hash operation.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_sha512_mb_submit_complete(uint8_t *buff, const size_t data_size)
+{
+        if (sha512_mb_start() != 0)
+                return -1;
+
+        ISAL_SHA512_HASH_CTX *ctx_out = NULL;
+        const void *buffer = buff;
+
+        // Split the input into parts for first/update/last operations
+        const size_t part1 = data_size / 3;
+        const size_t part2 = part1;
+        const size_t part3 = data_size - part1 - part2;
+
+        isal_sha512_ctx_mgr_submit(sha512_mgr, sha512_ctx, &ctx_out, buffer, part1,
+                                   ISAL_HASH_FIRST);
+        while (ctx_out == NULL) {
+                isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+        }
+
+        if (part2 > 0) {
+                isal_sha512_ctx_mgr_submit(sha512_mgr, ctx_out, &ctx_out,
+                                           (const uint8_t *) buffer + part1, part2,
+                                           ISAL_HASH_UPDATE);
+                while (ctx_out == NULL) {
+                        isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+                }
+        }
+
+        if (part3 > 0) {
+                isal_sha512_ctx_mgr_submit(sha512_mgr, ctx_out, &ctx_out,
+                                           (const uint8_t *) buffer + part1 + part2, part3,
+                                           ISAL_HASH_LAST);
+                while (ctx_out == NULL) {
+                        isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+                }
+        }
+
+        sha512_mb_end();
+        return 0;
+}
+
+/**
+ * @brief Test SHA512 multi-buffer full submission
+ *
+ * Tests the SHA512 multi-buffer full submission functionality by processing
+ * the entire buffer at once with the ENTIRE flag, which combines the
+ * first, update, and last operations into a single call.
+ *
+ * @param buff Buffer containing test data
+ * @param data_size Size of the buffer
+ * @return int 0 on success, -1 on failure
+ */
+static int
+test_sha512_mb_submit_full(uint8_t *buff, const size_t data_size)
+{
+        if (sha512_mb_start() != 0)
+                return -1;
+
+        ISAL_SHA512_HASH_CTX *ctx_out = NULL;
+        const void *buffer = buff;
+
+        // Process the entire buffer at once
+        isal_sha512_ctx_mgr_submit(sha512_mgr, sha512_ctx, &ctx_out, buffer, data_size,
+                                   ISAL_HASH_ENTIRE);
+        while (ctx_out == NULL) {
+                isal_sha512_ctx_mgr_flush(sha512_mgr, &ctx_out);
+        }
+
+        sha512_mb_end();
+        return 0;
+}
+
 /**
  * @brief Structure defining a test function and its name
  *
@@ -1683,6 +1888,11 @@ struct {
         /* SHA256 multihash functions */
         { test_mh_sha256_init_update_finalize, "test_mh_sha256_init_update_finalize" },
         { test_mh_sha256_update_chunks, "test_mh_sha256_update_chunks" },
+        /* SHA512 functions */
+        { test_sha512_mb_submit_initial, "test_sha512_mb_submit_initial" },
+        { test_sha512_mb_submit_update, "test_sha512_mb_submit_update" },
+        { test_sha512_mb_submit_complete, "test_sha512_mb_submit_complete" },
+        { test_sha512_mb_submit_full, "test_sha512_mb_submit_full" },
 };
 
 /**
