@@ -93,6 +93,7 @@ objs = \
 	bin\sha512_ctx_sse.obj \
 	bin\sha512_ctx_avx.obj \
 	bin\sha512_ctx_avx2.obj \
+	bin\sha512_ctx_avx2_ni.obj \
 	bin\sha512_ctx_base.obj \
 	bin\sha512_mb_mgr_init_sse.obj \
 	bin\sha512_mb_mgr_init_avx2.obj \
@@ -103,6 +104,9 @@ objs = \
 	bin\sha512_mb_mgr_flush_sse.obj \
 	bin\sha512_mb_mgr_flush_avx.obj \
 	bin\sha512_mb_mgr_flush_avx2.obj \
+	bin\sha512_mb_mgr_submit_ni_avx2.obj \
+	bin\sha512_mb_mgr_flush_ni_avx2.obj \
+	bin\sha512_x2_ni_avx2.obj \
 	bin\sha512_mb_x2_sse.obj \
 	bin\sha512_mb_x2_avx.obj \
 	bin\sha512_mb_x4_avx2.obj \
@@ -183,6 +187,10 @@ objs = \
 	bin\sm3_mb_mgr_submit_avx2.obj \
 	bin\sm3_mb_mgr_flush_avx2.obj \
 	bin\sm3_mb_x8_avx2.obj \
+	bin\sm3_ctx_avx2_ni.obj \
+	bin\sm3_mb_mgr_submit_avx2_ni.obj \
+	bin\sm3_mb_mgr_flush_avx2_ni.obj \
+	bin\sm3_mb_x1_avx2_ni.obj \
 	bin\gcm_multibinary.obj \
 	bin\gcm_pre.obj \
 	bin\gcm128_avx_gen2.obj \
