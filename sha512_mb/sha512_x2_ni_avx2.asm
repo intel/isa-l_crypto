@@ -36,6 +36,7 @@
 ;;      a - most significant word in `ymm`
 ;;      d - least significant word in `ymm`
 ;; ===========================================================
+%ifdef HAVE_AS_KNOWS_SHA512NI
 
 %use smartalign
 
@@ -441,3 +442,5 @@ align 32
         ret
 
 mksection stack-noexec
+
+%endif ; HAVE_AS_KNOWS_SHA512NI

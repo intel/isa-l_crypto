@@ -26,6 +26,7 @@
 ;  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%ifdef HAVE_AS_KNOWS_SHA512NI
 
 %include "sha512_job.asm"
 %include "sha512_mb_mgr_datastruct.asm"
@@ -213,3 +214,5 @@ return:
 return_null:
 	xor     job_rax, job_rax
 	jmp     return
+
+%endif ; HAVE_AS_KNOWS_SHA512NI
