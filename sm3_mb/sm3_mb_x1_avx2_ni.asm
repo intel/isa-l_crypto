@@ -36,6 +36,7 @@
 ;;      a - most significant word in `xmm`
 ;;      d - least significant word in `xmm`
 ;; ===========================================================
+%ifdef HAVE_AS_KNOWS_SHA512NI
 
 %use smartalign
 
@@ -263,3 +264,5 @@ done_hash:
 	ret
 
 mksection stack-noexec
+
+%endif ; HAVE_AS_KNOWS_SHA512NI
