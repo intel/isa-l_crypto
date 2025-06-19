@@ -42,6 +42,7 @@
 
 %include "include/os.inc"
 %include "include/clear_regs.inc"
+%include "include/reg_sizes.asm"
 
 %ifdef LINUX
 %define arg1	rdi
