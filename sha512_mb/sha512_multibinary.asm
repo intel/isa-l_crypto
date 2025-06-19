@@ -142,9 +142,9 @@ extern _sha512_ctx_mgr_submit_avx512
 extern _sha512_ctx_mgr_flush_avx512
 
 %ifdef HAVE_AS_KNOWS_SHA512NI
-;extern _sha512_ctx_mgr_init_sha512ni
-;extern _sha512_ctx_mgr_submit_sha512ni
-;extern _sha512_ctx_mgr_flush_sha512ni
+extern _sha512_ctx_mgr_init_sha512ni
+extern _sha512_ctx_mgr_submit_sha512ni
+extern _sha512_ctx_mgr_flush_sha512ni
 %endif
 
 ;;; *_mbinit are initial values for *_dispatched; is updated on first call.

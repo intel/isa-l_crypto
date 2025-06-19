@@ -26,6 +26,7 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
+#ifdef HAVE_AS_KNOWS_SHA512NI
 
 #if defined(__clang__)
 #pragma clang attribute push(__attribute__((target("avx2"))), apply_to = function)
@@ -277,3 +278,5 @@ struct slver _sha512_ctx_mgr_flush_avx2_ni_slver = { 0x0171, 0x02, 0x04 };
 #if defined(__clang__)
 #pragma clang attribute pop
 #endif
+
+#endif // HAVE_AS_KNOWS_SHA512NI
