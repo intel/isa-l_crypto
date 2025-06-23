@@ -82,3 +82,7 @@ _sm3_mb_mgr_submit_avx2_ni:
 	ret
 
 %endif ; HAVE_AS_KNOWS_SHA512NI
+
+;; Needed to avoid linker issues on Windows with VS 2019
+section .rodata
+    b db 0x01
