@@ -199,9 +199,10 @@ return_null:
 	xor     job_rax, job_rax
 	jmp     return
 
+%endif ; HAVE_AS_KNOWS_SHA512NI
+
+;; Needed to avoid linker issues on Windows with VS 2019
 section .rodata
 
 align 8
 one:    dq  1
-
-%endif ; HAVE_AS_KNOWS_SHA512NI
