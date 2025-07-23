@@ -30,9 +30,8 @@
 src_include     += -I $(srcdir)/fips
 extern_hdrs     += include/isal_crypto_api.h include/aes_xts.h include/aes_keyexp.h include/sha1_mb.h include/sha256_mb.h
 
-lsrc_x86_64     += fips/self_tests.c
-lsrc_aarch64    += fips/self_tests_generic.c
-lsrc            += fips/aes_self_tests.c
+lsrc_x86_64     += fips/self_tests.c fips/aes_self_tests.c
+lsrc_aarch64    += fips/self_tests_generic.c fips/aes_self_tests.c
 lsrc            += fips/sha_self_tests.c
 
 lsrc_x86_64     += fips/asm_self_tests.asm
