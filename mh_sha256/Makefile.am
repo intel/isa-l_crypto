@@ -62,6 +62,13 @@ lsrc_aarch64 += $(lsrc_sha256)	\
 		mh_sha256/mh_sha256_update_base.c \
 		mh_sha256/mh_sha256_block_base.c
 
+lsrc_riscv64 += $(lsrc_sha256)	\
+		mh_sha256/mh_sha256_base_aliases.c \
+		mh_sha256/mh_sha256.c \
+		mh_sha256/mh_sha256_finalize_base.c \
+		mh_sha256/mh_sha256_update_base.c \
+		mh_sha256/mh_sha256_block_base.c
+
 lsrc_base_aliases += $(lsrc_sha256)	\
 		mh_sha256/mh_sha256_base_aliases.c \
 		mh_sha256/mh_sha256.c \

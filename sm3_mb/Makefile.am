@@ -54,6 +54,8 @@ lsrc_aarch64 += sm3_mb/sm3_ctx_base.c \
 	sm3_mb/aarch64/sm3_mb_asimd_x1.S	\
 	sm3_mb/aarch64/sm3_mb_asimd_x4.S
 
+lsrc_riscv64 += sm3_mb/sm3_ctx_base.c \
+	sm3_mb/sm3_ctx_base_aliases.c
 
 src_include += -I $(srcdir)/sm3_mb
 
