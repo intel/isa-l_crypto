@@ -49,6 +49,9 @@ aarch64:
     * ./configure --disable-sve2
     * make -f Makefile.unx DEFINES+=-DNO_SVE2=1
 
+RISC-V 64 and other:
+* Compiler: Portable base functions are available that build with most C compilers.
+
 ### Autotools
 To build and install the library with autotools it is usually sufficient to run:
 

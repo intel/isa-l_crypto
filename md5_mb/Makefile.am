@@ -69,6 +69,9 @@ lsrc_aarch64 += md5_mb/md5_ctx_base.c \
 		md5_mb/aarch64/md5_mb_sve.S  \
 		md5_mb/aarch64/md5_mb_multibinary.S
 
+lsrc_riscv64 += md5_mb/md5_ctx_base.c \
+		     md5_mb/md5_ctx_base_aliases.c
+
 lsrc_base_aliases += md5_mb/md5_ctx_base.c \
 		     md5_mb/md5_ctx_base_aliases.c
 

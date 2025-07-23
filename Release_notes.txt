@@ -83,6 +83,8 @@ v2.26
 
 * Added SM3-NI AVX2 implementation.
 
+* Added support for RISC-V 64 architecture.
+
 v2.25
 
 * Added new API including parameter checking (starting with isal_ prefix).

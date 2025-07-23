@@ -74,6 +74,9 @@ lsrc_aarch64 += sha512_mb/sha512_ctx_base.c			\
 		sha512_mb/aarch64/sha512_mb_x1_ce.S	\
 		sha512_mb/aarch64/sha512_mb_x2_ce.S
 
+lsrc_riscv64 += sha512_mb/sha512_ctx_base.c	\
+		sha512_mb/sha512_ctx_base_aliases.c
+
 lsrc_base_aliases += sha512_mb/sha512_ctx_base.c	\
 		sha512_mb/sha512_ctx_base_aliases.c
 

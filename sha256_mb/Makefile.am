@@ -79,6 +79,9 @@ lsrc_aarch64 += sha256_mb/aarch64/sha256_mb_multibinary.S \
 		sha256_mb/aarch64/sha256_mb_x3_ce.S	\
 		sha256_mb/aarch64/sha256_mb_x4_ce.S
 
+lsrc_riscv64 += sha256_mb/sha256_ctx_base_aliases.c	\
+		sha256_mb/sha256_ctx_base.c	\
+		sha256_mb/sha256_ref.c
 
 lsrc_base_aliases += sha256_mb/sha256_ctx_base_aliases.c	\
 		sha256_mb/sha256_ctx_base.c	\

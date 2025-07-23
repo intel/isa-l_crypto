@@ -27,6 +27,7 @@ lsrc32=
 lsrc_x86_64=
 lsrc_x86_32=
 lsrc_aarch64=
+lsrc_riscv64=
 lsrc_base_aliases=
 unit_tests32=
 perf_tests32=
@@ -73,6 +74,10 @@ if CPU_AARCH64
 libisal_crypto_la_SOURCES += ${lsrc_aarch64}
 endif
 
+if CPU_RISCV64
+libisal_crypto_la_SOURCES += ${lsrc_riscv64}
+endif
+
 if CPU_UNDEFINED
 libisal_crypto_la_SOURCES += ${lsrc_base_aliases}
 endif
@@ -117,6 +122,9 @@ endif
 if CPU_AARCH64
   as_filter = $(CC) -D__ASSEMBLY__
 endif
+if CPU_RISCV64
+  as_filter = $(CC) -D__ASSEMBLY__
+endif
 CCAS = $(as_filter)
 EXTRA_DIST += tools/nasm-filter.sh
 EXTRA_DIST += tools/nasm-cet-filter.sh
@@ -126,6 +134,9 @@ if CPU_AARCH64
 AM_CCASFLAGS = ${asm_args} ${INCLUDE} $(src_include) ${D}
 else
 AM_CCASFLAGS = ${asm_args} ${INCLUDE} $(src_include) ${DEFS} ${D}
+endif
+if CPU_RISCV64
+AM_CCASFLAGS = ${asm_args} ${INCLUDE} $(src_include) ${D}
 endif
 
 .asm.s:

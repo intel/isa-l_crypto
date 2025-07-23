@@ -79,7 +79,9 @@ lsrc_aarch64 += sha1_mb/sha1_ctx_base.c \
 		sha1_mb/aarch64/sha1_mb_mgr_asimd.c	\
 		sha1_mb/aarch64/sha1_mb_aarch64_dispatcher.c
 
-
+lsrc_riscv64 += sha1_mb/sha1_ctx_base_aliases.c	\
+		sha1_mb/sha1_ctx_base.c \
+		sha1_mb/sha1_ref.c
 
 lsrc_base_aliases += sha1_mb/sha1_ctx_base_aliases.c	\
 		sha1_mb/sha1_ctx_base.c \
