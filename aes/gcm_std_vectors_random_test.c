@@ -1505,7 +1505,7 @@ test_gcm_efence(void)
                 free(IV);
                 free(A);
                 free(T);
-                return -1;
+                return 1;
         }
 
         test.Plen = PAGE_LEN / 2;
