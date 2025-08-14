@@ -65,3 +65,18 @@ jobs:
         uses: ilammy/setup-nasm@13cbeb366c45c4379d3478cdcbadd8295feb5028 # v1.5.1
       - name: Build
         run: nmake -f Makefile.nmake
+
+  run_tests_linux-riscv64-v:
+    needs: check_format
+    runs-on: run_tests_linux-riscv64-v
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Build
+        run: |
+          ./autogen.sh
+          ./configure
+          bash -c 'make -j $(nproc)'
+      - name: Run tests
+        run: bash tools/test_checks.sh
+      - name: Run extended tests
+        run: bash tools/test_extended.sh
