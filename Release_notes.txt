@@ -85,6 +85,9 @@ v2.26
 
 * Added support for RISC-V 64 architecture.
 
+* Added new AES performance application which consolidates AES performance tests
+  for AES-CBC, AES-GCM and AES-XTS.
+
 v2.25
 
 * Added new API including parameter checking (starting with isal_ prefix).

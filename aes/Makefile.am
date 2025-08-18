@@ -149,6 +149,7 @@ perf_tests  += aes/xts_128_enc_ossl_perf
 perf_tests  += aes/xts_256_enc_ossl_perf
 perf_tests  += aes/xts_128_enc_perf aes/xts_128_dec_perf aes/xts_128_dec_ossl_perf
 perf_tests  += aes/xts_256_enc_perf aes/xts_256_dec_perf aes/xts_256_dec_ossl_perf
+perf_tests  += aes/aes_perf
 
 examples += aes/gcm_simple_example
 
@@ -174,3 +175,5 @@ xts_256_dec_ossl_perf : LDLIBS += -lcrypto
 aes_xts_256_dec_ossl_perf_LDFLAGS = -lcrypto
 xts_256_rand_ossl_test: LDLIBS += -lcrypto
 aes_xts_256_rand_ossl_test_LDFLAGS = -lcrypto
+aes_perf: LDLIBS += -lcrypto
+aes_aes_perf_LDFLAGS = -lcrypto
