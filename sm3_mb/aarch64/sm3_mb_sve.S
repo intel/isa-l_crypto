@@ -109,7 +109,8 @@ sm3_mb_sve_max_lanes:
 	lsl	tmp,lanes,6
 	sub	databuf,abcd_buf,tmp
 	mov	sp,databuf
-	adr	sm3const_adr,SM3_CONSTS
+	adrp	sm3const_adr,SM3_CONSTS
+	add	sm3const_adr,sm3const_adr,:lo12:SM3_CONSTS
 1:
 	mov	src,job_vec
 	mov	dst,abcd_buf

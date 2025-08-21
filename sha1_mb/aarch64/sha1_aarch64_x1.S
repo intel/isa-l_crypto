@@ -245,22 +245,26 @@ sha1_aarch64_x1:
 
 	load_word_at	0
 
-	adr	sha1key_adr, KEY_0
+	adrp	sha1key_adr, KEY_0
+	add	sha1key_adr, sha1key_adr, :lo12:KEY_0
 	ldr	WK, [sha1key_adr]
 	exec_steps	0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
 
 	// 20 ~ 39
-	adr	sha1key_adr, KEY_1
+	adrp	sha1key_adr, KEY_1
+	add	sha1key_adr, sha1key_adr, :lo12:KEY_1
 	ldr	WK, [sha1key_adr]
 	exec_steps	20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39
 
 	// 40 ~ 59
-	adr	sha1key_adr, KEY_2
+	adrp	sha1key_adr, KEY_2
+	add	sha1key_adr, sha1key_adr, :lo12:KEY_2
 	ldr	WK, [sha1key_adr]
 	exec_steps	40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59
 
 	// 60 ~ 79
-	adr	sha1key_adr, KEY_3
+	adrp	sha1key_adr, KEY_3
+	add	sha1key_adr, sha1key_adr, :lo12:KEY_3
 	ldr	WK, [sha1key_adr]
 	exec_steps	60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79
 

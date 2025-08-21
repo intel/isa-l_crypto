@@ -160,7 +160,8 @@ start_loop:
 	mov	msg_adr,input_data
 lane_loop:
 	mov	offs,64
-	adr	key_adr,KEY_0
+	adrp	key_adr,KEY_0
+	add	key_adr,key_adr,:lo12:KEY_0
 	//load msg 0
 	ld4	{lane0_msg_0_v.S-lane3_msg_0_v.S}[0],[msg_adr],offs
 	ld4	{lane0_msg_0_v.S-lane3_msg_0_v.S}[1],[msg_adr],offs
@@ -252,7 +253,8 @@ lane_loop:
 	sha1_4_rounds	sha1c,msg_1,msg_2,msg_3,msg_0,abcd,e1,tmp1,e0,tmp0
 
 
-	adr	key_adr,KEY_1
+	adrp	key_adr,KEY_1
+	add	key_adr,key_adr,:lo12:KEY_1
 	ldr	key_q,[key_adr]
 	sha1_4_rounds	sha1c,msg_2,msg_3,msg_0,msg_1,abcd,e0,tmp0,e1,tmp1     /* rounds 12-15 */
 	sha1_4_rounds	sha1c,msg_3,msg_0,msg_1,msg_2,abcd,e1,tmp1,e0,tmp0
@@ -260,7 +262,8 @@ lane_loop:
 	sha1_4_rounds	sha1p,msg_1,msg_2,msg_3,msg_0,abcd,e1,tmp1,e0,tmp0
 	sha1_4_rounds	sha1p,msg_2,msg_3,msg_0,msg_1,abcd,e0,tmp0,e1,tmp1
 
-	adr	key_adr,KEY_2
+	adrp	key_adr,KEY_2
+	add	key_adr,key_adr,:lo12:KEY_2
 	ldr	key_q,[key_adr]
 	sha1_4_rounds	sha1p,msg_3,msg_0,msg_1,msg_2,abcd,e1,tmp1,e0,tmp0
 	sha1_4_rounds	sha1p,msg_0,msg_1,msg_2,msg_3,abcd,e0,tmp0,e1,tmp1     /* rounds 36-39 */
@@ -268,7 +271,8 @@ lane_loop:
 	sha1_4_rounds	sha1m,msg_2,msg_3,msg_0,msg_1,abcd,e0,tmp0,e1,tmp1
 	sha1_4_rounds	sha1m,msg_3,msg_0,msg_1,msg_2,abcd,e1,tmp1,e0,tmp0
 
-	adr	key_adr,KEY_3
+	adrp	key_adr,KEY_3
+	add	key_adr,key_adr,:lo12:KEY_3
 	ldr	key_q,[key_adr]
 	sha1_4_rounds	sha1m,msg_0,msg_1,msg_2,msg_3,abcd,e0,tmp0,e1,tmp1     /* rounds 52-55 */
 	sha1_4_rounds	sha1m,msg_1,msg_2,msg_3,msg_0,abcd,e1,tmp1,e0,tmp0
