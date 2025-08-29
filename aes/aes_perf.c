@@ -49,9 +49,10 @@
 #define strncasecmp _strnicmp
 #endif
 
-#define DEFAULT_TEST_LEN 8 * 1024
-#define DEFAULT_AAD_LEN  20
-#define MAX_AAD_LEN      256
+#define DEFAULT_TEST_LEN   8 * 1024
+#define DEFAULT_AAD_LEN    20
+#define MAX_AAD_LEN        256
+#define TEST_LARGE_MEM_LEN (1024ULL * 1024 * 1024)
 
 // Cached test, loop many times over small dataset
 #define CBC_TEST_LOOPS 400000
@@ -106,6 +107,8 @@ static uint8_t test_key_128[32];
 static uint8_t test_key_192[32];
 static uint8_t test_key_256[32];
 static uint8_t test_iv[16];
+
+int cold_test = 0;
 
 // Helper function to parse size values with optional K (KB) or M (MB) suffix
 static size_t
@@ -180,6 +183,8 @@ print_help(void)
                "                      Examples: --alignment 16, --alignment 128, --alignment 0\n"
                "  --aad-length N      Set AAD length for GCM operations (0-256 bytes)\n"
                "                      Default: 20 bytes\n"
+               "  --cold              Enable cold cache testing (randomize buffer offsets)\n"
+               "                      Uses large memory buffer to simulate cold cache conditions\n"
                "\n"
                "Algorithm Options:\n"
                "  --algo ALGORITHM    Run specific algorithm test\n"
@@ -527,6 +532,11 @@ run_cbc(const size_t test_len, const int key_bits)
                 get_buffers_for_decrypt(&input_buf, &output_buf);
         }
 
+        // Store base pointers for cold cache test
+        unsigned char *base_input_buf = input_buf;
+        unsigned char *base_output_buf = output_buf;
+        uint64_t offset = 0;
+
         // ISA-L CBC test
         perf_start(&start);
         for (i = 0; i < loop_count; i++) {
@@ -561,6 +571,11 @@ run_cbc(const size_t test_len, const int key_bits)
                                 break;
                         }
                 }
+                if (cold_test) {
+                        offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                        input_buf = base_input_buf + offset;
+                        output_buf = base_output_buf + offset;
+                }
         }
         perf_stop(&stop);
         if (csv_output) {
@@ -575,6 +590,9 @@ run_cbc(const size_t test_len, const int key_bits)
 
         // OpenSSL CBC test
         if (enable_openssl) {
+                // Reset buffer pointers
+                input_buf = base_input_buf;
+                output_buf = base_output_buf;
                 perf_start(&start);
                 for (i = 0; i < loop_count; i++) {
                         if (operation_mode == OP_ENCRYPT) {
@@ -607,6 +625,11 @@ run_cbc(const size_t test_len, const int key_bits)
                                                                 output_buf);
                                         break;
                                 }
+                        }
+                        if (cold_test) {
+                                offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                                input_buf = base_input_buf + offset;
+                                output_buf = base_output_buf + offset;
                         }
                 }
                 perf_stop(&stop);
@@ -685,6 +708,9 @@ run_gcm(const size_t test_len, const int key_bits)
         } else {
                 get_buffers_for_decrypt(&input_buf, &output_buf);
         }
+        unsigned char *base_input_buf = input_buf;
+        unsigned char *base_output_buf = output_buf;
+        uint64_t offset = 0;
 
         // ISA-L GCM test
         perf_start(&start);
@@ -706,6 +732,11 @@ run_gcm(const size_t test_len, const int key_bits)
                                                      IV, AAD, aad_length, gcm_tag, 16);
                         }
                 }
+                if (cold_test) {
+                        offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                        input_buf = base_input_buf + offset;
+                        output_buf = base_output_buf + offset;
+                }
         }
         perf_stop(&stop);
         if (csv_output) {
@@ -721,6 +752,9 @@ run_gcm(const size_t test_len, const int key_bits)
 
         // OpenSSL GCM test
         if (enable_openssl) {
+                // Reset buffer pointers
+                input_buf = base_input_buf;
+                output_buf = base_output_buf;
                 perf_start(&start);
                 for (i = 0; i < loop_count; i++) {
                         if (operation_mode == OP_ENCRYPT) {
@@ -743,6 +777,11 @@ run_gcm(const size_t test_len, const int key_bits)
                                                                 gcm_tag, 16, input_buf, test_len,
                                                                 output_buf);
                                 }
+                        }
+                        if (cold_test) {
+                                offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                                input_buf = base_input_buf + offset;
+                                output_buf = base_output_buf + offset;
                         }
                 }
                 perf_stop(&stop);
@@ -813,6 +852,11 @@ run_xts(const size_t test_len, const int key_bits)
                 get_buffers_for_decrypt(&in_buf, &out_buf);
         }
 
+        // Store base pointers for cold cache test
+        uint8_t *base_in_buf = in_buf;
+        uint8_t *base_out_buf = out_buf;
+        uint64_t offset = 0;
+
         // XTS regular API test
         perf_start(&start);
         for (i = 0; i < loop_count; i++) {
@@ -829,6 +873,11 @@ run_xts(const size_t test_len, const int key_bits)
                                 isal_aes_xts_dec_256(key2, key1, tinit, test_len, in_buf, out_buf);
                         }
                 }
+                if (cold_test) {
+                        offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                        in_buf = base_in_buf + offset;
+                        out_buf = base_out_buf + offset;
+                }
         }
         perf_stop(&stop);
         if (csv_output) {
@@ -842,6 +891,8 @@ run_xts(const size_t test_len, const int key_bits)
         }
 
         // XTS expanded key API test
+        in_buf = base_in_buf; // Reset to base for expanded key test
+        out_buf = base_out_buf;
         perf_start(&start);
         for (i = 0; i < loop_count; i++) {
                 if (operation_mode == OP_ENCRYPT) {
@@ -861,6 +912,11 @@ run_xts(const size_t test_len, const int key_bits)
                                                                   test_len, in_buf, out_buf);
                         }
                 }
+                if (cold_test) {
+                        offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                        in_buf = base_in_buf + offset;
+                        out_buf = base_out_buf + offset;
+                }
         }
         perf_stop(&stop);
         if (csv_output) {
@@ -875,6 +931,8 @@ run_xts(const size_t test_len, const int key_bits)
 
         // XTS OpenSSL test
         if (enable_openssl) {
+                in_buf = base_in_buf; // Reset to base for OpenSSL
+                out_buf = base_out_buf;
                 EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
                 if (!ctx) {
                         printf("Failed to create EVP_CIPHER_CTX\n");
@@ -899,6 +957,11 @@ run_xts(const size_t test_len, const int key_bits)
                                         openssl_aes_256_xts_dec(ctx, keyssl, tinit, test_len,
                                                                 in_buf, out_buf);
                                 }
+                        }
+                        if (cold_test) {
+                                offset = (uint64_t) rand() % (TEST_LARGE_MEM_LEN - test_len);
+                                in_buf = base_in_buf + offset;
+                                out_buf = base_out_buf + offset;
                         }
                 }
                 perf_stop(&stop);
@@ -1056,6 +1119,13 @@ main(int argc, char *argv[])
                 // In-place operations option
                 else if (strcasecmp(argv[i], "--in-place") == 0)
                         in_place = 1;
+                // Cold test option
+                else if (strcmp(argv[i], "--cold") == 0) {
+                        cold_test = 1;
+                        if (!csv_output) {
+                                printf("Cold cache testing enabled\n");
+                        }
+                }
                 // Iterations option
                 else if (strcasecmp(argv[i], "-i") == 0 ||
                          strcasecmp(argv[i], "--iterations") == 0) {
@@ -1153,7 +1223,17 @@ main(int argc, char *argv[])
         srand(TEST_SEED);
 
         // Allocate buffers once for the maximum size needed
-        const size_t max_buffer_size = get_max_buffer_size();
+        const size_t max_buffer_size = (cold_test ? TEST_LARGE_MEM_LEN : get_max_buffer_size());
+
+        // Validate that maximum test size is compatible with cold cache testing
+        if (cold_test && get_max_buffer_size() >= TEST_LARGE_MEM_LEN) {
+                printf("Error: Maximum test size (%zu) must be less than TEST_LARGE_MEM_LEN (%zu) "
+                       "for cold cache testing\n",
+                       get_max_buffer_size(), (size_t) TEST_LARGE_MEM_LEN);
+                fail = 1;
+                goto exit;
+        }
+
         if (allocate_buffers(max_buffer_size)) {
                 fail = 1;
                 goto exit;
