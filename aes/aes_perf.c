@@ -78,6 +78,9 @@ static int in_place = 0;
 // Global iteration counts (0 means use defaults)
 static int custom_iterations = 0;
 
+// Global buffer alignment (64 bytes by default)
+static size_t buffer_alignment = 64;
+
 // Size range configuration
 typedef struct {
         size_t start_size;
@@ -166,6 +169,10 @@ print_help(void)
                "                      Default: out-of-place operations\n"
                "  -i, --iterations N  Set number of iterations for performance tests\n"
                "                      Default values: CBC=400000, GCM=400000, XTS=3000000\n"
+               "  --alignment N       Set buffer alignment in bytes (must be power of 2 or 0)\n"
+               "                      Default: 64 bytes\n"
+               "                      Use 0 for default system alignment (malloc)\n"
+               "                      Examples: --alignment 16, --alignment 128, --alignment 0\n"
                "\n"
                "Algorithm Options:\n"
                "  --algo ALGORITHM    Run specific algorithm test\n"
@@ -293,6 +300,39 @@ parse_size_range(const char *range_str, size_range_t *range)
         return 1;
 }
 
+// Helper function to parse and validate buffer alignment
+// Alignment must be a power of 2 and at least sizeof(void*), or 0 for default malloc alignment
+static int
+parse_alignment(const char *align_str, size_t *alignment)
+{
+        char *endptr;
+        unsigned long align_val = strtoul(align_str, &endptr, 10);
+
+        // Check if conversion was successful
+        if (*endptr != '\0') {
+                return 0;
+        }
+
+        // Allow zero alignment (use malloc instead of posix_memalign)
+        if (align_val == 0) {
+                *alignment = 0;
+                return 1;
+        }
+
+        // Check if it's a power of 2
+        if ((align_val & (align_val - 1)) != 0) {
+                return 0;
+        }
+
+        // Check minimum alignment requirement for posix_memalign
+        if (align_val < sizeof(void *)) {
+                return 0;
+        }
+
+        *alignment = (size_t) align_val;
+        return 1;
+}
+
 // Helper function to calculate throughput in MB/s from performance data
 static double
 calculate_throughput_mbps(const struct perf start, const struct perf stop, const long long bytes)
@@ -331,12 +371,30 @@ get_max_buffer_size(void)
 static int
 allocate_buffers(const size_t max_size)
 {
-        plaintext = malloc(max_size);
-        ciphertext = malloc(max_size);
+        int ret = 0;
 
-        if (!plaintext || !ciphertext) {
-                printf("Failed to allocate test buffers of size: %zu\n", max_size);
-                return 1;
+        if (buffer_alignment == 0) {
+                // Use malloc for default system alignment
+                plaintext = malloc(max_size);
+                ciphertext = malloc(max_size);
+
+                if (!plaintext || !ciphertext) {
+                        printf("Failed to allocate test buffers of size: %zu with default "
+                               "alignment\n",
+                               max_size);
+                        return 1;
+                }
+        } else {
+                // Use posix_memalign for specific alignment
+                ret |= posix_memalign((void **) &plaintext, buffer_alignment, max_size);
+                ret |= posix_memalign((void **) &ciphertext, buffer_alignment, max_size);
+
+                if (ret != 0 || !plaintext || !ciphertext) {
+                        printf("Failed to allocate test buffers of size: %zu with %zu-byte "
+                               "alignment\n",
+                               max_size, buffer_alignment);
+                        return 1;
+                }
         }
 
         return 0;
@@ -345,8 +403,13 @@ allocate_buffers(const size_t max_size)
 static void
 free_buffers(void)
 {
-        free(plaintext);
-        free(ciphertext);
+        if (buffer_alignment == 0) {
+                free(plaintext);
+                free(ciphertext);
+        } else {
+                aligned_free(plaintext);
+                aligned_free(ciphertext);
+        }
 }
 
 static void
@@ -1007,6 +1070,33 @@ main(int argc, char *argv[])
                                 }
                         } else {
                                 printf("Option --iterations requires an argument.\n");
+                                print_help();
+                                return 1;
+                        }
+                }
+                // Alignment option
+                else if (strcmp(argv[i], "--alignment") == 0) {
+                        if (i + 1 < argc && argv[i + 1][0] != '-') {
+                                // Option has an argument
+                                i++; // Move to the argument
+                                const char *align_arg = argv[i];
+                                size_t new_alignment;
+
+                                if (parse_alignment(align_arg, &new_alignment)) {
+                                        buffer_alignment = new_alignment;
+                                        if (!csv_output) {
+                                                printf("Using buffer alignment: %zu bytes\n",
+                                                       buffer_alignment);
+                                        }
+                                } else {
+                                        printf("Invalid alignment value: '%s'. Must be a power of "
+                                               "2 "
+                                               "and at least %zu bytes.\n",
+                                               align_arg, sizeof(void *));
+                                        return 1;
+                                }
+                        } else {
+                                printf("Option --alignment requires an argument.\n");
                                 print_help();
                                 return 1;
                         }
