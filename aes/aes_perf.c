@@ -50,6 +50,8 @@
 #endif
 
 #define DEFAULT_TEST_LEN 8 * 1024
+#define DEFAULT_AAD_LEN  20
+#define MAX_AAD_LEN      256
 
 // Cached test, loop many times over small dataset
 #define CBC_TEST_LOOPS 400000
@@ -80,6 +82,9 @@ static int custom_iterations = 0;
 
 // Global buffer alignment (64 bytes by default)
 static size_t buffer_alignment = 64;
+
+// Global AAD length for GCM operations
+static int aad_length = DEFAULT_AAD_LEN;
 
 // Size range configuration
 typedef struct {
@@ -173,6 +178,8 @@ print_help(void)
                "                      Default: 64 bytes\n"
                "                      Use 0 for default system alignment (malloc)\n"
                "                      Examples: --alignment 16, --alignment 128, --alignment 0\n"
+               "  --aad-length N      Set AAD length for GCM operations (0-256 bytes)\n"
+               "                      Default: 20 bytes\n"
                "\n"
                "Algorithm Options:\n"
                "  --algo ALGORITHM    Run specific algorithm test\n"
@@ -630,7 +637,7 @@ run_gcm(const size_t test_len, const int key_bits)
         struct isal_gcm_context_data gctx;
         uint8_t key[32]; // Allocate maximum size for both 128 and 256 bit keys
         uint8_t IV[ISAL_GCM_IV_LEN];
-        uint8_t AAD[20];
+        uint8_t AAD[MAX_AAD_LEN];
         uint8_t gcm_tag[16];
         const uint32_t iv_len = ISAL_GCM_IV_LEN;
         const char *algorithm_name;
@@ -685,18 +692,18 @@ run_gcm(const size_t test_len, const int key_bits)
                 if (operation_mode == OP_ENCRYPT) {
                         if (key_bits == 128) {
                                 isal_aes_gcm_enc_128(&gkey, &gctx, output_buf, input_buf, test_len,
-                                                     IV, AAD, 20, gcm_tag, 16);
+                                                     IV, AAD, aad_length, gcm_tag, 16);
                         } else {
                                 isal_aes_gcm_enc_256(&gkey, &gctx, output_buf, input_buf, test_len,
-                                                     IV, AAD, 20, gcm_tag, 16);
+                                                     IV, AAD, aad_length, gcm_tag, 16);
                         }
                 } else {
                         if (key_bits == 128) {
                                 isal_aes_gcm_dec_128(&gkey, &gctx, output_buf, input_buf, test_len,
-                                                     IV, AAD, 20, gcm_tag, 16);
+                                                     IV, AAD, aad_length, gcm_tag, 16);
                         } else {
                                 isal_aes_gcm_dec_256(&gkey, &gctx, output_buf, input_buf, test_len,
-                                                     IV, AAD, 20, gcm_tag, 16);
+                                                     IV, AAD, aad_length, gcm_tag, 16);
                         }
                 }
         }
@@ -718,20 +725,22 @@ run_gcm(const size_t test_len, const int key_bits)
                 for (i = 0; i < loop_count; i++) {
                         if (operation_mode == OP_ENCRYPT) {
                                 if (key_bits == 128) {
-                                        openssl_aes_gcm_enc(key, IV, iv_len, AAD, 20, gcm_tag, 16,
-                                                            input_buf, test_len, output_buf);
+                                        openssl_aes_gcm_enc(key, IV, iv_len, AAD, aad_length,
+                                                            gcm_tag, 16, input_buf, test_len,
+                                                            output_buf);
                                 } else {
-                                        openssl_aes_256_gcm_enc(key, IV, iv_len, AAD, 20, gcm_tag,
-                                                                16, input_buf, test_len,
+                                        openssl_aes_256_gcm_enc(key, IV, iv_len, AAD, aad_length,
+                                                                gcm_tag, 16, input_buf, test_len,
                                                                 output_buf);
                                 }
                         } else {
                                 if (key_bits == 128) {
-                                        openssl_aes_gcm_dec(key, IV, iv_len, AAD, 20, gcm_tag, 16,
-                                                            input_buf, test_len, output_buf);
+                                        openssl_aes_gcm_dec(key, IV, iv_len, AAD, aad_length,
+                                                            gcm_tag, 16, input_buf, test_len,
+                                                            output_buf);
                                 } else {
-                                        openssl_aes_256_gcm_dec(key, IV, iv_len, AAD, 20, gcm_tag,
-                                                                16, input_buf, test_len,
+                                        openssl_aes_256_gcm_dec(key, IV, iv_len, AAD, aad_length,
+                                                                gcm_tag, 16, input_buf, test_len,
                                                                 output_buf);
                                 }
                         }
@@ -940,7 +949,8 @@ main(int argc, char *argv[])
 {
         int fail = 0;
         algo_type_t selected_algorithm = ALGO_NONE;
-        size_t test_len = DEFAULT_TEST_LEN; // Add test_len declaration
+        size_t test_len = DEFAULT_TEST_LEN;
+        aad_length = DEFAULT_AAD_LEN;
 
         // Parse command line arguments
         for (int i = 1; i < argc; i++) {
@@ -1097,6 +1107,32 @@ main(int argc, char *argv[])
                                 }
                         } else {
                                 printf("Option --alignment requires an argument.\n");
+                                print_help();
+                                return 1;
+                        }
+                }
+                // AAD length option
+                else if (strcasecmp(argv[i], "--aad-length") == 0) {
+                        if (i + 1 < argc && argv[i + 1][0] != '-') {
+                                // Option has an argument
+                                i++; // Move to the argument
+                                const char *const aad_arg = argv[i];
+                                char *endptr;
+                                const long aad_val = strtol(aad_arg, &endptr, 10);
+
+                                if (*endptr == '\0' && aad_val >= 0 && aad_val <= MAX_AAD_LEN) {
+                                        aad_length = (int) aad_val;
+                                        if (!csv_output) {
+                                                printf("Using AAD length: %d bytes\n", aad_length);
+                                        }
+                                } else {
+                                        printf("Invalid AAD length value: '%s'. Must be between 0 "
+                                               "and %d bytes.\n",
+                                               aad_arg, MAX_AAD_LEN);
+                                        return 1;
+                                }
+                        } else {
+                                printf("Option --aad-length requires an argument.\n");
                                 print_help();
                                 return 1;
                         }
