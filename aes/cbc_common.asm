@@ -256,7 +256,7 @@ section .text
 
 ;
 ;	SCHEDULE_DATA_LOAD
-; pre-loades message data into xmm regs
+; pre-loads message data into xmm regs
 ; updates global 'blocks_loaded' that tracks which data blocks have been loaded
 ; 'blocks_loaded' is an in/out global and must be declared in the using macro or function
 %macro SCHEDULE_DATA_LOAD 5
@@ -275,7 +275,7 @@ section .text
 
 ;
 ;	INIT_SELECT_KEY
-; determine which xmm reg holds the key data needed or loades it into the temp register if not cached
+; determine which xmm reg holds the key data needed or loads it into the temp register if not cached
 ; 'current_tmp' is an in/out global and must be declared in the using macro or function
 %macro INIT_SELECT_KEY 6
 %define %%TOT_ROUNDS	%1
@@ -293,7 +293,7 @@ section .text
 
 ;
 ;	SELECT_KEY
-; determine which xmm reg holds the key data needed or loades it into the temp register if not cached
+; determine which xmm reg holds the key data needed or loads it into the temp register if not cached
 ; 'current_tmp' is an in/out global and must be declared in the using macro or function
 %macro SELECT_KEY 8
 %define %%ROUND		%1

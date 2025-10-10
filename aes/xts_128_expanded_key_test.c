@@ -109,7 +109,7 @@ main(void)
                 isal_aes_keyexp_128((const uint8_t *) v->key, expkey1_enc, expkey1_dec);
                 isal_aes_keyexp_128((const uint8_t *) v->key + 16, expkey2_enc, null_key);
 
-                // Note, encryption key is re-used for the tweak decryption step
+                // Note, encryption key is reused for the tweak decryption step
                 isal_aes_xts_dec_128_expanded_key(expkey2_enc, expkey1_dec, (const uint8_t *) v->iv,
                                                   buf_size, v->ct, pt_test);
 

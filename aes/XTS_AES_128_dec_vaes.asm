@@ -1213,7 +1213,7 @@ _done_1_remain:
 
 
 _start_by16:
-	; Make first 7 tweek values
+	; Make first 7 tweak values
 	vbroadcasti32x4	zmm0, [TW]
 	vbroadcasti32x4	zmm8, [shufb_15_7]
 	mov		tmp1, 0xaa
@@ -1234,7 +1234,7 @@ _start_by16:
 	vpxorq		zmm5 {k2}, zmm5, zmm6		; tweaks shifted by 7-4
 	vpxord		zmm10, zmm7, zmm5
 
-	; Make next 8 tweek values by all x 2^8
+	; Make next 8 tweak values by all x 2^8
 	vpsrldq		zmm13, zmm9, 15
 	vpclmulqdq	zmm14, zmm13, zpoly, 0
 	vpslldq		zmm11, zmm9, 1
@@ -1270,7 +1270,7 @@ _main_loop_run_16:
 	jmp		_do_n_blocks
 
 _start_by8:
-	; Make first 7 tweek values
+	; Make first 7 tweak values
 	vbroadcasti32x4	zmm0, [TW]
 	vbroadcasti32x4	zmm8, [shufb_15_7]
 	mov		tmp1, 0xaa

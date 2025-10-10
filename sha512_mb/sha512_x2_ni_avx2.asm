@@ -179,7 +179,7 @@ endstruc
 
 mksection .rodata
 default rel
-;; re-use symbols from AVX codebase
+;; reuse symbols from AVX codebase
 align 64
 SHA512_K_AVX:
        dq      0x428a2f98d728ae22,0x7137449123ef65cd

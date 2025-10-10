@@ -80,7 +80,7 @@ endstruc
 ; WK_2(t) points to 1 of 2 qwords at frame.WK depending on t being odd/even
 
 %macro RotateState 0
-	; Rotate symbles a..h right
+	; Rotate symbols a..h right
 	%xdefine %%TMP h_64
 	%xdefine h_64  g_64
 	%xdefine g_64  f_64
