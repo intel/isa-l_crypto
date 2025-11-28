@@ -33,14 +33,9 @@ AS_CASE([$host_cpu],
 AM_CONDITIONAL([CPU_X86_64], [test "$CPU" = "x86_64"])
 AM_CONDITIONAL([CPU_AARCH64], [test "$CPU" = "aarch64"])
 AM_CONDITIONAL([CPU_RISCV64], [test "$CPU" = "riscv64"])
+AM_CONDITIONAL([HAVE_RVV], [false])
 AM_CONDITIONAL([CPU_UNDEFINED], [test "x$CPU" = "x"])
 AM_CONDITIONAL([SAFE_PARAM], [test x"$SAFE_PARAM" = x"yes"])
-
-if test "$CPU" = "x86_64"; then
-   is_x86=yes
-else
-   is_x86=no
-fi
 
 # Check for programs
 AC_PROG_CC_STDC
@@ -50,6 +45,40 @@ LT_INIT
 AC_PREFIX_DEFAULT([/usr])
 AC_PROG_SED
 AC_PROG_MKDIR_P
+
+case "${CPU}" in
+
+	x86_64)
+
+		is_x86=yes
+		;;
+
+	riscv64)
+
+		AC_MSG_CHECKING([checking RVV support])
+		AC_COMPILE_IFELSE(
+			[AC_LANG_PROGRAM([], [
+				__asm__ volatile(
+					".option arch, +v\n"
+					"vsetivli zero, 0, e8, m1, ta, ma\n"
+				);
+			])],
+			[AC_DEFINE([HAVE_RVV], [1], [Enable RVV instructions])
+			AM_CONDITIONAL([HAVE_RVV], [true]) rvv=yes],
+			[AC_DEFINE([HAVE_RVV], [0], [Disable RVV instructions])
+			AM_CONDITIONAL([HAVE_RVV], [false]) rvv=no]
+		)
+		if test "x$rvv" = "xyes"; then
+		  CFLAGS+=" -march=rv64gcv"
+		  CCASFLAGS+=" -march=rv64gcv"
+		fi
+		AC_MSG_RESULT([$rvv])
+		;;
+
+	*)
+		is_x86=no
+
+esac
 
 # Options
 AC_ARG_ENABLE([debug],
