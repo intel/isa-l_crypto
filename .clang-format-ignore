@@ -1,2 +1,3 @@
 include/aarch64_multibinary.h
+include/riscv64_multibinary.h
 intel-ipsec-mb/*
