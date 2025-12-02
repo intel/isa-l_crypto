@@ -62,6 +62,15 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 
+// Time conversion constants
+#define USECS_PER_SEC     1000000
+#define USECS_PER_SEC_ULL 1000000ULL
+#define BYTES_PER_MB      (1024 * 1024)
+#define FILETIME_TO_SEC   10000000ULL
+#define FILETIME_TO_USEC  10ULL
+/* Seconds between Jan 1, 1970 (Unix 0 epoch time) and Jan 1, 1601 (Windows 0 epoch time) */
+#define WINDOWS_TO_UNIX_EPOCH 11644473600ULL
+
 struct perf {
         struct timeval tv;
 };
@@ -82,18 +91,56 @@ static inline void
 perf_print(struct perf stop, struct perf start, long long dsize)
 {
         long long secs = stop.tv.tv_sec - start.tv.tv_sec;
-        long long usecs = secs * 1000000 + stop.tv.tv_usec - start.tv.tv_usec;
+        long long usecs = secs * USECS_PER_SEC + stop.tv.tv_usec - start.tv.tv_usec;
 
         printf("runtime = %10lld usecs", usecs);
         if (dsize != 0) {
 #if 1 // not bug in printf for 32-bit
-                printf(", bandwidth %lld MB in %.4f sec = %.2f MB/s\n", dsize / (1024 * 1024),
-                       ((double) usecs) / 1000000, ((double) dsize) / (double) usecs);
+                printf(", bandwidth %lld MB in %.4f sec = %.2f MB/s\n", dsize / BYTES_PER_MB,
+                       ((double) usecs) / USECS_PER_SEC, ((double) dsize) / (double) usecs);
 #else
                 printf(", bandwidth %lld MB ", dsize / (1024 * 1024));
                 printf("in %.4f sec ", (double) usecs / 1000000);
                 printf("= %.2f MB/s\n", (double) dsize / usecs);
 #endif
+        } else
+                printf("\n");
+}
+#elif defined(_MSC_VER)
+static inline int
+perf_start(struct perf *p)
+{
+        FILETIME ft;
+        GetSystemTimeAsFileTime(&ft);
+        p->tv.tv_sec = (long) ((((uint64_t) ft.dwHighDateTime << 32) | ft.dwLowDateTime) /
+                                       FILETIME_TO_SEC -
+                               WINDOWS_TO_UNIX_EPOCH);
+        p->tv.tv_usec = (long) ((((uint64_t) ft.dwHighDateTime << 32) | ft.dwLowDateTime) /
+                                FILETIME_TO_USEC % USECS_PER_SEC_ULL);
+        return 0;
+}
+static inline int
+perf_stop(struct perf *p)
+{
+        FILETIME ft;
+        GetSystemTimeAsFileTime(&ft);
+        p->tv.tv_sec = (long) ((((uint64_t) ft.dwHighDateTime << 32) | ft.dwLowDateTime) /
+                                       FILETIME_TO_SEC -
+                               WINDOWS_TO_UNIX_EPOCH);
+        p->tv.tv_usec = (long) ((((uint64_t) ft.dwHighDateTime << 32) | ft.dwLowDateTime) /
+                                FILETIME_TO_USEC % USECS_PER_SEC_ULL);
+        return 0;
+}
+static inline void
+perf_print(struct perf stop, struct perf start, long long dsize)
+{
+        long long secs = stop.tv.tv_sec - start.tv.tv_sec;
+        long long usecs = secs * USECS_PER_SEC + stop.tv.tv_usec - start.tv.tv_usec;
+
+        printf("runtime = %10lld usecs", usecs);
+        if (dsize != 0) {
+                printf(", bandwidth %lld MB in %.4f sec = %.2f MB/s\n", dsize / BYTES_PER_MB,
+                       ((double) usecs) / USECS_PER_SEC, ((double) dsize) / (double) usecs);
         } else
                 printf("\n");
 }

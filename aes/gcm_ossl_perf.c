@@ -80,11 +80,11 @@ check_data(uint8_t *test, uint8_t *expected, uint64_t len, int vect, char *data_
                 OK = 0;
                 printf("  v[%d] expected results don't match %s \t\t", vect, data_name);
                 {
-                        uint64_t a;
+                        int a;
                         for (a = 0; a < len; a++) {
                                 if (test[a] != expected[a]) {
-                                        printf(" '%x' != '%x' at %lx of %lx\n", test[a],
-                                               expected[a], a, len);
+                                        printf(" '%x' != '%x' at %x of %x\n", test[a], expected[a],
+                                               a, (int) len);
                                         break;
                                 }
                         }

@@ -47,6 +47,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 #define strcasecmp  _stricmp
 #define strncasecmp _strnicmp
+#define strtok_r    strtok_s
 #endif
 
 #define DEFAULT_TEST_LEN   8 * 1024
@@ -117,14 +118,18 @@ parse_size_value(const char *const size_str)
         size_t size_val;
         char *endptr;
         size_t multiplier = 1;
+#ifdef _MSC_VER
+        char *const str_copy = _strdup(size_str);
+#else
         char *const str_copy = strdup(size_str);
+#endif
 
         // Check if strdup failed
         if (!str_copy)
                 return 0;
 
         // Check for size suffixes (K for KB, M for MB)
-        const int len = strlen(str_copy);
+        const size_t len = strlen(str_copy);
         if (len > 0) {
                 // Convert to uppercase for case-insensitive comparison
                 char last_char = toupper(str_copy[len - 1]);
@@ -251,7 +256,11 @@ parse_operation(const char *op_str)
 static int
 parse_size_range(const char *range_str, size_range_t *range)
 {
-        char *str_copy = strdup(range_str);
+#ifdef _MSC_VER
+        char *const str_copy = _strdup(range_str);
+#else
+        char *const str_copy = strdup(range_str);
+#endif
         char *start_str, *end_str, *step_str;
         char *saveptr;
 
@@ -943,18 +952,18 @@ run_xts(const size_t test_len, const int key_bits)
                 for (i = 0; i < loop_count_ossl; i++) {
                         if (operation_mode == OP_ENCRYPT) {
                                 if (key_bits == 128) {
-                                        openssl_aes_128_xts_enc(ctx, keyssl, tinit, test_len,
+                                        openssl_aes_128_xts_enc(ctx, keyssl, tinit, (int) test_len,
                                                                 in_buf, out_buf);
                                 } else {
-                                        openssl_aes_256_xts_enc(ctx, keyssl, tinit, test_len,
+                                        openssl_aes_256_xts_enc(ctx, keyssl, tinit, (int) test_len,
                                                                 in_buf, out_buf);
                                 }
                         } else {
                                 if (key_bits == 128) {
-                                        openssl_aes_128_xts_dec(ctx, keyssl, tinit, test_len,
+                                        openssl_aes_128_xts_dec(ctx, keyssl, tinit, (int) test_len,
                                                                 in_buf, out_buf);
                                 } else {
-                                        openssl_aes_256_xts_dec(ctx, keyssl, tinit, test_len,
+                                        openssl_aes_256_xts_dec(ctx, keyssl, tinit, (int) test_len,
                                                                 in_buf, out_buf);
                                 }
                         }
@@ -1240,12 +1249,12 @@ main(int argc, char *argv[])
         }
 
         // Initialize test data
-        mk_rand_data(plaintext, max_buffer_size);
-        mk_rand_data(ciphertext, max_buffer_size);
-        mk_rand_data(test_key_128, sizeof(test_key_128));
-        mk_rand_data(test_key_192, sizeof(test_key_192));
-        mk_rand_data(test_key_256, sizeof(test_key_256));
-        mk_rand_data(test_iv, sizeof(test_iv));
+        mk_rand_data(plaintext, (uint32_t) max_buffer_size);
+        mk_rand_data(ciphertext, (uint32_t) max_buffer_size);
+        mk_rand_data(test_key_128, (uint32_t) sizeof(test_key_128));
+        mk_rand_data(test_key_192, (uint32_t) sizeof(test_key_192));
+        mk_rand_data(test_key_256, (uint32_t) sizeof(test_key_256));
+        mk_rand_data(test_iv, (uint32_t) sizeof(test_iv));
 
         // Print CSV header or normal header
         if (csv_output)
@@ -1283,7 +1292,7 @@ main(int argc, char *argv[])
                 }
 
                 // Reinitialize test data for the new size (only the portion we'll use)
-                mk_rand_data(plaintext, current_size);
+                mk_rand_data(plaintext, (uint32_t) current_size);
 
                 // Run specific algorithm
                 fail += run_specific_algorithm(selected_algorithm, current_size);

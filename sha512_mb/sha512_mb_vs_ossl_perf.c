@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include <openssl/sha.h>
 #include "sha512_mb.h"
 #include "test.h"
@@ -123,7 +124,7 @@ main(void)
                         if (ctxpool[i].job.result_digest[j] !=
                             to_be64(((uint64_t *) digest_ssl[i])[j])) {
                                 fail++;
-                                printf("Test%d, digest%d fail %016lX <=> %016lX\n", i, j,
+                                printf("Test%d, digest%d fail %" PRIx64 " <=> %" PRIx64 "\n", i, j,
                                        ctxpool[i].job.result_digest[j],
                                        to_be64(((uint64_t *) digest_ssl[i])[j]));
                         }

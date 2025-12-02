@@ -13,8 +13,6 @@ RELEASE NOTE CONTENTS
 1.  KNOWN ISSUES
 ================================================================================
 
-* Perf tests do not run in Windows environment.
-
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
@@ -89,6 +87,8 @@ v2.26
 
 * Added new AES performance application which consolidates AES performance tests
   for AES-CBC, AES-GCM and AES-XTS.
+
+* Performance applications can now be used in Windows.
 
 v2.25
 

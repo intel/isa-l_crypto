@@ -51,7 +51,7 @@ openssl_aes_128_cbc_dec(uint8_t *key, uint8_t *iv, uint64_t len, uint8_t *cipher
         if (!EVP_DecryptUpdate(ctx, plaintext, &outlen, (uint8_t const *) ciphertext, (int) len))
                 printf("\n ERROR!! EVP_DecryptUpdate - EVP_aes_128_cbc\n");
         if (!EVP_DecryptFinal_ex(ctx, &plaintext[outlen], &tmplen))
-                printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_128_cbc %lx, %x, %x\n", len,
+                printf("\n ERROR!! EVP_DecryptFinal_ex - EVP_aes_128_cbc %x, %x, %x\n", (int) len,
                        outlen, tmplen);
 
         EVP_CIPHER_CTX_free(ctx);
