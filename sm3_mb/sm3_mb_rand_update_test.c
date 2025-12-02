@@ -206,7 +206,7 @@ main(void)
 
                         int errc = 0;
 
-                        if (lens[i] > len_rand)
+                        if ((int) lens[i] > len_rand)
                                 errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, buf_ptr[i],
                                                                len_rand, ISAL_HASH_FIRST);
                         else
@@ -233,7 +233,7 @@ main(void)
                                         buf_ptr[j] = bufs[j] + ctx->total_length;
                                         len_rand = (rand() % ISAL_SM3_BLOCK_SIZE) *
                                                    (rand() % MAX_RAND_UPDATE_BLOCKS);
-                                        len_rem = lens[j] - ctx->total_length;
+                                        len_rem = (int) (lens[j] - ctx->total_length);
 
                                         if (len_rem <= len_rand)
                                                 // submit the rest of the job as LAST
@@ -267,7 +267,7 @@ main(void)
                         // Resubmit unfinished job
                         i = (unsigned long) (uintptr_t) (ctx->user_data);
                         buf_ptr[i] = bufs[i] + ctx->total_length; // update buffer pointer
-                        len_rem = lens[i] - ctx->total_length;
+                        len_rem = (int) (lens[i] - ctx->total_length);
                         len_rand =
                                 (rand() % ISAL_SM3_BLOCK_SIZE) * (rand() % MAX_RAND_UPDATE_BLOCKS);
                         debug_char('+');

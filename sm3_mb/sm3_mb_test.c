@@ -181,9 +181,9 @@ main(void)
         }
 
         for (i = 0; i < MSGS; i++) {
-                const int errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, test_data[i].msg,
-                                                         strlen((char *) test_data[i].msg),
-                                                         ISAL_HASH_ENTIRE);
+                const int errc = isal_sm3_ctx_mgr_submit(
+                        mgr, &ctxpool[i], &ctx, test_data[i].msg,
+                        (uint32_t) strlen((char *) test_data[i].msg), ISAL_HASH_ENTIRE);
 
                 if (errc == 0) {
                         if (ctx != NULL) {
@@ -241,9 +241,9 @@ main(void)
         for (i = 0; i < NUM_JOBS; i++) {
                 j = PSEUDO_RANDOM_NUM(i);
 
-                const int errc = isal_sm3_ctx_mgr_submit(mgr, &ctxpool[i], &ctx, test_data[j].msg,
-                                                         strlen((char *) test_data[j].msg),
-                                                         ISAL_HASH_ENTIRE);
+                const int errc = isal_sm3_ctx_mgr_submit(
+                        mgr, &ctxpool[i], &ctx, test_data[j].msg,
+                        (uint32_t) strlen((char *) test_data[j].msg), ISAL_HASH_ENTIRE);
                 if (errc == 0) {
                         if (ctx != NULL) {
                                 t = (unsigned long) (uintptr_t) (ctx->user_data);

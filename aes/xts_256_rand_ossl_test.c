@@ -94,7 +94,8 @@ main(int argc, char **argv)
         unsigned char key1[32], key2[32], tinit[16];
         unsigned char *pt, *ct, *dt, *refct, *refdt;
         unsigned char keyssl[64]; /* SSL takes both keys together */
-        int i, j, k, ret;
+        int k, ret;
+        unsigned int i, j;
         int seed;
 
         if (argc == 1)

@@ -121,7 +121,7 @@ dump_gcm_data(struct isal_gcm_key_data *gkey)
 void
 mk_rand_data(uint8_t *data, uint32_t size)
 {
-        int i;
+        uint32_t i;
         for (i = 0; i < size; i++) {
                 *data++ = rand();
         }
@@ -301,8 +301,8 @@ check_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *
 
                 if (rand() % 1024 == 0) {
                         length = rand() % 100;
-                        mk_rand_data(rand_data, length);
-                        SHA1(rand_data, length, rand_data);
+                        mk_rand_data(rand_data, (uint32_t) length);
+                        SHA1(rand_data, (size_t) length, rand_data);
                 }
                 last_break = i;
                 i = (rand() % test_len / 8) & ALIGNMENT_MASK;
@@ -353,8 +353,8 @@ check_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_data *
                         if (rand() % 1024 == 0) {
                                 length = rand() % 100;
 
-                                mk_rand_data(rand_data, length);
-                                SHA1(rand_data, length, rand_data);
+                                mk_rand_data(rand_data, (uint32_t) length);
+                                SHA1(rand_data, (size_t) length, rand_data);
                         }
 
                         last_break = i;
@@ -578,8 +578,8 @@ check_strm_vector_efence(struct isal_gcm_key_data *gkey, struct isal_gcm_context
                         stream = NULL;
                         if (rand() % 1024 == 0) {
                                 length = rand() % 100;
-                                mk_rand_data(rand_data, length);
-                                SHA1(rand_data, length, rand_data);
+                                mk_rand_data(rand_data, (uint32_t) length);
+                                SHA1(rand_data, (size_t) length, rand_data);
                         }
                         last_break = i;
                 }
@@ -627,8 +627,8 @@ check_strm_vector_efence(struct isal_gcm_key_data *gkey, struct isal_gcm_context
                         if (rand() % 1024 == 0) {
                                 length = rand() % 100;
 
-                                mk_rand_data(rand_data, length);
-                                SHA1(rand_data, length, rand_data);
+                                mk_rand_data(rand_data, (uint32_t) length);
+                                SHA1(rand_data, (size_t) length, rand_data);
                         }
 
                         last_break = i;
@@ -806,8 +806,8 @@ check_256_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_da
 
                 if (rand() % 1024 == 0) {
                         length = rand() % 100;
-                        mk_rand_data(rand_data, length);
-                        SHA1(rand_data, length, rand_data);
+                        mk_rand_data(rand_data, (uint32_t) length);
+                        SHA1(rand_data, (size_t) length, rand_data);
                 }
                 last_break = i;
                 i += (rand() % test_len / 8) & ALIGNMENT_MASK;
@@ -859,8 +859,8 @@ check_256_strm_vector(struct isal_gcm_key_data *gkey, struct isal_gcm_context_da
                 if (rand() % 1024 == 0) {
                         length = rand() % 100;
 
-                        mk_rand_data(rand_data, length);
-                        SHA1(rand_data, length, rand_data);
+                        mk_rand_data(rand_data, (uint32_t) length);
+                        SHA1(rand_data, (size_t) length, rand_data);
                 }
 
                 last_break = i;
@@ -968,10 +968,10 @@ test_gcm_strm_efence(void)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
@@ -1085,10 +1085,10 @@ test_gcm_strm_combinations(int test_len)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
@@ -1200,10 +1200,10 @@ test_gcm_combinations(void)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
@@ -1318,10 +1318,10 @@ test_gcm256_combinations(void)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
@@ -1436,10 +1436,10 @@ test_gcm256_strm_combinations(int test_len)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported
@@ -1533,10 +1533,10 @@ test_gcm_efence(void)
                         test.A = A + PAGE_LEN - test.Alen;
                         test.T = T + PAGE_LEN - test.Tlen;
 
-                        mk_rand_data(test.P, test.Plen);
-                        mk_rand_data(test.K, test.Klen);
-                        mk_rand_data(test.IV, test.IVlen);
-                        mk_rand_data(test.A, test.Alen);
+                        mk_rand_data(test.P, (uint32_t) test.Plen);
+                        mk_rand_data(test.K, (uint32_t) test.Klen);
+                        mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                        mk_rand_data(test.A, (uint32_t) test.Alen);
                         if (ISAL_GCM_128_KEY_LEN == key_len) {
                                 if (0 != check_vector(gkey, gctx, &test)) {
                                         free(gkey);
@@ -1908,10 +1908,10 @@ test_gcm_strm_combinations2(int length, int start, int breaks)
                 test.A += offset;
                 test.T += offset;
 
-                mk_rand_data(test.P, test.Plen);
-                mk_rand_data(test.K, test.Klen);
-                mk_rand_data(test.IV, test.IVlen);
-                mk_rand_data(test.A, test.Alen);
+                mk_rand_data(test.P, (uint32_t) test.Plen);
+                mk_rand_data(test.K, (uint32_t) test.Klen);
+                mk_rand_data(test.IV, (uint32_t) test.IVlen);
+                mk_rand_data(test.A, (uint32_t) test.Alen);
 
                 // single Key length of 128bits/16bytes supported
                 // single IV length of 96bits/12bytes supported

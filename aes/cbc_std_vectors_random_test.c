@@ -116,7 +116,7 @@ OpenSslDec(uint8_t k_len, uint8_t *key, uint8_t *in, uint8_t *iv, uint8_t *out, 
 void
 mk_rand_data(uint8_t *data, uint32_t size)
 {
-        int i;
+        uint32_t i;
         for (i = 0; i < size; i++) {
                 *data++ = rand();
         }
@@ -361,8 +361,8 @@ test_random_combinations(void)
                 test.C += offset;
                 test.K += offset;
 
-                mk_rand_data(test.P, test.P_LEN);
-                mk_rand_data(test.K, test.K_LEN);
+                mk_rand_data(test.P, (uint32_t) test.P_LEN);
+                mk_rand_data(test.K, (uint32_t) test.K_LEN);
                 mk_rand_data(test.IV, ISAL_CBC_IV_DATA_LEN);
 
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
@@ -439,8 +439,8 @@ test_efence_combinations(void)
                                                               ((uint64_t) test.KEYS &
                                                                0xff)); // align to 16 byte boundary
 
-                        mk_rand_data(test.P, test.P_LEN);
-                        mk_rand_data(test.K, test.K_LEN);
+                        mk_rand_data(test.P, (uint32_t) test.P_LEN);
+                        mk_rand_data(test.K, (uint32_t) test.K_LEN);
                         mk_rand_data(test.IV, ISAL_CBC_IV_DATA_LEN);
 #ifdef CBC_VECTORS_EXTRA_VERBOSE
                         printf(" Offset:0x%x ", offset);

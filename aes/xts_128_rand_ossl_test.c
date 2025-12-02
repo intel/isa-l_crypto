@@ -93,7 +93,8 @@ main(int argc, char **argv)
         unsigned char *pt, *ct, *dt, *refct, *refdt;
         unsigned char keyssl[32]; /* SSL takes both keys together */
         unsigned int rand_len, t;
-        int i, j, k, ret;
+        int k, ret;
+        unsigned int i, j;
         int seed;
 
         if (argc == 1)
