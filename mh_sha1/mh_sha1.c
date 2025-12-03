@@ -136,8 +136,7 @@ mh_sha1_finalize_base(struct isal_mh_sha1_ctx *ctx, void *mh_sha1_digest)
         return _mh_sha1_finalize_base(ctx, mh_sha1_digest);
 }
 
-#if (!defined(NOARCH)) &&                                                                          \
-        (defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86))
+#if (!defined(NOARCH)) && (defined(__x86_64__) || defined(_M_X64))
 
 /***************mh_sha1_update***********/
 // mh_sha1_update_sse.c

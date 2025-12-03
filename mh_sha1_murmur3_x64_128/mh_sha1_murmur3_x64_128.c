@@ -164,8 +164,7 @@ mh_sha1_murmur3_x64_128_finalize_base(struct isal_mh_sha1_murmur3_x64_128_ctx *c
         return _mh_sha1_murmur3_x64_128_finalize_base(ctx, mh_sha1_digest, murmur3_x64_128_digest);
 }
 
-#if (!defined(NOARCH)) &&                                                                          \
-        (defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86))
+#if (!defined(NOARCH)) && (defined(__x86_64__) || defined(_M_X64))
 /***************mh_sha1_murmur3_x64_128_update***********/
 // mh_sha1_murmur3_x64_128_update_sse.c
 #define UPDATE_FUNCTION _mh_sha1_murmur3_x64_128_update_sse

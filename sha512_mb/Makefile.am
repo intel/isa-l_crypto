@@ -39,8 +39,6 @@ lsrc_x86_64 += 	sha512_mb/sha512_mb_mgr_init_sse.c \
 		sha512_mb/sha512_mb_mgr_init_avx2.c \
 		sha512_mb/sha512_sb_mgr_init_sse4.c
 
-lsrc_x86_32 += 	$(lsrc_x86_64)
-
 lsrc_x86_64 += 	sha512_mb/sha512_mb_mgr_submit_sse.asm \
 		sha512_mb/sha512_mb_mgr_submit_avx.asm \
 		sha512_mb/sha512_mb_mgr_submit_avx2.asm \
@@ -63,8 +61,6 @@ lsrc_x86_64 += 	sha512_mb/sha512_ctx_avx512.c \
 		sha512_mb/sha512_mb_mgr_submit_avx512.asm \
 		sha512_mb/sha512_mb_mgr_flush_avx512.asm \
 		sha512_mb/sha512_mb_x8_avx512.asm
-
-lsrc_x86_32 += 	$(lsrc_x86_64)
 
 lsrc_aarch64 += sha512_mb/sha512_ctx_base.c			\
 		sha512_mb/aarch64/sha512_mb_multibinary.S 	\

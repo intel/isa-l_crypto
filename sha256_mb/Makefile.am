@@ -65,8 +65,6 @@ lsrc_x86_64 += 	sha256_mb/sha256_ni_x1.asm \
 		sha256_mb/sha256_mb_mgr_flush_sse_ni.asm \
 		sha256_mb/sha256_mb_mgr_flush_avx512_ni.asm
 
-lsrc_x86_32 += 	$(lsrc_x86_64)
-
 lsrc_aarch64 += sha256_mb/sha256_ctx_base.c \
 		sha256_mb/sha256_ref.c
 

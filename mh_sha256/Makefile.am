@@ -44,8 +44,6 @@ lsrc_mh_sha256 += mh_sha256/mh_sha256_block_avx512.asm \
 lsrc_x86_64    += $(lsrc_sha256) \
 		$(lsrc_mh_sha256)
 
-lsrc_x86_32    += $(lsrc_x86_64)
-
 other_src   += 	mh_sha256/mh_sha256_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \

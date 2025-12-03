@@ -36,7 +36,6 @@ lsrc_riscv64    += fips/self_tests_generic.c
 lsrc            += fips/sha_self_tests.c
 
 lsrc_x86_64     += fips/asm_self_tests.asm
-lsrc_x86_32 	+= $(lsrc_x86_64)
 
 lsrc_base_aliases += fips/self_tests_generic.c
 

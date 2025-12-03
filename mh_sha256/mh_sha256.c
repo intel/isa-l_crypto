@@ -139,8 +139,7 @@ mh_sha256_finalize_base(struct isal_mh_sha256_ctx *ctx, void *mh_sha256_digest)
         return _mh_sha256_finalize_base(ctx, mh_sha256_digest);
 }
 
-#if (!defined(NOARCH)) &&                                                                          \
-        (defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86))
+#if (!defined(NOARCH)) && (defined(__x86_64__) || defined(_M_X64))
 /***************mh_sha256_update***********/
 // mh_sha256_update_sse.c
 #define MH_SHA256_UPDATE_FUNCTION _mh_sha256_update_sse

@@ -54,8 +54,6 @@ lsrc_x86_64 += 	md5_mb/md5_mb_mgr_submit_avx512.asm \
 		md5_mb/md5_mb_x16x2_avx512.asm \
 		md5_mb/md5_ctx_avx512.c
 
-lsrc_x86_32 += $(lsrc_x86_64)
-
 lsrc_aarch64 += md5_mb/md5_ctx_base.c \
 		md5_mb/aarch64/md5_ctx_aarch64_asimd.c  \
 		md5_mb/aarch64/md5_mb_aarch64_dispatcher.c  \

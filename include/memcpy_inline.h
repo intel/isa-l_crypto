@@ -36,7 +36,7 @@
 #ifndef _MEMCPY_H_
 #define _MEMCPY_H_
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86)
+#if defined(__x86_64__) || defined(_M_X64)
 #include "intrinreg.h"
 #endif
 #include <string.h>
@@ -46,7 +46,7 @@
 extern "C" {
 #endif
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86)
+#if defined(__x86_64__) || defined(_M_X64)
 
 #define memcpy_varlen   memcpy_sse_varlen
 #define memcpy_fixedlen memcpy_sse_fixedlen

@@ -43,8 +43,6 @@ lsrc_stitch  += mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_avx512.c \
 lsrc_x86_64  += $(lsrc_murmur) \
 		$(lsrc_stitch)
 
-lsrc_x86_32  += $(lsrc_x86_64)
-
 lsrc_aarch64 += $(lsrc_murmur)	\
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128.c \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_finalize_base.c \

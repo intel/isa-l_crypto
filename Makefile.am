@@ -25,7 +25,6 @@ examples=
 other_tests=
 lsrc32=
 lsrc_x86_64=
-lsrc_x86_32=
 lsrc_aarch64=
 lsrc_riscv64=
 lsrc_base_aliases=
@@ -46,9 +45,6 @@ include misc/Makefile.am
 if CPU_X86_64
 include aes/Makefile.am
 endif
-if CPU_X86_32
-include aes/Makefile.am
-endif
 if CPU_AARCH64
 include aes/Makefile.am
 endif
@@ -64,10 +60,6 @@ pkginclude_HEADERS += $(sort ${extern_hdrs})
 libisal_crypto_la_SOURCES = ${lsrc}
 if CPU_X86_64
 libisal_crypto_la_SOURCES += ${lsrc_x86_64}
-endif
-
-if CPU_X86_32
-libisal_crypto_la_SOURCES += ${lsrc_x86_32}
 endif
 
 if CPU_AARCH64

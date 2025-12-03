@@ -43,8 +43,6 @@ lsrc_x86_64  += \
 		mh_sha1/mh_sha1_block_avx512.asm \
 		mh_sha1/mh_sha1_avx512.c
 
-lsrc_x86_32  += $(lsrc_x86_64)
-
 lsrc_aarch64 += \
 		$(lsrc_mh_sha1_base) \
 		mh_sha1/aarch64/mh_sha1_multibinary.S \

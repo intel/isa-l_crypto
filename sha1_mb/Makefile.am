@@ -64,8 +64,6 @@ lsrc_x86_64 += 	sha1_mb/sha1_ni_x1.asm \
 		sha1_mb/sha1_mb_mgr_flush_sse_ni.asm \
 		sha1_mb/sha1_mb_mgr_flush_avx512_ni.asm
 
-lsrc_x86_32 += 	$(lsrc_x86_64)
-
 lsrc_aarch64 += sha1_mb/sha1_ctx_base.c \
 		sha1_mb/sha1_ref.c \
 		sha1_mb/aarch64/sha1_mb_multibinary.S \
