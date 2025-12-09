@@ -83,6 +83,7 @@ test_mh_sha256_update_api(void)
                 printf("malloc failed test aborted\n");
                 goto exit_update;
         }
+        memset(buff, 0xFF, TEST_LEN);
 
 #ifdef FIPS_MODE
         // Check for invalid algorithm error
