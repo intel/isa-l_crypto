@@ -84,19 +84,6 @@ matching_aes_256_xts_enc(uint8_t *k2, uint8_t *k1, uint8_t *tw, uint64_t len, co
         isal_aes_xts_enc_256(k2, k1, tw, len, pt, ct);
 }
 
-static inline void
-matching_aes_256_xts_dec(uint8_t *k2, uint8_t *k1, uint8_t *tw, uint64_t len, const uint8_t *ct,
-                         uint8_t *pt)
-{
-        while (len > OSSL_XTS_MAX_LEN) {
-                isal_aes_xts_dec_256(k2, k1, tw, OSSL_XTS_MAX_LEN, ct, pt);
-                ct += OSSL_XTS_MAX_LEN;
-                pt += OSSL_XTS_MAX_LEN;
-                len -= OSSL_XTS_MAX_LEN;
-        }
-        isal_aes_xts_dec_256(k2, k1, tw, len, ct, pt);
-}
-
 int
 main(void)
 {
