@@ -80,7 +80,7 @@ v2.26
 
 * Removed 32-bit x86 support.
 
-* Added CMake build system.
+* Added CMake build system (only verified for x86_64).
 
 * Added SHA512-NI AVX2 implementation.
 

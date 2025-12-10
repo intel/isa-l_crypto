@@ -33,9 +33,15 @@ project(ISA-L-Crypto
     LANGUAGES C ASM
 )
 
-# Enable NASM for x86_64 builds
+# Enable appropriate assembler based on architecture
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|amd64")
     enable_language(ASM_NASM)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
+    # ARM uses GAS assembler (.S files)
+    enable_language(ASM)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
+    # RISC-V uses GAS assembler (.S files)
+    enable_language(ASM)
 endif()
 
 # Set default build type
@@ -79,8 +85,8 @@ if(CPU_X86_64)
     endif()
     set(USE_NASM ON)
 elseif(CPU_AARCH64 OR CPU_RISCV64)
-    # Use C compiler for assembly on ARM and RISC-V
-    set(ASM_FILTER "${CMAKE_C_COMPILER} -D__ASSEMBLY__")
+    # Configure ASM for ARM and RISC-V (uses GAS with .S files)
+    set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -D__ASSEMBLY__")
 endif()
 
 # Set include directories
@@ -130,10 +136,6 @@ if(FIPS_MODE)
     if(USE_NASM)
         set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -DFIPS_MODE")
     endif()
-endif()
-
-if(CPU_AARCH64 OR CPU_RISCV64)
-    set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 # Library version (semantic versioning)
