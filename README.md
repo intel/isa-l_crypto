@@ -82,6 +82,12 @@ Other targets include:
 * `make ex`    : build examples
 * `make doc`   : build API manual
 
+### Compilation Notes
+
+**Important:** If using the `-flto` (Link Time Optimization) compilation flag,
+it is recommended to pass the `-fno-strict-aliasing` flag to avoid
+potential test failures.
+
 Algorithm recommendations
 -------------------------
 

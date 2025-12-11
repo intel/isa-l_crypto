@@ -13,6 +13,9 @@ RELEASE NOTE CONTENTS
 1.  KNOWN ISSUES
 ================================================================================
 
+* When compiling with -flto (Link Time Optimization) flag, the -fno-strict-aliasing
+  flag should be passed to avoid potential test issues.
+
 ================================================================================
 2. FIXED ISSUES
 ================================================================================
