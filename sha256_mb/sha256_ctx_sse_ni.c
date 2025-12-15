@@ -27,6 +27,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
+#include <stddef.h>
 #include "sha256_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
@@ -35,6 +36,8 @@
 #include <intrin.h>
 #define inline __inline
 #endif
+#define ISAL_SHA256_JOB_TO_CTX(job_ptr)                                                            \
+        ((ISAL_SHA256_HASH_CTX *) ((char *) (job_ptr) - offsetof(ISAL_SHA256_HASH_CTX, job)))
 
 static inline void
 hash_init_digest(ISAL_SHA256_WORD_T *digest);
@@ -125,8 +128,8 @@ _sha256_ctx_mgr_submit_sse_ni(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CT
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
-                        ctx = (ISAL_SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
-                                                                                    &ctx->job);
+                        ctx = ISAL_SHA256_JOB_TO_CTX(
+                                _sha256_mb_mgr_submit_sse_ni(&mgr->mgr, &ctx->job));
                 }
         }
 
@@ -139,7 +142,7 @@ _sha256_ctx_mgr_flush_sse_ni(ISAL_SHA256_HASH_CTX_MGR *mgr)
         ISAL_SHA256_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (ISAL_SHA256_HASH_CTX *) _sha256_mb_mgr_flush_sse_ni(&mgr->mgr);
+                ctx = ISAL_SHA256_JOB_TO_CTX(_sha256_mb_mgr_flush_sse_ni(&mgr->mgr));
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -192,8 +195,8 @@ sha256_ctx_mgr_resubmit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (ISAL_SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(
-                                        &mgr->mgr, &ctx->job);
+                                ctx = ISAL_SHA256_JOB_TO_CTX(
+                                        _sha256_mb_mgr_submit_sse_ni(&mgr->mgr, &ctx->job));
                                 continue;
                         }
                 }
@@ -208,8 +211,8 @@ sha256_ctx_mgr_resubmit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *ctx
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
 
-                        ctx = (ISAL_SHA256_HASH_CTX *) _sha256_mb_mgr_submit_sse_ni(&mgr->mgr,
-                                                                                    &ctx->job);
+                        ctx = ISAL_SHA256_JOB_TO_CTX(
+                                _sha256_mb_mgr_submit_sse_ni(&mgr->mgr, &ctx->job));
                         continue;
                 }
 
