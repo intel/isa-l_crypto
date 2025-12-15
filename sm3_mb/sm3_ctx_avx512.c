@@ -37,10 +37,14 @@
 #pragma GCC target("avx2")
 #endif
 
+#include <stddef.h>
 #include "sm3_mb.h"
 #include "sm3_mb_internal.h"
 #include "memcpy_inline.h"
 #include "endian_helper.h"
+
+#define ISAL_SM3_JOB_TO_CTX(job_ptr)                                                               \
+        ((ISAL_SM3_HASH_CTX *) ((char *) (job_ptr) - offsetof(ISAL_SM3_HASH_CTX, job)))
 
 #ifdef _MSC_VER
 #include <intrin.h>
@@ -153,7 +157,7 @@ _sm3_ctx_mgr_submit_avx512(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx, c
                         ctx->job.buffer = ctx->partial_block_buffer;
 
                         ctx->job.len = 1;
-                        ctx = (ISAL_SM3_HASH_CTX *) _sm3_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = ISAL_SM3_JOB_TO_CTX(_sm3_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job));
                 }
         }
 
@@ -199,8 +203,8 @@ sm3_ctx_mgr_resubmit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (ISAL_SM3_HASH_CTX *) _sm3_mb_mgr_submit_avx512(&mgr->mgr,
-                                                                                      &ctx->job);
+                                ctx = ISAL_SM3_JOB_TO_CTX(
+                                        _sm3_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job));
                                 continue;
                         }
                 }
@@ -214,7 +218,7 @@ sm3_ctx_mgr_resubmit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx)
                                                            ISAL_HASH_CTX_STS_COMPLETE);
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (ISAL_SM3_HASH_CTX *) _sm3_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = ISAL_SM3_JOB_TO_CTX(_sm3_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job));
                         // todo make sure should return ?
                         continue;
                 }
@@ -255,7 +259,7 @@ _sm3_ctx_mgr_flush_avx512(ISAL_SM3_HASH_CTX_MGR *mgr)
         ISAL_SM3_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (ISAL_SM3_HASH_CTX *) _sm3_mb_mgr_flush_avx512(&mgr->mgr);
+                ctx = ISAL_SM3_JOB_TO_CTX(_sm3_mb_mgr_flush_avx512(&mgr->mgr));
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
