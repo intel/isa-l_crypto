@@ -56,8 +56,8 @@
 #define P3 t6
 
 #define mh_in_p a0
-#define mh_digests_p  a1
-#define mh_data_p	a2
+#define mh_digests_p a1
+#define mh_data_p a2
 #define loops a3
 
 #define ROUND a5
@@ -199,7 +199,7 @@ mh_sha256_block_rvv:
 	la TBL, K_TABLE
 	la key_table, GATHER_PATTERN
 
-	vsetivli zero, 4, e32, m1, ta, ma
+	vsetivli zero, 16, e8, m1, ta, ma
 
 .set I, 0
 .rept 8
@@ -209,20 +209,20 @@ mh_sha256_block_rvv:
 	addi	P2, mh_digests_p, I*64 + 16*2
 	addi	P3, mh_digests_p, I*64 + 16*3
 
-	vle32.v	A, (P0)
-	vle32.v	B, (P1)
-	vle32.v	C, (P2)
-	vle32.v	D, (P3)
+	vle8.v	A, (P0)
+	vle8.v	B, (P1)
+	vle8.v	C, (P2)
+	vle8.v	D, (P3)
 
 	addi	P0, sp, I*64 + 16*0
 	addi	P1, sp, I*64 + 16*1
 	addi	P2, sp, I*64 + 16*2
 	addi	P3, sp, I*64 + 16*3
 
-	vse32.v	A, (P0)
-	vse32.v	B, (P1)
-	vse32.v	C, (P2)
-	vse32.v	D, (P3)
+	vse8.v	A, (P0)
+	vse8.v	B, (P1)
+	vse8.v	C, (P2)
+	vse8.v	D, (P3)
 
 .set I, I+1
 .endr
@@ -415,6 +415,8 @@ mh_sha256_block_rvv:
 	addi	loops, loops, -1
 	bnez loops, .block_loop
 
+	vsetivli zero, 16, e8, m1, ta, ma
+
 .set I, 0
 .rept 8
 
@@ -423,20 +425,20 @@ mh_sha256_block_rvv:
 	addi	P2, sp, I*64 + 16*2
 	addi	P3, sp, I*64 + 16*3
 
-	vle32.v	A, (P0)
-	vle32.v	B, (P1)
-	vle32.v	C, (P2)
-	vle32.v	D, (P3)
+	vle8.v	A, (P0)
+	vle8.v	B, (P1)
+	vle8.v	C, (P2)
+	vle8.v	D, (P3)
 
 	addi	P0, mh_digests_p, I*64 + 16*0
 	addi	P1, mh_digests_p, I*64 + 16*1
 	addi	P2, mh_digests_p, I*64 + 16*2
 	addi	P3, mh_digests_p, I*64 + 16*3
 
-	vse32.v	A, (P0)
-	vse32.v	B, (P1)
-	vse32.v	C, (P2)
-	vse32.v	D, (P3)
+	vse8.v	A, (P0)
+	vse8.v	B, (P1)
+	vse8.v	C, (P2)
+	vse8.v	D, (P3)
 
 .set I, I+1
 .endr
