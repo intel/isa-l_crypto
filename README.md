@@ -49,7 +49,14 @@ aarch64:
     * ./configure --disable-sve2
     * make -f Makefile.unx DEFINES+=-DNO_SVE2=1
 
-RISC-V 64 and other:
+RISC-V 64:
+* Portable base functions:
+	* Supported by most C compilers.
+* For RISC-V Vector (RVV) support:
+	* Assembler: gas v2.39 or later.
+	* Compiler: gcc v12.1 or later.
+
+other:
 * Compiler: Portable base functions are available that build with most C compilers.
 
 ### Autotools

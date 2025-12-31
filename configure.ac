@@ -55,7 +55,7 @@ case "${CPU}" in
 
 	riscv64)
 
-		AC_MSG_CHECKING([checking RVV support])
+		AC_MSG_CHECKING([whether compiler supports RISC-V Vector Extension (RVV)])
 		AC_COMPILE_IFELSE(
 			[AC_LANG_PROGRAM([], [
 				__asm__ volatile(
@@ -68,10 +68,6 @@ case "${CPU}" in
 			[AC_DEFINE([HAVE_RVV], [0], [Disable RVV instructions])
 			AM_CONDITIONAL([HAVE_RVV], [false]) rvv=no]
 		)
-		if test "x$rvv" = "xyes"; then
-		  CFLAGS+=" -march=rv64gcv"
-		  CCASFLAGS+=" -march=rv64gcv"
-		fi
 		AC_MSG_RESULT([$rvv])
 		is_x86=no
 		;;
