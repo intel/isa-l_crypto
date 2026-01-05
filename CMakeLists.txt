@@ -91,7 +91,7 @@ endif()
 
 # Set include directories
 set(ISAL_CRYPTO_INCLUDE_DIRS
-    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Initialize EXTERN_HEADERS list
@@ -167,7 +167,7 @@ list(APPEND EXTERN_HEADERS include/test.h include/types.h include/endian_helper.
 
 # Windows .def file for symbol exports (only needed on Windows)
 if(WIN32)
-    set(ISAL_CRYPTO_DEF_FILE ${CMAKE_SOURCE_DIR}/isa-l_crypto.def)
+    set(ISAL_CRYPTO_DEF_FILE ${CMAKE_CURRENT_SOURCE_DIR}/isa-l_crypto.def)
 endif()
 
 # Create the main ISA-L Crypto library
@@ -221,7 +221,7 @@ if(USE_NASM)
         if(source MATCHES "\\.asm$")
             get_filename_component(source_dir ${source} DIRECTORY)
             set_source_files_properties(${source} PROPERTIES
-                INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR};${CMAKE_SOURCE_DIR}/${source_dir}")
+                INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/${source_dir}")
         endif()
     endforeach()
 endif()
@@ -229,25 +229,25 @@ endif()
 # Include directories
 target_include_directories(isal_crypto
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/aes
-        ${CMAKE_SOURCE_DIR}/intel-ipsec-mb/lib
-        ${CMAKE_SOURCE_DIR}/md5_mb
-        ${CMAKE_SOURCE_DIR}/sha1_mb
-        ${CMAKE_SOURCE_DIR}/sha256_mb
-        ${CMAKE_SOURCE_DIR}/sha512_mb
-        ${CMAKE_SOURCE_DIR}/sm3_mb
-        ${CMAKE_SOURCE_DIR}/mh_sha1
-        ${CMAKE_SOURCE_DIR}/mh_sha256
-        ${CMAKE_SOURCE_DIR}/mh_sha1_murmur3_x64_128
-        ${CMAKE_SOURCE_DIR}/rolling_hash
+        ${CMAKE_CURRENT_SOURCE_DIR}/aes
+        ${CMAKE_CURRENT_SOURCE_DIR}/intel-ipsec-mb/lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb
+        ${CMAKE_CURRENT_SOURCE_DIR}/sha1_mb
+        ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb
+        ${CMAKE_CURRENT_SOURCE_DIR}/sha512_mb
+        ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb
+        ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1
+        ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha256
+        ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1_murmur3_x64_128
+        ${CMAKE_CURRENT_SOURCE_DIR}/rolling_hash
 )
 
 # Generate isa-l_crypto.h header
 set(ISAL_CRYPTO_HEADER "${CMAKE_BINARY_DIR}/isa-l_crypto.h")
-configure_file(${CMAKE_SOURCE_DIR}/cmake/isa-l_crypto.h.in ${ISAL_CRYPTO_HEADER} @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/isa-l_crypto.h.in ${ISAL_CRYPTO_HEADER} @ONLY)
 
 # Install targets
 include(GNUInstallDirs)
@@ -283,7 +283,7 @@ install(EXPORT ISALCryptoTargets
 include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
-    "${CMAKE_SOURCE_DIR}/cmake/ISALCryptoConfig.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ISALCryptoConfig.cmake.in"
     "${CMAKE_BINARY_DIR}/ISALCryptoConfig.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ISALCrypto
 )
@@ -308,7 +308,7 @@ set(includedir \${prefix}/${CMAKE_INSTALL_INCLUDEDIR})
 set(VERSION ${PROJECT_VERSION})
 
 configure_file(
-    "${CMAKE_SOURCE_DIR}/libisal_crypto.pc.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/libisal_crypto.pc.in"
     "${CMAKE_BINARY_DIR}/libisal_crypto.pc"
     @ONLY
 )
