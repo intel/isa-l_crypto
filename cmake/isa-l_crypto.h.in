@@ -41,23 +41,6 @@
 #define ISAL_CRYPTO_MAKE_VERSION(maj, min, patch)  ((maj) * 0x10000 + (min) * 0x100 + (patch))
 #define ISAL_CRYPTO_VERSION ISAL_CRYPTO_MAKE_VERSION(ISAL_CRYPTO_MAJOR_VERSION, ISAL_CRYPTO_MINOR_VERSION, ISAL_CRYPTO_PATCH_VERSION)
 
-#include <isa-l_crypto/isal_crypto_api.h>
-#include <isa-l_crypto/md5_mb.h>
-#include <isa-l_crypto/sha1_mb.h>
-#include <isa-l_crypto/sha256_mb.h>
-#include <isa-l_crypto/sha512_mb.h>
-#include <isa-l_crypto/sm3_mb.h>
-#include <isa-l_crypto/mh_sha1.h>
-#include <isa-l_crypto/mh_sha256.h>
-#include <isa-l_crypto/mh_sha1_murmur3_x64_128.h>
-#include <isa-l_crypto/rolling_hashx.h>
-#include <isa-l_crypto/aes_gcm.h>
-#include <isa-l_crypto/aes_cbc.h>
-#include <isa-l_crypto/aes_xts.h>
-#include <isa-l_crypto/aes_keyexp.h>
-#include <isa-l_crypto/multi_buffer.h>
-#include <isa-l_crypto/test.h>
-#include <isa-l_crypto/types.h>
-#include <isa-l_crypto/endian_helper.h>
+@ISAL_CRYPTO_INCLUDES@
 
 #endif //_ISAL_CRYPTO_H_

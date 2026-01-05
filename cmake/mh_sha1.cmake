@@ -79,7 +79,7 @@ endif()
 
 # Headers exported by mh_sha1 module
 set(MH_SHA1_HEADERS
-    include/mh_sha1.h
+    include/isa-l_crypto/mh_sha1.h
 )
 
 # Add to main extern headers list
@@ -110,7 +110,7 @@ if(BUILD_TESTS OR BUILD_PERF)
                 add_executable(${test_exec} ${test_name}.c)
             endif()
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
 
@@ -119,7 +119,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             # mh_sha1_update_test also needs mh_sha1_ref.c
             add_executable(${test_exec} ${test_name}.c mh_sha1/mh_sha1_ref.c)
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
     endif()
@@ -129,7 +129,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             get_filename_component(test_exec ${test_name} NAME)
             add_executable(${test_exec} ${test_name}.c)
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/mh_sha1)
         endforeach()
     endif()
 endif()

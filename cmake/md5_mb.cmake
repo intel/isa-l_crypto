@@ -95,8 +95,8 @@ endif()
 
 # Headers exported by md5_mb module
 set(MD5_MB_HEADERS
-    include/md5_mb.h
-    include/multi_buffer.h
+    include/isa-l_crypto/md5_mb.h
+    include/isa-l_crypto/multi_buffer.h
 )
 
 # Add to main extern headers list
@@ -129,7 +129,7 @@ if(BUILD_TESTS OR BUILD_PERF)
                 add_executable(${test_exec} ${test_name}.c)
             endif()
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
 
@@ -141,7 +141,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
         endforeach()
     endif()
 
@@ -154,7 +154,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/include/internal ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb)
         endforeach()
     endif()
 endif()

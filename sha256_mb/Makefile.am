@@ -87,8 +87,8 @@ lsrc_base_aliases += sha256_mb/sha256_ctx_base_aliases.c	\
 
 src_include += -I $(srcdir)/sha256_mb
 
-extern_hdrs +=  include/sha256_mb.h \
-		include/multi_buffer.h
+extern_hdrs += include/isa-l_crypto/sha256_mb.h \
+		include/isa-l_crypto/multi_buffer.h
 
 other_src += 	include/datastruct.asm \
 		include/multibinary.asm \
@@ -96,9 +96,9 @@ other_src += 	include/datastruct.asm \
 		sha256_mb/sha256_mb_mgr_datastruct.asm \
 		include/reg_sizes.asm \
 		sha256_mb/sha256_ref.c \
-		include/memcpy_inline.h \
 		include/memcpy.asm \
-		include/intrinreg.h
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests  +=	sha256_mb/sha256_mb_test  \
 		sha256_mb/sha256_mb_rand_test  \

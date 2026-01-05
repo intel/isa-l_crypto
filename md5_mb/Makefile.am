@@ -74,8 +74,8 @@ lsrc_base_aliases += md5_mb/md5_ctx_base.c \
 		     md5_mb/md5_ctx_base_aliases.c
 
 src_include  += -I $(srcdir)/md5_mb
-extern_hdrs  += include/md5_mb.h \
-		include/multi_buffer.h
+extern_hdrs += include/isa-l_crypto/md5_mb.h \
+		include/isa-l_crypto/multi_buffer.h
 
 other_src += 	include/datastruct.asm \
 		md5_mb/md5_job.asm \
@@ -83,8 +83,8 @@ other_src += 	include/datastruct.asm \
 		md5_mb/md5_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \
-		include/memcpy_inline.h \
-		include/intrinreg.h
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests  += md5_mb/md5_mb_test \
 		md5_mb/md5_mb_rand_test \

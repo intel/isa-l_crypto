@@ -66,12 +66,12 @@ lsrc_base_aliases += \
 other_src    += mh_sha1/mh_sha1_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \
-		include/test.h \
-		mh_sha1/mh_sha1_internal.h
+		mh_sha1/mh_sha1_internal.h \
+		include/internal/test.h
 
 src_include += -I $(srcdir)/mh_sha1
 
-extern_hdrs +=	include/mh_sha1.h
+extern_hdrs += include/isa-l_crypto/mh_sha1.h
 
 check_tests += 	mh_sha1/mh_sha1_test
 check_tests += 	mh_sha1/mh_sha1_param_test

@@ -30,7 +30,7 @@
 tests 		= 	md5_mb_over_4GB_test.exe sha1_mb_over_4GB_test.exe \
 sha256_mb_over_4GB_test.exe sha512_mb_over_4GB_test.exe
 
-INCLUDES 	= 	-I../../include
+INCLUDES 	= 	-I../../include -I../../include/isa-l_crypto -I../../include/internal
 LINKFLAGS 	= 	/nologo
 INCLUDES 	= 	$(INCLUDES) -Ic:\OpenSSL-Win64\include
 CFLAGS   	= 	-O2 -D NDEBUG /nologo -D_USE_MATH_DEFINES -Qstd=c99 $(INCLUDES) /c -DNO_COMPAT_ISAL_CRYPTO_API_2_24
