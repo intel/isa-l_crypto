@@ -67,7 +67,7 @@ endif()
 
 # Headers exported by rolling_hash module
 set(ROLLING_HASH_HEADERS
-    include/rolling_hashx.h
+    include/isa-l_crypto/rolling_hashx.h
 )
 
 # Add to main extern headers list
@@ -89,7 +89,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             get_filename_component(test_exec ${test_name} NAME)
             add_executable(${test_exec} ${test_name}.c)
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/rolling_hash)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/rolling_hash)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
     endif()
@@ -99,7 +99,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             get_filename_component(test_exec ${test_name} NAME)
             add_executable(${test_exec} ${test_name}.c)
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/rolling_hash)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/rolling_hash)
         endforeach()
     endif()
 endif()

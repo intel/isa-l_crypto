@@ -29,6 +29,6 @@
 
 lsrc +=	misc/version.c
 
-extern_hdrs	+= include/isal_crypto_api.h
+extern_hdrs	+= include/isa-l_crypto/isal_crypto_api.h
 
 check_tests	+= misc/version_test

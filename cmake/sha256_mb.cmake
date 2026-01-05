@@ -101,8 +101,8 @@ endif()
 
 # Headers exported by sha256_mb module
 set(SHA256_MB_HEADERS
-    include/sha256_mb.h
-    include/multi_buffer.h
+    include/isa-l_crypto/sha256_mb.h
+    include/isa-l_crypto/multi_buffer.h
 )
 
 # Add to main extern headers list
@@ -136,7 +136,7 @@ if(BUILD_TESTS OR BUILD_PERF)
                 add_executable(${test_exec} ${test_name}.c)
             endif()
             target_link_libraries(${test_exec} PRIVATE isal_crypto)
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
 
@@ -149,7 +149,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
     endif()
@@ -163,7 +163,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sha256_mb)
         endforeach()
     endif()
 endif()

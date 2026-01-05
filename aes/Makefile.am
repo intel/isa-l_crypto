@@ -31,7 +31,7 @@
 src_include += -I $(srcdir)/aes
 src_include += -I $(srcdir)/intel-ipsec-mb/lib
 
-extern_hdrs += include/aes_gcm.h include/aes_cbc.h include/aes_xts.h include/aes_keyexp.h include/isal_crypto_api.h
+extern_hdrs += include/isa-l_crypto/aes_keyexp.h include/isa-l_crypto/isal_crypto_api.h
 
 lsrc            += aes/gcm_pre.c
 lsrc            += aes/cbc_pre.c
@@ -112,7 +112,7 @@ lsrc_aarch64 += aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/cbc_dec_aes.S
 
 other_src   += include/multibinary.asm
-other_src   += include/test.h include/types.h include/reg_sizes.asm
+other_src   += include/isa-l_crypto/test.h include/isa-l_crypto/types.h include/reg_sizes.asm
 other_src   += aes/gcm_defines.asm
 other_src   += aes/aes_common.asm
 other_src   += aes/clear_regs.asm

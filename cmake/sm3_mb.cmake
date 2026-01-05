@@ -94,8 +94,8 @@ endif()
 
 # Headers exported by sm3_mb module
 set(SM3_MB_HEADERS
-    include/sm3_mb.h
-    include/multi_buffer.h
+    include/isa-l_crypto/sm3_mb.h
+    include/isa-l_crypto/multi_buffer.h
 )
 
 # Add to main extern headers list
@@ -130,7 +130,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
 
@@ -142,7 +142,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
             add_test(NAME ${test_exec} COMMAND ${test_exec})
         endforeach()
     endif()
@@ -156,7 +156,7 @@ if(BUILD_TESTS OR BUILD_PERF)
             if(OPENSSL_FOUND)
                 target_link_libraries(${test_exec} PRIVATE OpenSSL::Crypto)
             endif()
-            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
+            target_include_directories(${test_exec} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto ${CMAKE_CURRENT_SOURCE_DIR}/sm3_mb)
         endforeach()
     endif()
 endif()

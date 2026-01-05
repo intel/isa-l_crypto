@@ -78,17 +78,17 @@ lsrc_base_aliases += sha512_mb/sha512_ctx_base.c	\
 
 src_include += -I $(srcdir)/sha512_mb
 
-extern_hdrs +=  include/sha512_mb.h \
-		include/multi_buffer.h
+extern_hdrs += include/isa-l_crypto/sha512_mb.h \
+		include/isa-l_crypto/multi_buffer.h
 
 other_src += 	include/datastruct.asm \
 		sha512_mb/sha512_job.asm \
 		sha512_mb/sha512_mb_mgr_datastruct.asm \
 		include/reg_sizes.asm \
 		sha512_mb/sha512_ref.c \
-		include/memcpy_inline.h \
+		include/isa-l_crypto/memcpy_inline.h \
 		include/memcpy.asm \
-		include/intrinreg.h
+		include/isa-l_crypto/intrinreg.h
 
 check_tests +=	sha512_mb/sha512_mb_test \
 		sha512_mb/sha512_mb_rand_test \

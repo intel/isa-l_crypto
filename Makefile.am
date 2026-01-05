@@ -3,9 +3,9 @@ CLEANFILES =
 LDADD =
 AM_MAKEFLAGS = --no-print-directory
 noinst_HEADERS =
-pkginclude_HEADERS = include/test.h include/types.h include/endian_helper.h
+pkginclude_HEADERS = include/isa-l_crypto/test.h include/isa-l_crypto/types.h include/isa-l_crypto/endian_helper.h
 noinst_LTLIBRARIES =
-INCLUDE = -I $(srcdir)/include/
+INCLUDE = -I $(srcdir)/include -I $(srcdir)/include/isa-l_crypto
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libisal_crypto.pc

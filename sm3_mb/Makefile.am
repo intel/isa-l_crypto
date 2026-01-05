@@ -59,8 +59,8 @@ lsrc_riscv64 += sm3_mb/sm3_ctx_base.c \
 
 src_include += -I $(srcdir)/sm3_mb
 
-extern_hdrs +=	include/sm3_mb.h \
-		include/multi_buffer.h
+extern_hdrs += include/isa-l_crypto/sm3_mb.h \
+		include/isa-l_crypto/multi_buffer.h
 
 lsrc_x86_64 +=	sm3_mb/sm3_ctx_avx512.c \
 		sm3_mb/sm3_mb_mgr_submit_avx512.asm \
@@ -80,9 +80,9 @@ lsrc_x86_64 += sm3_mb/sm3_ctx_avx2_ni.c \
 other_src +=	include/datastruct.asm \
 		include/multibinary.asm \
 		include/reg_sizes.asm \
-		include/memcpy_inline.h \
+		include/isa-l_crypto/memcpy_inline.h \
 		include/memcpy.asm \
-		include/intrinreg.h \
+		include/isa-l_crypto/intrinreg.h \
 		sm3_mb/sm3_job.asm \
 		sm3_mb/sm3_mb_mgr_datastruct.asm \
 		sm3_mb/sm3_test_helper.c

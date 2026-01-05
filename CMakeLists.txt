@@ -163,7 +163,7 @@ endif()
 include(cmake/fips.cmake)
 
 # Add common headers
-list(APPEND EXTERN_HEADERS include/test.h include/types.h include/endian_helper.h)
+list(APPEND EXTERN_HEADERS include/isa-l_crypto/test.h include/isa-l_crypto/types.h include/isa-l_crypto/endian_helper.h)
 
 # Windows .def file for symbol exports (only needed on Windows)
 if(WIN32)
@@ -232,6 +232,7 @@ target_include_directories(isal_crypto
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto
         ${CMAKE_CURRENT_SOURCE_DIR}/aes
         ${CMAKE_CURRENT_SOURCE_DIR}/intel-ipsec-mb/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb
@@ -268,7 +269,7 @@ install(FILES ${ISAL_CRYPTO_HEADER}
 
 # Install headers
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/isa-l_crypto
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
 
