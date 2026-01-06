@@ -80,12 +80,12 @@ lsrc_x86_64 += sm3_mb/sm3_ctx_avx2_ni.c \
 other_src +=	include/datastruct.asm \
 		include/multibinary.asm \
 		include/reg_sizes.asm \
-		include/isa-l_crypto/memcpy_inline.h \
 		include/memcpy.asm \
-		include/isa-l_crypto/intrinreg.h \
 		sm3_mb/sm3_job.asm \
 		sm3_mb/sm3_mb_mgr_datastruct.asm \
 		sm3_mb/sm3_test_helper.c
+
+noinst_HEADERS += sm3_mb/sm3_mb_internal.h
 
 check_tests  +=	sm3_mb/sm3_ref_test \
 		sm3_mb/sm3_mb_param_test

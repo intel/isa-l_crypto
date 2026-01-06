@@ -66,7 +66,6 @@ lsrc_base_aliases += \
 other_src    += mh_sha1/mh_sha1_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \
-		include/isa-l_crypto/test.h \
 		mh_sha1/mh_sha1_internal.h
 
 src_include += -I $(srcdir)/mh_sha1

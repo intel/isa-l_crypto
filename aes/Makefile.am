@@ -112,7 +112,7 @@ lsrc_aarch64 += aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/cbc_dec_aes.S
 
 other_src   += include/multibinary.asm
-other_src   += include/isa-l_crypto/test.h include/isa-l_crypto/types.h include/reg_sizes.asm
+other_src   += include/isa-l_crypto/types.h include/reg_sizes.asm
 other_src   += aes/gcm_defines.asm
 other_src   += aes/aes_common.asm
 other_src   += aes/clear_regs.asm

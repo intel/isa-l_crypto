@@ -56,8 +56,6 @@
 #include <isa-l_crypto/aes_xts.h>
 #include <isa-l_crypto/aes_keyexp.h>
 #include <isa-l_crypto/multi_buffer.h>
-#include <isa-l_crypto/test.h>
 #include <isa-l_crypto/types.h>
-#include <isa-l_crypto/endian_helper.h>
 
 #endif //_ISAL_CRYPTO_H_

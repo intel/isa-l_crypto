@@ -39,6 +39,6 @@ lsrc_x86_64     += fips/asm_self_tests.asm
 
 lsrc_base_aliases += fips/self_tests_generic.c
 
-other_src   += include/isa-l_crypto/test.h include/isa-l_crypto/types.h include/reg_sizes.asm include/isa-l_crypto/aes_keyexp_internal.h include/isa-l_crypto/aes_cbc_internal.h
+other_src   += include/isa-l_crypto/types.h include/reg_sizes.asm
 
 check_tests += fips/self_tests_test

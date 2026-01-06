@@ -1,4 +1,4 @@
-CFLAGS += -I ../../include -I ../../include/isa-l_crypto -DNO_COMPAT_ISAL_CRYPTO_API_2_24
+CFLAGS += -I ../../include -I ../../include/isa-l_crypto -I ../../internal -DNO_COMPAT_ISAL_CRYPTO_API_2_24
 libs += ../../bin/isa-l_crypto.a
 tests = $(patsubst %test.c, %test, $(wildcard *_test.c))
 

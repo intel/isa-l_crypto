@@ -1,5 +1,5 @@
 ########################################################################
-#  Copyright(c) 2011-2017 Intel Corporation All rights reserved.
+#  Copyright(c) 2025 Intel Corporation All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
@@ -27,35 +27,17 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ########################################################################
 
-lsrc_x86_64         += rolling_hash/rolling_hashx_base.c
-lsrc_x86_64         += rolling_hash/rolling_hash2.c
-lsrc_x86_64         += rolling_hash/rolling_hash2_until_04.asm
-lsrc_x86_64         += rolling_hash/rolling_hash2_until_00.asm
-lsrc_x86_64         += rolling_hash/rolling_hash2_multibinary.asm
-
-lsrc_base_aliases   += 	rolling_hash/rolling_hashx_base.c	\
-			rolling_hash/rolling_hash2.c	\
-			rolling_hash/rolling_hash2_base_aliases.c
-
-
-lsrc_aarch64	    += 	rolling_hash/rolling_hashx_base.c	\
-			rolling_hash/rolling_hash2.c	\
-			rolling_hash/aarch64/rolling_hash2_aarch64_multibinary.S \
-			rolling_hash/aarch64/rolling_hash2_aarch64_dispatcher.c \
-			rolling_hash/aarch64/rolling_hash2_run_until_unroll.S
-
-lsrc_riscv64   += 	rolling_hash/rolling_hashx_base.c	\
-			rolling_hash/rolling_hash2.c	\
-			rolling_hash/rolling_hash2_base_aliases.c
-
-src_include  += -I $(srcdir)/rolling_hash
-extern_hdrs += include/isa-l_crypto/rolling_hashx.h
-
-other_src    += rolling_hash/rolling_hash2_table.h
-other_src    += include/isa-l_crypto/types.h
-
-check_tests  += rolling_hash/rolling_hash2_test \
-		rolling_hash/rolling_hash2_param_test
-
-perf_tests   += rolling_hash/rolling_hash2_perf
-other_tests  += rolling_hash/chunking_with_mb_hash
+# Internal headers - not installed, only used for building
+noinst_HEADERS += internal/test.h
+noinst_HEADERS += internal/endian_helper.h
+noinst_HEADERS += internal/memcpy_inline.h
+noinst_HEADERS += internal/intrinreg.h
+noinst_HEADERS += internal/sha1_mb_internal.h
+noinst_HEADERS += internal/sha256_mb_internal.h
+noinst_HEADERS += internal/sha512_mb_internal.h
+noinst_HEADERS += internal/aes_cbc_internal.h
+noinst_HEADERS += internal/aes_gcm_internal.h
+noinst_HEADERS += internal/aes_keyexp_internal.h
+noinst_HEADERS += internal/aes_xts_internal.h
+noinst_HEADERS += internal/aarch64_multibinary.h
+noinst_HEADERS += internal/riscv64_multibinary.h

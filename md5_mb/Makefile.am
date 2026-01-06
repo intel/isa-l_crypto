@@ -82,9 +82,9 @@ other_src += 	include/datastruct.asm \
 		md5_mb/md5_mb_mgr_datastruct.asm \
 		md5_mb/md5_ref.c \
 		include/reg_sizes.asm \
-		include/multibinary.asm \
-		include/isa-l_crypto/memcpy_inline.h \
-		include/isa-l_crypto/intrinreg.h
+		include/multibinary.asm
+
+noinst_HEADERS += md5_mb/md5_mb_internal.h
 
 check_tests  += md5_mb/md5_mb_test \
 		md5_mb/md5_mb_rand_test \

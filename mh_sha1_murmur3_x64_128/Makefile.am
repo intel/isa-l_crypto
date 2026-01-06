@@ -68,7 +68,6 @@ lsrc_base_aliases += $(lsrc_murmur)	\
 
 other_src += 	include/reg_sizes.asm \
 		include/multibinary.asm \
-		include/isa-l_crypto/test.h \
 		mh_sha1/mh_sha1_internal.h \
 		mh_sha1_murmur3_x64_128/murmur3_x64_128.c \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_internal.h
