@@ -118,7 +118,8 @@
 
 #define PROVIDER_BASIC(name) PROVIDER_INFO(name##_base)
 
-#define DO_DIGNOSTIC(x)     _Pragma GCC diagnostic ignored "-W" #x
+/* clang-format off */
+#define DO_DIGNOSTIC(x)     _Pragma GCC diagnostic ignored "-W"#x
 #define DO_PRAGMA(x)        _Pragma(#x)
 #define DIGNOSTIC_IGNORE(x) DO_PRAGMA(GCC diagnostic ignored #x)
 #define DIGNOSTIC_PUSH()    DO_PRAGMA(GCC diagnostic push)
@@ -127,11 +128,12 @@
 #define PROVIDER_INFO(_func_entry)                                                                 \
         ({                                                                                         \
                 DIGNOSTIC_PUSH()                                                                   \
-                DIGNOSTIC_IGNORE(-Wnested - externs)                                               \
+                DIGNOSTIC_IGNORE(-Wnested-externs)                                                 \
                 extern void _func_entry(void);                                                     \
                 DIGNOSTIC_POP()                                                                    \
                 _func_entry;                                                                       \
         })
+/* clang-format on */
 
 #endif /* __ASSEMBLY__ */
 #endif /* __RISCV_MULTIBINARY_H__ */
