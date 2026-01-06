@@ -85,8 +85,6 @@ other_src +=	include/datastruct.asm \
 		sm3_mb/sm3_mb_mgr_datastruct.asm \
 		sm3_mb/sm3_test_helper.c
 
-noinst_HEADERS += sm3_mb/sm3_mb_internal.h
-
 check_tests  +=	sm3_mb/sm3_ref_test \
 		sm3_mb/sm3_mb_param_test
 

@@ -84,8 +84,6 @@ other_src += 	include/datastruct.asm \
 		include/reg_sizes.asm \
 		include/multibinary.asm
 
-noinst_HEADERS += md5_mb/md5_mb_internal.h
-
 check_tests  += md5_mb/md5_mb_test \
 		md5_mb/md5_mb_rand_test \
 		md5_mb/md5_mb_rand_update_test \

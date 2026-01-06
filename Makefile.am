@@ -5,7 +5,7 @@ AM_MAKEFLAGS = --no-print-directory
 noinst_HEADERS =
 pkginclude_HEADERS = include/isa-l_crypto/types.h
 noinst_LTLIBRARIES =
-INCLUDE = -I $(srcdir)/include -I $(srcdir)/include/isa-l_crypto -I $(srcdir)/internal
+INCLUDE = -I $(srcdir)/include -I $(srcdir)/include/isa-l_crypto -I $(srcdir)/include/internal
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libisal_crypto.pc
@@ -32,7 +32,6 @@ unit_tests32=
 perf_tests32=
 
 # Include units
-include internal/Makefile.am
 include sha1_mb/Makefile.am
 include mh_sha1/Makefile.am
 include md5_mb/Makefile.am

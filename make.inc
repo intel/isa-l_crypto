@@ -109,7 +109,7 @@ CFLAGS_noarch= -DNOARCH
 ifeq ($(arch),noarch)
   host_cpu=base_aliases
 endif
-INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH))) -Iinclude/ -Iinclude/isa-l_crypto/ -Iinternal/
+INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH))) -Iinclude/ -Iinclude/isa-l_crypto/ -Iinclude/internal/
 CFLAGS   = $(CFLAGS_$(arch)) $(CFLAGS_$(CC)) $(DEBUG) -O2 $(DEFINES) $(INCLUDE)
 ASFLAGS  = $(ASFLAGS_$(arch)) $(ASFLAGS_$(CC)) $(DEBUG_$(AS)) $(DEFINES) $(INCLUDE)
 ARFLAGS  = $(ARFLAGS_$(arch))

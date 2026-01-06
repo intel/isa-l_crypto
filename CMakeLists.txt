@@ -233,7 +233,7 @@ target_include_directories(isal_crypto
         $<INSTALL_INTERFACE:include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include/isa-l_crypto
-        ${CMAKE_CURRENT_SOURCE_DIR}/internal
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/internal
         ${CMAKE_CURRENT_SOURCE_DIR}/aes
         ${CMAKE_CURRENT_SOURCE_DIR}/intel-ipsec-mb/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/md5_mb
@@ -268,8 +268,8 @@ install(FILES ${ISAL_CRYPTO_HEADER}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# Install headers
-install(DIRECTORY include/
+# Install headers (only public headers, not internal/)
+install(DIRECTORY include/isa-l_crypto
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
