@@ -70,7 +70,8 @@ other_src += 	include/reg_sizes.asm \
 		include/multibinary.asm \
 		mh_sha1/mh_sha1_internal.h \
 		mh_sha1_murmur3_x64_128/murmur3_x64_128.c \
-		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_internal.h
+		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_internal.h \
+		include/internal/test.h
 
 src_include += -I $(srcdir)/mh_sha1_murmur3_x64_128
 

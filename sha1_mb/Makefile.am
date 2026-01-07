@@ -96,7 +96,9 @@ other_src += 	include/datastruct.asm \
 		sha1_mb/sha1_mb_mgr_datastruct.asm \
 		include/reg_sizes.asm \
 		sha1_mb/sha1_ref.c \
-		include/memcpy.asm
+		include/memcpy.asm \
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests  += sha1_mb/sha1_mb_test \
 		sha1_mb/sha1_mb_rand_test \

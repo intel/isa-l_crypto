@@ -96,7 +96,9 @@ other_src += 	include/datastruct.asm \
 		sha256_mb/sha256_mb_mgr_datastruct.asm \
 		include/reg_sizes.asm \
 		sha256_mb/sha256_ref.c \
-		include/memcpy.asm
+		include/memcpy.asm \
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests  +=	sha256_mb/sha256_mb_test  \
 		sha256_mb/sha256_mb_rand_test  \

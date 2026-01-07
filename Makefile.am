@@ -2,7 +2,7 @@ EXTRA_DIST = autogen.sh Makefile.unx make.inc Makefile.nmake isa-l_crypto.def LI
 CLEANFILES =
 LDADD =
 AM_MAKEFLAGS = --no-print-directory
-noinst_HEADERS =
+noinst_HEADERS = include/internal/test.h include/internal/endian_helper.h
 pkginclude_HEADERS = include/isa-l_crypto/types.h
 noinst_LTLIBRARIES =
 INCLUDE = -I $(srcdir)/include -I $(srcdir)/include/isa-l_crypto -I $(srcdir)/include/internal
@@ -149,7 +149,7 @@ isa-l_crypto.h:
 	@echo '#ifndef _ISAL_CRYPTO_H_'	>> $@
 	@echo '#define _ISAL_CRYPTO_H_'	>> $@
 	@echo ''			>> $@
-	@for unit in $(sort $(extern_hdrs)); do echo "#include <isa-l_crypto/$$unit>" | sed -e 's;include/;;' >> $@; done
+	@for unit in $(sort $(extern_hdrs)); do echo "#include <$$unit>" | sed -e 's;include/;;' >> $@; done
 	@echo '#endif //_ISAL_CRYPTO_H_'	>> $@
 
 doc: isa-l_crypto.h

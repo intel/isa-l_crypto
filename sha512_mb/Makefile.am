@@ -86,7 +86,9 @@ other_src += 	include/datastruct.asm \
 		sha512_mb/sha512_mb_mgr_datastruct.asm \
 		include/reg_sizes.asm \
 		sha512_mb/sha512_ref.c \
-		include/memcpy.asm
+		include/memcpy.asm \
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests +=	sha512_mb/sha512_mb_test \
 		sha512_mb/sha512_mb_rand_test \

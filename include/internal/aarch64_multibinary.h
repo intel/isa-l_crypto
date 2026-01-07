@@ -39,15 +39,13 @@
  * ## references:
  * * https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=sysdeps/aarch64/dl-trampoline.S
  * * http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf
- * *
- * https://static.docs.arm.com/ihi0057/b/IHI0057B_aadwarf64.pdf?_ga=2.80574487.1870739014.1564969896-1634778941.1548729310
+ * * https://static.docs.arm.com/ihi0057/b/IHI0057B_aadwarf64.pdf?_ga=2.80574487.1870739014.1564969896-1634778941.1548729310
  *
  * ## Usage:
  * 	1. Define dispather function
  * 	2. name must be \name\()_dispatcher
  * 	3. Prototype should be *"void * \name\()_dispatcher"*
- * 	4. The dispather should return the right function pointer , revision and a string
- * information .
+ * 	4. The dispather should return the right function pointer , revision and a string information .
  **/
 .macro mbin_interface name:req
 	.extern \name\()_dispatcher
@@ -196,44 +194,47 @@
 #else /* __ASSEMBLY__ */
 #include <sys/auxv.h>
 
-#define DEFINE_INTERFACE_DISPATCHER(name) void *name##_dispatcher(void)
 
-#define PROVIDER_BASIC(name) PROVIDER_INFO(name##_base)
 
-/* clang-format off */
-#define DO_DIGNOSTIC(x)     _Pragma GCC diagnostic ignored "-W"#x
-#define DO_PRAGMA(x)        _Pragma(#x)
+#define DEFINE_INTERFACE_DISPATCHER(name)                               \
+	void * name##_dispatcher(void)
+
+#define PROVIDER_BASIC(name)                                            \
+	PROVIDER_INFO(name##_base)
+
+#define DO_DIGNOSTIC(x)	_Pragma GCC diagnostic ignored "-W"#x
+#define DO_PRAGMA(x) _Pragma (#x)
 #define DIGNOSTIC_IGNORE(x) DO_PRAGMA(GCC diagnostic ignored #x)
-#define DIGNOSTIC_PUSH()    DO_PRAGMA(GCC diagnostic push)
-#define DIGNOSTIC_POP()     DO_PRAGMA(GCC diagnostic pop)
+#define DIGNOSTIC_PUSH()	DO_PRAGMA(GCC diagnostic push)
+#define DIGNOSTIC_POP()		DO_PRAGMA(GCC diagnostic pop)
 
-#define PROVIDER_INFO(_func_entry)                                                                 \
-        ({                                                                                         \
-                DIGNOSTIC_PUSH()                                                                   \
-                DIGNOSTIC_IGNORE(-Wnested-externs)                                                 \
-                extern void _func_entry(void);                                                     \
-                DIGNOSTIC_POP()                                                                    \
-                _func_entry;                                                                       \
-        })
-/* clang-format on */
+
+#define PROVIDER_INFO(_func_entry)                                  	\
+	({	DIGNOSTIC_PUSH()					\
+		DIGNOSTIC_IGNORE(-Wnested-externs)			\
+		extern void  _func_entry(void);				\
+		DIGNOSTIC_POP()						\
+		_func_entry;						\
+	})
 
 /**
  * Micro-Architector definitions
  * Reference: https://developer.arm.com/docs/ddi0595/f/aarch64-system-registers/midr_el1
  */
 
-#define CPU_IMPLEMENTER_RESERVE 0x00
-#define CPU_IMPLEMENTER_ARM     0x41
+#define CPU_IMPLEMENTER_RESERVE			0x00
+#define CPU_IMPLEMENTER_ARM			0x41
 
-#define CPU_PART_CORTEX_A57  0xD07
-#define CPU_PART_CORTEX_A72  0xD08
-#define CPU_PART_NEOVERSE_N1 0xD0C
 
-#define MICRO_ARCH_ID(imp, part)                                                                   \
-        (((CPU_IMPLEMENTER_##imp & 0xff) << 24) | ((CPU_PART_##part & 0xfff) << 4))
+#define CPU_PART_CORTEX_A57		0xD07
+#define CPU_PART_CORTEX_A72		0xD08
+#define CPU_PART_NEOVERSE_N1		0xD0C
+
+#define MICRO_ARCH_ID(imp,part)	\
+	(((CPU_IMPLEMENTER_##imp&0xff)<<24)|((CPU_PART_##part&0xfff)<<4))
 
 #ifndef HWCAP_CPUID
-#define HWCAP_CPUID (1 << 11)
+#define HWCAP_CPUID (1<<11)
 #endif
 
 /**
@@ -281,20 +282,20 @@
  *   won't be as expected.
  *
  * References:
- * -  [CPU Feature
- * detection](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/arm64/cpu-feature-registers.rst?h=v5.5)
+ * -  [CPU Feature detection](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/arm64/cpu-feature-registers.rst?h=v5.5)
  *
  */
-static inline uint32_t
-get_micro_arch_id(void)
+static inline uint32_t get_micro_arch_id(void)
 {
-        uint32_t id = CPU_IMPLEMENTER_RESERVE;
-        if ((getauxval(AT_HWCAP) & HWCAP_CPUID)) {
+	uint32_t id=CPU_IMPLEMENTER_RESERVE;
+	if ((getauxval(AT_HWCAP) & HWCAP_CPUID)) {
 
-                asm("mrs %0, MIDR_EL1 " : "=r"(id));
-        }
-        return id & 0xff00fff0;
+		asm("mrs %0, MIDR_EL1 " : "=r" (id));
+	}
+	return id&0xff00fff0;
 }
+
+
 
 #endif /* __ASSEMBLY__ */
 #endif

@@ -47,7 +47,8 @@ lsrc_x86_64    += $(lsrc_sha256) \
 other_src   += 	mh_sha256/mh_sha256_ref.c \
 		include/reg_sizes.asm \
 		include/multibinary.asm \
-		mh_sha256/mh_sha256_internal.h
+		mh_sha256/mh_sha256_internal.h \
+		include/internal/test.h
 
 lsrc_aarch64 += $(lsrc_sha256)	\
 		mh_sha256/aarch64/mh_sha256_multibinary.S \

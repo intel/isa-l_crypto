@@ -83,7 +83,9 @@ other_src +=	include/datastruct.asm \
 		include/memcpy.asm \
 		sm3_mb/sm3_job.asm \
 		sm3_mb/sm3_mb_mgr_datastruct.asm \
-		sm3_mb/sm3_test_helper.c
+		sm3_mb/sm3_test_helper.c \
+		include/internal/memcpy_inline.h \
+		include/internal/intrinreg.h
 
 check_tests  +=	sm3_mb/sm3_ref_test \
 		sm3_mb/sm3_mb_param_test
