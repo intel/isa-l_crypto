@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.69)
 AC_INIT([libisal_crypto],
-        [2.25.0],
+        [2.26.0],
         [https://github.com/intel/isa-l_crypto/issues],
         [isa-l_crypto])
 AC_CONFIG_SRCDIR([])

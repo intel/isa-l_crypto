@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 3.12)
 cmake_policy(VERSION 3.12)
 
 project(ISA-L-Crypto
-    VERSION 2.25.0
+    VERSION 2.26.0
     DESCRIPTION "Intel's ISA-L Crypto (Intelligent Storage Acceleration Library - Cryptographic Functions)"
     LANGUAGES C ASM
 )
