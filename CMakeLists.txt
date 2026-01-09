@@ -204,6 +204,9 @@ else()
     )
 endif()
 
+# Remove duplicate headers from EXTERN_HEADERS list
+list(REMOVE_DUPLICATES EXTERN_HEADERS)
+
 # Set library properties
 set_target_properties(isal_crypto PROPERTIES
     VERSION ${LIBISAL_CRYPTO_CURRENT}.${LIBISAL_CRYPTO_REVISION}.${LIBISAL_CRYPTO_AGE}
@@ -249,7 +252,6 @@ target_include_directories(isal_crypto
 
 # Generate isa-l_crypto.h header
 set(ISAL_CRYPTO_HEADER "${CMAKE_BINARY_DIR}/isa-l_crypto.h")
-list(REMOVE_DUPLICATES EXTERN_HEADERS)
 list(SORT EXTERN_HEADERS)
 set(ISAL_CRYPTO_INCLUDES "")
 foreach(HEADER ${EXTERN_HEADERS})
@@ -274,12 +276,6 @@ install(TARGETS isal_crypto
 # Install generated header
 install(FILES ${ISAL_CRYPTO_HEADER}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-# Install headers (only public headers, not internal/)
-install(DIRECTORY include/isa-l_crypto
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.h"
 )
 
 # Export targets
@@ -326,7 +322,6 @@ configure_file(
 install(FILES "${CMAKE_BINARY_DIR}/libisal_crypto.pc"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
-
 
 # add uninstall target
 configure_file(
