@@ -32,16 +32,16 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include <aes_xts.h>
-#include <aes_cbc.h>
-#include <aes_gcm.h>
-#include <aes_keyexp.h>
-#include <sha1_mb.h>
-#include <mh_sha1.h>
-#include <sha256_mb.h>
-#include <mh_sha256.h>
-#include <sha512_mb.h>
-#include <mh_sha1_murmur3_x64_128.h>
+#include <isa-l_crypto/aes_xts.h>
+#include <isa-l_crypto/aes_cbc.h>
+#include <isa-l_crypto/aes_gcm.h>
+#include <isa-l_crypto/aes_keyexp.h>
+#include <isa-l_crypto/sha1_mb.h>
+#include <isa-l_crypto/mh_sha1.h>
+#include <isa-l_crypto/sha256_mb.h>
+#include <isa-l_crypto/mh_sha256.h>
+#include <isa-l_crypto/sha512_mb.h>
+#include <isa-l_crypto/mh_sha1_murmur3_x64_128.h>
 
 /**
  * @brief Calculate the dimension of an array
