@@ -32,7 +32,7 @@
 #include <string.h>
 #include <acvp/acvp.h>
 
-#include "include/aes_gcm.h"
+#include "include/isa-l_crypto/aes_gcm.h"
 
 extern uint8_t verbose;
 

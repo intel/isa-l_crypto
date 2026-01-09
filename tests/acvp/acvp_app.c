@@ -33,7 +33,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <acvp/acvp.h>
-#include "include/isal_crypto_api.h"
+#include "include/isa-l_crypto/isal_crypto_api.h"
 
 #define LIB_VER(a, b, c) (((a) << 16) + ((b) << 8) + (c))
 

@@ -32,9 +32,9 @@
 #include <string.h>
 #include <acvp/acvp.h>
 
-#include "include/sha1_mb.h"
-#include "include/sha256_mb.h"
-#include "include/sha512_mb.h"
+#include "include/isa-l_crypto/sha1_mb.h"
+#include "include/isa-l_crypto/sha256_mb.h"
+#include "include/isa-l_crypto/sha512_mb.h"
 
 extern uint8_t verbose;
 

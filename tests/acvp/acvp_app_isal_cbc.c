@@ -32,8 +32,8 @@
 
 #include <stdlib.h>
 #include <acvp/acvp.h>
-#include "include/aes_cbc.h"
-#include "include/aes_keyexp.h"
+#include "include/isa-l_crypto/aes_cbc.h"
+#include "include/isa-l_crypto/aes_keyexp.h"
 
 extern uint8_t verbose;
 
