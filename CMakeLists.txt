@@ -327,6 +327,17 @@ install(FILES "${CMAKE_BINARY_DIR}/libisal_crypto.pc"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
+
+# add uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(
+    uninstall COMMAND ${CMAKE_COMMAND} -P
+                      ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
+
 # Enable testing if BUILD_TESTS is ON
 if(BUILD_TESTS)
     enable_testing()
