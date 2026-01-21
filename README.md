@@ -118,6 +118,54 @@ Operating System to provide process isolation.
 As the result, it is recommended to use latest Operating System patches and
 security updates.
 
+FIPS Compliance
+---------------
+
+The library does not fulfill technical requirements to achieve Cryptographic Module (CMVP) certification as a standalone component. It is fit for Cryptographic Algorithm validation and certification (CAVP) and it can be part of CMVP as one of the components.
+
+### CAVP
+
+ACVP test application located in `tests` directory is to support CAVP process. It implements validation of the following algorithms:
+- AES-CBC
+- AES-GCM
+- AES-XTS
+- SHA1 (SHA-1)
+- SHA256 (SHA2-256)
+- SHA512 (SHA2-512)
+
+Note: the acvp-app requires libacvp 2.0+ to be built.
+
+### CAVP Algorithm Parameters
+
+**Note:** all sizes in bits
+```
++--------------------------------------------------------------------------------------------+
+| Algorithm           | Standard  | Parameters                                               |
+|---------------------+-----------+----------------------------------------------------------|
+| AES-CBC             | SP800-38A | Key size: 128, 192, 256                                  |
+|                     |           | Direction: encrypt and decrypt                           |
+|---------------------+-----------+----------------------------------------------------------|
+| AES-GCM             | SP800-38D | Key size: 128, 256                                       |
+|                     |           | Direction: encrypt and decrypt                           |
+|                     |           | ivLen: 96                                                |
+|                     |           | tagLen: 64, 96, 128                                      |
+|                     |           | payloadLen: [min = 0, max = 65536, increment = 8]        |
+|                     |           | aadLen: 128, 256                                         |
+|---------------------+-----------+----------------------------------------------------------|
+| AES-XTS             | SP800-38E | Key size: 128, 256                                       |
+|                     |           | Direction: encrypt and decrypt                           |
+|                     |           | payloadLen: [min = 4160, max = 32832, increment = 8]     |
+|---------------------+-----------+----------------------------------------------------------|
+| SHA1 (SHA-1)        | FIPS180-4 | messageLength: [min = 0, max = 65536, increment = 8]     |
+|---------------------+-----------+----------------------------------------------------------|
+| SHA256 (SHA2-256)   | FIPS180-4 | messageLength: [min = 0, max = 65536, increment = 8]     |
+|---------------------+-----------+----------------------------------------------------------|
+| SHA512 (SHA2-512)   | FIPS180-4 | messageLength: [min = 0, max = 65536, increment = 8]     |
++--------------------------------------------------------------------------------------------+
+```
+
+For more details, please look at `FIPS.md` document.
+
 DLL Injection Attack
 --------------------
 
