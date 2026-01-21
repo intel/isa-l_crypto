@@ -19,6 +19,15 @@ In order to enable it, the library needs to be compiled as follows:
     make -f Makefile.unx FIPS_MODE=y
 ```
 
+- CMake:
+
+```
+    mkdir build
+    cd build
+    cmake .. -DFIPS_MODE=ON
+    make
+```
+
 - Windows Makefile:
 
 ```
