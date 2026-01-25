@@ -58,7 +58,10 @@ lsrc_riscv64 += $(lsrc_murmur)	\
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128.c \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_finalize_base.c \
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_update_base.c \
-		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128_base_aliases.c
+		mh_sha1_murmur3_x64_128/riscv64/mh_sha1_murmur3_x64_128_multibinary.S \
+		mh_sha1_murmur3_x64_128/riscv64/mh_sha1_murmur3_x64_128_riscv64_dispatcher.c \
+		mh_sha1_murmur3_x64_128/riscv64/mh_sha1_murmur3_x64_128_block_rvv.S \
+		mh_sha1_murmur3_x64_128/riscv64/mh_sha1_murmur3_x64_128_block.c
 
 lsrc_base_aliases += $(lsrc_murmur)	\
 		mh_sha1_murmur3_x64_128/mh_sha1_murmur3_x64_128.c \
