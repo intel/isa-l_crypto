@@ -65,7 +65,7 @@ MH_SHA256_UPDATE_FUNCTION(struct isal_mh_sha256_ctx *ctx, const void *buffer, ui
 
         ctx->total_length += len;
         // No enough input data for mh_sha256 calculation
-        if (len + partial_block_len < ISAL_MH_SHA256_BLOCK_SIZE) {
+        if (len < ISAL_MH_SHA256_BLOCK_SIZE - partial_block_len) {
                 memcpy(partial_block_buffer + partial_block_len, input_data, len);
                 return ISAL_MH_SHA256_CTX_ERROR_NONE;
         }

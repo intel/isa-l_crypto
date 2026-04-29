@@ -65,7 +65,7 @@ MH_SHA1_UPDATE_FUNCTION(struct isal_mh_sha1_ctx *ctx, const void *buffer, uint32
 
         ctx->total_length += len;
         // No enough input data for mh_sha1 calculation
-        if (len + partial_block_len < ISAL_MH_SHA1_BLOCK_SIZE) {
+        if (len < ISAL_MH_SHA1_BLOCK_SIZE - partial_block_len) {
                 memcpy(partial_block_buffer + partial_block_len, input_data, len);
                 return ISAL_MH_SHA1_CTX_ERROR_NONE;
         }
