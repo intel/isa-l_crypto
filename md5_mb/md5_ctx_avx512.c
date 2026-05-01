@@ -132,7 +132,8 @@ _md5_ctx_mgr_submit_avx512(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx, c
 
                         ctx->job.buffer = ctx->partial_block_buffer;
                         ctx->job.len = 1;
-                        ctx = (ISAL_MD5_HASH_CTX *) _md5_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ISAL_MD5_JOB *job = _md5_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = job ? ISAL_MD5_JOB_TO_CTX(job) : NULL;
                 }
         }
 
@@ -145,7 +146,8 @@ _md5_ctx_mgr_flush_avx512(ISAL_MD5_HASH_CTX_MGR *mgr)
         ISAL_MD5_HASH_CTX *ctx;
 
         while (1) {
-                ctx = (ISAL_MD5_HASH_CTX *) _md5_mb_mgr_flush_avx512(&mgr->mgr);
+                ISAL_MD5_JOB *job = _md5_mb_mgr_flush_avx512(&mgr->mgr);
+                ctx = job ? ISAL_MD5_JOB_TO_CTX(job) : NULL;
 
                 // If flush returned 0, there are no more jobs in flight.
                 if (!ctx)
@@ -201,8 +203,8 @@ md5_ctx_mgr_resubmit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx)
                         if (len) {
                                 ctx->job.buffer = (uint8_t *) buffer;
                                 ctx->job.len = len;
-                                ctx = (ISAL_MD5_HASH_CTX *) _md5_mb_mgr_submit_avx512(&mgr->mgr,
-                                                                                      &ctx->job);
+                                ISAL_MD5_JOB *job = _md5_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                                ctx = job ? ISAL_MD5_JOB_TO_CTX(job) : NULL;
                                 continue;
                         }
                 }
@@ -218,7 +220,8 @@ md5_ctx_mgr_resubmit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx)
 
                         ctx->job.buffer = buf;
                         ctx->job.len = (uint32_t) n_extra_blocks;
-                        ctx = (ISAL_MD5_HASH_CTX *) _md5_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ISAL_MD5_JOB *job = _md5_mb_mgr_submit_avx512(&mgr->mgr, &ctx->job);
+                        ctx = job ? ISAL_MD5_JOB_TO_CTX(job) : NULL;
                         continue;
                 }
 

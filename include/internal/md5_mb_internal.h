@@ -35,6 +35,7 @@
  *  @brief Multi-buffer CTX API MD5 function prototypes and structures
  */
 
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -48,6 +49,10 @@ extern "C" {
 
 #define ISAL_MD5_LOG2_BLOCK_SIZE 6
 #define ISAL_MD5_INITIAL_DIGEST  0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+
+/* Convert a non-NULL ISAL_MD5_JOB pointer to its enclosing ISAL_MD5_HASH_CTX. */
+#define ISAL_MD5_JOB_TO_CTX(job_ptr)                                                               \
+        ((ISAL_MD5_HASH_CTX *) ((char *) (job_ptr) - offsetof(ISAL_MD5_HASH_CTX, job)))
 
 /**
  * @brief Initialize the MD5 multi-buffer manager structure.
