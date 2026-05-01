@@ -33,6 +33,10 @@ project(ISA-L-Crypto
     LANGUAGES C ASM
 )
 
+# CMAKE_REQUIRED_QUIET may be passed by a parent project (e.g. via FetchContent);
+# reference it here so CMake does not warn about an unused manually-specified variable.
+set(CMAKE_REQUIRED_QUIET ${CMAKE_REQUIRED_QUIET})
+
 # Enable appropriate assembler based on architecture
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|amd64")
     enable_language(ASM_NASM)
