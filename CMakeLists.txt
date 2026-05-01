@@ -171,7 +171,7 @@ endif()
 
 # Library version (semantic versioning)
 set(LIBISAL_CRYPTO_CURRENT 2)
-set(LIBISAL_CRYPTO_REVISION 25)
+set(LIBISAL_CRYPTO_REVISION 26)
 set(LIBISAL_CRYPTO_AGE 0)
 
 # Include CMake modules for each library component
