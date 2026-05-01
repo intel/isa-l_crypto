@@ -119,9 +119,11 @@ extern _sm3_ctx_mgr_init_avx2
 extern _sm3_ctx_mgr_submit_avx2
 extern _sm3_ctx_mgr_flush_avx2
 
+%ifdef HAVE_AS_KNOWS_SHA512NI
 extern _sm3_ctx_mgr_init_avx2_ni
 extern _sm3_ctx_mgr_submit_avx2_ni
 extern _sm3_ctx_mgr_flush_avx2_ni
+%endif
 
 extern _sm3_ctx_mgr_init_avx512
 extern _sm3_ctx_mgr_submit_avx512

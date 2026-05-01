@@ -131,6 +131,55 @@ CFLAGS += -DFIPS_MODE
 ASFLAGS += -DFIPS_MODE
 endif
 
+ifneq ($(filter x86_%,$(host_cpu)),)
+# Detect NASM version (minimum required: 2.14.01)
+MINGW ?= $(shell $(CC) -dM -E - < /dev/null | grep -i mingw | wc -l | sed 's/^ *//')
+ifeq ($(MINGW),0)
+MULT = \*
+else
+MULT = \\*
+endif
+
+NASM_VERSION = $(shell $(AS) -v | cut -d " " -f 3)
+
+NASM_MAJOR_REQ = 2
+NASM_MINOR_REQ = 14
+NASM_REV_REQ   = 01
+NASM_MIN_REQ = $(shell expr $(NASM_MAJOR_REQ) $(MULT) 10000 + $(NASM_MINOR_REQ) $(MULT) 100 + $(NASM_REV_REQ))
+
+ifeq ($(NASM_VERSION),)
+$(error NASM is not installed! Minimum required version: $(NASM_MAJOR_REQ).$(NASM_MINOR_REQ).$(NASM_REV_REQ))
+else
+NASM_MAJOR_VER = $(shell echo $(NASM_VERSION) | cut -d "." -f 1)
+NASM_MINOR_VER = $(shell echo $(NASM_VERSION) | cut -d "." -f 2 | cut -c 1-2)
+NASM_REV_VER   = $(shell echo $(NASM_VERSION) | cut -d "." -f 3 | cut -c 1-2)
+ifeq ($(NASM_REV_VER),)
+NASM_REV_VER = 0
+endif
+NASM_VER = $(shell expr $(NASM_MAJOR_VER) $(MULT) 10000 + $(NASM_MINOR_VER) $(MULT) 100 + $(NASM_REV_VER))
+
+NASM_GE_REQ = $(shell [ $(NASM_VER) -ge $(NASM_MIN_REQ) ] && echo true)
+$(info NASM '$(AS)' version: $(NASM_VERSION))
+ifneq ($(NASM_GE_REQ),true)
+$(error Minimum required NASM version: $(NASM_MAJOR_REQ).$(NASM_MINOR_REQ).$(NASM_REV_REQ))
+endif # NASM_GE_REQ
+
+# Minimum version of NASM with SHA512-NI support: 2.16.02
+NASM_MAJOR_SHA512NI = 2
+NASM_MINOR_SHA512NI = 16
+NASM_REV_SHA512NI   = 02
+NASM_MIN_SHA512NI = $(shell expr $(NASM_MAJOR_SHA512NI) $(MULT) 10000 + $(NASM_MINOR_SHA512NI) $(MULT) 100 + $(NASM_REV_SHA512NI))
+
+NASM_SHA512NI_GE_REQ = $(shell [ $(NASM_VER) -ge $(NASM_MIN_SHA512NI) ] && echo true)
+ifneq ($(NASM_SHA512NI_GE_REQ),true)
+$(warning Minimum required NASM version for SHA512-NI: $(NASM_MAJOR_SHA512NI).$(NASM_MINOR_SHA512NI).$(NASM_REV_SHA512NI) SHA512-NI code not compiled - update NASM.)
+else
+CFLAGS  += -DHAVE_AS_KNOWS_SHA512NI
+ASFLAGS += -DHAVE_AS_KNOWS_SHA512NI
+endif # NASM_SHA512NI_GE_REQ
+endif # NASM_VERSION
+endif # x86
+
 ifeq ($(filter aarch64 x86_%,$(host_cpu)),)
   host_cpu=base_aliases
 endif

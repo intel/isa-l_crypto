@@ -202,10 +202,14 @@ int main(int argc, char **argv)
       fi
     fi
 
-    AC_MSG_CHECKING([for optional nasm SHA512-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[vsha512rnds2 ymm2, ymm1, xmm0;]])])
-    sed -i -e '/vsha512rnds2/!d' conftest.c
-    if nasm -f elf64  conftest.c 2> /dev/null; then
+    AC_MSG_CHECKING([for optional nasm SHA512-NI support (NASM >= 2.16.02)])
+    nasm_ver=$(nasm -v 2>/dev/null | cut -d " " -f 3)
+    nasm_major=$(echo "$nasm_ver" | cut -d "." -f 1)
+    nasm_minor=$(echo "$nasm_ver" | cut -d "." -f 2 | cut -c 1-2)
+    nasm_rev=$(echo "$nasm_ver" | cut -d "." -f 3 | cut -c 1-2)
+    nasm_numeric=$(expr ${nasm_major:-0} \* 10000 + ${nasm_minor:-0} \* 100 + ${nasm_rev:-0})
+    nasm_min_sha512ni=$(expr 2 \* 10000 + 16 \* 100 + 2)
+    if test $nasm_numeric -ge $nasm_min_sha512ni; then
       AC_MSG_RESULT([yes])
       as_knows_sha512ni=yes
     else
@@ -259,10 +263,14 @@ int main(int argc, char **argv)
       fi
     fi
 
-    AC_MSG_CHECKING([for optional nasm SHA512-NI support])
-    AC_LANG_CONFTEST([AC_LANG_SOURCE([[vsha512rnds2 ymm2, ymm1, xmm0;]])])
-    sed -i -e '/vsha512rnds2/!d' conftest.c
-    if $AS -f elf64  conftest.c 2> /dev/null; then
+    AC_MSG_CHECKING([for optional nasm SHA512-NI support (NASM >= 2.16.02)])
+    nasm_ver=$(nasm -v 2>/dev/null | cut -d " " -f 3)
+    nasm_major=$(echo "$nasm_ver" | cut -d "." -f 1)
+    nasm_minor=$(echo "$nasm_ver" | cut -d "." -f 2 | cut -c 1-2)
+    nasm_rev=$(echo "$nasm_ver" | cut -d "." -f 3 | cut -c 1-2)
+    nasm_numeric=$(expr ${nasm_major:-0} \* 10000 + ${nasm_minor:-0} \* 100 + ${nasm_rev:-0})
+    nasm_min_sha512ni=$(expr 2 \* 10000 + 16 \* 100 + 2)
+    if test $nasm_numeric -ge $nasm_min_sha512ni; then
       AC_MSG_RESULT([yes])
       as_knows_sha512ni=yes
     else
@@ -271,7 +279,8 @@ int main(int argc, char **argv)
 
   fi
 
-  if test $as_feature_level -lt 10 ; then
+  nasm_min_req=$(expr 2 \* 10000 + 14 \* 100 + 1)
+  if test $nasm_numeric -lt $nasm_min_req ; then
     AC_MSG_ERROR([No modern nasm found as required. Nasm should be v2.14.01 or later.])
   fi
 

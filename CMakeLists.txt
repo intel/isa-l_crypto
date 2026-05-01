@@ -84,6 +84,32 @@ if(CPU_X86_64)
         set(CMAKE_ASM_NASM_FLAGS "-f elf64 -D LINUX")
     endif()
     set(USE_NASM ON)
+
+    set(NASM_VERSION_REQUIRED "2.14.01")
+    set(NASM_VERSION_SHA512NI "2.16.02")
+    set(NASM_KNOWS_SHA512NI OFF)
+
+    execute_process(
+        COMMAND "${CMAKE_ASM_NASM_COMPILER}" -v
+        OUTPUT_VARIABLE NASM_VERSION_OUTPUT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    string(REGEX MATCH "NASM version ([0-9]+\\.[0-9]+(\\.[0-9]+)?)" NASM_VERSION
+                 "${NASM_VERSION_OUTPUT}")
+    if(NASM_VERSION)
+        if(${CMAKE_MATCH_1} VERSION_LESS ${NASM_VERSION_REQUIRED})
+            message(FATAL_ERROR "NASM version must be at least ${NASM_VERSION_REQUIRED}!")
+        endif()
+        message(STATUS "NASM version: ${CMAKE_MATCH_1}")
+        if(${CMAKE_MATCH_1} VERSION_LESS ${NASM_VERSION_SHA512NI})
+            message(NOTICE "Minimum required NASM version for SHA512-NI: ${NASM_VERSION_SHA512NI}. SHA512-NI code not compiled - update NASM.")
+        else()
+            set(NASM_KNOWS_SHA512NI ON)
+        endif()
+    else()
+        message(WARNING "Could not parse NASM version string: ${NASM_VERSION_OUTPUT}.\nPlease, be sure that ${CMAKE_ASM_NASM_COMPILER} version is >= ${NASM_VERSION_REQUIRED}")
+    endif()
+
 elseif(CPU_AARCH64 OR CPU_RISCV64)
     # Configure ASM for ARM and RISC-V (uses GAS with .S files)
     set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -D__ASSEMBLY__")
@@ -136,6 +162,11 @@ if(FIPS_MODE)
     if(USE_NASM)
         set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -DFIPS_MODE")
     endif()
+endif()
+
+if(NASM_KNOWS_SHA512NI)
+    add_compile_definitions(HAVE_AS_KNOWS_SHA512NI)
+    set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -DHAVE_AS_KNOWS_SHA512NI")
 endif()
 
 # Library version (semantic versioning)
@@ -351,5 +382,6 @@ message(STATUS "  Build perf apps:      ${BUILD_PERF}")
 message(STATUS "  Safe data:            ${SAFE_DATA}")
 message(STATUS "  Safe param:           ${SAFE_PARAM}")
 message(STATUS "  FIPS mode:            ${FIPS_MODE}")
+message(STATUS "  SHA512-NI support:    ${NASM_KNOWS_SHA512NI}")
 message(STATUS "  Install prefix:       ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "")
