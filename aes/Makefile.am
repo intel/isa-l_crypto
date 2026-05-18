@@ -175,3 +175,9 @@ xts_256_rand_ossl_test: LDLIBS += -lcrypto
 aes_xts_256_rand_ossl_test_LDFLAGS = -lcrypto
 aes_perf: LDLIBS += -lcrypto
 aes_aes_perf_LDFLAGS = -lcrypto
+
+aes/aes_perf.run: aes/aes_perf
+	for algo in aes-cbc-128 aes-cbc-192 aes-cbc-256 aes-gcm-128 aes-gcm-256 aes-xts-128 aes-xts-256; do \
+		$< --algo $$algo; \
+	done
+	@echo Completed run: $<
