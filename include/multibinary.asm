@@ -434,18 +434,18 @@
 		;; Test for AVX512
 		and	edi, FLAG_XGETBV_EAX_ZMM_OPM
 		cmp	edi, FLAG_XGETBV_EAX_ZMM_OPM
-		jne	_%1_init_done	  ; No AVX512 possible
+		jne	_%1_shani_check	  ; No AVX512 possible
 		and	ebx, FLAGS_CPUID7_EBX_AVX512_G1
 		cmp	ebx, FLAGS_CPUID7_EBX_AVX512_G1
 		lea	mbin_rbx, [%6 WRT_OPT] ; AVX512/06 opt
 		cmove	mbin_rsi, mbin_rbx
 
-		;; Test for SHANI
+		;; Test for SHANI (AVX512 being supported too)
 		xor	ecx, ecx
 		mov	eax, 7
 		cpuid
 		test	ebx, FLAG_CPUID7_EBX_SHA
-		lea	mbin_rbx, [%8 WRT_OPT] ; SHANI opt sse func
+		lea	mbin_rbx, [%8 WRT_OPT] ; Combination of AVX512 and SHANI sse func
 		cmovne	mbin_rsi, mbin_rbx
 
 	_%1_init_done:
@@ -458,6 +458,7 @@
 		pop	mbin_rsi
 		ret
 
+		;; Test for SHANI (AVX512 is not supported here)
 	_%1_shani_check:
 		xor	ecx, ecx
 		mov	eax, 7
