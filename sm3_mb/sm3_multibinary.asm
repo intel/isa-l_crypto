@@ -80,22 +80,23 @@
 		je	_%1_init_done		; No AVX2 possible
 		lea	mbin_rsi, [%5 WRT_OPT] 	; AVX2/04 opt func
 
-                ;; Test for sm3NI
-                mov     ecx, 1
-                mov     eax, 7
-                cpuid
-                test    eax, FLAG_CPUID7_EAX_SM3NI
-                je     _%1_init_done            ; No sm3NI possible
-                lea     mbin_rsi, [%7 WRT_OPT]  ; sm3NI opt func
-
 		;; Test for AVX512
 		and	edi, FLAG_XGETBV_EAX_ZMM_OPM
 		cmp	edi, FLAG_XGETBV_EAX_ZMM_OPM
-		jne	_%1_init_done	  ; No AVX512 possible
+		jne	_%1_check_sm3ni	  ; No AVX512 possible
 		and	ebx, FLAGS_CPUID7_EBX_AVX512_G1
 		cmp	ebx, FLAGS_CPUID7_EBX_AVX512_G1
 		lea	mbin_rbx, [%6 WRT_OPT] ; AVX512/06 opt
 		cmove	mbin_rsi, mbin_rbx
+
+        _%1_check_sm3ni:
+                ;; Test for SM3NI
+                mov     ecx, 1
+                mov     eax, 7
+                cpuid
+                test    eax, FLAG_CPUID7_EAX_SM3NI
+                je     _%1_init_done            ; No SM3NI possible
+                lea     mbin_rsi, [%7 WRT_OPT]  ; SM3NI opt func
 
 	_%1_init_done:
 		pop	mbin_rdi
