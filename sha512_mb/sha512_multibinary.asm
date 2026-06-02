@@ -80,22 +80,23 @@
 		je	_%1_init_done		; No AVX2 possible
 		lea	mbin_rsi, [%5 WRT_OPT] 	; AVX2/04 opt func
 
+		;; Test for AVX512
+		and	edi, FLAG_XGETBV_EAX_ZMM_OPM
+		cmp	edi, FLAG_XGETBV_EAX_ZMM_OPM
+		jne	_%1_check_sha512ni	  ; No AVX512 possible
+		and	ebx, FLAGS_CPUID7_EBX_AVX512_G1
+		cmp	ebx, FLAGS_CPUID7_EBX_AVX512_G1
+		lea	mbin_rbx, [%6 WRT_OPT] ; AVX512/06 opt
+		cmove	mbin_rsi, mbin_rbx
+
+        _%1_check_sha512ni:
                 ;; Test for SHA512NI
                 mov     ecx, 1
                 mov     eax, 7
                 cpuid
                 test    eax, FLAG_CPUID7_EAX_SHA512NI
-                je     _%1_init_done            ; No SHA512NI possible
+		je	_%1_init_done		; No SHA512-NI availabile
                 lea     mbin_rsi, [%7 WRT_OPT]  ; SHA512NI opt func
-
-		;; Test for AVX512
-		and	edi, FLAG_XGETBV_EAX_ZMM_OPM
-		cmp	edi, FLAG_XGETBV_EAX_ZMM_OPM
-		jne	_%1_init_done	  ; No AVX512 possible
-		and	ebx, FLAGS_CPUID7_EBX_AVX512_G1
-		cmp	ebx, FLAGS_CPUID7_EBX_AVX512_G1
-		lea	mbin_rbx, [%6 WRT_OPT] ; AVX512/06 opt
-		cmove	mbin_rsi, mbin_rbx
 
 	_%1_init_done:
 		pop	mbin_rdi
