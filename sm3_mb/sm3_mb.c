@@ -60,7 +60,11 @@ isal_sm3_ctx_mgr_submit(ISAL_SM3_HASH_CTX_MGR *mgr, ISAL_SM3_HASH_CTX *ctx_in,
                 return ISAL_CRYPTO_ERR_NULL_MGR;
         if (ctx_in == NULL || ctx_out == NULL)
                 return ISAL_CRYPTO_ERR_NULL_CTX;
-        if (buffer == NULL && len != 0)
+        /* OK to have NULL source buffer when flags is ISAL_HASH_FIRST or ISAL_HASH_LAST */
+        if (buffer == NULL && (flags == ISAL_HASH_UPDATE || flags == ISAL_HASH_ENTIRE))
+                return ISAL_CRYPTO_ERR_NULL_SRC;
+        /* Not OK to have null source buffer when length is not zero */
+        if (len != 0 && buffer == NULL)
                 return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
         ISAL_SM3_HASH_CTX *cp = _sm3_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);

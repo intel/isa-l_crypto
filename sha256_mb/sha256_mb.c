@@ -62,6 +62,9 @@ isal_sha256_ctx_mgr_submit(ISAL_SHA256_HASH_CTX_MGR *mgr, ISAL_SHA256_HASH_CTX *
         /* OK to have NULL source buffer when flags is ISAL_HASH_FIRST or ISAL_HASH_LAST */
         if (buffer == NULL && (flags == ISAL_HASH_UPDATE || flags == ISAL_HASH_ENTIRE))
                 return ISAL_CRYPTO_ERR_NULL_SRC;
+        /* Not OK to have null source buffer when length is not zero */
+        if (len != 0 && buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
 
 #ifdef FIPS_MODE

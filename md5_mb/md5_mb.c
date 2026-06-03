@@ -63,6 +63,9 @@ isal_md5_ctx_mgr_submit(ISAL_MD5_HASH_CTX_MGR *mgr, ISAL_MD5_HASH_CTX *ctx_in,
         /* OK to have NULL source buffer when flags is ISAL_HASH_FIRST or ISAL_HASH_LAST */
         if (buffer == NULL && (flags == ISAL_HASH_UPDATE || flags == ISAL_HASH_ENTIRE))
                 return ISAL_CRYPTO_ERR_NULL_SRC;
+        /* Not OK to have null source buffer when length is not zero */
+        if (len != 0 && buffer == NULL)
+                return ISAL_CRYPTO_ERR_NULL_SRC;
 #endif
         *ctx_out = _md5_ctx_mgr_submit(mgr, ctx_in, buffer, len, flags);
 
