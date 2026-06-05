@@ -243,10 +243,17 @@ endif()
 list(REMOVE_DUPLICATES EXTERN_HEADERS)
 
 # Set library properties
+if(WIN32)
+    set(ISAL_CRYPTO_OUTPUT_NAME "isa-l_crypto")
+else()
+    set(ISAL_CRYPTO_OUTPUT_NAME "isal_crypto")
+endif()
+
 set_target_properties(isal_crypto PROPERTIES
     VERSION ${LIBISAL_CRYPTO_CURRENT}.${LIBISAL_CRYPTO_REVISION}.${LIBISAL_CRYPTO_AGE}
     SOVERSION ${LIBISAL_CRYPTO_CURRENT}
     PUBLIC_HEADER "${EXTERN_HEADERS}"
+    OUTPUT_NAME "${ISAL_CRYPTO_OUTPUT_NAME}"
 )
 
 # Configure include directories for NASM assembly files
