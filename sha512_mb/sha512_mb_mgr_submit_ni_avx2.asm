@@ -118,6 +118,8 @@ extern sha512_ni_x2_avx2
     mov     rsp,   [rsp + XMM_STORAGE] ;; rsp pointer
 %endmacro
 
+section .text
+
 ; ISAL_SHA512_JOB* _sha512_mb_mgr_submit_ni_avx2(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job)
 ; arg 1 : rcx : state
 ; arg 2 : rdx : job
