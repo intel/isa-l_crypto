@@ -30,7 +30,7 @@ cmake_policy(VERSION 3.12)
 project(ISA-L-Crypto
     VERSION 2.26.0
     DESCRIPTION "Intel's ISA-L Crypto (Intelligent Storage Acceleration Library - Cryptographic Functions)"
-    LANGUAGES C ASM
+    LANGUAGES C
 )
 
 # CMAKE_REQUIRED_QUIET may be passed by a parent project (e.g. via FetchContent);
