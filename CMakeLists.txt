@@ -39,6 +39,16 @@ set(CMAKE_REQUIRED_QUIET ${CMAKE_REQUIRED_QUIET})
 
 # Enable appropriate assembler based on architecture
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|amd64")
+    # Set the NASM object format BEFORE enabling the language: CMake expands
+    # "-f ${CMAKE_ASM_NASM_OBJECT_FORMAT}" into the compile rule at
+    # enable_language() time. Its auto-detected default can wrongly be win32 on
+    # Windows (CMAKE_SYSTEM_PROCESSOR is "AMD64", not "x86_64", and the C pointer
+    # size may not be visible yet), which would override the intended -f win64.
+    if(WIN32)
+        set(CMAKE_ASM_NASM_OBJECT_FORMAT win64)
+    else()
+        set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)
+    endif()
     enable_language(ASM_NASM)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
     # ARM uses GAS assembler (.S files)
@@ -81,11 +91,11 @@ option(FIPS_MODE "Enable FIPS mode" OFF)
 
 # Compiler and assembler setup
 if(CPU_X86_64)
-    # Configure NASM flags
+    # Configure NASM flags (object format is set via CMAKE_ASM_NASM_OBJECT_FORMAT)
     if(WIN32)
-        set(CMAKE_ASM_NASM_FLAGS "-f win64 -D WINDOWS")
+        set(CMAKE_ASM_NASM_FLAGS "-D WINDOWS")
     else()
-        set(CMAKE_ASM_NASM_FLAGS "-f elf64 -D LINUX")
+        set(CMAKE_ASM_NASM_FLAGS "-D LINUX")
     endif()
     set(USE_NASM ON)
 
@@ -255,6 +265,10 @@ set_target_properties(isal_crypto PROPERTIES
     PUBLIC_HEADER "${EXTERN_HEADERS}"
     OUTPUT_NAME "${ISAL_CRYPTO_OUTPUT_NAME}"
 )
+
+if(WIN32)
+    set_target_properties(isal_crypto PROPERTIES PREFIX "" IMPORT_PREFIX "")
+endif()
 
 # Configure include directories for NASM assembly files
 if(USE_NASM)
