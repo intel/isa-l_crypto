@@ -47,14 +47,12 @@ extern "C" {
 #else
 #ifdef __MINGW32__
 #define DECLARE_ALIGNED(decl, alignval) decl __attribute__((aligned(alignval)))
-#define posix_memalign(p, algn, len)                                                               \
-        (NULL == (*((char **) (p)) = (void *) _aligned_malloc(len, algn)))
-#define aligned_free(x) _aligned_free(x)
+#define posix_memalign(p, algn, len)    (NULL == (*((void **) (p)) = _aligned_malloc(len, algn)))
+#define aligned_free(x)                 _aligned_free(x)
 #else
 #define DECLARE_ALIGNED(decl, alignval) __declspec(align(alignval)) decl
-#define posix_memalign(p, algn, len)                                                               \
-        (NULL == (*((char **) (p)) = (void *) _aligned_malloc(len, algn)))
-#define aligned_free(x) _aligned_free(x)
+#define posix_memalign(p, algn, len)    (NULL == (*((void **) (p)) = _aligned_malloc(len, algn)))
+#define aligned_free(x)                 _aligned_free(x)
 #endif
 #endif
 
