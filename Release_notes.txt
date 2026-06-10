@@ -24,6 +24,7 @@ v2.26.1
 * Fixed potential internal buffer overrun in multi-hash SHA1, SHA256 and SHA1-Murmur3.
 * Fixed x86 SHA1, SHA256, SHA512 and SM3 dispatchers, which were not assigning the most
   optimal functions pointers for some CPU models.
+* Fixed MinGW build.
 
 v2.25
 
