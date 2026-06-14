@@ -111,10 +111,29 @@ lsrc_aarch64 += aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/cbc_enc_aes.S                   \
                 aes/aarch64/cbc_dec_aes.S
 
+lsrc_aes       = aes/aes_base.c         \
+                 aes/aes_keyexp_base.c \
+                 aes/aes_cbc_base.c    \
+                 aes/aes_gcm_base.c    \
+                 aes/aes_xts_base.c
+
+lsrc_riscv64 += ${lsrc_aes}                   \
+                 aes/aes_keyexp_base_aliases.c \
+                 aes/aes_cbc_base_aliases.c    \
+                 aes/aes_gcm_base_aliases.c    \
+                 aes/aes_xts_base_aliases.c
+
+lsrc_base_aliases += ${lsrc_aes}               \
+                 aes/aes_keyexp_base_aliases.c \
+                 aes/aes_cbc_base_aliases.c    \
+                 aes/aes_gcm_base_aliases.c    \
+                 aes/aes_xts_base_aliases.c
+
 other_src   += include/multibinary.asm
 other_src   += include/internal/test.h include/isa-l_crypto/types.h include/reg_sizes.asm
 other_src   += aes/gcm_defines.asm
 other_src   += aes/aes_common.asm
+other_src   += aes/aes_base.h
 other_src   += aes/clear_regs.asm
 other_src   += aes/cbc_common.asm aes/cbc_std_vectors.h
 other_src   += aes/gcm_vectors.h aes/ossl_helper.h

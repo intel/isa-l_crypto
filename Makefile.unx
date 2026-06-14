@@ -44,6 +44,11 @@ ifneq ($(arch),noarch)
     arch = aarch64
     units +=aes
   endif
+
+  ifeq ($(host_cpu)_$(arch),riscv64_)
+    arch = riscv64
+    units +=aes
+  endif
 endif
 
 default: lib
