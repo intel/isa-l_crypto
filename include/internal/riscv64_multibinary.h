@@ -117,7 +117,119 @@
 
 #include <sys/auxv.h>
 
+#if defined(__has_include)
+# if __has_include(<sys/hwprobe.h>)
+#  include <sys/hwprobe.h>
+#  define HAVE_RISCV_HWPROBE_HEADER 1
+# endif
+#endif
+
+#ifndef HAVE_RISCV_HWPROBE_HEADER
+#include <unistd.h>
+#include <sys/syscall.h>
+#endif
+
+#ifndef HAVE_RVV
+#define HAVE_RVV 0
+#endif
+
+#ifndef HAVE_RISCV_ZVK
+#define HAVE_RISCV_ZVK 0
+#endif
+
 #define HWCAP_RV(letter) (1ul << ((letter) - 'A'))
+
+/*
+ * RISC-V multi-letter extension runtime detection via riscv_hwprobe.
+ * AT_HWCAP only exposes coarse single-letter ISA bits such as V, so
+ * fine-grained vector crypto dispatch has to query hwprobe.
+ *
+ * Usage:  riscv_hwprobe_ext(RISCV_HWPROBE_KEY_IMA_EXT_0,
+ *                           RISCV_HWPROBE_EXT_ZVBB)
+ */
+#ifndef HAVE_RISCV_HWPROBE_HEADER
+#ifndef __NR_riscv_hwprobe
+#define __NR_riscv_hwprobe 258
+#endif
+struct riscv_hwprobe_pair {
+        long long key;
+        unsigned long long value;
+};
+#endif
+
+#ifndef RISCV_HWPROBE_KEY_IMA_EXT_0
+#define RISCV_HWPROBE_KEY_IMA_EXT_0 4
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZBA
+#define RISCV_HWPROBE_EXT_ZBA   (1ULL << 3)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZBB
+#define RISCV_HWPROBE_EXT_ZBB   (1ULL << 4)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVBB
+#define RISCV_HWPROBE_EXT_ZVBB  (1ULL << 17)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVBC
+#define RISCV_HWPROBE_EXT_ZVBC  (1ULL << 18)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKB
+#define RISCV_HWPROBE_EXT_ZVKB  (1ULL << 19)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKG
+#define RISCV_HWPROBE_EXT_ZVKG  (1ULL << 20)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKNED
+#define RISCV_HWPROBE_EXT_ZVKNED (1ULL << 21)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKNHA
+#define RISCV_HWPROBE_EXT_ZVKNHA (1ULL << 22)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKNHB
+#define RISCV_HWPROBE_EXT_ZVKNHB (1ULL << 23)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKSED
+#define RISCV_HWPROBE_EXT_ZVKSED (1ULL << 24)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKSH
+#define RISCV_HWPROBE_EXT_ZVKSH (1ULL << 25)
+#endif
+#ifndef RISCV_HWPROBE_EXT_ZVKT
+#define RISCV_HWPROBE_EXT_ZVKT  (1ULL << 26)
+#endif
+
+static inline int riscv_hwprobe_ext(long long key, unsigned long long mask)
+{
+#ifdef HAVE_RISCV_HWPROBE_HEADER
+        unsigned long long value = 0;
+
+        if (__riscv_hwprobe_one(__riscv_hwprobe, key, &value) != 0)
+                return 0;
+        return (value & mask) == mask;
+#else
+        struct riscv_hwprobe_pair pairs[] = { { .key = key } };
+
+        if (syscall(__NR_riscv_hwprobe, pairs, 1, 0, (void *)0, 0) == 0)
+                return (pairs[0].value & mask) == mask;
+        return 0;
+#endif
+}
+
+static inline int riscv_has_rvv(void)
+{
+        return (getauxval(AT_HWCAP) & HWCAP_RV('V')) != 0;
+}
+
+static inline int is_zvk_aes_available(void)
+{
+#if HAVE_RISCV_ZVK
+        return riscv_has_rvv() &&
+               riscv_hwprobe_ext(RISCV_HWPROBE_KEY_IMA_EXT_0,
+                                 RISCV_HWPROBE_EXT_ZVKB | RISCV_HWPROBE_EXT_ZVKNED |
+                                         RISCV_HWPROBE_EXT_ZVKG);
+#else
+        return 0;
+#endif
+}
 
 #define DEFINE_INTERFACE_DISPATCHER(name) void *name##_dispatcher(void)
 
