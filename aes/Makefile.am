@@ -117,11 +117,22 @@ lsrc_aes       = aes/aes_base.c         \
                  aes/aes_gcm_base.c    \
                  aes/aes_xts_base.c
 
-lsrc_riscv64 += ${lsrc_aes}                   \
-                 aes/aes_keyexp_base_aliases.c \
-                 aes/aes_cbc_base_aliases.c    \
-                 aes/aes_gcm_base_aliases.c    \
-                 aes/aes_xts_base_aliases.c
+lsrc_riscv64 += ${lsrc_aes}                                 \
+                aes/riscv64/keyexp_multibinary_riscv64.S    \
+                aes/riscv64/keyexp_riscv64_dispatcher.c     \
+                aes/riscv64/cbc_multibinary_riscv64.S       \
+                aes/riscv64/cbc_riscv64_dispatcher.c        \
+                aes/riscv64/cbc_zvkned_wrap.c           \
+                aes/riscv64/cbc_zvkned.S                \
+                aes/riscv64/gcm_multibinary_riscv64.S       \
+                aes/riscv64/gcm_riscv64_dispatcher.c        \
+                aes/riscv64/gcm_ctr32_zvkned_zvkb.S         \
+                aes/riscv64/ghash_zvkg.S                    \
+                aes/riscv64/gcm_zvk.c                   \
+                aes/riscv64/xts_multibinary_riscv64.S       \
+                aes/riscv64/xts_riscv64_dispatcher.c        \
+                aes/riscv64/aes_block_zvkned.S                \
+                aes/riscv64/xts_zvkned.c
 
 lsrc_base_aliases += ${lsrc_aes}               \
                  aes/aes_keyexp_base_aliases.c \
@@ -144,6 +155,8 @@ other_src   += aes/gcm_avx_gen2.asm
 other_src   += aes/gcm_avx_gen4.asm
 other_src   += aes/gcm_keys_vaes_avx512.asm
 other_src   += aes/gcm_vaes_avx512.asm
+other_src   += aes/riscv64/aes_zvk_internal.h
+other_src   += aes/riscv64/aes_zvk_macros.S
 
 check_tests += aes/cbc_std_vectors_test
 check_tests += aes/gcm_std_vectors_test
