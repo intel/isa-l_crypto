@@ -54,6 +54,21 @@ jobs:
         run: bash tools/test_extended.sh
         if: runner.os == 'Linux'  # Fails on Mac OS due to nmake consistency issue
 
+  run_tests_linux_arm64:
+    needs: check_format
+    runs-on: ubuntu-26.04-arm
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build
+        run: |
+          ./autogen.sh
+          ./configure
+          bash -c 'make -j $(nproc)'
+      - name: Run tests
+        run: bash tools/test_checks.sh
+      - name: Run extended tests
+        run: bash tools/test_extended.sh
+
   run_tests_windows:
     needs: check_format
     runs-on: windows-latest
@@ -80,3 +95,50 @@ jobs:
         run: bash tools/test_checks.sh
       - name: Run extended tests
         run: bash tools/test_extended.sh
+
+  run_cmake_tests_unix:
+    needs: check_format
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install build dependencies (Linux)
+        run: sudo apt install nasm
+        if: runner.os == 'Linux'
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+  run_cmake_tests_linux_arm64:
+    needs: check_format
+    runs-on: ubuntu-26.04-arm
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+  run_cmake_tests_windows:
+    needs: check_format
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Set MSVC developer prompt
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+      - name: Install nasm
+        uses: ilammy/setup-nasm@72793074d3c8cdda771dba85f6deafe00623038b # v1.5.2
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Run tests
+        run: ctest --test-dir build -C Release --output-on-failure
