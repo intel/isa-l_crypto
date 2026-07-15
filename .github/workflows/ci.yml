@@ -22,6 +22,7 @@ jobs:
           fetch-depth: 2
       - name: Install clang-format-18
         run: |
+          sudo apt update
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 18
@@ -41,7 +42,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install build dependencies (Linux)
-        run: sudo apt install ${{ matrix.assembler }}
+        run: |
+          sudo apt update
+          sudo apt install ${{ matrix.assembler }}
         if: runner.os == 'Linux'
       - name: Build
         run: |
@@ -106,7 +109,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install build dependencies (Linux)
-        run: sudo apt install nasm
+        run: |
+          sudo apt update
+          sudo apt install nasm
         if: runner.os == 'Linux'
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
