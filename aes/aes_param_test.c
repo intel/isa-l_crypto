@@ -194,7 +194,7 @@ test_aes_xts_api(aes_xts_func aes_xts_func_ptr, const char *name, const int expa
 static int
 test_aes_gcm_api(aes_gcm_func aes_gcm_func_ptr, const char *name)
 {
-        struct isal_gcm_key_data gkey;
+        struct isal_gcm_key_data gkey = { 0 };
         struct isal_gcm_context_data gctx;
         uint8_t buf[256] = { 0 };
         uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
@@ -277,7 +277,7 @@ test_aes_gcm_api(aes_gcm_func aes_gcm_func_ptr, const char *name)
 static int
 test_aes_gcm_init_api(aes_gcm_init_func aes_gcm_func_ptr, const char *name)
 {
-        struct isal_gcm_key_data gkey;
+        struct isal_gcm_key_data gkey = { 0 };
         struct isal_gcm_context_data gctx;
         uint8_t iv[ISAL_GCM_IV_LEN] = { 0 };
         uint8_t aad[64] = { 0 };
@@ -307,7 +307,7 @@ test_aes_gcm_init_api(aes_gcm_init_func aes_gcm_func_ptr, const char *name)
 static int
 test_aes_gcm_update_api(aes_gcm_update_func aes_gcm_func_ptr, const char *name)
 {
-        struct isal_gcm_key_data gkey;
+        struct isal_gcm_key_data gkey = { 0 };
         struct isal_gcm_context_data gctx;
         uint8_t buf[256] = { 0 };
 
