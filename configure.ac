@@ -123,7 +123,7 @@ if test x"$CPU" = x"aarch64"; then
          AC_MSG_RESULT([yes])
       else
          AC_MSG_RESULT([no])
-         AC_MSG_ERROR([upgrade your compiler to support SVE2, or run \"./configure --disable-sve2\"])
+         AC_MSG_ERROR([upgrade your compiler to support SVE2, or run "./configure --disable-sve2"])
       fi
    else
 	 AC_DEFINE(NO_SVE2, 1, [Define to 1 if the compiler does not supports SVE2.])
