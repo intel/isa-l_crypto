@@ -55,6 +55,9 @@ RISC-V 64:
 * For RISC-V Vector (RVV) support:
 	* Assembler: gas v2.39 or later.
 	* Compiler: gcc v12.1 or later.
+* For RISC-V Vector Crypto (Zvk*) support (Zvkned, Zvkg, Zvkb):
+	* Assembler: gas v2.42 or later.
+	* Compiler: gcc v14.1 or later.
 
 other:
 * Compiler: Portable base functions are available that build with most C compilers.

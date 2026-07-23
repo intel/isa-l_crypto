@@ -34,6 +34,7 @@ AM_CONDITIONAL([CPU_X86_64], [test "$CPU" = "x86_64"])
 AM_CONDITIONAL([CPU_AARCH64], [test "$CPU" = "aarch64"])
 AM_CONDITIONAL([CPU_RISCV64], [test "$CPU" = "riscv64"])
 AM_CONDITIONAL([HAVE_RVV], [false])
+AM_CONDITIONAL([HAVE_RISCV_ZVK], [false])
 AM_CONDITIONAL([CPU_UNDEFINED], [test "x$CPU" = "x"])
 AM_CONDITIONAL([SAFE_PARAM], [test x"$SAFE_PARAM" = x"yes"])
 
@@ -72,6 +73,32 @@ case "${CPU}" in
 			AM_CONDITIONAL([HAVE_RVV], [false]) rvv=no]
 		)
 		AC_MSG_RESULT([$rvv])
+		if test x"$rvv" = x"yes"; then
+			AC_MSG_CHECKING([whether compiler and linker support RISC-V ZVk instructions])
+			AC_LINK_IFELSE(
+				[AC_LANG_PROGRAM([], [
+					__asm__ volatile(
+						".option arch, +v\n"
+						".option arch, +zvbb\n"
+						".option arch, +zvkb\n"
+						".option arch, +zvkned\n"
+						".option arch, +zvkg\n"
+						"vsetivli zero, 4, e32, m1, ta, ma\n"
+						"vbrev8.v v0, v1\n"
+						"vrev8.v v0, v1\n"
+						"vaesz.vs v0, v1\n"
+						"vghsh.vv v0, v1, v2\n"
+					);
+				])],
+				[AC_DEFINE([HAVE_RISCV_ZVK], [1], [Enable RISC-V ZVk instructions])
+				AM_CONDITIONAL([HAVE_RISCV_ZVK], [true]) riscv_zvk=yes],
+				[AC_DEFINE([HAVE_RISCV_ZVK], [0], [Disable RISC-V ZVk instructions])
+				AM_CONDITIONAL([HAVE_RISCV_ZVK], [false]) riscv_zvk=no]
+			)
+			AC_MSG_RESULT([$riscv_zvk])
+		else
+			AC_DEFINE([HAVE_RISCV_ZVK], [0], [Disable RISC-V ZVk instructions])
+		fi
 		is_x86=no
 		;;
 
@@ -331,7 +358,7 @@ AC_TYPE_UINT8_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC  # Used only in tests
-AC_CHECK_FUNCS([memmove memset])
+AC_CHECK_FUNCS([memmove memset explicit_bzero])
 
 my_CFLAGS="\
 -Wall \

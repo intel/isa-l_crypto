@@ -111,10 +111,40 @@ lsrc_aarch64 += aes/aarch64/gcm_multibinary_aarch64.S       \
                 aes/aarch64/cbc_enc_aes.S                   \
                 aes/aarch64/cbc_dec_aes.S
 
+lsrc_aes       = aes/aes_base.c         \
+                 aes/aes_keyexp_base.c \
+                 aes/aes_cbc_base.c    \
+                 aes/aes_gcm_base.c    \
+                 aes/aes_xts_base.c
+
+lsrc_riscv64 += ${lsrc_aes}                                 \
+                aes/riscv64/keyexp_multibinary_riscv64.S    \
+                aes/riscv64/keyexp_riscv64_dispatcher.c     \
+                aes/riscv64/cbc_multibinary_riscv64.S       \
+                aes/riscv64/cbc_riscv64_dispatcher.c        \
+                aes/riscv64/cbc_zvkned_wrap.c           \
+                aes/riscv64/cbc_zvkned.S                \
+                aes/riscv64/gcm_multibinary_riscv64.S       \
+                aes/riscv64/gcm_riscv64_dispatcher.c        \
+                aes/riscv64/gcm_ctr32_zvkned_zvkb.S         \
+                aes/riscv64/ghash_zvkg.S                    \
+                aes/riscv64/gcm_zvk.c                   \
+                aes/riscv64/xts_multibinary_riscv64.S       \
+                aes/riscv64/xts_riscv64_dispatcher.c        \
+                aes/riscv64/aes_block_zvkned.S                \
+                aes/riscv64/xts_zvkned.c
+
+lsrc_base_aliases += ${lsrc_aes}               \
+                 aes/aes_keyexp_base_aliases.c \
+                 aes/aes_cbc_base_aliases.c    \
+                 aes/aes_gcm_base_aliases.c    \
+                 aes/aes_xts_base_aliases.c
+
 other_src   += include/multibinary.asm
 other_src   += include/internal/test.h include/isa-l_crypto/types.h include/reg_sizes.asm
 other_src   += aes/gcm_defines.asm
 other_src   += aes/aes_common.asm
+other_src   += aes/aes_base.h
 other_src   += aes/clear_regs.asm
 other_src   += aes/cbc_common.asm aes/cbc_std_vectors.h
 other_src   += aes/gcm_vectors.h aes/ossl_helper.h
@@ -125,6 +155,8 @@ other_src   += aes/gcm_avx_gen2.asm
 other_src   += aes/gcm_avx_gen4.asm
 other_src   += aes/gcm_keys_vaes_avx512.asm
 other_src   += aes/gcm_vaes_avx512.asm
+other_src   += aes/riscv64/aes_zvk_internal.h
+other_src   += aes/riscv64/aes_zvk_macros.S
 
 check_tests += aes/cbc_std_vectors_test
 check_tests += aes/gcm_std_vectors_test

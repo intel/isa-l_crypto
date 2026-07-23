@@ -103,6 +103,18 @@ ifeq ($(arch),aarch64)
   AS=$(CC) -D__ASSEMBLY__
   SIM=
 endif
+# arch=riscv64 build options
+ifeq ($(lib_debug),1)
+  ASFLAGS_riscv64 = -g -c
+else
+  ASFLAGS_riscv64 = -c
+endif
+
+ARFLAGS_riscv64 = cr $@
+ifeq ($(arch),riscv64)
+  AS=$(CC) -D__ASSEMBLY__
+  SIM=
+endif
 # arch=noarch build options
 ARFLAGS_noarch = cr $@
 CFLAGS_noarch= -DNOARCH
@@ -180,7 +192,7 @@ endif # NASM_SHA512NI_GE_REQ
 endif # NASM_VERSION
 endif # x86
 
-ifeq ($(filter aarch64 x86_%,$(host_cpu)),)
+ifeq ($(filter aarch64 riscv64 x86_%,$(host_cpu)),)
   host_cpu=base_aliases
 endif
 lsrc += $(lsrc_$(host_cpu))

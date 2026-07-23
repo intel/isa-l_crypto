@@ -44,6 +44,7 @@ set(FIPS_AARCH64_SOURCES
 
 set(FIPS_RISCV64_SOURCES
     fips/self_tests_generic.c
+    fips/aes_self_tests.c
 )
 
 set(FIPS_BASE_ALIASES_SOURCES
