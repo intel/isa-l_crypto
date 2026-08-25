@@ -332,17 +332,11 @@ _sha1_mb_mgr_submit_avx512(ISAL_SHA1_MB_JOB_MGR *state, ISAL_SHA1_JOB *job);
 ISAL_SHA1_JOB *
 _sha1_mb_mgr_flush_avx512(ISAL_SHA1_MB_JOB_MGR *state);
 
-void
-_sha1_mb_mgr_init_sse_ni(ISAL_SHA1_MB_JOB_MGR *state);
 ISAL_SHA1_JOB *
 _sha1_mb_mgr_submit_sse_ni(ISAL_SHA1_MB_JOB_MGR *state, ISAL_SHA1_JOB *job);
 ISAL_SHA1_JOB *
 _sha1_mb_mgr_flush_sse_ni(ISAL_SHA1_MB_JOB_MGR *state);
 
-void
-_sha1_mb_mgr_init_avx512_ni(ISAL_SHA1_MB_JOB_MGR *state);
-ISAL_SHA1_JOB *
-_sha1_mb_mgr_submit_avx512_ni(ISAL_SHA1_MB_JOB_MGR *state, ISAL_SHA1_JOB *job);
 ISAL_SHA1_JOB *
 _sha1_mb_mgr_flush_avx512_ni(ISAL_SHA1_MB_JOB_MGR *state);
 

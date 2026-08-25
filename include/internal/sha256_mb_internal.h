@@ -332,17 +332,11 @@ _sha256_mb_mgr_submit_avx512(ISAL_SHA256_MB_JOB_MGR *state, ISAL_SHA256_JOB *job
 ISAL_SHA256_JOB *
 _sha256_mb_mgr_flush_avx512(ISAL_SHA256_MB_JOB_MGR *state);
 
-void
-_sha256_mb_mgr_init_sse_ni(ISAL_SHA256_MB_JOB_MGR *state);
 ISAL_SHA256_JOB *
 _sha256_mb_mgr_submit_sse_ni(ISAL_SHA256_MB_JOB_MGR *state, ISAL_SHA256_JOB *job);
 ISAL_SHA256_JOB *
 _sha256_mb_mgr_flush_sse_ni(ISAL_SHA256_MB_JOB_MGR *state);
 
-void
-_sha256_mb_mgr_init_avx512_ni(ISAL_SHA256_MB_JOB_MGR *state);
-ISAL_SHA256_JOB *
-_sha256_mb_mgr_submit_avx512_ni(ISAL_SHA256_MB_JOB_MGR *state, ISAL_SHA256_JOB *job);
 ISAL_SHA256_JOB *
 _sha256_mb_mgr_flush_avx512_ni(ISAL_SHA256_MB_JOB_MGR *state);
 
