@@ -36,10 +36,6 @@
 %include "clear_regs.inc"
 
 %define	MOVDQ movdqu ;; assume buffers not aligned
-%macro pxor2 2
-	MOVDQ	XTMP, %2
-	pxor	%1, XTMP
-%endm
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Updates In and Out pointers at end
