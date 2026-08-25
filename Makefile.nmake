@@ -97,7 +97,6 @@ objs = \
 	bin\sha512_ctx_base.obj \
 	bin\sha512_mb_mgr_init_sse.obj \
 	bin\sha512_mb_mgr_init_avx2.obj \
-	bin\sha512_sb_mgr_init_sse4.obj \
 	bin\sha512_mb_mgr_submit_sse.obj \
 	bin\sha512_mb_mgr_submit_avx.obj \
 	bin\sha512_mb_mgr_submit_avx2.obj \
@@ -111,9 +110,6 @@ objs = \
 	bin\sha512_mb_x2_avx.obj \
 	bin\sha512_mb_x4_avx2.obj \
 	bin\sha512_multibinary.obj \
-	bin\sha512_sb_mgr_submit_sse4.obj \
-	bin\sha512_sb_mgr_flush_sse4.obj \
-	bin\sha512_sse4.obj \
 	bin\sha512_ctx_avx512.obj \
 	bin\sha512_mb_mgr_init_avx512.obj \
 	bin\sha512_mb_mgr_submit_avx512.obj \

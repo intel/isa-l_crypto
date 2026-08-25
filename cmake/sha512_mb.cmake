@@ -39,7 +39,6 @@ set(SHA512_MB_X86_64_SOURCES
     sha512_mb/sha512_ctx_base.c
     sha512_mb/sha512_mb_mgr_init_sse.c
     sha512_mb/sha512_mb_mgr_init_avx2.c
-    sha512_mb/sha512_sb_mgr_init_sse4.c
     sha512_mb/sha512_mb_mgr_submit_sse.asm
     sha512_mb/sha512_mb_mgr_submit_avx.asm
     sha512_mb/sha512_mb_mgr_submit_avx2.asm
@@ -53,9 +52,6 @@ set(SHA512_MB_X86_64_SOURCES
     sha512_mb/sha512_mb_x2_avx.asm
     sha512_mb/sha512_mb_x4_avx2.asm
     sha512_mb/sha512_multibinary.asm
-    sha512_mb/sha512_sb_mgr_submit_sse4.c
-    sha512_mb/sha512_sb_mgr_flush_sse4.c
-    sha512_mb/sha512_sse4.asm
     sha512_mb/sha512_ctx_avx512.c
     sha512_mb/sha512_mb_mgr_init_avx512.c
     sha512_mb/sha512_mb_mgr_submit_avx512.asm

@@ -304,16 +304,6 @@ _sha512_mb_mgr_submit_avx512(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job
 ISAL_SHA512_JOB *
 _sha512_mb_mgr_flush_avx512(ISAL_SHA512_MB_JOB_MGR *state);
 
-// Single buffer SHA512 APIs, optimized for SLM.
-void
-_sha512_sse4(const void *M, void *D, uint64_t L);
-// Note that these APIs comply with multi-buffer APIs' high level usage
-void
-_sha512_sb_mgr_init_sse4(ISAL_SHA512_MB_JOB_MGR *state);
-ISAL_SHA512_JOB *
-_sha512_sb_mgr_submit_sse4(ISAL_SHA512_MB_JOB_MGR *state, ISAL_SHA512_JOB *job);
-ISAL_SHA512_JOB *
-_sha512_sb_mgr_flush_sse4(ISAL_SHA512_MB_JOB_MGR *state);
 #ifdef __cplusplus
 }
 #endif
