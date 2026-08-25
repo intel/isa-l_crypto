@@ -146,25 +146,6 @@ perf_print(struct perf stop, struct perf start, long long dsize)
 }
 #endif
 
-static inline uint64_t
-get_filesize(FILE *fp)
-{
-        uint64_t file_size;
-        fpos_t pos, pos_curr;
-
-        fgetpos(fp, &pos_curr); /* Save current position */
-#if defined(_WIN32) || defined(_WIN64)
-        _fseeki64(fp, 0, SEEK_END);
-#else
-        fseeko(fp, 0, SEEK_END);
-#endif
-        fgetpos(fp, &pos);
-        file_size = *(uint64_t *) &pos;
-        fsetpos(fp, &pos_curr); /* Restore position */
-
-        return file_size;
-}
-
 #ifdef __cplusplus
 }
 #endif
