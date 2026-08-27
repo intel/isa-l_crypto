@@ -397,7 +397,7 @@ doc: isa-l_crypto.h
 # -I FILE   -- File containing words to be ignored
 #
 CODESPELL ?= codespell
-CS_IGNORE_WORDS ?= iinclude,struc,fo,ue,od,ba,padd,hist,unx,sav,datas
+CS_IGNORE_WORDS ?= iinclude,struc,fo,ue,od,ba,padd,hist,unx,sav,datas,vor
 
 .PHONY: spellcheck
 spellcheck:
