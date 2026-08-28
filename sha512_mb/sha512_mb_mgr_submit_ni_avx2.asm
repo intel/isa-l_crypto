@@ -26,12 +26,12 @@
 ;  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%include "reg_sizes.asm"
+
 %ifdef HAVE_AS_KNOWS_SHA512NI
 
 %include "sha512_job.asm"
 %include "sha512_mb_mgr_datastruct.asm"
-
-%include "reg_sizes.asm"
 
 extern sha512_ni_x2_avx2
 

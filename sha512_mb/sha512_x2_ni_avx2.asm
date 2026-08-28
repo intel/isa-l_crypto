@@ -36,6 +36,8 @@
 ;;      a - most significant word in `ymm`
 ;;      d - least significant word in `ymm`
 ;; ===========================================================
+%include "reg_sizes.asm"
+
 %ifdef HAVE_AS_KNOWS_SHA512NI
 
 %use smartalign
@@ -43,8 +45,6 @@
 %include "include/os.inc"
 %include "include/clear_regs.inc"
 %include "sha512_mb_mgr_datastruct.asm"
-
-%include "reg_sizes.asm"
 
 ; resdq = res0 => 16 bytes
 struc frame

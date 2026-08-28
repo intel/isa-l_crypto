@@ -36,13 +36,14 @@
 ;;      a - most significant word in `xmm`
 ;;      d - least significant word in `xmm`
 ;; ===========================================================
+%include "reg_sizes.asm"
+
 %ifdef HAVE_AS_KNOWS_SHA512NI
 
 %use smartalign
 
 %include "include/os.inc"
 %include "include/clear_regs.inc"
-%include "include/reg_sizes.asm"
 
 %ifdef LINUX
 %define arg1	rdi

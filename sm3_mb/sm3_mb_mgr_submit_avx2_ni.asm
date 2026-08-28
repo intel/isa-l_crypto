@@ -26,13 +26,13 @@
 ;  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+%include "reg_sizes.asm"
+
 %ifdef HAVE_AS_KNOWS_SHA512NI
 
 %include "sm3_job.asm"
 %include "memcpy.asm"
 %include "sm3_mb_mgr_datastruct.asm"
-
-%include "reg_sizes.asm"
 
 extern sm3_update_ni_x1
 
