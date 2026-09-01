@@ -9,6 +9,8 @@ This directory contains the CMake build system for ISA-L Crypto library.
 - Shared and static library builds
 - NASM assembly support for x86 architectures
 - Configurable security features (SAFE_DATA, SAFE_PARAM, FIPS_MODE)
+- Intel CET (IBT/SHSTK) hardening, enabled automatically on x86_64 when the
+  toolchain supports it
 - Package configuration files for easy integration
 
 ## Prerequisites

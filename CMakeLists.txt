@@ -153,6 +153,60 @@ if(NOT MSVC)
     endif()
 endif()
 
+# Intel CET (Control-flow Enforcement Technology) hardening, matching the
+# autotools build (configure.ac / make.inc). All three parts are required:
+#   -fcf-protection=full  makes the compiler emit ENDBR in C objects
+#   INTEL_CET_ENABLED     makes the assembly emit the .note.gnu.property marker
+#   -z ibt,shstk          keeps the property in the output and, for IBT, makes
+#                         the linker emit an ENDBR-bearing .plt.sec
+# Omitting any of them silently produces a binary without CET protection.
+if(CPU_X86_64 AND NOT MSVC AND NOT WIN32)
+    include(CheckCSourceCompiles)
+    set(CET_C_FLAGS "-fcf-protection=full")
+    set(CET_LINKER_FLAGS "-Wl,-z,ibt -Wl,-z,shstk -Wl,-z,cet-report=error")
+
+    set(CMAKE_REQUIRED_FLAGS_SAVED "${CMAKE_REQUIRED_FLAGS}")
+    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${CET_C_FLAGS} ${CET_LINKER_FLAGS}")
+
+    # try_compile() honours CMAKE_TRY_COMPILE_TARGET_TYPE. A cross toolchain
+    # setting it to STATIC_LIBRARY would skip the link step, so the probe would
+    # succeed on __CET__ alone and the -z options would stay untested until the
+    # first real shared library or executable link failed. Force an executable
+    # so the linker is exercised too.
+    if(DEFINED CMAKE_TRY_COMPILE_TARGET_TYPE)
+        set(CET_TARGET_TYPE_SAVED "${CMAKE_TRY_COMPILE_TARGET_TYPE}")
+    endif()
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
+
+    check_c_source_compiles("
+#ifndef __CET__
+#error CET is not enabled
+#endif
+int main(void) { return 0; }"
+        INTEL_CET_ENABLED)
+
+    if(DEFINED CET_TARGET_TYPE_SAVED)
+        set(CMAKE_TRY_COMPILE_TARGET_TYPE "${CET_TARGET_TYPE_SAVED}")
+        unset(CET_TARGET_TYPE_SAVED)
+    else()
+        unset(CMAKE_TRY_COMPILE_TARGET_TYPE)
+    endif()
+    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_SAVED}")
+
+    if(INTEL_CET_ENABLED)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CET_C_FLAGS}")
+        foreach(target_type EXE SHARED MODULE)
+            set(CMAKE_${target_type}_LINKER_FLAGS "${CMAKE_${target_type}_LINKER_FLAGS} ${CET_LINKER_FLAGS}")
+        endforeach()
+        if(USE_NASM)
+            set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -DINTEL_CET_ENABLED")
+        endif()
+        message(STATUS "Intel CET enabled")
+    else()
+        message(STATUS "Intel CET not supported by the toolchain - disabled")
+    endif()
+endif()
+
 # Add NO_COMPAT_ISAL_CRYPTO_API_2_24 define
 add_compile_definitions(NO_COMPAT_ISAL_CRYPTO_API_2_24)
 
