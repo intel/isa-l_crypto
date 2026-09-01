@@ -56,10 +56,13 @@
 	section .text
 	mk_global %1, function
 	%1_mbinit:
+		;;; indirect branch target through %1_dispatched, needs ENDBR for IBT
+		endbranch
 		;;; only called the first time to setup hardware match
 		call	%1_dispatch_init
 		;;; falls thru to execute the hw optimized code
 	%1:
+		endbranch
 		jmp	mbin_ptr_sz [%1_dispatched]
 %endmacro
 
