@@ -51,7 +51,8 @@ DEBUG      = -g
 DEBUG_nasm = -g
 
 # Default arch= build options
-CFLAGS_    = -Wall -Wchar-subscripts -Wformat-security -Wnested-externs -Wpointer-arith -Wshadow -Wstrict-prototypes -Wtype-limits -fstack-protector -D_FORTIFY_SOURCE=2 -DNO_COMPAT_ISAL_CRYPTO_API_2_24
+CFLAGS_    = -Wall -Wchar-subscripts -Wformat-security -Wnested-externs -Wpointer-arith -Wshadow -Wstrict-prototypes -Wtype-limits -fstack-protector -DNO_COMPAT_ISAL_CRYPTO_API_2_24 \
+             -D_FORTIFY_SOURCE=$(fortify_level)
 ASFLAGS_   = -f elf64
 ARFLAGS_   = cr $@
 STRIP_gcc  = strip -d -R .comment $@
@@ -109,6 +110,17 @@ CFLAGS_noarch= -DNOARCH
 ifeq ($(arch),noarch)
   host_cpu=base_aliases
 endif
+# _FORTIFY_SOURCE=3 needs support from both the compiler and the target libc:
+# glibc only selects level 3 from 2.35 with GCC >= 12 (or clang >= 9) and
+# silently clamps to level 2 otherwise, while musl provides no fortification at
+# all. Testing the compiler version alone would request level 3 while leaving
+# the intended hardening absent, so ask the libc headers which level they
+# actually selected. Evaluated after CC is final so cross builds probe the
+# target libc; -O2 is forced because fortification is inactive without it.
+# '\043' is '#', which cannot be written literally here (it starts a comment).
+fortify_probe = '\043include <stdio.h>\n\043if !defined __USE_FORTIFY_LEVEL || __USE_FORTIFY_LEVEL != 3\n\043error no level 3\n\043endif\n'
+fortify_level := $(shell printf $(fortify_probe) | $(CC) $(CPPFLAGS) $(CFLAGS) -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fsyntax-only -x c - 2>/dev/null && echo 3 || echo 2)
+
 INCLUDE   = $(patsubst %,-I%/,$(subst :, ,$(VPATH))) -Iinclude/ -Iinclude/isa-l_crypto/ -Iinclude/internal/
 CFLAGS   = $(CFLAGS_$(arch)) $(CFLAGS_$(CC)) $(DEBUG) -O2 $(DEFINES) $(INCLUDE)
 ASFLAGS  = $(ASFLAGS_$(arch)) $(ASFLAGS_$(CC)) $(DEBUG_$(AS)) $(DEFINES) $(INCLUDE)

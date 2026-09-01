@@ -344,9 +344,40 @@ my_CFLAGS="\
 -Wstrict-prototypes \
 -Wtype-limits \
 -fstack-protector \
--D_FORTIFY_SOURCE=2 \
 -DNO_COMPAT_ISAL_CRYPTO_API_2_24
 "
+
+# Use _FORTIFY_SOURCE=3 where it is actually effective (it adds runtime checks
+# even when the compiler can statically prove safety); fall back to =2.
+#
+# Level 3 needs support from both the compiler and the target libc, so the
+# compiler version alone is not a usable signal: glibc only selects level 3
+# from 2.35 with GCC >= 12 (or clang >= 9) and silently clamps to level 2
+# otherwise, and musl provides no fortification at all. A GCC 12+ build against
+# musl or an older glibc would therefore be told "yes" while the intended
+# hardening is absent. Ask the target libc headers what they actually selected
+# instead. This is a compile-only test, so it stays correct when cross
+# compiling; -O2 is forced because fortification is inactive without
+# optimization.
+AC_MSG_CHECKING([whether _FORTIFY_SOURCE=3 is supported])
+fortify_saved_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3"
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <stdio.h>
+#ifndef __USE_FORTIFY_LEVEL
+# error libc does not support _FORTIFY_SOURCE
+#endif
+#if __USE_FORTIFY_LEVEL != 3
+# error libc clamped _FORTIFY_SOURCE below level 3
+#endif
+]])],
+    [fortify_level=3], [fortify_level=2])
+CFLAGS="$fortify_saved_CFLAGS"
+AS_IF([test "$fortify_level" = "3"],
+      [AC_MSG_RESULT([yes])],
+      [AC_MSG_RESULT([no, using _FORTIFY_SOURCE=2])])
+my_CFLAGS="$my_CFLAGS -D_FORTIFY_SOURCE=$fortify_level"
+
 AC_SUBST([my_CFLAGS])
 
 AC_CONFIG_FILES([\
