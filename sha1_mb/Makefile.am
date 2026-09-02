@@ -77,7 +77,13 @@ lsrc_aarch64 += sha1_mb/sha1_ctx_base.c \
 		sha1_mb/aarch64/sha1_mb_mgr_asimd.c	\
 		sha1_mb/aarch64/sha1_mb_aarch64_dispatcher.c
 
-lsrc_riscv64 += sha1_mb/sha1_ctx_base_aliases.c	\
+lsrc_riscv64 += \
+		sha1_mb/riscv64/sha1_mb_multibinary.S \
+		sha1_mb/riscv64/sha1_ctx_rvv.c \
+		sha1_mb/riscv64/sha1_mb_block_rvv.S \
+		sha1_mb/riscv64/sha1_riscv64_x1.S \
+		sha1_mb/riscv64/sha1_mb_mgr_rvv.c \
+		sha1_mb/riscv64/sha1_mb_riscv64_dispatcher.c \
 		sha1_mb/sha1_ctx_base.c \
 		sha1_mb/sha1_ref.c
 
