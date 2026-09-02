@@ -88,7 +88,9 @@ sha512_ref(uint8_t *input_data, uint64_t *digest, uint32_t len)
         else
                 i = ISAL_SHA512_BLOCK_SIZE;
 
-        *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
+        const uint64_t len_in_bit = to_be64((uint64_t) len * 8);
+
+        memcpy(buf + i - 8, &len_in_bit, sizeof(len_in_bit));
 
         /* Hash the padded last block */
         sha512_single(buf, digest);

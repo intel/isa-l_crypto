@@ -240,7 +240,9 @@ sha1_final(ISAL_SHA1_HASH_CTX *ctx)
                 i = ISAL_SHA1_BLOCK_SIZE;
         }
 
-        *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) ctx->total_length * 8);
+        const uint64_t len_in_bit = to_be64((uint64_t) ctx->total_length * 8);
+
+        memcpy(buf + i - 8, &len_in_bit, sizeof(len_in_bit));
 
         sha1_single(buf, digest);
         if (i == 2 * ISAL_SHA1_BLOCK_SIZE) {

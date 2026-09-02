@@ -68,7 +68,7 @@ MH_SHA1_TAIL_FUNCTION(uint8_t *partial_buffer, uint32_t total_len,
         }
         // Padding the block
         len_in_bit = to_be64((uint64_t) total_len * 8);
-        *(uint64_t *) (partial_buffer + ISAL_MH_SHA1_BLOCK_SIZE - 8) = len_in_bit;
+        memcpy(partial_buffer + ISAL_MH_SHA1_BLOCK_SIZE - 8, &len_in_bit, sizeof(len_in_bit));
         MH_SHA1_BLOCK_FUNCTION(partial_buffer, mh_sha1_segs_digests, frame_buffer, 1);
 
         // Calculate multi-hash SHA1 digests (segment digests as input message)

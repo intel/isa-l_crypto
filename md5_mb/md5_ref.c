@@ -80,7 +80,9 @@ md5_ref(uint8_t *input_data, uint32_t *digest, uint32_t len)
         else
                 i = 64;
 
-        *(uint64_t *) (buf + i - 8) = to_le64((uint64_t) len * 8);
+        const uint64_t len_in_bit = to_le64((uint64_t) len * 8);
+
+        memcpy(buf + i - 8, &len_in_bit, sizeof(len_in_bit));
 
         md5_single(buf, digest);
         if (i == 128)

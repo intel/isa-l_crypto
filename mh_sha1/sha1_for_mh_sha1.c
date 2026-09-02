@@ -200,7 +200,9 @@ _sha1_for_mh_sha1(const uint8_t *input_data, uint32_t *digest, const uint32_t le
         else
                 i = ISAL_SHA1_BLOCK_SIZE;
 
-        *(uint64_t *) (buf + i - 8) = to_be64((uint64_t) len * 8);
+        const uint64_t len_in_bit = to_be64((uint64_t) len * 8);
+
+        memcpy(buf + i - 8, &len_in_bit, sizeof(len_in_bit));
 
         _sha1_single_for_mh_sha1(buf, digest);
         if (i == (2 * ISAL_SHA1_BLOCK_SIZE))
