@@ -52,7 +52,10 @@ set(MH_SHA256_AARCH64_SOURCES
 )
 
 set(MH_SHA256_RISCV64_SOURCES
-    mh_sha256/mh_sha256_base_aliases.c
+    mh_sha256/riscv64/mh_sha256_multibinary.S
+    mh_sha256/riscv64/mh_sha256_riscv64_dispatcher.c
+    mh_sha256/riscv64/mh_sha256_block_rvv.S
+    mh_sha256/riscv64/mh_sha256_block.c
 )
 
 set(MH_SHA256_BASE_ALIASES_SOURCES

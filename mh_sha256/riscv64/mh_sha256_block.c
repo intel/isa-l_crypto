@@ -27,6 +27,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
+#if HAVE_RVV
+
 #include <string.h>
 #include "mh_sha256_internal.h"
 
@@ -53,3 +55,5 @@ mh_sha256_block_rvv(const uint8_t *input_data,
 #undef MH_SHA256_FINALIZE_FUNCTION
 #undef MH_SHA256_TAIL_FUNCTION
 #undef MH_SHA256_BLOCK_FUNCTION
+
+#endif /* HAVE_RVV */

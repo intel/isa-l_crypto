@@ -124,8 +124,31 @@ if(CPU_X86_64)
         message(WARNING "Could not parse NASM version string: ${NASM_VERSION_OUTPUT}.\nPlease, be sure that ${CMAKE_ASM_NASM_COMPILER} version is >= ${NASM_VERSION_REQUIRED}")
     endif()
 
-elseif(CPU_AARCH64 OR CPU_RISCV64)
-    # Configure ASM for ARM and RISC-V (uses GAS with .S files)
+# The RISC-V implementation can use RVV when the compiler supports emitting
+# it. Runtime dispatch still checks the target CPU's HWCAP bits before use.
+elseif(CPU_RISCV64)
+    include(CheckCSourceCompiles)
+    check_c_source_compiles(
+        [[
+        int main(void) {
+            __asm__ volatile(".option arch, +v; vsetivli zero, 0, e8, m1, ta, ma");
+            return 0;
+        }
+        ]]
+        ISAL_COMPILER_SUPPORTS_RVV
+    )
+    if(ISAL_COMPILER_SUPPORTS_RVV)
+        set(HAVE_RVV 1)
+        message(STATUS "RISC-V Vector Extension (RVV): supported")
+    else()
+        set(HAVE_RVV 0)
+        message(STATUS "RISC-V Vector Extension (RVV): not supported")
+    endif()
+    add_compile_definitions(HAVE_RVV=${HAVE_RVV})
+    set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -D__ASSEMBLY__")
+
+elseif(CPU_AARCH64)
+    # Configure ASM for ARM (uses GAS with .S files)
     set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -D__ASSEMBLY__")
 endif()
 
