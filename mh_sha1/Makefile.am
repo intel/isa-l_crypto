@@ -57,7 +57,10 @@ lsrc_aarch64 += \
 
 lsrc_riscv64 += \
 		$(lsrc_mh_sha1_base) \
-		mh_sha1/mh_sha1_base_aliases.c
+		mh_sha1/riscv64/mh_sha1_multibinary.S \
+		mh_sha1/riscv64/mh_sha1_riscv64_dispatcher.c \
+		mh_sha1/riscv64/mh_sha1_block_rvv.S \
+		mh_sha1/riscv64/mh_sha1_block.c
 
 lsrc_base_aliases += \
 		$(lsrc_mh_sha1_base) \
